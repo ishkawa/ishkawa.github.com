@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[blog.ishkawa.org]]></title>
-  <link href="http://ishkawa.github.com/atom.xml" rel="self"/>
-  <link href="http://ishkawa.github.com/"/>
-  <updated>2012-10-28T20:31:26+09:00</updated>
-  <id>http://ishkawa.github.com/</id>
+  <link href="http://blog.ishkawa.org/atom.xml" rel="self"/>
+  <link href="http://blog.ishkawa.org/"/>
+  <updated>2012-10-28T20:32:51+09:00</updated>
+  <id>http://blog.ishkawa.org/</id>
   <author>
     <name><![CDATA[ishkawa]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[iOS開発でGitを利用する際のTips]]></title>
-    <link href="http://ishkawa.github.com/blog/2012/10/27/xcode-git/"/>
+    <link href="http://blog.ishkawa.org/blog/2012/10/27/xcode-git/"/>
     <updated>2012-10-27T17:32:00+09:00</updated>
-    <id>http://ishkawa.github.com/blog/2012/10/27/xcode-git</id>
+    <id>http://blog.ishkawa.org/blog/2012/10/27/xcode-git</id>
     <content type="html"><![CDATA[<p>ちょっと今更な感じもありますが、iOS開発でGitを使うときのTipsを紹介します。<br/>
 Gitそのものの使い方は理解している前提のもとで書きます。</p>
 
@@ -205,9 +205,9 @@ Xcode上の参照のみを削除することをおすすめします。　</p>
   
   <entry>
     <title type="html"><![CDATA[UINavigationControllerのトランジションをBlocksで記述するカテゴリ]]></title>
-    <link href="http://ishkawa.github.com/blog/2012/09/06/transition/"/>
+    <link href="http://blog.ishkawa.org/blog/2012/09/06/transition/"/>
     <updated>2012-09-06T13:07:00+09:00</updated>
-    <id>http://ishkawa.github.com/blog/2012/09/06/transition</id>
+    <id>http://blog.ishkawa.org/blog/2012/09/06/transition</id>
     <content type="html"><![CDATA[<p>UINavigationControllerのpush/pop時のトランジションは左右にスライドするものですが、<br/>
 これをカスタマイズするためのTransitionというカテゴリを書きました。</p>
 
@@ -284,9 +284,9 @@ Xcode上の参照のみを削除することをおすすめします。　</p>
   
   <entry>
     <title type="html"><![CDATA[UIImageをあれこれしてスクロールを改善する]]></title>
-    <link href="http://ishkawa.github.com/blog/2012/08/17/uiimage/"/>
+    <link href="http://blog.ishkawa.org/blog/2012/08/17/uiimage/"/>
     <updated>2012-08-17T00:00:00+09:00</updated>
-    <id>http://ishkawa.github.com/blog/2012/08/17/uiimage</id>
+    <id>http://blog.ishkawa.org/blog/2012/08/17/uiimage</id>
     <content type="html"><![CDATA[<div class='post'>
 スクロールアニメーションの改善には色々と方法があると思います。<br />その中でも比較的簡単かつ有効な方法を2つ書きます。<br /><br /><br />まず1つ目。<br /><br />画像の取得時に必要なサイズにリサイズすることです。<br /><br />必要以上のサイズのUIImageの表示はパフォーマンスに影響することがあります。<br />なので、画像の取得後に以下のような処理を入れてリサイズしておくと無難です。<br /><br /><script src="https://gist.github.com/3377566.js?file=sample2.m"></script><br /><br />続いて2つ目。<br /><br />必要な加工は取得時に済ませておくことです。<br /><br />例えば、以下のようなコードでUIImageViewの角を丸くしている場合に有効です。<br />UITableViewなどでたくさん使っている場合は特に効くと思います。<br /><br /><script src="https://gist.github.com/3377566.js?file=sample1.m"></script> <br />以下のように事前にUIImage自身の角を丸くして、UIImageViewは四角にしておくと<br />いくらかスクロールパフォーマンスがなめらかになります。<br /><br /><script src="https://gist.github.com/3377566.js?file=sample3.m"></script><br /><br />自分の場合、<a href="https://github.com/ishkawa/ISNetwork" target="_blank">ISNetwork</a>のISImageNetworkOperationのprocessData:を<br />以下のようにオーバーライドすることで、<br /><ul><li>NSDataからUIImageへの変換</li><li>画像サイズを表示するサイズにリサイズ</li><li>角を丸くする</li></ul>といった一連の処理を別のスレッドで処理しています。<br /><br /><script src="https://gist.github.com/3377566.js?file=sample4.m"></script><br /><br />スクロールパフォーマンスの低下には様々な原因がありますが、<br />基本的にはメインスレッドでやっている処理を、別のスレッドで処理できる形に<br />書き換えてしまえば改善できると思います。<br /><br />もちろん、高価な描画処理を避けるという方法もありだと思います。<br /><br /><br /></div>
 ]]></content>
@@ -294,9 +294,9 @@ Xcode上の参照のみを削除することをおすすめします。　</p>
   
   <entry>
     <title type="html"><![CDATA[右スワイプでUINavigationControllerのpopを呼ぶ]]></title>
-    <link href="http://ishkawa.github.com/blog/2012/07/08/uinavigationcontrollerpop/"/>
+    <link href="http://blog.ishkawa.org/blog/2012/07/08/uinavigationcontrollerpop/"/>
     <updated>2012-07-08T00:00:00+09:00</updated>
-    <id>http://ishkawa.github.com/blog/2012/07/08/uinavigationcontrollerpop</id>
+    <id>http://blog.ishkawa.org/blog/2012/07/08/uinavigationcontrollerpop</id>
     <content type="html"><![CDATA[<div class='post'>
 最近流行ってる気がするので、書きました。<br /><br />右スワイプを認識してpopViewControllerを呼んでいるだけですが、<br />カテゴリにしておくと結構カジュアルに使える気がします。<br /><br /><script src="https://gist.github.com/3069164.js?file=UIViewController+SwipePop.m"></script><br />self.navigationControllerの深さを見たいので、viewWillAppearで<br />setupSwipePopRecognizerを呼ぶことにしています。</div>
 ]]></content>
@@ -304,9 +304,9 @@ Xcode上の参照のみを削除することをおすすめします。　</p>
   
   <entry>
     <title type="html"><![CDATA[Chrome for iPhoneのタブ切り替えのUIを実装する]]></title>
-    <link href="http://ishkawa.github.com/blog/2012/07/01/chrome-for-iphoneui/"/>
+    <link href="http://blog.ishkawa.org/blog/2012/07/01/chrome-for-iphoneui/"/>
     <updated>2012-07-01T00:00:00+09:00</updated>
-    <id>http://ishkawa.github.com/blog/2012/07/01/chrome-for-iphoneui</id>
+    <id>http://blog.ishkawa.org/blog/2012/07/01/chrome-for-iphoneui</id>
     <content type="html"><![CDATA[<div class='post'>
 最近、やっとChrome for iPhoneがリリースされました。<br />洗練されたUIで、是非ともSafariもこの刺激を受けてほしいものです。<br /><br />さて、Chrome for iPhoneのタブの切替方法には以下の2種類があります<br /><ul><li>タブボタンを押して、一覧から選択して切り替える。</li><li>ブラウザ画面の端から横フリックする。</li></ul><div>後者のものが<a href="http://blog.ishkawa.org/2012/06/ios5viewcontroller.html" target="_blank">前回のエントリー</a>でつくったものと大体同じだったので、</div><div>今回あらためてつくり方を紹介します。</div><br /><br /><span style="background-color: white;">つくり方の概要は以下のとおりです。</span><br /><div><ul><li>親となるViewControllerのScrollViewを配置。</li><li>WebViewなどを持つ子ViewControllerを親のScrollViewに並べる。</li><li>親にUIScrollViewDelegateを実装し、ScrollViewのスクロール量を取得。</li><li>スクロール量に応じて、子のViewControllerのlayerのtransformを変更。</li></ul><div><span style="background-color: white;">ScrollViewの置き方やUIScrollViewDelegateプロトコルへの適合の詳細は省きます。</span><br /><br /><span style="background-color: white;">まず、親ViewControllerのScrollViewに子ViewContollerを並べます。</span><br /><br /><script src="https://gist.github.com/3028415.js?file=1.m"></script></div></div><br />つづいて、スクロール量に応じてlayerをtransformを変更します。<br />fabs(offset-x)がscrollView.frame.size.widthも小さければ、そのviewは<br />scrollViewに表示されることになるので、これらのtransformを変更してやります。<br /><br /><script src="https://gist.github.com/3028415.js?file=2.m"></script><br />scaleの下限を調整することで、画面の引き具合を調整することができます。 <br /><br />コードはISColumnsControllerという名前でGitHubで公開しています。<br />直したいところがあれば、是非pull requestをください。<br /><a href="https://github.com/ishkawa/ISColumnsController" target="_blank">https://github.com/ishkawa/ISColumnsController</a></div>
 ]]></content>
@@ -314,9 +314,9 @@ Xcode上の参照のみを削除することをおすすめします。　</p>
   
   <entry>
     <title type="html"><![CDATA[iOS5のコンテナViewControllerを試す]]></title>
-    <link href="http://ishkawa.github.com/blog/2012/06/19/ios5viewcontroller/"/>
+    <link href="http://blog.ishkawa.org/blog/2012/06/19/ios5viewcontroller/"/>
     <updated>2012-06-19T00:00:00+09:00</updated>
-    <id>http://ishkawa.github.com/blog/2012/06/19/ios5viewcontroller</id>
+    <id>http://blog.ishkawa.org/blog/2012/06/19/ios5viewcontroller</id>
     <content type="html"><![CDATA[<div class='post'>
 iOS5プログラミングブックという本が出版されたので、読んでいます。<br /><a href="http://www.amazon.co.jp/dp/4844332228/ref=cm_sw_r_tw_dp_Gri4pb08YA0Z8" target="_blank">http://www.amazon.co.jp/dp/4844332228/ref=cm_sw_r_tw_dp_Gri4pb08YA0Z8</a><br /><br />最近まで、iOS5からUIViewControllerがUIViewControllerを含むという仕組みが<br />追加されたことを知らなかったので、この本を参考にしながら書いてみました。<br /><br />親にあたる方のViewControllerをコンテナというようで、既存のクラスだと<br />UINavigationControllerやUITabBarControllerがそれに該当するものだそうです。<br />iOS4までは親のviewに子のviewを追加して、viewWillAppearなどの諸メソッドを<br />逐一子に伝搬してやるということが必要だったのですが、<br />iOS5からは子viewの追加時や削除時に<br /><br /><ul><li>addChildViewController /&nbsp;removeFromParentViewController</li><li>willMoveToParentViewController:</li><li>didMoveToParentViewController:</li></ul><br />を呼んでやると、UIViewControllerの間に親子関係が結ばれて、<br />親ViewControllerの出現や回転などのイベントが親から子に自動的に伝わるようです。<br /><br /><br />複数のViewController間をフリックで移動したい機会がたまにあるので、<br />今回はフリックしているときに全体を俯瞰するような感じのコンテナを実装しました。<br />フリック中のイメージは以下のような感じです。<br /><br /><div class="separator" style="clear: both; text-align: center;"><a href="http://1.bp.blogspot.com/-QKxCO9GN31E/T-CHbYAFuOI/AAAAAAAAAGU/kSCfR8GFPnk/s1600/ss.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="320" src="http://1.bp.blogspot.com/-QKxCO9GN31E/T-CHbYAFuOI/AAAAAAAAAGU/kSCfR8GFPnk/s320/ss.png" width="170" /></a></div><br />コードはISColumnsControllerという名前でGitHubで公開しています。<br />機会があれば、使ってみてください。<br /><a href="https://github.com/ishkawa/ISColumnsController" target="_blank">https://github.com/ishkawa/ISColumnsController</a></div>
 ]]></content>
@@ -324,9 +324,9 @@ iOS5プログラミングブックという本が出版されたので、読ん�
   
   <entry>
     <title type="html"><![CDATA[Instrumentsを使ってメモリ使用量を測定する]]></title>
-    <link href="http://ishkawa.github.com/blog/2012/06/09/instruments/"/>
+    <link href="http://blog.ishkawa.org/blog/2012/06/09/instruments/"/>
     <updated>2012-06-09T00:00:00+09:00</updated>
-    <id>http://ishkawa.github.com/blog/2012/06/09/instruments</id>
+    <id>http://blog.ishkawa.org/blog/2012/06/09/instruments</id>
     <content type="html"><![CDATA[<div class='post'>
 <br />iOS開発にメモリ管理はつきものです。<br />適当に開発しているとメモリ使用量がめでたいことになることがあります。<br /><br />Xcodeにはプログラムの静的解析によって参照カウントの管理を<br />チェックする機能がありますが(Product-&gt;Analyse)、それだけではアプリの<br />メモリ使用量が安定していることを確かめることはできません。<br /><br />そこで、Instrumentsの出番というわけです。<br />InstrumentsはProduct-&gt;Profileから起動することができます。<br /><br />以下のようなメソッドを用意して、メモリの使用量を測ってみました。<br /><br /><script src="https://gist.github.com/2899770.js?file=gistfile1.m"></script><br />交互に読んで2回ずつ実行するとInstrumentsのグラフに2つの山が現れました。<br />それぞれの始まりにloadImage、終わりにreleaseImageを呼んでいます。<br /><br /><div class="separator" style="clear: both; text-align: center;"><a href="http://1.bp.blogspot.com/-rgZwZxXMV-Y/T9LrOFUaNhI/AAAAAAAAAGI/arBMxj_JgUY/s1600/Screen+Shot+2012-06-09+at+15.19.39.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="249" src="http://1.bp.blogspot.com/-rgZwZxXMV-Y/T9LrOFUaNhI/AAAAAAAAAGI/arBMxj_JgUY/s320/Screen+Shot+2012-06-09+at+15.19.39.png" width="320" /></a></div><br />これで、メモリがきちんと解放されていることが確認できそうです。<br />ViewControllerのソースは以下のURLに置いてあります。<br /><a href="https://gist.github.com/2899770" target="_blank">https://gist.github.com/2899770</a></div>
 ]]></content>
@@ -334,9 +334,9 @@ iOS5プログラミングブックという本が出版されたので、読ん�
   
   <entry>
     <title type="html"><![CDATA[ミニマルな通信モジュールを書きました]]></title>
-    <link href="http://ishkawa.github.com/blog/2012/05/27/blog-post/"/>
+    <link href="http://blog.ishkawa.org/blog/2012/05/27/blog-post/"/>
     <updated>2012-05-27T00:00:00+09:00</updated>
-    <id>http://ishkawa.github.com/blog/2012/05/27/blog-post</id>
+    <id>http://blog.ishkawa.org/blog/2012/05/27/blog-post</id>
     <content type="html"><![CDATA[<div class='post'>
 ネットワーク通信を書くのは面倒なものです。<br />かと言って毎回マッチョなライブラリに頼るのも気が引けるので、<br />ネットワーク通信をするためのミニマルなモジュールを書きました。<br /><a href="https://github.com/ishkawa/ISNetwork" target="_blank">https://github.com/ishkawa/ISNetwork</a><br /><br />基本的な使い方は以下のとおりです。<br /><br /><script src="https://gist.github.com/2802460.js?file=gistfile1.txt"></script><br /><div style="margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px;">やってくれることは大体以下の3つです。<br />・NSURLConnectionDataDelegateのあれこれ<br />・NSOperationQueueを使った通信と通信インジケーターの管理<br />・終了ハンドラーの実行<br /><br />UIImageの作成やJSONパースは結構パフォーマンスに影響するので、</div>ISNetworkOperationのサブクラスではデータ加工まで別スレッドで実行し、<br />終了後のハンドラーをメインスレッドで実行するようにしています。<br /><br />通信を一括してキャンセルする場合は以下のコードを実行します。<br /><script src="https://gist.github.com/2802457.js?file=gistfile1.txt"></script><br />アプリでよく使う通信がある場合、ISNetworkOperationのサブクラスをつくると<br />通信周りのコードをかなり減らせると思います。<br /><br />例：OAuthCoreを使ってTwitterとやりとりするサブクラス<br /><br /><script src="https://gist.github.com/2802535.js?file=ISTwitterOperation.h"></script><br /><script src="https://gist.github.com/2802535.js?file=ISTwitterOperation.m"></script><br />※NSDictionaryからパラメーターを作るカテゴリも使ってます。<br /><a href="https://github.com/ishkawa/NSDictionary-URLQuery" target="_blank">https://github.com/ishkawa/NSDictionary-URLQuery</a><br /><br />このサブクラスを使うと以下のコードでTwitterとやりとりできるようになります。<br /><br /><script src="https://gist.github.com/2802535.js?file=gistfile1.m"></script><br />データの加工を変えたい場合にはprocessData:をオーバーライドしてください。<br />好きなJSONパーサを使ったりXMLをパースしたり、ご自由にどうぞ。</div>
 ]]></content>
@@ -344,9 +344,9 @@ iOS5プログラミングブックという本が出版されたので、読ん�
   
   <entry>
     <title type="html"><![CDATA[iOS向けフレームワークを作成するテンプレート]]></title>
-    <link href="http://ishkawa.github.com/blog/2012/04/24/ios/"/>
+    <link href="http://blog.ishkawa.org/blog/2012/04/24/ios/"/>
     <updated>2012-04-24T00:00:00+09:00</updated>
-    <id>http://ishkawa.github.com/blog/2012/04/24/ios</id>
+    <id>http://blog.ishkawa.org/blog/2012/04/24/ios</id>
     <content type="html"><![CDATA[<div class='post'>
 XcodeにはMac向けフレームワークのテンプレートが用意されているのですが、<div>iOSには静的ライブラリのプロジェクトテンプレートしか用意されていません。</div><div><br /></div><div>フレームワークを自力で作成するのはちょっとつらそうだなあと思っていたら、</div><div>iOS向けフレームワークのテンプレートを作成してくれていた人がいました。</div><div>インストールはシェルを実行するだけです。</div><div><a href="https://github.com/kstenerud/iOS-Universal-Framework" target="_blank">https://github.com/kstenerud/iOS-Universal-Framework</a></div><div><br /></div><div>Fake FrameworkとReal Frameworkの2種類が用意されています。</div><div>Fake Frameworkを使うと、サンプルアプリのビルドをフレームワークのビルドに従属させることで、アプリに組み込みながらフレームワークを開発するというようなことができるようです。</div></div>
 ]]></content>
@@ -354,9 +354,9 @@ XcodeにはMac向けフレームワークのテンプレートが用意されて
   
   <entry>
     <title type="html"><![CDATA[Xcode 4.3のテンプレートを変更する]]></title>
-    <link href="http://ishkawa.github.com/blog/2012/04/11/xcode-43/"/>
+    <link href="http://blog.ishkawa.org/blog/2012/04/11/xcode-43/"/>
     <updated>2012-04-11T00:00:00+09:00</updated>
-    <id>http://ishkawa.github.com/blog/2012/04/11/xcode-43</id>
+    <id>http://blog.ishkawa.org/blog/2012/04/11/xcode-43</id>
     <content type="html"><![CDATA[<div class='post'>
 Xcodeのテンプレートは何かと世話を焼きすぎる感がありますが、<br />これらを書き換えて、好きな構成のプロジェクト/ファイルを作ることができます。<br />4.3からXcode関係のファイル構成が色々変わったようですが、<br />今回の説明対象はXcode 4.3.2です。<br /><br />デフォルトのテンプレートがある場所<br /><span style="font-size: xx-small;">/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/Library/Xcode/Templates</span><br /><br />自分のテンプレートを作る場所<br /><div style="margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px;"><span style="font-size: xx-small;">~/Library/Developer/Xcode/Templates</span></div><div style="margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px;"><br /></div><div style="margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px;">Templatesフォルダがない場合は作成します。</div><div style="margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px;">デフォルトのTemplatesフォルダをコピーしてきて、</div><div style="margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px;">必要なものだけ残すと色々楽に進めることができます。</div><div style="margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px;"><br /></div><div style="margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px;">自分は余計なコードを書かれたくなかっただけなので、</div><div style="margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px;">___FILEBASENAME___.h,</div><div style="margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px;">___FILEBASENAME___.m</div><div style="margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px;">のコメント部を削除したNSObjectだけ残しました。</div><div style="margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px;"><br /></div><div style="margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px;">Project Teplatesは以下の部分を削除しました。<br /><span style="font-size: xx-small;">Cocoa Touch Application.xctemplate/TemplateInfo.plist</span><br /><span style="font-size: xx-small;"><br /></span></div><div style="margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px;"><span style="font-size: xx-small;">&lt;string&gt;___VARIABLE_classPrefix:identifier___AppDelegate.h:comments&lt;/string&gt;</span></div><span style="font-size: xx-small;">&lt;string&gt;___VARIABLE_classPrefix:identifier___AppDelegate.m:comments&lt;/string&gt;</span><br /><span style="font-size: xx-small;">&lt;string&gt;___VARIABLE_classPrefix:identifier___AppDelegate.m:applicationWillResignActive:comments&lt;/string&gt;</span><br /><div style="margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px;"><span style="font-size: xx-small;">&lt;string&gt;___VARIABLE_classPrefix:identifier___AppDelegate.m:applicationDidEnterBackground:comments&lt;/string&gt;</span></div><div style="margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px;"><span style="font-size: xx-small;">&lt;string&gt;___VARIABLE_classPrefix:identifier___AppDelegate.m:applicationWillEnterForeground:comments&lt;/string&gt;</span></div><div style="margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px;"><span style="font-size: xx-small;">&lt;string&gt;___VARIABLE_classPrefix:identifier___AppDelegate.m:applicationDidBecomeActive:comments&lt;/string&gt;</span></div><div style="margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px;"><span style="font-size: xx-small;">&lt;string&gt;___VARIABLE_classPrefix:identifier___AppDelegate.m:applicationWillTerminate:comments&lt;/string&gt;</span><br /><span style="font-size: xx-small;"><br /></span></div><div style="margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px;"><br />plist用のエディタで編集すると、ちょっと様子が違うかもしれません。<br /><div><br /></div></div></div>
 ]]></content>
@@ -364,9 +364,9 @@ Xcodeのテンプレートは何かと世話を焼きすぎる感があります
   
   <entry>
     <title type="html"><![CDATA[Facebook iOS SDKを使わずにアクセストークンを取得する。]]></title>
-    <link href="http://ishkawa.github.com/blog/2012/03/11/facebook-ios-sdk/"/>
+    <link href="http://blog.ishkawa.org/blog/2012/03/11/facebook-ios-sdk/"/>
     <updated>2012-03-11T00:00:00+09:00</updated>
-    <id>http://ishkawa.github.com/blog/2012/03/11/facebook-ios-sdk</id>
+    <id>http://blog.ishkawa.org/blog/2012/03/11/facebook-ios-sdk</id>
     <content type="html"><![CDATA[<div class='post'>
 Facebook iOS SDKのコードを軽く読んでみて、あまり使う気がしなかったので、<br />SDKを使わずにAPIを叩こうかなと思いました。<br /><br />まずはアクセストークンを取得するコードを書きました。<br />defineしている諸々には、予め設定したものを使います。<br /><script src="https://gist.github.com/2011808.js?file=ViewController.m"></script><br /><br />ここではUIWebViewを使いましたが、アプリにURLスキームを設定して<br />Safariからコールバックを受け取るのがいいと思います。<br /><br />もしSDKを使うべき理由がありましたら、教えていただけると幸いです。<br /><br />参考：<a href="http://developers.facebook.com/docs/authentication/" target="_blank">http://developers.facebook.com/docs/authentication/</a></div>
 ]]></content>
@@ -374,9 +374,9 @@ Facebook iOS SDKのコードを軽く読んでみて、あまり使う気がし�
   
   <entry>
     <title type="html"><![CDATA[iOS5の非同期通信が楽になっていた。]]></title>
-    <link href="http://ishkawa.github.com/blog/2012/03/05/ios5/"/>
+    <link href="http://blog.ishkawa.org/blog/2012/03/05/ios5/"/>
     <updated>2012-03-05T00:00:00+09:00</updated>
-    <id>http://ishkawa.github.com/blog/2012/03/05/ios5</id>
+    <id>http://blog.ishkawa.org/blog/2012/03/05/ios5</id>
     <content type="html"><![CDATA[<div class='post'>
 iOS5になってからNSURLConnectionまわりの様子が変わったなあと思っていたら、<br />sendAsynchronousRequest:queue:completionHandler:<br />という便利なメソッドが追加されていました。<br /><br />というわけで、TwitterのSearch APIを叩くサンプルを書きました。<br /><script src="https://gist.github.com/1973714.js?file=AsyncOS5"></script><br />ちなみにですが、Search APIはOAuth認証不要です。<br /><a href="https://dev.twitter.com/docs/api/1/get/search" target="_blank">https://dev.twitter.com/docs/api/1/get/search</a></div>
 ]]></content>
