@@ -5,7 +5,7 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>blog.ishkawa.org</title>
+  <title>iOS開発でGitを利用する際のTips - blog.ishkawa.org</title>
   <meta name="author" content="ishkawa">
 
   
@@ -19,7 +19,7 @@ Gitそのものの使い方は理解している前提のもとで書きます�
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://ishkawa.github.com/">
+  <link rel="canonical" href="http://ishkawa.github.com/blog/2012/10/27/xcode-git/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -61,15 +61,12 @@ Gitそのものの使い方は理解している前提のもとで書きます�
 </nav>
   <div id="main">
     <div id="content">
-      <div class="blog-index">
+      <div>
+<article class="hentry" role="article">
   
-  
-  
-    <article>
-      
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2012/10/27/xcode-git/">iOS開発でGitを利用する際のTips</a></h1>
+      <h1 class="entry-title">iOS開発でGitを利用する際のTips</h1>
     
     
       <p class="meta">
@@ -92,7 +89,7 @@ Gitそのものの使い方は理解している前提のもとで書きます�
   </header>
 
 
-  <div class="entry-content"><p>ちょっと今更な感じもありますが、iOS開発でGitを使うときのTipsを紹介します。<br/>
+<div class="entry-content"><p>ちょっと今更な感じもありますが、iOS開発でGitを使うときのTipsを紹介します。<br/>
 Gitそのものの使い方は理解している前提のもとで書きます。</p>
 
 <h2>バージョン管理する対象</h2>
@@ -275,128 +272,16 @@ Xcode上の参照のみを削除することをおすすめします。　</p>
 
 <p>他にもこういう設定したら捗るよってものがあれば、ぜひ教えて下さい。</p>
 </div>
-  
-  
 
 
-    </article>
-  
-  
-    <article>
+  <footer>
+    <p class="meta">
       
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2012/09/06/transition/">UINavigationControllerのトランジションをBlocksで記述するカテゴリ</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
   
 
+<span class="byline author vcard">Posted by <span class="fn">ishkawa</span></span>
 
-<time datetime="2012-09-06T13:07:00+09:00" pubdate data-updated="true">Sep 6<span>th</span>, 2012</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>UINavigationControllerのpush/pop時のトランジションは左右にスライドするものですが、<br/>
-これをカスタマイズするためのTransitionというカテゴリを書きました。</p>
-
-<p>アニメーションの以下のフェーズ毎に<code>fromView</code>と<code>toView</code>の配置を指定することで、<br/>
-独自のトランジションを記述することができます。</p>
-
-<ul>
-<li>アニメーション前の配置</li>
-<li>アニメーション</li>
-<li>アニメーション後の処理</li>
-</ul>
-
-
-<p>インターフェースは以下の形式です。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="p">[</span><span class="n">navigationController</span> <span class="nl">pushViewController:</span><span class="n">viewController</span>
-</span><span class='line'>                                <span class="nl">duration:</span><span class="mf">.3f</span>
-</span><span class='line'>                              <span class="nl">prelayouts:</span><span class="o">^</span><span class="p">(</span><span class="n">UIView</span> <span class="o">*</span><span class="n">fromView</span><span class="p">,</span> <span class="n">UIView</span> <span class="o">*</span><span class="n">toView</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>                                  <span class="p">;</span>
-</span><span class='line'>                              <span class="p">}</span>
-</span><span class='line'>                              <span class="nl">animations:</span><span class="o">^</span><span class="p">(</span><span class="n">UIView</span> <span class="o">*</span><span class="n">fromView</span><span class="p">,</span> <span class="n">UIView</span> <span class="o">*</span><span class="n">toView</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>                                  <span class="p">;</span>
-</span><span class='line'>                              <span class="p">}</span>
-</span><span class='line'>                              <span class="nl">completion:</span><span class="o">^</span><span class="p">(</span><span class="n">UIView</span> <span class="o">*</span><span class="n">fromView</span><span class="p">,</span> <span class="n">UIView</span> <span class="o">*</span><span class="n">toView</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>                                  <span class="p">;</span>
-</span><span class='line'>                              <span class="p">}];</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="p">[</span><span class="n">navigationController</span> <span class="nl">popViewControllerWithDuration:</span><span class="mf">.3f</span>
-</span><span class='line'>                                         <span class="nl">prelayouts:</span><span class="o">^</span><span class="p">(</span><span class="n">UIView</span> <span class="o">*</span><span class="n">fromView</span><span class="p">,</span> <span class="n">UIView</span> <span class="o">*</span><span class="n">toView</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>                                             <span class="p">;</span>
-</span><span class='line'>                                         <span class="p">}</span>
-</span><span class='line'>                                         <span class="nl">animations:</span><span class="o">^</span><span class="p">(</span><span class="n">UIView</span> <span class="o">*</span><span class="n">fromView</span><span class="p">,</span> <span class="n">UIView</span> <span class="o">*</span><span class="n">toView</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>                                             <span class="p">;</span>
-</span><span class='line'>                                         <span class="p">}</span>
-</span><span class='line'>                                         <span class="nl">completion:</span><span class="o">^</span><span class="p">(</span><span class="n">UIView</span> <span class="o">*</span><span class="n">fromView</span><span class="p">,</span> <span class="n">UIView</span> <span class="o">*</span><span class="n">toView</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>                                             <span class="p">;</span>
-</span><span class='line'>                                         <span class="p">}];</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>コードはGitHubで公開しています。 <br/>
-一度デモアプリを動かしてみてください。<br/>
-<a href="https://github.com/ishkawa/UINavigationController-Transition">UINavigationController-Transition</a></p>
-
-<p>READMEにも書いておきましたが、毎回上記のコードを呼ぶのは大変なので、<br/>
-これらをラップした自分用のカテゴリを書くと使いやすいと思います。</p>
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
       
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2012/08/17/uiimage/">UIImageをあれこれしてスクロールを改善する</a></h1>
-    
-    
-      <p class="meta">
-        
 
 
 
@@ -408,104 +293,32 @@ Xcode上の参照のみを削除することをおすすめします。　</p>
   
 
 
-<time datetime="2012-08-17T00:00:00+09:00" pubdate data-updated="true">Aug 17<span>th</span>, 2012</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><div class='post'>
-スクロールアニメーションの改善には色々と方法があると思います。<br />その中でも比較的簡単かつ有効な方法を2つ書きます。<br /><br /><br />まず1つ目。<br /><br />画像の取得時に必要なサイズにリサイズすることです。<br /><br />必要以上のサイズのUIImageの表示はパフォーマンスに影響することがあります。<br />なので、画像の取得後に以下のような処理を入れてリサイズしておくと無難です。<br /><br /><script src="https://gist.github.com/3377566.js?file=sample2.m"></script><br /><br />続いて2つ目。<br /><br />必要な加工は取得時に済ませておくことです。<br /><br />例えば、以下のようなコードでUIImageViewの角を丸くしている場合に有効です。<br />UITableViewなどでたくさん使っている場合は特に効くと思います。<br /><br /><script src="https://gist.github.com/3377566.js?file=sample1.m"></script> <br />以下のように事前にUIImage自身の角を丸くして、UIImageViewは四角にしておくと<br />いくらかスクロールパフォーマンスがなめらかになります。<br /><br /><script src="https://gist.github.com/3377566.js?file=sample3.m"></script><br /><br />自分の場合、<a href="https://github.com/ishkawa/ISNetwork" target="_blank">ISNetwork</a>のISImageNetworkOperationのprocessData:を<br />以下のようにオーバーライドすることで、<br /><ul><li>NSDataからUIImageへの変換</li><li>画像サイズを表示するサイズにリサイズ</li><li>角を丸くする</li></ul>といった一連の処理を別のスレッドで処理しています。<br /><br /><script src="https://gist.github.com/3377566.js?file=sample4.m"></script><br /><br />スクロールパフォーマンスの低下には様々な原因がありますが、<br />基本的にはメインスレッドでやっている処理を、別のスレッドで処理できる形に<br />書き換えてしまえば改善できると思います。<br /><br />もちろん、高価な描画処理を避けるという方法もありだと思います。<br /><br /><br /></div>
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
+<time datetime="2012-10-27T17:32:00+09:00" pubdate data-updated="true">Oct 27<span>th</span>, 2012</time>
       
-  <header>
+
+
+    </p>
     
-      <h1 class="entry-title"><a href="/blog/2012/07/08/uinavigationcontrollerpop/">右スワイプでUINavigationControllerのpopを呼ぶ</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
+      <div class="sharing">
   
-
-
-<time datetime="2012-07-08T00:00:00+09:00" pubdate data-updated="true">Jul 8<span>th</span>, 2012</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><div class='post'>
-最近流行ってる気がするので、書きました。<br /><br />右スワイプを認識してpopViewControllerを呼んでいるだけですが、<br />カテゴリにしておくと結構カジュアルに使える気がします。<br /><br /><script src="https://gist.github.com/3069164.js?file=UIViewController+SwipePop.m"></script><br />self.navigationControllerの深さを見たいので、viewWillAppearで<br />setupSwipePopRecognizerを呼ぶことにしています。</div>
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://ishkawa.github.com/blog/2012/10/27/xcode-git/" data-via="_ishkawa" data-counturl="http://ishkawa.github.com/blog/2012/10/27/xcode-git/" >Tweet</a>
+  
+  
+  
 </div>
-  
-  
 
-
-    </article>
-  
-  
-    <article>
+    
+    <p class="meta">
       
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2012/07/01/chrome-for-iphoneui/">Chrome for iPhoneのタブ切り替えのUIを実装する</a></h1>
-    
-    
-      <p class="meta">
-        
+        <a class="basic-alignment left" href="/blog/2012/09/06/transition/" title="Previous Post: UINavigationControllerのトランジションをBlocksで記述するカテゴリ">&laquo; UINavigationControllerのトランジションをBlocksで記述するカテゴリ</a>
+      
+      
+    </p>
+  </footer>
+</article>
 
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-07-01T00:00:00+09:00" pubdate data-updated="true">Jul 1<span>st</span>, 2012</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><div class='post'>
-最近、やっとChrome for iPhoneがリリースされました。<br />洗練されたUIで、是非ともSafariもこの刺激を受けてほしいものです。<br /><br />さて、Chrome for iPhoneのタブの切替方法には以下の2種類があります<br /><ul><li>タブボタンを押して、一覧から選択して切り替える。</li><li>ブラウザ画面の端から横フリックする。</li></ul><div>後者のものが<a href="http://blog.ishkawa.org/2012/06/ios5viewcontroller.html" target="_blank">前回のエントリー</a>でつくったものと大体同じだったので、</div><div>今回あらためてつくり方を紹介します。</div><br /><br /><span style="background-color: white;">つくり方の概要は以下のとおりです。</span><br /><div><ul><li>親となるViewControllerのScrollViewを配置。</li><li>WebViewなどを持つ子ViewControllerを親のScrollViewに並べる。</li><li>親にUIScrollViewDelegateを実装し、ScrollViewのスクロール量を取得。</li><li>スクロール量に応じて、子のViewControllerのlayerのtransformを変更。</li></ul><div><span style="background-color: white;">ScrollViewの置き方やUIScrollViewDelegateプロトコルへの適合の詳細は省きます。</span><br /><br /><span style="background-color: white;">まず、親ViewControllerのScrollViewに子ViewContollerを並べます。</span><br /><br /><script src="https://gist.github.com/3028415.js?file=1.m"></script></div></div><br />つづいて、スクロール量に応じてlayerをtransformを変更します。<br />fabs(offset-x)がscrollView.frame.size.widthも小さければ、そのviewは<br />scrollViewに表示されることになるので、これらのtransformを変更してやります。<br /><br /><script src="https://gist.github.com/3028415.js?file=2.m"></script><br />scaleの下限を調整することで、画面の引き具合を調整することができます。 <br /><br />コードはISColumnsControllerという名前でGitHubで公開しています。<br />直したいところがあれば、是非pull requestをください。<br /><a href="https://github.com/ishkawa/ISColumnsController" target="_blank">https://github.com/ishkawa/ISColumnsController</a></div>
 </div>
-  
-  
 
-
-    </article>
-  
-  <div class="pagination">
-    
-      <a class="prev" href="/blog/page/2/">&larr; Older</a>
-    
-    <a href="/blog/archives">Blog Archives</a>
-    
-  </div>
-</div>
 <aside class="sidebar">
   
     <section>
@@ -538,7 +351,7 @@ Xcode上の参照のみを削除することをおすすめします。　</p>
 <section>
   <h1>GitHub Repos</h1>
   <ul id="gh_repos">
-    <li class="loading">Status updating&#8230;</li>
+    <li class="loading">Status updating...</li>
   </ul>
   
   <a href="https://github.com/ishkawa">@ishkawa</a> on GitHub
@@ -568,7 +381,7 @@ Xcode上の参照のみを削除することをおすすめします。　</p>
 <section>
   <h1>Latest Tweets</h1>
   <ul id="tweets">
-    <li class="loading">Status updating&#8230;</li>
+    <li class="loading">Status updating...</li>
   </ul>
   <script type="text/javascript">
     $.domReady(function(){
@@ -587,6 +400,7 @@ Xcode上の参照のみを削除することをおすすめします。　</p>
 
   
 </aside>
+
 
     </div>
   </div>
