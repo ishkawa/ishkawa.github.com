@@ -1,0 +1,9 @@
+---
+layout: post
+title: "UIImageをあれこれしてスクロールを改善する"
+date: 2012-08-17
+comments: false
+---
+
+<div class='post'>
+スクロールアニメーションの改善には色々と方法があると思います。<br />その中でも比較的簡単かつ有効な方法を2つ書きます。<br /><br /><br />まず1つ目。<br /><br />画像の取得時に必要なサイズにリサイズすることです。<br /><br />必要以上のサイズのUIImageの表示はパフォーマンスに影響することがあります。<br />なので、画像の取得後に以下のような処理を入れてリサイズしておくと無難です。<br /><br /><script src="https://gist.github.com/3377566.js?file=sample2.m"></script><br /><br />続いて2つ目。<br /><br />必要な加工は取得時に済ませておくことです。<br /><br />例えば、以下のようなコードでUIImageViewの角を丸くしている場合に有効です。<br />UITableViewなどでたくさん使っている場合は特に効くと思います。<br /><br /><script src="https://gist.github.com/3377566.js?file=sample1.m"></script> <br />以下のように事前にUIImage自身の角を丸くして、UIImageViewは四角にしておくと<br />いくらかスクロールパフォーマンスがなめらかになります。<br /><br /><script src="https://gist.github.com/3377566.js?file=sample3.m"></script><br /><br />自分の場合、<a href="https://github.com/ishkawa/ISNetwork" target="_blank">ISNetwork</a>のISImageNetworkOperationのprocessData:を<br />以下のようにオーバーライドすることで、<br /><ul><li>NSDataからUIImageへの変換</li><li>画像サイズを表示するサイズにリサイズ</li><li>角を丸くする</li></ul>といった一連の処理を別のスレッドで処理しています。<br /><br /><script src="https://gist.github.com/3377566.js?file=sample4.m"></script><br /><br />スクロールパフォーマンスの低下には様々な原因がありますが、<br />基本的にはメインスレッドでやっている処理を、別のスレッドで処理できる形に<br />書き換えてしまえば改善できると思います。<br /><br />もちろん、高価な描画処理を避けるという方法もありだと思います。<br /><br /><br /></div>

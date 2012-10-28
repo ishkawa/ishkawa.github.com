@@ -1,0 +1,158 @@
+---
+layout: post
+title: "iOS開発でGitを利用する際のTips"
+date: 2012-10-27 17:32
+comments: true
+categories: 
+---
+
+ちょっと今更な感じもありますが、iOS開発でGitを使うときのTipsを紹介します。  
+Gitそのものの使い方は理解している前提のもとで書きます。
+
+## バージョン管理する対象
+
+Xcodeのプロジェクトにはバージョン管理する上で結構余計なものが入っています。  
+
+### Gitで管理すべきでないもの
+
+- **Xcodeの作業データ**  
+Xcodeのプロジェクトは`.xcodeproj`ですが、こいつ自身はディレクトリになっていて
+
+  - `project.pbxproj`
+  - `project.xcworkspace`
+  - `xcuserdata`
+
+というファイルが入っています。このうち、Gitで管理するべきものは`project.pbxproj`です。  
+その他のものはXcodeの状態(グループを開いてるかなど)を管理しているものなので、  
+プロジェクトのバージョン管理対象としては適切ではありません。
+
+- **ビルドデータ**  
+`xcodebuild`コマンドを実行すると、プロジェクト直下に`build`ディレクトリが作成されます。  
+これはGitで管理すべきものが揃っていれば生成できるので、Git管理下に置く必要はありません。
+
+
+### 設定例
+
+プロジェクト直下に以下のような`.gitignore`を置きます。
+```
+project.xcworkspace/
+xcuserdata/
+build/
+```
+
+自分の場合、ところどころvimを使ったりするので以下も追加しています。
+```
+*~
+*.swp
+```
+
+それと、Macの`.gitignore`の定番も追加しています。
+```
+*.DS_Store
+```
+
+## 自動マージ
+
+`.xib`はXMLで書かれていて、Gitはこれらファイルを自動マージするべきものと判断します。  
+`.xib`がコンフリクトして手動マージすると、ファイルを開けなくなってしまうことがあります。
+
+以前のコミットにチェックアウトすればもとに戻すことはできますが、  
+あらかじめ自動マージしないように設定することもできます。
+
+### 自動マージしてほしくないもの
+
+- `.xib`などのUI設定ファイル
+- `project.pbxproj`
+
+### 設定例
+
+プロジェクト直下に以下のような.gitattributesを置きます。
+```
+*.pbxproj -crlf -diff -merge
+*.xib -crlf -diff -merge
+```
+
+このようにすると、自動マージは回避されコンフリクト時にはHEADの状態が保持されます。  
+以下のコマンドで、マージするコミットの状態に変更することもできます。
+```
+git checkout --theirs -- project.pbxproj
+```
+
+逆に、HEADの状態に戻すには以下のコマンドを実行します。
+```
+git checkout --ours -- project.pbxproj
+```
+
+この設定ではマージ先の変更に気づきにくかったりするので、注意が必要です。  
+もっといい方法があれば知りたいです。
+
+[参考: Gitのカスタマイズ - Gitの属性](http://git-scm.com/book/ja/Git-%E3%81%AE%E3%82%AB%E3%82%B9%E3%82%BF%E3%83%9E%E3%82%A4%E3%82%BA-Git-%E3%81%AE%E5%B1%9E%E6%80%A7)
+
+## モジュール管理
+
+GitHubなどには便利なモジュールがあり、プロジェクトに導入することもあると思います。  
+`git submodule`を使うとモジュールの管理を行うことができます。
+
+以下の説明では、モジュールは`Libraries/`以下に配置するものとします。
+
+### モジュールの導入
+
+以下のコマンドを実行するとモジュールのファイルがダウンロードされます。
+```
+git submodule add git@github.com:ishkawa/ISNetwork.git Libraries/ISNetwork
+```
+
+不要なファイル(READMEとか)がある場合は、Xcodeから参照を外します。  
+ファイル自体を削除するとサブモジュールのバージョン管理に影響を与えるので、  
+Xcode上の参照のみを削除することをおすすめします。　
+
+### モジュールの更新
+
+モジュールのディレクトリに移動してGitの操作をするだけです。
+```
+cd Libraries/ISNetwork
+git pull
+```
+
+一括で最新のコミットをプルするには以下のコマンドを実行します。
+```
+git submodule foreach git pull
+```
+
+
+### モジュールの削除
+
+`.git/config`, `.gitmodules`から該当する箇所を削除します。  
+
+`.git/config`
+```
+[submodule "ISNetwork"]
+    url = git@github.com:ishkawa/ISNetwork.git
+```
+
+`.gitmodules`
+```
+[submodule "ISNetwork"]
+    path = ISNetwork
+    url = git@github.com:ishkawa/ISNetwork.git
+```
+
+ファイル自体も削除し、Gitの管理下から外します。
+```
+rm -R Libraries/ISNetwork
+git rm --cached Libraries/ISNetwork
+```
+
+[参考: How do I remove a git submodule?](http://stackoverflow.com/questions/1260748/how-do-i-remove-a-git-submodule)
+
+### モジュールの一括ダウンロード
+
+プロジェクトをクローンしたとき、依存しているモジュールのダウンロードはされません。  
+依存しているモジュールをすべてダウンロードするには以下のコマンドを実行します。
+```
+git submodule update --init --recursive
+```
+
+##  
+
+他にもこういう設定したら捗るよってものがあれば、ぜひ教えて下さい。

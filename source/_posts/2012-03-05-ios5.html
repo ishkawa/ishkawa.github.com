@@ -1,0 +1,9 @@
+---
+layout: post
+title: "iOS5の非同期通信が楽になっていた。"
+date: 2012-03-05
+comments: false
+---
+
+<div class='post'>
+iOS5になってからNSURLConnectionまわりの様子が変わったなあと思っていたら、<br />sendAsynchronousRequest:queue:completionHandler:<br />という便利なメソッドが追加されていました。<br /><br />というわけで、TwitterのSearch APIを叩くサンプルを書きました。<br /><script src="https://gist.github.com/1973714.js?file=AsyncOS5"></script><br />ちなみにですが、Search APIはOAuth認証不要です。<br /><a href="https://dev.twitter.com/docs/api/1/get/search" target="_blank">https://dev.twitter.com/docs/api/1/get/search</a></div>

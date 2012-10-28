@@ -1,0 +1,9 @@
+---
+layout: post
+title: "Instrumentsを使ってメモリ使用量を測定する"
+date: 2012-06-09
+comments: false
+---
+
+<div class='post'>
+<br />iOS開発にメモリ管理はつきものです。<br />適当に開発しているとメモリ使用量がめでたいことになることがあります。<br /><br />Xcodeにはプログラムの静的解析によって参照カウントの管理を<br />チェックする機能がありますが(Product-&gt;Analyse)、それだけではアプリの<br />メモリ使用量が安定していることを確かめることはできません。<br /><br />そこで、Instrumentsの出番というわけです。<br />InstrumentsはProduct-&gt;Profileから起動することができます。<br /><br />以下のようなメソッドを用意して、メモリの使用量を測ってみました。<br /><br /><script src="https://gist.github.com/2899770.js?file=gistfile1.m"></script><br />交互に読んで2回ずつ実行するとInstrumentsのグラフに2つの山が現れました。<br />それぞれの始まりにloadImage、終わりにreleaseImageを呼んでいます。<br /><br /><div class="separator" style="clear: both; text-align: center;"><a href="http://1.bp.blogspot.com/-rgZwZxXMV-Y/T9LrOFUaNhI/AAAAAAAAAGI/arBMxj_JgUY/s1600/Screen+Shot+2012-06-09+at+15.19.39.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="249" src="http://1.bp.blogspot.com/-rgZwZxXMV-Y/T9LrOFUaNhI/AAAAAAAAAGI/arBMxj_JgUY/s320/Screen+Shot+2012-06-09+at+15.19.39.png" width="320" /></a></div><br />これで、メモリがきちんと解放されていることが確認できそうです。<br />ViewControllerのソースは以下のURLに置いてあります。<br /><a href="https://gist.github.com/2899770" target="_blank">https://gist.github.com/2899770</a></div>
