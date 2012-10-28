@@ -1,2 +1,9 @@
 // This File is imported last, and will override other styles in the cascade
 // Add styles here to make changes without digging in too much
+
+@media only screen and (min-width: 992px) {
+  h1   { font-size: 2.2em; }
+  h2   { font-size: 1.8em; }
+  h3   { font-size: 1.4em; }
+  body { font-size: 1.0em; }
+}
