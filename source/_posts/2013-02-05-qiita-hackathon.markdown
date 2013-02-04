@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Qiita Hackathonに参加して来ました"
+title: "Qiita Hackathonに参加しました"
 date: 2013-02-05 00:45
 comments: true
 categories: 
@@ -27,8 +27,10 @@ GitHubのゲストの方向けに資料は英語で書かれていますが、�
 
 ### デモビデオ
 
-音声はありません。
-<iframe src="http://player.vimeo.com/video/58892168?title=0&amp;byline=0&amp;portrait=0" width="500" height="375" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>
+発表のときはその場で実演しました。  
+かなり緊張しました。
+<iframe src="http://player.vimeo.com/video/58906330?title=0&amp;byline=0&amp;portrait=0" width="500" height="281" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>
+(音声はありません。)
 
 　
 
