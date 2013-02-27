@@ -6,7 +6,7 @@ comments: true
 categories: 
 ---
 
-昨日、conferenceWithDevelopersのLTで、1行で導入するback gestureの話をしてきました。  
+一昨日、conferenceWithDevelopersのLTで、1行で導入するback gestureの話をしてきました。  
 LTの内容と、やろうとして間に合わなかったことの紹介を書きます。
 
 ### 1行で導入するback gesture
@@ -154,26 +154,18 @@ progressの値に応じて、ゲージを描画します。
 UIViewControllerのgestureを受け取る箇所で`UINavigationItemButtonView`にprogressを渡します。
 
 ```objc
-- (void)handleGesture:(UIPanGestureRecognizer *)gestureRecognizer
-{
-    NSInteger count = [self.navigationController.viewControllers count];
-    if (count >= 2) {
-        for (UIView *subview in [self.navigationController.navigationBar subviews]) {
-            if ([subview isKindOfClass:[ISNavigationItemProgressButtonView class]]) {
-                ISNavigationItemProgressButtonView *progressButtonView = (id)subview;
-                if (gestureRecognizer.state == UIGestureRecognizerStateChanged) {
-                    progressButtonView.progress = self.backProgress;
-                } else {
-                    [UIView animateWithDuration:.3
-                                     animations:^{
-                                         progressButtonView.progress = 0.f;
-                                     }];
-                }
-            }
+for (UIView *subview in [self.navigationController.navigationBar subviews]) {
+    if ([subview isKindOfClass:[ISNavigationItemProgressButtonView class]]) {
+        ISNavigationItemProgressButtonView *progressButtonView = (id)subview;
+        if (gestureRecognizer.state == UIGestureRecognizerStateChanged) {
+            progressButtonView.progress = self.backProgress;
+        } else {
+            [UIView animateWithDuration:.3
+                             animations:^{
+                                 progressButtonView.progress = 0.f;
+                             }];
         }
     }
-    
-    ...
 }
 ```
 
@@ -188,9 +180,14 @@ UIViewControllerのgestureを受け取る箇所で`UINavigationItemButtonView`�
 こちらのバージョンのコードは別のブランチに置いてあります。  
 [ISBackGesture(extended)](https://github.com/ishkawa/ISBackGesture/tree/extended)
 
+CocoaPodsを使う場合には、以下を指定してください。
+```sh
+pod 'ISBackGesture', :git => 'git@github.com:ishkawa/ISBackGesture.git', :commit => '50fe279672256791e61fbb302676bfb6bafec6e0'
+```
+
 
 
 　
 
 2つ目に紹介したバージョンではプライベートなクラスに触れてる箇所もあり、  
-リジェクトされる可能性があるので、プロダクトへの導入は自己責任でお願いします。
+リジェクトされる可能性が高いので、プロダクトへの導入は自己責任でお願いします。
