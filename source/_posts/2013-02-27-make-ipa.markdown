@@ -1,0 +1,67 @@
+---
+layout: post
+title: ".ipaをサッとつくる"
+date: 2013-02-27 19:21
+comments: true
+categories: 
+---
+
+iOSアプリの.ipaを配布して他の人にテストしてもらうとき、
+
+1. Xocdeを起動
+2. メニューのProduct -> Archiveを選択。
+3. OrganizerからArchiveを選んでのDistribute。
+4. Save for Enterprise or Ad-Hoc Deploymentを選択。
+5. Code Sign Identityを選択
+6. 保存先を指定
+7. 保存したipaをサーバーにアップロードする。
+
+という面倒な手順を踏んでいる人も多いと思います。  
+実はこれらはコマンドでも実行できるので`make`でサッとできます。
+
+### Makefile
+
+`.xcodeproj`などと同じ階層に`Makefile`を作成します。  
+`***`ってなってるところは適宜読み替えてください。
+
+#### .xcodeprojを使っている場合
+
+```sh
+default:
+	xcodebuild -sdk iphoneos -target *** -configuration Release build
+
+adhoc:
+    if [ -a build]; then rm -R build; fi;
+    xcodebuild -sdk iphoneos -target *** -configuration Release clean build PROVISIONING_PROFILE=****-****-****-****-**********
+    xcrun -sdk iphoneos PackageApplication build/Release-iphoneos/***.app -o $(PWD)/build/***.ipa --embed ****.mobileprovision
+```
+
+#### .xcworkspaceを使っている場合
+
+CocoaPodsとか使っている場合ですね。
+
+```sh
+default:
+	xcodebuild -workspace ***.xcworkspace -scheme *** -configuration Release -sdk iphoneos clean build
+
+adhoc:
+	if [ -a build]; then rm -R build; fi;
+	xcodebuild -sdk iphoneos -workspace ***.xcworkspace -scheme *** -configuration Release clean build CONFIGURATION_BUILD_DIR=$(PWD)/build PROVISIONING_PROFILE=****-****-****-****-**********
+	xcrun -sdk iphoneos PackageApplication build/***.app -o $(PWD)/build/***.ipa --embed ***.mobileprovision
+```
+
+### 使い方
+
+```sh
+make adhoc
+```
+
+を実行すると、`build/`以下に.ipaが作成されます。Xcodeでやるより簡単ですね。  
+dSYMなどを手元に貯めて行きたい場合にはもうひと頑張りしてください。
+
+TestFlightなどのように.ipaを保持するサーバーにAPIがあるなら、  
+`adhoc:`の末尾に`curl`を追加して自動的にアップロードすると更に楽になります。
+
+　
+
+なんでJenkins使ってる時に気づかなかったんだろうな〜。
