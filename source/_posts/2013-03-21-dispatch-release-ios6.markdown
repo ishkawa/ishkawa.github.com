@@ -70,8 +70,8 @@ Deployment TargetがiOS6.0以上の場合、GCDのオブジェクトもARCの管
 ```objectivec
 @interface ISHoge ()
 
-#ifdef OS_OBJECT_USE_OBJC
-@property (nonatomic, strong) dispatch_semaphore_t semaphore;
+#if OS_OBJECT_USE_OBJC
+@property (nonatomic, assign) dispatch_semaphore_t semaphore;
 #else
 @property (nonatomic, assign) dispatch_semaphore_t semaphore;
 #endif
@@ -91,7 +91,7 @@ Deployment TargetがiOS6.0以上の場合、GCDのオブジェクトもARCの管
 
 - (void)dealloc
 {
-#ifndef OS_OBJECT_USE_OBJC
+#if !OS_OBJECT_USE_OBJC
     dispatch_release(self.semaphore);
 #endif
 }
@@ -112,3 +112,7 @@ Twitterで@nakiwo さんに`OS_OBJECT_USE_OBJC`を教えて頂きました。
 `__IPHONE_OS_VERSION_MIN_REQUIRED < 60000`としていたところを  
 `OS_OBJECT_USE_OBJC`に
 置き換えました。
+
+#### さらに追記
+
+`#ifdef`ではなく`#if`に修正しました。
