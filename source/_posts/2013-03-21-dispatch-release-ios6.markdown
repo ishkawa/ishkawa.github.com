@@ -71,7 +71,7 @@ Deployment TargetがiOS6.0以上の場合、GCDのオブジェクトもARCの管
 @interface ISHoge ()
 
 #if OS_OBJECT_USE_OBJC
-@property (nonatomic, assign) dispatch_semaphore_t semaphore;
+@property (nonatomic, strong) dispatch_semaphore_t semaphore;
 #else
 @property (nonatomic, assign) dispatch_semaphore_t semaphore;
 #endif
