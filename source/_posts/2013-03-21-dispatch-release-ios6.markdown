@@ -70,10 +70,10 @@ Deployment TargetがiOS6.0以上の場合、GCDのオブジェクトもARCの管
 ```objectivec
 @interface ISHoge ()
 
-#if __IPHONE_OS_VERSION_MIN_REQUIRED < 60000
-@property (nonatomic, assign) dispatch_semaphore_t semaphore;
-#else
+#ifdef OS_OBJECT_USE_OBJC
 @property (nonatomic, strong) dispatch_semaphore_t semaphore;
+#else
+@property (nonatomic, assign) dispatch_semaphore_t semaphore;
 #endif
 
 @end
@@ -91,8 +91,8 @@ Deployment TargetがiOS6.0以上の場合、GCDのオブジェクトもARCの管
 
 - (void)dealloc
 {
-#if __IPHONE_OS_VERSION_MIN_REQUIRED < 60000
-    dispatch_release(_semaphore);
+#ifndef OS_OBJECT_USE_OBJC
+    dispatch_release(self.semaphore);
 #endif
 }
 ```
@@ -100,3 +100,15 @@ Deployment TargetがiOS6.0以上の場合、GCDのオブジェクトもARCの管
 　
 
 間違ってたら教えてください。
+
+#### 追記(3/22)
+
+Twitterで@nakiwo さんに`OS_OBJECT_USE_OBJC`を教えて頂きました。
+
+<blockquote class="twitter-tweet" data-conversation="none" lang="ja"><p>@<a href="https://twitter.com/akisutesama">akisutesama</a> @<a href="https://twitter.com/_ishkawa">_ishkawa</a> この挙動、OS_OBJECT_USE_OBJC マクロで制御可能です</p>&mdash; Yuichi Fujishigeさん (@nakiwo) <a href="https://twitter.com/nakiwo/status/314770719257006081">2013年3月21日</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+こちらのほうが`__IPHONE_OS_VERSION_MIN_REQUIRED`より適切ですので、  
+`__IPHONE_OS_VERSION_MIN_REQUIRED < 60000`としていたところを  
+`OS_OBJECT_USE_OBJC`に
+置き換えました。
