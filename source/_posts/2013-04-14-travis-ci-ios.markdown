@@ -12,7 +12,7 @@ categories:
 なので、早速拙作のISRefreshControlに導入してみました。  
 [ISRefreshControl](https://github.com/ishkawa/ISRefreshControl)  
 
-[![Build Status](https://travis-ci.org/ishkawa/ISRefreshControl.png?branch=develop)](https://travis-ci.org/ishkawa/ISRefreshControl)
+[![Build Status](https://travis-ci.org/ishkawa/ISRefreshControl.png?branch=master)](https://travis-ci.org/ishkawa/ISRefreshControl)
 
 ## 導入手順
 
@@ -21,7 +21,7 @@ categories:
 - `.travis.yml`に`language: objective-c`と書く
 - Travis CI上でリポジトリを選択する
 
-デフォルトのビルド設定には[objc-build-scripts](https://github.com/jspahrsummers/objc-build-scripts)が採用されているようです。  
+デフォルトのビルドスクリプトには[objc-build-scripts](https://github.com/jspahrsummers/objc-build-scripts)が採用されているようです。  
 もちろんカスタマイズも可能で、ISRefreshControlではMakefileを書いてそちらを使っています。
 
 依存関係はPodfileを書いておけば自動的に解決されます。  
@@ -68,7 +68,7 @@ test:
 
 ```
 language: objective-c
-script: "make test"
+script: make test
 ```
 
 ### リポジトリを選択する
@@ -86,5 +86,5 @@ Executed 25 tests, with 0 failures (0 unexpected) in 0.318 (0.327) seconds
 
 以下のようなStatus Imageというよくあるやつも提供されています。
 
-[![Build Status](https://travis-ci.org/ishkawa/ISRefreshControl.png?branch=develop)](https://travis-ci.org/ishkawa/ISRefreshControl)
+[![Build Status](https://travis-ci.org/ishkawa/ISRefreshControl.png?branch=master)](https://travis-ci.org/ishkawa/ISRefreshControl)
 
