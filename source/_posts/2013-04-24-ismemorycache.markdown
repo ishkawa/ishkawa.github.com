@@ -12,7 +12,7 @@ categories:
 　
 
 メモリキャッシュとありますが、ヘッダから分かる通り`NSMutableDictioary`です。  
-`NSCache`よりしつこいメモリキャッシュが欲しかったので、頭の体操をしながらつくりました。
+`NSCache`よりしぶといメモリキャッシュが欲しかったので、頭の体操をしながらつくりました。
 
 [ISMemoryCache](https://github.com/ishkawa/ISMemoryCache)
 
@@ -20,7 +20,10 @@ categories:
 
 ### 特徴
 
-- `removeUnretainedObjects`を呼ぶと使われていないオブジェクトを削除する。
+LRU的な実装ではなく、参照カウントの有無で破棄するオブジェクトを決めます。  
+どこかから参照がある限りは生き残り続けるしぶといメモリキャッシュです。
+
+- `removeUnretainedObjects`を呼ぶと参照がないオブジェクトを調べて破棄する。
 - `UIApplicationDidReceiveMemoryWarningNotification`で`removeUnretainedObjects`を実行。
 
 具体的には、以下の実行後に`[cache objectForKey:@"key"]`は`NSObject`を返しますが、
@@ -43,7 +46,25 @@ NSObject *retainedObject = [[NSObject alloc] init];
 [cache removeUnretainedObjects];
 ```
 
-### 使われているかどうかの判定方法
+### 使い方
+
+保持
+```objectivec
+[[ISMemoryCache sharedCache] setObject:object forKey:@"key"];
+```
+
+読み出し
+```objectivec
+[[ISMemoryCache sharedCache] objectForKey:@"key"];
+```
+
+使われていないオブジェクトを破棄
+```objectivec
+[[ISMemoryCache sharedCache] removeUnretainedObjects];
+```
+
+
+### 参照があるかどうかの判定方法
 
 自分の強参照を外しても生き残っていれば、他でも使われているということです。
 
