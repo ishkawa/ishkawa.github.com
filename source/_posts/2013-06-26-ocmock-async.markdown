@@ -83,15 +83,14 @@ Kiwiの`shouldEventually`は`KWProbePoller`が0.1秒ごとに`NSRunLoop`を回�
 以下がその実装です。
 
 ```objectivec
+@implementation OCMockObject (Lazy)
 
-@implementation OCMockObject (Wait)
-
-- (void)verifyContinuously
+- (void)verifyLazily
 {
-    [self verifyContinuouslyUntilTimeout:1.0];
+    [self verifyLazilyWithTimeout:1.0];
 }
 
-- (void)verifyContinuouslyUntilTimeout:(NSTimeInterval)timeout
+- (void)verifyLazilyWithTimeout:(NSTimeInterval)timeout
 {
     NSTimeInterval interval = 0.1;
     NSDate *startedDate = [NSDate date];
@@ -122,7 +121,7 @@ Kiwiの`shouldEventually`は`KWProbePoller`が0.1秒ごとに`NSRunLoop`を回�
     [[fooMock expect] bar];
     
     [testObject someMethod:fooMock];
-    STAssertNoThrow([fooMock verifyContinuously], @"foo did not invoke bar.");
+    STAssertNoThrow([fooMock verifyLazily], @"foo did not invoke bar.");
 }
 ```
 
