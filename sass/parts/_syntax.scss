@@ -15,7 +15,7 @@ $solar-blue:      #268bd2 !default;
 $solar-cyan:      #2aa198 !default;
 $solar-green:     #859900 !default;
 
-$solarized: light !default;
+$solarized: dark !default;
 
 @if $solarized == light {
 
@@ -38,7 +38,7 @@ $solarized: light !default;
   $base3:   $_base03;
 }
 
-$pre-bg: $color-gray04;
+$pre-bg: #F0F0F0;
 $pre-border: $color-gray03;
 
 article{
@@ -71,11 +71,9 @@ article{
 }
 
 figure.code{
-	background: $pre-bg;
+    background: $base03;
 	border: 1px solid $pre-border;
 	margin-top: 10px;
-	padding: 5px 15px;
-	@include border-radius(5px);
 	figcaption{
 		font-size: 0.9em;
 		position: relative;
@@ -95,7 +93,7 @@ figure.code{
 		}
 	}
 	code, pre{
-		background: none;
+		background: $base03;
 		border: none;
 		padding: 0;
 		margin: 0;
@@ -105,12 +103,16 @@ figure.code{
 		overflow-x: auto;
 	}
 	.line-numbers{
-		border-right: 1px solid $pre-border;
+		background: $base02;;
 		font-family: $font-mono;
-		padding-right: 15px;
+        padding-top: 10px;
+        padding-bottom: 10px;
+		padding-right: 10px;
+		padding-left: 10px;
 		text-align: right;
 	}
 	table{
+		background: $base03;
 		border: none;
 		text-align: left;
 		margin-top: 0;
@@ -120,7 +122,7 @@ figure.code{
 	}
 	td.code{
 		width: 100%;
-		padding-left: 15px;
+		padding-left: 10px;
 		overflow-x: auto;
 	}
 }
