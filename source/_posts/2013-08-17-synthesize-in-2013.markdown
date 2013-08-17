@@ -31,6 +31,7 @@ Xcode 4.4でApple LLVM Compiler 4.0が採用されてから、いわゆるModern
     
     NSManagedObjectContext *context = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSMainQueueConcurrencyType];
     NSFetchRequest *reqeust = [NSFetchRequest fetchRequestWithEntityName:@"Foo"];
+    reqeust.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"bar" ascending:YES]];
     _fetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:reqeust
                                                                     managedObjectContext:context
                                                                       sectionNameKeyPath:nil
@@ -67,6 +68,7 @@ getterの実装を独自に行なっているのでインスタンス変数`_fet
     
     NSManagedObjectContext *context = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSMainQueueConcurrencyType];
     NSFetchRequest *reqeust = [NSFetchRequest fetchRequestWithEntityName:@"Foo"];
+    reqeust.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"bar" ascending:YES]];
     _fetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:reqeust
                                                                     managedObjectContext:context
                                                                       sectionNameKeyPath:nil
