@@ -55,7 +55,7 @@ NSURLConnectionをwrapしたNSOperationです。
 メモリキャッシュです。画像のキャッシュにのみ利用しています。
 
 
-#### ISRemoveRull
+#### ISRemoveNull
 
 GitHub APIのレスポンスからNSNullを外すのに利用しています。
 
