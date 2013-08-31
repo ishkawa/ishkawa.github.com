@@ -1,0 +1,35 @@
+---
+layout: post
+title: "次世代のKIF(2.0.0)が良さそう"
+date: 2013-08-31 19:51
+comments: true
+categories: 
+---
+
+KIFはSquare製のIntegration Testsのためのフレームワークです。
+この半年くらいでKIFは大幅なアップデートに取り組んでいるらしく、現在はプレリリース版の2.0.0pre5が公開されています。
+まだ正式版はリリースされていないのですが、ひとまずプレリリース版を動かしてみました。
+
+[KIF(kif-next)](https://github.com/kif-framework/KIF/tree/kif-next)
+
+　
+
+KIFは元々GHUnitのようにアプリのビルドターゲットを複製し、エントリーポイントを少し変更することで複製したアプリ上でテストを走らせるというものでした。
+新しいバージョンではSenTestingKitを利用することでXcodeに統合されたテストとして実行できるようになりました。
+具体的には以下のようなメリットがあります。
+
+- command+Uで実行できる
+- エラーが出た箇所を追跡しやすい
+- 部分実行ができる
+- xUnit/xSpec形式でテストを書ける
+
+SenTestingKitを利用している他のフレームワーク(Spectaとか)も利用できるようです。
+
+以下は実機上で動かしている様子です。
+
+<iframe class="embed-preview" src="//gifboom.com/x/a8a13526/embed_content" width="600" height="600" frameborder="0" scrolling="no"></iframe><script async src="//medias.gifboom.com/static/embed.1.js" charset="utf-8"></script>
+
+一応、サンプルコードをGitHubに置いておきます。
+
+[KIFNextExample](https://github.com/ishkawa/KIFNextExample)
+
