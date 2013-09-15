@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "HHK無刻印モデル を3週間使った感想"
+title: "HHK無刻印モデルを3週間使った感想"
 date: 2013-09-15 10:51
 comments: true
 categories: 
