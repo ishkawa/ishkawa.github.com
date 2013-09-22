@@ -1,0 +1,183 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>StoryboardでUITableViewのセクションのヘッダ/フッタを設定する</title>
+	<meta name="author" content="ishkawa">
+
+	
+	<meta name="description" content="StoryboardでUITableViewのセクションのヘッダ/フッタを設定する StackOverflowで見つけました。
+おそらく正攻法ではないのですが、面白かったので紹介します。
+How to Implement Custom Table View Section Headers and &hellip;">
+	
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="blog.ishkawa.org" type="application/atom+xml">
+	<link rel="canonical" href="">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<script async="true" src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	
+</head>
+
+
+<body>
+	<header id="header" class="inner"><h1><a href="/">blog.ishkawa.org</a></h1>
+<nav id="main-nav"><ul class="main">
+  <li><a href="https://twitter.com/_ishkawa">Twitter</a></li>
+  <li><a href="https://github.com/ishkawa">GitHub</a></li>
+</ul>
+
+</nav>
+<nav id="mobile-nav">
+	<div class="alignleft menu">
+		<a class="button">Menu</a>
+		<div class="container"><ul class="main">
+  <li><a href="https://twitter.com/_ishkawa">Twitter</a></li>
+  <li><a href="https://github.com/ishkawa">GitHub</a></li>
+</ul>
+
+</div>
+	</div>
+	<div class="alignright search">
+		<a class="button"></a>
+		<div class="container">
+			<form action="http://google.com/search" method="get">
+				<input type="text" name="q" results="0">
+				<input type="hidden" name="q" value="site:blog.ishkawa.org">
+			</form>
+		</div>
+	</div>
+</nav>
+
+</header>
+	<div id="content" class="inner"><article class="post">
+	<h2 class="title">StoryboardでUITableViewのセクションのヘッダ/フッタを設定する</h2>
+	<div class="entry-content"><p>StackOverflowで見つけました。<br/>
+おそらく正攻法ではないのですが、面白かったので紹介します。<br/>
+<a href="http://stackoverflow.com/a/11396643">How to Implement Custom Table View Section Headers and Footers with Storyboard</a></p>
+
+<p>以下のようなStoryboardを組んで<br/>
+<img src="/images/2013-01-27/storyboard.png"></p>
+
+<p>以下のような結果を得られます。<br/>
+<img src="/images/2013-01-27/ss.png"></p>
+
+<h2>やり方</h2>
+
+<ul>
+<li>Storyboardで<code>UITableView</code>にヘッダ用とフッタ用のプロトタイプセルを追加する。<br/>
+Identifierにはそれぞれ<code>Header</code>とか<code>Footer</code>とかを設定します。</li>
+<li><code>tableView:viewForHeaderInSection:</code>で先ほど指定したIdentifierのセルをdequeueします。</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="n">UIView</span> <span class="o">*</span><span class="p">)</span><span class="nf">tableView:</span><span class="p">(</span><span class="n">UITableView</span> <span class="o">*</span><span class="p">)</span><span class="nv">tableView</span> <span class="nf">viewForHeaderInSection:</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nv">section</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">static</span> <span class="n">NSString</span> <span class="o">*</span><span class="n">identifier</span> <span class="o">=</span> <span class="s">@&quot;Header&quot;</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">UITableViewCell</span> <span class="o">*</span><span class="n">headerView</span> <span class="o">=</span> <span class="p">[</span><span class="n">tableView</span> <span class="nl">dequeueReusableCellWithIdentifier:</span><span class="n">identifier</span><span class="p">];</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">headerView</span> <span class="o">==</span> <span class="nb">nil</span><span class="p">){</span>
+</span><span class='line'>        <span class="p">[</span><span class="n">NSException</span> <span class="nl">raise:</span><span class="s">@&quot;headerView == nil..&quot;</span> <span class="nl">format:</span><span class="s">@&quot;No cells with matching CellIdentifier loaded from your storyboard&quot;</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">headerView</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>高さも指定する場合は<code>tableView:heightForHeaderInSection:</code>も実装します。</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="n">CGFloat</span><span class="p">)</span><span class="nf">tableView:</span><span class="p">(</span><span class="n">UITableView</span> <span class="o">*</span><span class="p">)</span><span class="nv">tableView</span> <span class="nf">heightForHeaderInSection:</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nv">section</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">static</span> <span class="n">NSString</span> <span class="o">*</span><span class="n">identifier</span> <span class="o">=</span> <span class="s">@&quot;Header&quot;</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">UITableViewCell</span> <span class="o">*</span><span class="n">headerView</span> <span class="o">=</span> <span class="p">[</span><span class="n">tableView</span> <span class="nl">dequeueReusableCellWithIdentifier:</span><span class="n">identifier</span><span class="p">];</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">headerView</span> <span class="o">==</span> <span class="nb">nil</span><span class="p">){</span>
+</span><span class='line'>        <span class="p">[</span><span class="n">NSException</span> <span class="nl">raise:</span><span class="s">@&quot;headerView == nil..&quot;</span> <span class="nl">format:</span><span class="s">@&quot;No cells with matching CellIdentifier loaded from your storyboard&quot;</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">headerView</span><span class="p">.</span><span class="n">frame</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">height</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>そのうち、Storyboardで公式にヘッダが設定できるようになるのかもしれませんが、<br/>
+それまでのつなぎとしては良いのかもしれません。</p>
+</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-01-27T03:47:00+09:00" pubdate data-updated="true">Jan 27<span>th</span>, 2013</time></div>
+	
+</div>
+
+    <br/>
+    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/01/27/uitableview-section-in-storyboard/" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/01/27/uitableview-section-in-storyboard/" >Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+</article>
+
+</div>
+	<footer id="footer" class="inner">Copyright &copy; 2013
+
+    ishkawa
+
+</footer>
+	<script src="/javascripts/slash.js"></script>
+<script src="/javascripts/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+	$('.fancybox').fancybox();
+})(jQuery);
+</script> <!-- Delete or comment this line to disable Fancybox -->
+
+
+
+
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-35917440-1']);
+		_gaq.push(['_trackPageview']);
+
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
+
+
+
+</body>
+</html>

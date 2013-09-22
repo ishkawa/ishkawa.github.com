@@ -1,0 +1,532 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title></title>
+	<meta name="author" content="ishkawa">
+
+	
+	<meta name="description" content="画像を含むCoreDataのフェッチ速度を改善する LRUなディスクキャッシュを実装する場合など、CoreDataに画像を突っ込みたくなることがあると思います。
+しかし、画像をそのままattributesに突っ込むことはフェッチ速度の低下につながります。 何か上手い方法はないかな〜 &hellip;">
+	
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="blog.ishkawa.org" type="application/atom+xml">
+	<link rel="canonical" href="">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<script async="true" src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	
+</head>
+
+
+<body>
+	<header id="header" class="inner"><h1><a href="/">blog.ishkawa.org</a></h1>
+<nav id="main-nav"><ul class="main">
+  <li><a href="https://twitter.com/_ishkawa">Twitter</a></li>
+  <li><a href="https://github.com/ishkawa">GitHub</a></li>
+</ul>
+
+</nav>
+<nav id="mobile-nav">
+	<div class="alignleft menu">
+		<a class="button">Menu</a>
+		<div class="container"><ul class="main">
+  <li><a href="https://twitter.com/_ishkawa">Twitter</a></li>
+  <li><a href="https://github.com/ishkawa">GitHub</a></li>
+</ul>
+
+</div>
+	</div>
+	<div class="alignright search">
+		<a class="button"></a>
+		<div class="container">
+			<form action="http://google.com/search" method="get">
+				<input type="text" name="q" results="0">
+				<input type="hidden" name="q" value="site:blog.ishkawa.org">
+			</form>
+		</div>
+	</div>
+</nav>
+
+</header>
+	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2012/11/24/improve-coredata-fetch/">
+		
+			画像を含むCoreDataのフェッチ速度を改善する</a>
+	</h2>
+	<div class="entry-content">
+		<p>LRUなディスクキャッシュを実装する場合など、CoreDataに画像を突っ込みたくなることがあると思います。
+しかし、画像をそのままattributesに突っ込むことはフェッチ速度の低下につながります。</p>
+
+<p>何か上手い方法はないかな〜と思ってAppleのCoreDataプログラミングガイドを眺めていたら、ありました。
+画像などのBLOBをCoreDataに突っ込む場合、BLOBであるattributeをエンティティから切り離すと良いそうです。
+今回は、これについて検証したことを紹介します。</p>
+
+<h2>比較するデータ構造</h2>
+
+<h3>ISFatUser</h3>
+
+<p>attributesに画像が突っ込まれたエンティティです。
+BLOBが入っているので&#8221;Fat&#8221;です。</p>
+
+<p><img src="/images/2012-11-24/ISFatUser.png"></p>
+
+<h3>ISUser</h3>
+
+<p>画像を別のエンティティに切り分けたエンティティです。<br/>
+attributesに画像を持たない代わりに、画像を持つエンティティ(<code>ISIcon</code>)とrelationで結ばれています。</p>
+
+<p>ISUser<br/>
+<img src="/images/2012-11-24/ISUser.png"></p>
+
+<p>ISIcon<br/>
+<img src="/images/2012-11-24/ISIcon.png"></p>
+
+<h2>比較結果</h2>
+
+<p>以下の条件で比較しました。
+読み込んだ画像は<code>UITableView</code>で表示します。</p>
+
+<ul>
+<li>データ件数: 200</li>
+<li>画像サイズ: 約5〜10KB程度</li>
+</ul>
+
+
+<h3>フェッチ速度</h3>
+
+<p>圧倒的に<code>ISUser</code>の方が速かったです。大きいサイズの画像を扱う場合、更に差が出ると思います。</p>
+
+<ul>
+<li><code>ISFatUser</code>: 15ms</li>
+<li><code>ISUser</code>: 1ms</li>
+</ul>
+
+
+<h3>メモリ使用状況</h3>
+
+<p>メモリの使用傾向にも差がありました。</p>
+
+<p><code>ISFatUser</code><br/>
+<img src="/images/2012-11-24/ISFatUserAllocations.png"></p>
+
+<p><code>ISUser</code><br/>
+<img src="/images/2012-11-24/ISUserAllocations.png"></p>
+
+<p>エンティティを切り分けた場合にはフォールティングが利くので、
+<code>ISUser</code>ではスクロールごとに徐々に使用メモリが増えています。
+一方、<code>ISFatUser</code>の場合にはフェッチ時に一気に使用メモリが最大まで増えます。</p>
+
+<p>それと、このグラフでは見えないのですが、<code>ISFatUser</code>の場合にはフェッチ直後に一瞬最大メモリ使用量の2倍くらいのメモリを使用します。
+おそらく、これは1度にすべての<code>UIImage</code>をインスタンス化しているせいだと思います。
+大きい画像を扱う場合、シビアな環境ではメモリが足りなくなってしまうケースもあるかもしれません。</p>
+
+<p>…</p>
+
+<p>今回はBLOBをCoreData突っ込むときのことを紹介しましたが、
+BLOBは本来ファイルシステム上に保存するものなので、利用すべきかどうかは慎重に判断してください。</p>
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-11-24T23:12:00+09:00" pubdate data-updated="true">Nov 24<span>th</span>, 2012</time></div>
+	
+</div>
+
+    <br/>
+    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2012/11/24/improve-coredata-fetch/" data-text="画像を含むCoreDataのフェッチ速度を改善する" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2012/11/24/improve-coredata-fetch/" >Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+    </article>
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2012/10/27/xcode-git/">
+		
+			iOS開発でGitを利用する際のTips</a>
+	</h2>
+	<div class="entry-content">
+		<p>ちょっと今更な感じもありますが、iOS開発でGitを使うときのTipsを紹介します。<br/>
+Gitそのものの使い方は理解している前提のもとで書きます。</p>
+
+<h2>バージョン管理する対象</h2>
+
+<p>Xcodeのプロジェクトにはバージョン管理する上で結構余計なものが入っています。</p>
+
+<h3>Gitで管理すべきでないもの</h3>
+
+<ul>
+<li><p><strong>Xcodeの作業データ</strong><br/>
+Xcodeのプロジェクトは<code>.xcodeproj</code>ですが、こいつ自身はディレクトリになっていて</p>
+
+<ul>
+<li><code>project.pbxproj</code></li>
+<li><code>project.xcworkspace</code></li>
+<li><code>xcuserdata</code></li>
+</ul>
+</li>
+</ul>
+
+
+<p>というファイルが入っています。このうち、Gitで管理するべきものは<code>project.pbxproj</code>です。<br/>
+その他のものはXcodeの状態(グループを開いてるかなど)を管理しているものなので、<br/>
+プロジェクトのバージョン管理対象としては適切ではありません。</p>
+
+<ul>
+<li><strong>ビルドデータ</strong><br/>
+<code>xcodebuild</code>コマンドを実行すると、プロジェクト直下に<code>build</code>ディレクトリが作成されます。<br/>
+これはGitで管理すべきものが揃っていれば生成できるので、Git管理下に置く必要はありません。</li>
+</ul>
+
+
+<h3>設定例</h3>
+
+<p>プロジェクト直下に以下のような<code>.gitignore</code>を置きます。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>project.xcworkspace/
+</span><span class='line'>xcuserdata/
+</span><span class='line'>build/</span></code></pre></td></tr></table></div></figure>
+
+
+<p>自分の場合、ところどころvimを使ったりするので以下も追加しています。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>*~
+</span><span class='line'>*.swp</span></code></pre></td></tr></table></div></figure>
+
+
+<p>それと、Macの<code>.gitignore</code>の定番も追加しています。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>*.DS_Store</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>自動マージ</h2>
+
+<p><code>.xib</code>はXMLで書かれていて、Gitはこれらファイルを自動マージするべきものと判断します。<br/>
+<code>.xib</code>がコンフリクトして手動マージすると、ファイルを開けなくなってしまうことがあります。</p>
+
+<p>以前のコミットにチェックアウトすればもとに戻すことはできますが、<br/>
+あらかじめ自動マージしないように設定することもできます。</p>
+
+<h3>自動マージしてほしくないもの</h3>
+
+<ul>
+<li><code>.xib</code>などのUI設定ファイル</li>
+<li><code>project.pbxproj</code></li>
+</ul>
+
+
+<h3>設定例</h3>
+
+<p>プロジェクト直下に以下のような.gitattributesを置きます。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>*.pbxproj -crlf -diff -merge
+</span><span class='line'>*.xib -crlf -diff -merge</span></code></pre></td></tr></table></div></figure>
+
+
+<p>このようにすると、自動マージは回避されコンフリクト時にはHEADの状態が保持されます。<br/>
+以下のコマンドで、マージするコミットの状態に変更することもできます。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>git checkout --theirs -- project.pbxproj</span></code></pre></td></tr></table></div></figure>
+
+
+<p>逆に、HEADの状態に戻すには以下のコマンドを実行します。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>git checkout --ours -- project.pbxproj</span></code></pre></td></tr></table></div></figure>
+
+
+<p>この設定ではマージ先の変更に気づきにくかったりするので、注意が必要です。<br/>
+もっといい方法があれば知りたいです。</p>
+
+<p><a href="http://git-scm.com/book/ja/Git-%E3%81%AE%E3%82%AB%E3%82%B9%E3%82%BF%E3%83%9E%E3%82%A4%E3%82%BA-Git-%E3%81%AE%E5%B1%9E%E6%80%A7">参考: Gitのカスタマイズ &ndash; Gitの属性</a></p>
+
+<h2>モジュール管理</h2>
+
+<p>GitHubなどには便利なモジュールがあり、プロジェクトに導入することもあると思います。<br/>
+<code>git submodule</code>を使うとモジュールの管理を行うことができます。</p>
+
+<p>以下の説明では、モジュールは<code>Libraries/</code>以下に配置するものとします。</p>
+
+<h3>モジュールの導入</h3>
+
+<p>以下のコマンドを実行するとモジュールのファイルがダウンロードされます。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>git submodule add git@github.com:ishkawa/ISNetwork.git Libraries/ISNetwork</span></code></pre></td></tr></table></div></figure>
+
+
+<p>不要なファイル(READMEとか)がある場合は、Xcodeから参照を外します。<br/>
+ファイル自体を削除するとサブモジュールのバージョン管理に影響を与えるので、<br/>
+Xcode上の参照のみを削除することをおすすめします。　</p>
+
+<h3>モジュールの更新</h3>
+
+<p>モジュールのディレクトリに移動してGitの操作をするだけです。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>cd Libraries/ISNetwork
+</span><span class='line'>git pull</span></code></pre></td></tr></table></div></figure>
+
+
+<p>一括で最新のコミットをプルするには以下のコマンドを実行します。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>git submodule foreach git pull</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>モジュールの削除</h3>
+
+<p><code>.git/config</code>, <code>.gitmodules</code>から該当する箇所を削除します。</p>
+
+<p><code>.git/config</code></p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>[submodule "ISNetwork"]
+</span><span class='line'>    url = git@github.com:ishkawa/ISNetwork.git</span></code></pre></td></tr></table></div></figure>
+
+
+<p><code>.gitmodules</code></p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>[submodule "ISNetwork"]
+</span><span class='line'>    path = ISNetwork
+</span><span class='line'>    url = git@github.com:ishkawa/ISNetwork.git</span></code></pre></td></tr></table></div></figure>
+
+
+<p>ファイル自体も削除し、Gitの管理下から外します。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>rm -R Libraries/ISNetwork
+</span><span class='line'>git rm --cached Libraries/ISNetwork</span></code></pre></td></tr></table></div></figure>
+
+
+<p><a href="http://stackoverflow.com/questions/1260748/how-do-i-remove-a-git-submodule">参考: How do I remove a git submodule?</a></p>
+
+<h3>モジュールの一括ダウンロード</h3>
+
+<p>プロジェクトをクローンしたとき、依存しているモジュールのダウンロードはされません。<br/>
+依存しているモジュールをすべてダウンロードするには以下のコマンドを実行します。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>git submodule update --init --recursive</span></code></pre></td></tr></table></div></figure>
+
+
+<h2></h2>
+
+<p>他にもこういう設定したら捗るよってものがあれば、ぜひ教えて下さい。</p>
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-10-27T17:32:00+09:00" pubdate data-updated="true">Oct 27<span>th</span>, 2012</time></div>
+	
+</div>
+
+    <br/>
+    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2012/10/27/xcode-git/" data-text="iOS開発でGitを利用する際のTips" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2012/10/27/xcode-git/" >Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+    </article>
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2012/09/06/transition/">
+		
+			UINavigationControllerのトランジションをBlocksで記述するカテゴリ</a>
+	</h2>
+	<div class="entry-content">
+		<p>UINavigationControllerのpush/pop時のトランジションは左右にスライドするものですが、<br/>
+これをカスタマイズするためのTransitionというカテゴリを書きました。</p>
+
+<p>アニメーションの以下のフェーズ毎に<code>fromView</code>と<code>toView</code>の配置を指定することで、<br/>
+独自のトランジションを記述することができます。</p>
+
+<ul>
+<li>アニメーション前の配置</li>
+<li>アニメーション</li>
+<li>アニメーション後の処理</li>
+</ul>
+
+
+<p>インターフェースは以下の形式です。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="p">[</span><span class="n">navigationController</span> <span class="nl">pushViewController:</span><span class="n">viewController</span>
+</span><span class='line'>                                <span class="nl">duration:</span><span class="mf">.3f</span>
+</span><span class='line'>                              <span class="nl">prelayouts:</span><span class="o">^</span><span class="p">(</span><span class="n">UIView</span> <span class="o">*</span><span class="n">fromView</span><span class="p">,</span> <span class="n">UIView</span> <span class="o">*</span><span class="n">toView</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>                                  <span class="p">;</span>
+</span><span class='line'>                              <span class="p">}</span>
+</span><span class='line'>                              <span class="nl">animations:</span><span class="o">^</span><span class="p">(</span><span class="n">UIView</span> <span class="o">*</span><span class="n">fromView</span><span class="p">,</span> <span class="n">UIView</span> <span class="o">*</span><span class="n">toView</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>                                  <span class="p">;</span>
+</span><span class='line'>                              <span class="p">}</span>
+</span><span class='line'>                              <span class="nl">completion:</span><span class="o">^</span><span class="p">(</span><span class="n">UIView</span> <span class="o">*</span><span class="n">fromView</span><span class="p">,</span> <span class="n">UIView</span> <span class="o">*</span><span class="n">toView</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>                                  <span class="p">;</span>
+</span><span class='line'>                              <span class="p">}];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="p">[</span><span class="n">navigationController</span> <span class="nl">popViewControllerWithDuration:</span><span class="mf">.3f</span>
+</span><span class='line'>                                         <span class="nl">prelayouts:</span><span class="o">^</span><span class="p">(</span><span class="n">UIView</span> <span class="o">*</span><span class="n">fromView</span><span class="p">,</span> <span class="n">UIView</span> <span class="o">*</span><span class="n">toView</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>                                             <span class="p">;</span>
+</span><span class='line'>                                         <span class="p">}</span>
+</span><span class='line'>                                         <span class="nl">animations:</span><span class="o">^</span><span class="p">(</span><span class="n">UIView</span> <span class="o">*</span><span class="n">fromView</span><span class="p">,</span> <span class="n">UIView</span> <span class="o">*</span><span class="n">toView</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>                                             <span class="p">;</span>
+</span><span class='line'>                                         <span class="p">}</span>
+</span><span class='line'>                                         <span class="nl">completion:</span><span class="o">^</span><span class="p">(</span><span class="n">UIView</span> <span class="o">*</span><span class="n">fromView</span><span class="p">,</span> <span class="n">UIView</span> <span class="o">*</span><span class="n">toView</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>                                             <span class="p">;</span>
+</span><span class='line'>                                         <span class="p">}];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>コードはGitHubで公開しています。 <br/>
+一度デモアプリを動かしてみてください。<br/>
+<a href="https://github.com/ishkawa/UINavigationController-Transition">UINavigationController-Transition</a></p>
+
+<p>READMEにも書いておきましたが、毎回上記のコードを呼ぶのは大変なので、<br/>
+これらをラップした自分用のカテゴリを書くと使いやすいと思います。</p>
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-09-06T13:07:00+09:00" pubdate data-updated="true">Sep 6<span>th</span>, 2012</time></div>
+	
+</div>
+
+    <br/>
+    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2012/09/06/transition/" data-text="UINavigationControllerのトランジションをBlocksで記述するカテゴリ" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2012/09/06/transition/" >Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+    </article>
+
+<nav id="pagenavi">
+    
+        <a href="/blog/page/15/" class="prev">Prev</a>
+    
+    
+        <a href="/blog/page/17/" class="next">Next</a>
+    
+    <div class="center"><a href="/blog/archives">Blog Archives</a></div>
+</nav>
+</div>
+	<footer id="footer" class="inner">Copyright &copy; 2013
+
+    ishkawa
+
+</footer>
+	<script src="/javascripts/slash.js"></script>
+<script src="/javascripts/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+	$('.fancybox').fancybox();
+})(jQuery);
+</script> <!-- Delete or comment this line to disable Fancybox -->
+
+
+
+
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-35917440-1']);
+		_gaq.push(['_trackPageview']);
+
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
+
+
+
+</body>
+</html>

@@ -1,0 +1,156 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>ISHTTPOperation 1.1.0をリリースした</title>
+	<meta name="author" content="ishkawa">
+
+	
+	<meta name="description" content="ISHTTPOperation 1.1.0をリリースした 朝6時に目が覚めたら意識が高かったので、ISHTTPOperationに欲しかった機能をつけてリリースしました。
+ISHTTPOperation 　 ISHTTPOperationは特徴のあるライブラリではなくて、 &hellip;">
+	
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="blog.ishkawa.org" type="application/atom+xml">
+	<link rel="canonical" href="">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<script async="true" src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	
+</head>
+
+
+<body>
+	<header id="header" class="inner"><h1><a href="/">blog.ishkawa.org</a></h1>
+<nav id="main-nav"><ul class="main">
+  <li><a href="https://twitter.com/_ishkawa">Twitter</a></li>
+  <li><a href="https://github.com/ishkawa">GitHub</a></li>
+</ul>
+
+</nav>
+<nav id="mobile-nav">
+	<div class="alignleft menu">
+		<a class="button">Menu</a>
+		<div class="container"><ul class="main">
+  <li><a href="https://twitter.com/_ishkawa">Twitter</a></li>
+  <li><a href="https://github.com/ishkawa">GitHub</a></li>
+</ul>
+
+</div>
+	</div>
+	<div class="alignright search">
+		<a class="button"></a>
+		<div class="container">
+			<form action="http://google.com/search" method="get">
+				<input type="text" name="q" results="0">
+				<input type="hidden" name="q" value="site:blog.ishkawa.org">
+			</form>
+		</div>
+	</div>
+</nav>
+
+</header>
+	<div id="content" class="inner"><article class="post">
+	<h2 class="title">ISHTTPOperation 1.1.0をリリースした</h2>
+	<div class="entry-content"><p>朝6時に目が覚めたら意識が高かったので、ISHTTPOperationに欲しかった機能をつけてリリースしました。<br/>
+<a href="https://github.com/ishkawa/ISHTTPOperation">ISHTTPOperation</a></p>
+
+<p>　</p>
+
+<p>ISHTTPOperationは特徴のあるライブラリではなくて、単純に非同期のNSURLConnectionをラップするNSOperationです。
+こういったライブラリはたくさんあって、いわゆる車輪の再発明なのですが、わざわざ自分で作っているのには理由があります。
+理由の1つは多くの通信ライブラリは機能が多すぎるため、大量の不要なコードをプロジェクトに導入することになってしまうからです。
+もう1つはNSURLConnectionをNSOperationで正しくラップするときにはミスしやすい箇所が多いので、
+シンプルなライブラリであってもキャンセルなどの目立ちにくい動作に不具合を出しやすいからです。</p>
+
+<h3>かわったところ</h3>
+
+<ul>
+<li>テストにスタブサーバーを利用する</li>
+<li>Travis CIとCoverallsを利用して品質(?)を表示</li>
+<li>NSPredicateを利用してキャンセル</li>
+</ul>
+
+
+<p>元々、3つ目のキャンセル機構をつけたかったのですが、
+最近は<a href="http://www.tokoro.me/2013/07/09/objc-travis-coveralls/">iOSのライブラリだってTravis CIとかCoverallsとか使うべき</a>という話だったので、
+その辺りにも手を入れてみたらテストがださかったのでテストも直したという感じです。
+それと、せっかくここまでやったんだからと思ってCocoaPodsにもpull requestを送っておきました。</p>
+
+<p>NSPredicateでキャンセルというのは以下のような感じです。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="n">NSPredicate</span> <span class="o">*</span><span class="n">predicate</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSPredicate</span> <span class="nl">predicateWithFormat:</span><span class="s">@&quot;request.HTTPMethod MATCHES %@&quot;</span><span class="p">,</span> <span class="s">@&quot;GET&quot;</span><span class="p">];</span>
+</span><span class='line'><span class="p">[[</span><span class="n">ISHTTPOperationQueue</span> <span class="n">defaultQueue</span><span class="p">]</span> <span class="nl">cancelOperationsUsingPredicate:</span><span class="n">predicate</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>よく使いそうなやつには以下のようなショートカットも用意しました。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="p">[[</span><span class="n">ISHTTPOperationQueue</span> <span class="n">defaultQueue</span><span class="p">]</span> <span class="nl">cancelOperationsWithHTTPMethod:</span><span class="s">@&quot;GET&quot;</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-08-07T11:02:00+09:00" pubdate data-updated="true">Aug 7<span>th</span>, 2013</time></div>
+	
+</div>
+
+    <br/>
+    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/08/07/ishttpoperation/" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/08/07/ishttpoperation/" >Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+</article>
+
+</div>
+	<footer id="footer" class="inner">Copyright &copy; 2013
+
+    ishkawa
+
+</footer>
+	<script src="/javascripts/slash.js"></script>
+<script src="/javascripts/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+	$('.fancybox').fancybox();
+})(jQuery);
+</script> <!-- Delete or comment this line to disable Fancybox -->
+
+
+
+
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-35917440-1']);
+		_gaq.push(['_trackPageview']);
+
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
+
+
+
+</body>
+</html>

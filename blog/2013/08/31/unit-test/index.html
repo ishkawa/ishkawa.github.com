@@ -1,0 +1,191 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>iOS開発でのユニットテストを身につけるには</title>
+	<meta name="author" content="ishkawa">
+
+	
+	<meta name="description" content="iOS開発でのユニットテストを身につけるには テストがないコードはクソとか、このテストツールこそ至高みたいな話が世に溢れているわけですが、
+そういう状況になってくると、どうやって始めたらいいのかわからなかったりすると思います。
+そういう人のために、何を読んで勉強し、 &hellip;">
+	
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="blog.ishkawa.org" type="application/atom+xml">
+	<link rel="canonical" href="">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<script async="true" src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	
+</head>
+
+
+<body>
+	<header id="header" class="inner"><h1><a href="/">blog.ishkawa.org</a></h1>
+<nav id="main-nav"><ul class="main">
+  <li><a href="https://twitter.com/_ishkawa">Twitter</a></li>
+  <li><a href="https://github.com/ishkawa">GitHub</a></li>
+</ul>
+
+</nav>
+<nav id="mobile-nav">
+	<div class="alignleft menu">
+		<a class="button">Menu</a>
+		<div class="container"><ul class="main">
+  <li><a href="https://twitter.com/_ishkawa">Twitter</a></li>
+  <li><a href="https://github.com/ishkawa">GitHub</a></li>
+</ul>
+
+</div>
+	</div>
+	<div class="alignright search">
+		<a class="button"></a>
+		<div class="container">
+			<form action="http://google.com/search" method="get">
+				<input type="text" name="q" results="0">
+				<input type="hidden" name="q" value="site:blog.ishkawa.org">
+			</form>
+		</div>
+	</div>
+</nav>
+
+</header>
+	<div id="content" class="inner"><article class="post">
+	<h2 class="title">iOS開発でのユニットテストを身につけるには</h2>
+	<div class="entry-content"><p>テストがないコードはクソとか、このテストツールこそ至高みたいな話が世に溢れているわけですが、
+そういう状況になってくると、どうやって始めたらいいのかわからなかったりすると思います。
+そういう人のために、何を読んで勉強し、何を使って何を書くと始めやすいかという抽象的な解説をしようと思います。</p>
+
+<h3>テストフレームワークの選択</h3>
+
+<p>テスト初心者の最初の壁はフレームワークの選択です。
+iOSのテストについて調べると、SenTestingKitはクソとかGHUnit最高とかKiwiこそ至高とか言っている人がいると思います。
+ですが、入門に最も適しているのはSenTestingKitです。
+セットアップが他と比べて簡単だということと、機能が十分に小さくて機能に溺れることがないということが理由です。</p>
+
+<h3>SenTestingKitの使い方を学ぶ</h3>
+
+<p>いきなり突き放すようなんですが、Appleの公式のドキュメントを読むのがいいと思います。
+プロジェクトのセットアップ方法が詳細に説明されているので、途方に暮れることもないと思います。
+おそらく、初めて読んだ時点ではロジックテストとアプリケーションテストの違いがよくわからないと思いますが、
+ひとまずアプリに対するテストはアプリケーションテストとしてセットアップするのが良いと思います。
+理由はUIApplicationやNSBundleの扱い方がプロダクトコードと揃うからです。</p>
+
+<p><a href="https://developer.apple.com/jp/devcenter/ios/library/documentation/UnitTesting.pdf">Xcode ユニットテスト ガイド (公式ドキュメント)</a></p>
+
+<h3>テストの対象を決める</h3>
+
+<p>iOSアプリのテストは書きづらいと言われることがありますが、ほとんどのコードに対するテストを書くことは可能です。
+ですが、テストを書くコストに見合った分だけの利益がないと、テストを書き続けるモチベーションは下がると思いますので、
+初めは恩恵を受けやすいモデルのテストのみを書くことを勧めます。
+UIViewControllerのテストを書くことも出来ますが、
+初めは完璧を目指すよりも無理のない範囲で安定した粒度のテストを書くことの方が大切です。</p>
+
+<h3>サンプルコードを動かす</h3>
+
+<p>続いてすべきことは、Appleが提供しているサンプルコードを動かすことだと思います。
+このサンプルコードから学ぶべきことは、モデルに対するテストケースの書き方です。
+<code>CalculatorLogicTests.m</code>を読むとモデルに対してどのようにテストを書けばいいか分かるはずです。
+(<code>iOS_CalcTests.m</code>にはUIViewControllerに対するテストが書かれているのですが、前節でやらないことにしたので省きます。)</p>
+
+<p><a href="https://developer.apple.com/library/mac/samplecode/UnitTests/Introduction/Intro.html">Unit Testing Apps and Frameworks (サンプルコード)</a></p>
+
+<p>実行するにはXcodeのスキームを以下のようにして、command+Uを押します。</p>
+
+<p><img src="/images/2013-08-31/scheme.png"></p>
+
+<p>ここまで実行すれば、テストをセットアップして、テストコードを書き、テストを実行する方法がわかると思います。
+あとは自分のプロジェクトでこれらの手順を実行すれば、iOSテストに入門できたといえると思います。</p>
+
+<h3>他のテストツールについて</h3>
+
+<p>ひと通り実行してみると、SenTestingKitについて以下の点に気がつくと思います。</p>
+
+<ul>
+<li>非同期の処理が完了する前にテストケースが終わってしまう</li>
+<li>このメソッドを呼んだらこのメソッドが呼ばれるというテストができない</li>
+<li>テストしたい条件を作ることが難しい</li>
+</ul>
+
+
+<p>1番目の非同期の問題はNSRunLoopを回して待つことで解決可能ですが、
+Kiwiなどのフレームワークレベルで解決しているものを利用するという手もあります。
+そもそもモデルの層で非同期の処理が入っているコードはテストしづらいコードだという説もあります。</p>
+
+<p>2,3番目の問題はモック/スタブを提供するライブラリを導入することで解決できます。
+OCMockなどのモック/スタブ単品のライブラリもあれば、Kiwiのようにフレームワークの一部として提供しているものもあります。</p>
+
+<p>必要に応じてこういった外部のライブラリを導入するとテストが楽になるので、
+なんかテストが書きづらいなあと思ったときは、それを上手く解決しているライブラリを探すといいと思います。</p>
+
+<h3>SenTestingKitに対するよくある誤解</h3>
+
+<p>SenTestingKitは誤解されやすいので、SenTestingKitに対するよくある誤解を並べておきます。</p>
+
+<ul>
+<li>非同期処理を含むテストを実行できない &ndash;> NSRunLoopを回して完了を待つことはできる</li>
+<li>実機上でテストを実行できない &ndash;> アプリケーションテストは実機でも実行できる</li>
+<li>ターミナルからテストを実行できない &ndash;> xcodebuildコマンドで実行可能</li>
+</ul>
+
+</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-08-31T01:39:00+09:00" pubdate data-updated="true">Aug 31<span>st</span>, 2013</time></div>
+	
+</div>
+
+    <br/>
+    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/08/31/unit-test/" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/08/31/unit-test/" >Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+</article>
+
+</div>
+	<footer id="footer" class="inner">Copyright &copy; 2013
+
+    ishkawa
+
+</footer>
+	<script src="/javascripts/slash.js"></script>
+<script src="/javascripts/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+	$('.fancybox').fancybox();
+})(jQuery);
+</script> <!-- Delete or comment this line to disable Fancybox -->
+
+
+
+
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-35917440-1']);
+		_gaq.push(['_trackPageview']);
+
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
+
+
+
+</body>
+</html>

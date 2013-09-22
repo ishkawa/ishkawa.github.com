@@ -1,0 +1,1851 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[blog.ishkawa.org]]></title>
+  <link href="http://blog.ishkawa.org/atom.xml" rel="self"/>
+  <link href="http://blog.ishkawa.org/"/>
+  <updated>2013-09-22T17:40:42+09:00</updated>
+  <id>http://blog.ishkawa.org/</id>
+  <author>
+    <name><![CDATA[ishkawa]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[YAPC::Asia 2013に参加してきました]]></title>
+    <link href="http://blog.ishkawa.org/blog/2013/09/22/yapc/"/>
+    <updated>2013-09-22T17:15:00+09:00</updated>
+    <id>http://blog.ishkawa.org/blog/2013/09/22/yapc</id>
+    <content type="html"><![CDATA[<p>Perlの人じゃなくても楽しいと聞いて参加してきました。</p>
+
+<p>Perlの世界で活躍する人たちの長めのトークを聞けるだけでもありがたいことですが、
+その後は個人的に話を聞きに行ったりできる雰囲気になっていてすごく良いなと思いました。
+会場の広場やバーでは似たような関心を持った人たちが議論していてうらやましかったのですが、
+こういうのは数日間開催されているからこそできることなんだなと思いました。</p>
+
+<p>iOS界隈でもこういうのがあったらいいですね。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Xcode 5でテストを分割実行する]]></title>
+    <link href="http://blog.ishkawa.org/blog/2013/09/19/xcode-5-test/"/>
+    <updated>2013-09-19T11:40:00+09:00</updated>
+    <id>http://blog.ishkawa.org/blog/2013/09/19/xcode-5-test</id>
+    <content type="html"><![CDATA[<p>command + option + control + U で実行できます。</p>
+
+<p>テストコードのファイルを開いているときに、テストケース内にカーソルを置いているとそのテストケースのみ実行され、
+テストケース外にカーソルを置いているとそのファイルのテストがすべて実行されます。</p>
+
+<p>SenTestingKit, XCTestのみで動作を確認しました。
+いまのところのKiwiはまだこの機能に対応していなくて、個別の単位(<code>describe</code>, <code>context</code>, <code>it</code>など)での実行はできません。
+未確認ですが、GHUnitは仕組みから考えると全く対応していないと思います。</p>
+
+<p>分割実行できるようになると気軽にテストを走らせるようになって、テストが捗ります。<br/>
+SenTestingKitベースになったKIFも分割実行できるので、UIテストも捗りますね。</p>
+
+<h3>追記 (2013/9/20)</h3>
+
+<p>今日リリースされたKiwi 2.2.2でファイル単位の個別の実行ができるようになったみたいです。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[HHK無刻印モデルを3週間使った感想]]></title>
+    <link href="http://blog.ishkawa.org/blog/2013/09/15/hhk/"/>
+    <updated>2013-09-15T10:51:00+09:00</updated>
+    <id>http://blog.ishkawa.org/blog/2013/09/15/hhk</id>
+    <content type="html"><![CDATA[<p>最近<a href="http://www.pfu.fujitsu.com/hhkeyboard/lineup/pdkb400bn.html">HHK Pro 2の無刻印モデル</a>を使い始めました。<br/>
+<a href="http://twitter.com/soh335">斜に構えおじさん</a>に中2とか言われてバカにされたりしました。</p>
+
+<blockquote class="twitter-tweet"><p>無刻印 メリット 何</p>&mdash; soh335 (@soh335) <a href="https://twitter.com/soh335/statuses/371610150659825664">August 25, 2013</a></blockquote>
+
+
+<script async src="http://blog.ishkawa.org//platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+
+<p>　</p>
+
+<p>3週間くらい使って結構慣れてきたので感想を書きます。</p>
+
+<ul>
+<li>意外とタッチタイピングができていなかったことに気づいた</li>
+<li>タッチタイピングができるようになって視線の移動がかなり減った</li>
+<li>キーを入れ替えるのに抵抗がなくなった</li>
+<li>ｯﾀｰﾝってやるの最高に気持ちいい</li>
+</ul>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[次世代のKIF(2.0.0)が良さそう]]></title>
+    <link href="http://blog.ishkawa.org/blog/2013/08/31/kif-next/"/>
+    <updated>2013-08-31T19:51:00+09:00</updated>
+    <id>http://blog.ishkawa.org/blog/2013/08/31/kif-next</id>
+    <content type="html"><![CDATA[<p>KIFはSquare製のIntegration Testsのためのフレームワークです。
+この半年くらいでKIFは大幅なアップデートに取り組んでいるらしく、現在はプレリリース版の2.0.0pre5が公開されています。
+まだ正式版はリリースされていないのですが、ひとまずプレリリース版を動かしてみました。</p>
+
+<p><a href="https://github.com/kif-framework/KIF/tree/kif-next">KIF(kif-next)</a></p>
+
+<p>　</p>
+
+<p>KIFは元々GHUnitのようにアプリのビルドターゲットを複製し、エントリーポイントを少し変更することで複製したアプリ上でテストを走らせるというものでした。
+新しいバージョンではSenTestingKitを利用することでXcodeに統合されたテストとして実行できるようになりました。
+具体的には以下のようなメリットがあります。</p>
+
+<ul>
+<li>command+Uで実行できる</li>
+<li>エラーが出た箇所を追跡しやすい</li>
+<li>部分実行ができる</li>
+<li>xUnit/xSpec形式でテストを書ける</li>
+</ul>
+
+
+<p>SenTestingKitを利用している他のフレームワーク(Spectaとか)も利用できるようです。</p>
+
+<p>以下は実機上で動かしている様子です。</p>
+
+<iframe class="embed-preview" src="http://blog.ishkawa.org//gifboom.com/x/a8a13526/embed_content" width="600" height="600" frameborder="0" scrolling="no"></iframe>
+
+
+<script async src="http://blog.ishkawa.org//medias.gifboom.com/static/embed.1.js" charset="utf-8"></script>
+
+
+<p>一応、サンプルコードをGitHubに置いておきます。</p>
+
+<p><a href="https://github.com/ishkawa/KIFNextExample">KIFNextExample</a></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[iOS開発でのユニットテストを身につけるには]]></title>
+    <link href="http://blog.ishkawa.org/blog/2013/08/31/unit-test/"/>
+    <updated>2013-08-31T01:39:00+09:00</updated>
+    <id>http://blog.ishkawa.org/blog/2013/08/31/unit-test</id>
+    <content type="html"><![CDATA[<p>テストがないコードはクソとか、このテストツールこそ至高みたいな話が世に溢れているわけですが、
+そういう状況になってくると、どうやって始めたらいいのかわからなかったりすると思います。
+そういう人のために、何を読んで勉強し、何を使って何を書くと始めやすいかという抽象的な解説をしようと思います。</p>
+
+<h3>テストフレームワークの選択</h3>
+
+<p>テスト初心者の最初の壁はフレームワークの選択です。
+iOSのテストについて調べると、SenTestingKitはクソとかGHUnit最高とかKiwiこそ至高とか言っている人がいると思います。
+ですが、入門に最も適しているのはSenTestingKitです。
+セットアップが他と比べて簡単だということと、機能が十分に小さくて機能に溺れることがないということが理由です。</p>
+
+<h3>SenTestingKitの使い方を学ぶ</h3>
+
+<p>いきなり突き放すようなんですが、Appleの公式のドキュメントを読むのがいいと思います。
+プロジェクトのセットアップ方法が詳細に説明されているので、途方に暮れることもないと思います。
+おそらく、初めて読んだ時点ではロジックテストとアプリケーションテストの違いがよくわからないと思いますが、
+ひとまずアプリに対するテストはアプリケーションテストとしてセットアップするのが良いと思います。
+理由はUIApplicationやNSBundleの扱い方がプロダクトコードと揃うからです。</p>
+
+<p><a href="https://developer.apple.com/jp/devcenter/ios/library/documentation/UnitTesting.pdf">Xcode ユニットテスト ガイド (公式ドキュメント)</a></p>
+
+<h3>テストの対象を決める</h3>
+
+<p>iOSアプリのテストは書きづらいと言われることがありますが、ほとんどのコードに対するテストを書くことは可能です。
+ですが、テストを書くコストに見合った分だけの利益がないと、テストを書き続けるモチベーションは下がると思いますので、
+初めは恩恵を受けやすいモデルのテストのみを書くことを勧めます。
+UIViewControllerのテストを書くことも出来ますが、
+初めは完璧を目指すよりも無理のない範囲で安定した粒度のテストを書くことの方が大切です。</p>
+
+<h3>サンプルコードを動かす</h3>
+
+<p>続いてすべきことは、Appleが提供しているサンプルコードを動かすことだと思います。
+このサンプルコードから学ぶべきことは、モデルに対するテストケースの書き方です。
+<code>CalculatorLogicTests.m</code>を読むとモデルに対してどのようにテストを書けばいいか分かるはずです。
+(<code>iOS_CalcTests.m</code>にはUIViewControllerに対するテストが書かれているのですが、前節でやらないことにしたので省きます。)</p>
+
+<p><a href="https://developer.apple.com/library/mac/samplecode/UnitTests/Introduction/Intro.html">Unit Testing Apps and Frameworks (サンプルコード)</a></p>
+
+<p>実行するにはXcodeのスキームを以下のようにして、command+Uを押します。</p>
+
+<p><img src="http://blog.ishkawa.org/images/2013-08-31/scheme.png"></p>
+
+<p>ここまで実行すれば、テストをセットアップして、テストコードを書き、テストを実行する方法がわかると思います。
+あとは自分のプロジェクトでこれらの手順を実行すれば、iOSテストに入門できたといえると思います。</p>
+
+<h3>他のテストツールについて</h3>
+
+<p>ひと通り実行してみると、SenTestingKitについて以下の点に気がつくと思います。</p>
+
+<ul>
+<li>非同期の処理が完了する前にテストケースが終わってしまう</li>
+<li>このメソッドを呼んだらこのメソッドが呼ばれるというテストができない</li>
+<li>テストしたい条件を作ることが難しい</li>
+</ul>
+
+
+<p>1番目の非同期の問題はNSRunLoopを回して待つことで解決可能ですが、
+Kiwiなどのフレームワークレベルで解決しているものを利用するという手もあります。
+そもそもモデルの層で非同期の処理が入っているコードはテストしづらいコードだという説もあります。</p>
+
+<p>2,3番目の問題はモック/スタブを提供するライブラリを導入することで解決できます。
+OCMockなどのモック/スタブ単品のライブラリもあれば、Kiwiのようにフレームワークの一部として提供しているものもあります。</p>
+
+<p>必要に応じてこういった外部のライブラリを導入するとテストが楽になるので、
+なんかテストが書きづらいなあと思ったときは、それを上手く解決しているライブラリを探すといいと思います。</p>
+
+<h3>SenTestingKitに対するよくある誤解</h3>
+
+<p>SenTestingKitは誤解されやすいので、SenTestingKitに対するよくある誤解を並べておきます。</p>
+
+<ul>
+<li>非同期処理を含むテストを実行できない &ndash;> NSRunLoopを回して完了を待つことはできる</li>
+<li>実機上でテストを実行できない &ndash;> アプリケーションテストは実機でも実行できる</li>
+<li>ターミナルからテストを実行できない &ndash;> xcodebuildコマンドで実行可能</li>
+</ul>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[GHFeedで利用しているライブラリ一覧]]></title>
+    <link href="http://blog.ishkawa.org/blog/2013/08/28/ghfeed-libraries/"/>
+    <updated>2013-08-28T08:18:00+09:00</updated>
+    <id>http://blog.ishkawa.org/blog/2013/08/28/ghfeed-libraries</id>
+    <content type="html"><![CDATA[<p>先日GHFeedというGitHubのフィードを読めるiOSアプリをリリースしました。<br/>
+今日はGHFeedの開発に利用したライブラリを紹介しようと思います。</p>
+
+<h4>NJKWebViewProgress</h4>
+
+<p>UIWebViewの読み込み状況を取得してくれるライブラリです。
+作者は<a href="https://twitter.com/ninjinkun">@ninjinkun</a>さんです。
+このライブラリが出してくれる値は大体0.0, 0.1, 1.0なので、
+GHFeedではこれらの値を補間するようなアニメーションを追加で実装しています。</p>
+
+<h4>KLSwitch</h4>
+
+<p>フラットデザインなUIButtonのライブラリです。<br/>
+UIAppearanceにも対応するなど、結構細かいところまで実装が行き届いていました。</p>
+
+<h4>TUSafariActivity</h4>
+
+<p>UIActivityViewControllerにOpen in Safariを追加するライブラリです。</p>
+
+<h4>SSKeychain</h4>
+
+<p>キーチェーンのwrapperです。</p>
+
+<h4>SVProgressHUD</h4>
+
+<p>ユーザーに待ってもらいたいときに表示するUIViewです。</p>
+
+<h4>ISHTTPOperation</h4>
+
+<p>NSURLConnectionをwrapしたNSOperationです。
+実際には直接ISHTTPOperationを使うのではなく、JSONパースまで含んだサブクラスや、
+画像のディスクキャッシュへの保存/読込を追加したサブクラスを利用しています。</p>
+
+<h4>ISDiskCache</h4>
+
+<p>ディスクキャッシュです。画像と通知APIのレスポンスのキャッシュに利用しています。</p>
+
+<h4>ISMemoryCache</h4>
+
+<p>メモリキャッシュです。画像のキャッシュにのみ利用しています。</p>
+
+<h4>ISRemoveNull</h4>
+
+<p>GitHub APIのレスポンスからNSNullを外すのに利用しています。</p>
+
+<p>　</p>
+
+<h3>テストのライブラリ</h3>
+
+<p>SenTestingKitを利用しています。</p>
+
+<h4>OHHTTPStubs</h4>
+
+<p>スタブサーバーです。通信を含む処理をテストできます。</p>
+
+<h4>OCMock</h4>
+
+<p>スタブ/モックを提供してくれるライブラリです。</p>
+
+<h4>OCMockObject+Lazy</h4>
+
+<p>OCMockのverifyを非同期のAPIに対しても実行できるようにする拡張です。
+NSRunLoopを回しながらverifyを反復して実行するというアレ気味な実装になっているので、
+もう少しマシなものを考えたいものです。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[モバイル版のGitHubにフィードがなかったので、補うiOSアプリをつくってリリースした]]></title>
+    <link href="http://blog.ishkawa.org/blog/2013/08/27/ghfeed/"/>
+    <updated>2013-08-27T00:30:00+09:00</updated>
+    <id>http://blog.ishkawa.org/blog/2013/08/27/ghfeed</id>
+    <content type="html"><![CDATA[<p>プッシュ通知などもついていて、なかなか便利なものになりました。</p>
+
+<p><a href="https://itunes.apple.com/jp/app/ghfeed/id683793545">アプリをダウンロード</a></p>
+
+<p>　</p>
+
+<p><img src="http://blog.ishkawa.org/images/2013-08-27/feed.png">　<img src="http://blog.ishkawa.org/images/2013-08-27/page.png"></p>
+
+<p>　</p>
+
+<p>GitHubのモバイル版(Web)はかなり良くできていて流石だなあと思っていたのですが、
+肝心のフィードがなかったりして、モバイル版の役割を十分にカバーできていないと思いました。
+それを補うのがGHFeedです。具体的には以下の2つの機能を提供しています。</p>
+
+<ul>
+<li>フィードの表示</li>
+<li>ハイライトされるイベントをプッシュ通知</li>
+</ul>
+
+
+<p>前者はpull型の利用で、時間があるときにフィードを見て面白そうなリポジトリがあればスターをつけたりしておく、というような利用を想定しています。
+後者はpush型で、自分が関わるリポジトリにイベントがあった時に早く気づけるようにするという利用を想定しています。
+自分はこの2つの利用パターンが可能になって、はじめてモバイル版のGitHubが成り立つんじゃないかなあと思い、開発にいたりました。
+振り返ってみると、こういった用途はネイティブアプリの方が向いているので、ちょうど良かったのかもしれません。</p>
+
+<p>アプリは無料で広告もありませんが、設定画面にビールボタンがあるので、
+アプリを応援してくださる方は是非このボタンを押してみてください。よろしくお願いいたします。</p>
+
+<p>　</p>
+
+<p><img src="http://blog.ishkawa.org/images/2013-08-27/beer.png"></p>
+
+<p>　</p>
+
+<p>デザインは<a href="https://twitter.com/more_more_for">@more_more_for</a>くんに担当してもらいました。
+彼は前職の同期で、優秀で多忙な人なのですが、仕事の合間を縫って手伝ってもらいました。
+前職の時には一緒に仕事をする機会がなかったのですが、今回一緒にアプリをつくることができてうれしかったです。</p>
+
+<p>　</p>
+
+<p><a href="https://itunes.apple.com/jp/app/ghfeed/id683793545">アプリをダウンロード</a></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[2013年の@synthesize]]></title>
+    <link href="http://blog.ishkawa.org/blog/2013/08/17/synthesize-in-2013/"/>
+    <updated>2013-08-17T15:20:00+09:00</updated>
+    <id>http://blog.ishkawa.org/blog/2013/08/17/synthesize-in-2013</id>
+    <content type="html"><![CDATA[<p>Xcode 4.4でApple LLVM Compiler 4.0が採用されてから、いわゆるModern Objective-Cの一環として
+<code>@synthesize</code>を書かなくても<code>@synthesize foo = _foo;</code>を書いたときと同等の実装が暗黙的に行われるようになりました。
+この仕様が追加されたモダンなプロジェクトでは2度と<code>@synthesize</code>は書かれないのかというと、そうではなくて、
+以下のようなコードを書く場合に<code>@synthesize</code>を使うことがあります。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">@interface</span> <span class="nc">FOOViewController</span> : <span class="nc">UITableViewController</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">,</span> <span class="n">readonly</span><span class="p">)</span> <span class="n">NSFetchedResultsController</span> <span class="o">*</span><span class="n">fetchedResultsController</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="k">@implementation</span> <span class="nc">FOOViewController</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@synthesize</span> <span class="n">fetchedResultsController</span> <span class="o">=</span> <span class="n">_fetchedResultsController</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="n">NSFetchedResultsController</span> <span class="o">*</span><span class="p">)</span><span class="nf">fetchedResultsController</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">_fetchedResultsController</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">_fetchedResultsController</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">NSManagedObjectContext</span> <span class="o">*</span><span class="n">context</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSManagedObjectContext</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithConcurrencyType:</span><span class="n">NSMainQueueConcurrencyType</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">NSFetchRequest</span> <span class="o">*</span><span class="n">reqeust</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSFetchRequest</span> <span class="nl">fetchRequestWithEntityName:</span><span class="s">@&quot;Foo&quot;</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">reqeust</span><span class="p">.</span><span class="n">sortDescriptors</span> <span class="o">=</span> <span class="err">@</span><span class="p">[[</span><span class="n">NSSortDescriptor</span> <span class="nl">sortDescriptorWithKey:</span><span class="s">@&quot;bar&quot;</span> <span class="nl">ascending:</span><span class="n">YES</span><span class="p">]];</span>
+</span><span class='line'>    <span class="n">_fetchedResultsController</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSFetchedResultsController</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithFetchRequest:</span><span class="n">reqeust</span>
+</span><span class='line'>                                                                    <span class="nl">managedObjectContext:</span><span class="n">context</span>
+</span><span class='line'>                                                                      <span class="nl">sectionNameKeyPath:</span><span class="nb">nil</span>
+</span><span class='line'>                                                                               <span class="nl">cacheName:</span><span class="nb">nil</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">return</span> <span class="n">_fetchedResultsController</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><code>@synthesize fetchedResultsController = _fetchedResultsController;</code>が必要な理由は、
+getterの実装を独自に行なっているのでインスタンス変数<code>_fetchedResultsController</code>が宣言されないからです。
+インスタンス変数を宣言するためだけに<code>@synthesize</code>を使うのが気持ち悪い場合には以下のように書くこともでき、
+<code>@synthesize</code>とは永遠の別れを告げることができます。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">@interface</span> <span class="nc">FOOViewController</span> : <span class="nc">UITableViewController</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">,</span> <span class="n">readonly</span><span class="p">)</span> <span class="n">NSFetchedResultsController</span> <span class="o">*</span><span class="n">fetchedResultsController</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="k">@implementation</span> <span class="nc">FOOViewController</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">NSFetchedResultsController</span> <span class="o">*</span><span class="n">_fetchedResultsController</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">-</span> <span class="p">(</span><span class="n">NSFetchedResultsController</span> <span class="o">*</span><span class="p">)</span><span class="n">fetchedResultsController</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">_fetchedResultsController</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">_fetchedResultsController</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">NSManagedObjectContext</span> <span class="o">*</span><span class="n">context</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSManagedObjectContext</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithConcurrencyType:</span><span class="n">NSMainQueueConcurrencyType</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">NSFetchRequest</span> <span class="o">*</span><span class="n">reqeust</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSFetchRequest</span> <span class="nl">fetchRequestWithEntityName:</span><span class="s">@&quot;Foo&quot;</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">reqeust</span><span class="p">.</span><span class="n">sortDescriptors</span> <span class="o">=</span> <span class="err">@</span><span class="p">[[</span><span class="n">NSSortDescriptor</span> <span class="nl">sortDescriptorWithKey:</span><span class="s">@&quot;bar&quot;</span> <span class="nl">ascending:</span><span class="n">YES</span><span class="p">]];</span>
+</span><span class='line'>    <span class="n">_fetchedResultsController</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSFetchedResultsController</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithFetchRequest:</span><span class="n">reqeust</span>
+</span><span class='line'>                                                                    <span class="nl">managedObjectContext:</span><span class="n">context</span>
+</span><span class='line'>                                                                      <span class="nl">sectionNameKeyPath:</span><span class="nb">nil</span>
+</span><span class='line'>                                                                               <span class="nl">cacheName:</span><span class="nb">nil</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">return</span> <span class="n">_fetchedResultsController</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>ここまで書き終えてから思い出しましたが、NSManagedObjectのentityにないプロパティをつくるときにも<code>@synthesize</code>が必要でした。
+もう書く気力がないのでそれはまた別の機会に。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[ISHTTPOperation 1.1.0をリリースした]]></title>
+    <link href="http://blog.ishkawa.org/blog/2013/08/07/ishttpoperation/"/>
+    <updated>2013-08-07T11:02:00+09:00</updated>
+    <id>http://blog.ishkawa.org/blog/2013/08/07/ishttpoperation</id>
+    <content type="html"><![CDATA[<p>朝6時に目が覚めたら意識が高かったので、ISHTTPOperationに欲しかった機能をつけてリリースしました。<br/>
+<a href="https://github.com/ishkawa/ISHTTPOperation">ISHTTPOperation</a></p>
+
+<p>　</p>
+
+<p>ISHTTPOperationは特徴のあるライブラリではなくて、単純に非同期のNSURLConnectionをラップするNSOperationです。
+こういったライブラリはたくさんあって、いわゆる車輪の再発明なのですが、わざわざ自分で作っているのには理由があります。
+理由の1つは多くの通信ライブラリは機能が多すぎるため、大量の不要なコードをプロジェクトに導入することになってしまうからです。
+もう1つはNSURLConnectionをNSOperationで正しくラップするときにはミスしやすい箇所が多いので、
+シンプルなライブラリであってもキャンセルなどの目立ちにくい動作に不具合を出しやすいからです。</p>
+
+<h3>かわったところ</h3>
+
+<ul>
+<li>テストにスタブサーバーを利用する</li>
+<li>Travis CIとCoverallsを利用して品質(?)を表示</li>
+<li>NSPredicateを利用してキャンセル</li>
+</ul>
+
+
+<p>元々、3つ目のキャンセル機構をつけたかったのですが、
+最近は<a href="http://www.tokoro.me/2013/07/09/objc-travis-coveralls/">iOSのライブラリだってTravis CIとかCoverallsとか使うべき</a>という話だったので、
+その辺りにも手を入れてみたらテストがださかったのでテストも直したという感じです。
+それと、せっかくここまでやったんだからと思ってCocoaPodsにもpull requestを送っておきました。</p>
+
+<p>NSPredicateでキャンセルというのは以下のような感じです。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="n">NSPredicate</span> <span class="o">*</span><span class="n">predicate</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSPredicate</span> <span class="nl">predicateWithFormat:</span><span class="s">@&quot;request.HTTPMethod MATCHES %@&quot;</span><span class="p">,</span> <span class="s">@&quot;GET&quot;</span><span class="p">];</span>
+</span><span class='line'><span class="p">[[</span><span class="n">ISHTTPOperationQueue</span> <span class="n">defaultQueue</span><span class="p">]</span> <span class="nl">cancelOperationsUsingPredicate:</span><span class="n">predicate</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>よく使いそうなやつには以下のようなショートカットも用意しました。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="p">[[</span><span class="n">ISHTTPOperationQueue</span> <span class="n">defaultQueue</span><span class="p">]</span> <span class="nl">cancelOperationsWithHTTPMethod:</span><span class="s">@&quot;GET&quot;</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[OCMArgをBlocksとして渡すときに困ること]]></title>
+    <link href="http://blog.ishkawa.org/blog/2013/07/15/ocmarg-block/"/>
+    <updated>2013-07-15T01:42:00+09:00</updated>
+    <id>http://blog.ishkawa.org/blog/2013/07/15/ocmarg-block</id>
+    <content type="html"><![CDATA[<p>iOSの標準フレームワークでは至るところにBlocksが登場します。
+引数として渡されるBlocks自体に制限を設けたテストを書くことはあまりないので
+<code>[OCMArg any]</code>を指定しようと考えるのですが、Blocksは内部的にcopyして扱われることが多いらしく、
+以下のようなテストを書くとOCMConstraintをcopyしようとしたところで例外が発生します。
+OCMConstraintがNSCopyingに適合していないので当然のことですが、ちょっと困ります。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">testSomeMethod</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="kt">id</span> <span class="n">mock</span> <span class="o">=</span> <span class="p">[</span><span class="n">OCMockObject</span> <span class="nl">partialMockForObject:</span><span class="n">viewController</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[[</span><span class="n">mock</span> <span class="n">expect</span><span class="p">]</span> <span class="nl">dismissViewControllerAnimated:</span><span class="n">NO</span> <span class="nl">completion:</span><span class="p">[</span><span class="n">OCMArg</span> <span class="n">any</span><span class="p">]];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 何かする</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">STAssertNoThrow</span><span class="p">([</span><span class="n">mock</span> <span class="n">verify</span><span class="p">],</span> <span class="s">@&quot;did not dismiss.&quot;</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>めんどくさいので自分は以下のようなコードをOCMConstraintのカテゴリに書いて問題を回避しました。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nf">copyWithZone:</span><span class="p">(</span><span class="n">NSZone</span> <span class="o">*</span><span class="p">)</span><span class="nv">zone</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">self</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>テストコードとは言えどもこういった雑なことばっかりしてるといつか痛い目に遭いそうだと思ったので、
+より良い方法があれば聞きたいところです。</p>
+
+<h3>追記</h3>
+
+<p>OCMock 2.2では同様の実装がされていると、<a href="https://twitter.com/azu_re/">@azu_re</a>さんに教えていただきました。<br/>
+2.2以降を利用すれば上記のメソッドを実装しなくてもcopyの問題は起こりません。</p>
+
+<blockquote class="twitter-tweet"><p><a href="https://twitter.com/_ishkawa">@_ishkawa</a> OCMock 2.2だとcopyWithZone: 実装されてるように見えるけど、これとは別? <a href="https://t.co/lDzgB5tMSb">https://t.co/lDzgB5tMSb</a> <a href="https://t.co/w11Yr14Um9">https://t.co/w11Yr14Um9</a></p>&mdash; azu (@azu_re) <a href="https://twitter.com/azu_re/statuses/356620135156551681">July 15, 2013</a></blockquote>
+
+
+<script async src="http://blog.ishkawa.org//platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[コードカバレッジを計測してみた感想]]></title>
+    <link href="http://blog.ishkawa.org/blog/2013/07/08/code-coverage/"/>
+    <updated>2013-07-08T20:52:00+09:00</updated>
+    <id>http://blog.ishkawa.org/blog/2013/07/08/code-coverage</id>
+    <content type="html"><![CDATA[<p>先週末、およそ3ヶ月ぶりにNode.jsのコードを書きました。</p>
+
+<p>いつの間にかテストをそれほど苦労せずに書けるようになっていて、
+たくさんテストを書いて意識が高まり、コードカバレッジを計測しようと思いました。
+コードカバレッジを計測するのは今回が生まれて初めてでした。
+何処かで&#8221;コードカバレッジは目安に過ぎない&#8221;みたいな話を聞いて、
+コードカバレッジの効果に対しては半信半疑なところがありましたが、
+とにかくそのときは意識が高まっていたので頑張って計測できるようにしました。
+参考にしたのは以下のブログ記事です。
+あまり深いことはわからないのですが、jscoverageが実行回数を測定できるプロダクトコードのコピーを生成し、
+テストコードからそれを実行することでコードカバレッジを計測できるという感じの仕組みのようです。</p>
+
+<p><a href="http://www.seejohncode.com/2012/03/13/setting-up-mocha-jscoverage/">http://www.seejohncode.com/2012/03/13/setting-up-mocha-jscoverage/</a></p>
+
+<h4>感想</h4>
+
+<p>&ldquo;コードカバレッジは目安に過ぎない&#8221;というのは、コードカバレッジを計測した経験がある人とない人とでは捉え方が変わると思いました。
+コードカバレッジを計測してみる前は&#8221;目安に過ぎないから計測してもしなくても大差ない&#8221;というような気がしていたのですが、
+計測してその結果を活用して開発をしてみると&#8221;無意味な変更でパーセンテージが変化する場合があるから目安&#8221;なのかなと思いました。
+で、結局目安と言いながらも明らかにカバーできていない箇所を発見できたりして開発にとても役立つので、
+本業のiOS開発の方でも頑張ってやってみようと思いました。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[ISDiskCacheというのを書いた]]></title>
+    <link href="http://blog.ishkawa.org/blog/2013/07/01/isdiskcache/"/>
+    <updated>2013-07-01T03:41:00+09:00</updated>
+    <id>http://blog.ishkawa.org/blog/2013/07/01/isdiskcache</id>
+    <content type="html"><![CDATA[<p>2ヶ月ほど前に<a href="http://blog.ishkawa.org/blog/2013/04/24/ismemorycache/">ISMemoryCacheというのを書いた</a>のですが、
+実はこれと並行してISDiskCacheというのもつくっていました。
+しかし、良いアイディアが浮かばなくて完成度が十分に上がらず、リリースできないまま放置していました。
+先週末にちょうど<a href="https://objectivechackathon.appspot.com">Put Objective-C Back On the Map</a>というWeb上のイベントがあったので、
+それに参加することをモチベーションにISDiskCacheの実装に再挑戦しました。</p>
+
+<p><a href="https://github.com/ishkawa/ISDiskCache">ISDiskCache</a></p>
+
+<h3>特徴</h3>
+
+<ul>
+<li>合計のファイルサイズの上限を持ち、上限を超えたら古いファイルを自動的に削除(LRU)。</li>
+<li>NSCodingに適合するオブジェクトをキー/値に設定できる。</li>
+<li>NSDateを指定してアクセス日時が古いファイルを削除できる。</li>
+</ul>
+
+
+<p>類似のライブラリにはtumblrがつくっている<a href="https://github.com/tumblr/TMCache">TMCache</a>があります。
+TMCacheとISMemoryCache/ISDiskCacheの違いは説明するが大変なので、お互いにないものを挙げていきます。</p>
+
+<ul>
+<li>実績がある: TMCache</li>
+<li>メモリキャッシュ/ディスクキャッシュを意識せずに使える: TMCache</li>
+<li>参照がある限りキャッシュをクリアしない: ISMemoryCache/ISDiskCache</li>
+<li>NSString以外をキーにできる: ISMemoryCache/ISDiskCache</li>
+</ul>
+
+
+<p>メモリキャッシュ/ディスクキャッシュを意識させないつくりが必要かどうかは少し疑問に思いました。
+確かに同じAPIで利用できるのは手軽で便利なのですが、メモリキャッシュはメインスレッドでも同期的に扱うことができるのに、
+メモリキャッシュかディスクキャッシュかわからなくなってしまうと非同期的に処理するしかなくなってしまいます。</p>
+
+<p>自分は同期的にかける箇所は同期的に書きたかったので、メモリキャッシュとディスクキャッシュを分けることにしました。
+キャッシュを分けると利用側のコードが増えてしまうのですが、ディスクキャッシュへのアクセスとサーバーとの通信を1つのNSOperationにまとめてしまえば、
+以下のように同期的な処理と非同期的な処理の2通りを書けば済んでしまいます。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="n">UIImage</span> <span class="o">*</span><span class="n">cachedImage</span> <span class="o">=</span> <span class="p">[[</span><span class="n">ISMemoryCache</span> <span class="n">sharedCache</span><span class="p">]</span> <span class="nl">objectForKey:</span><span class="n">URL</span><span class="p">];</span>
+</span><span class='line'><span class="k">if</span> <span class="p">(</span><span class="n">cachedImage</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">imageView</span><span class="p">.</span><span class="n">image</span> <span class="o">=</span> <span class="n">cachedImage</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">imageView</span><span class="p">.</span><span class="n">image</span> <span class="o">=</span> <span class="p">[</span><span class="n">UIImage</span> <span class="nl">imageNamed:</span><span class="s">@&quot;placeholder&quot;</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">ISImageLoaderOperation</span> <span class="nl">loadURL:</span><span class="n">URL</span> <span class="nl">handler:</span><span class="o">^</span><span class="p">(</span><span class="n">UIImage</span> <span class="o">*</span><span class="n">image</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">imageView</span><span class="p">.</span><span class="n">image</span> <span class="o">=</span> <span class="n">image</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}];</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[OCMockでも[[foo shouldEventually] receive:@selector(bar)]がしたい]]></title>
+    <link href="http://blog.ishkawa.org/blog/2013/06/26/ocmock-async/"/>
+    <updated>2013-06-26T00:35:00+09:00</updated>
+    <id>http://blog.ishkawa.org/blog/2013/06/26/ocmock-async</id>
+    <content type="html"><![CDATA[<p>そう思って、雑に実装をしてみました。</p>
+
+<p><code>[[foo shouldEventually] receive:@selector(bar)]</code>はKiwiの構文で、<br/>
+一定時間以内に<code>bar</code>というメソッドが呼ばれないとテスト失敗とするものです。</p>
+
+<p>具体的には以下のようなプログラムで<code>foo</code>の<code>bar</code>が呼ばれるか確認するテストに使えます。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">someMethod:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">foo</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">dispatch_queue_t</span> <span class="n">queue</span> <span class="o">=</span> <span class="n">dispatch_get_global_queue</span><span class="p">(</span><span class="n">DISPATCH_QUEUE_PRIORITY_DEFAULT</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+</span><span class='line'>    <span class="n">dispatch_async</span><span class="p">(</span><span class="n">queue</span><span class="p">,</span> <span class="o">^</span><span class="p">{</span>
+</span><span class='line'>        <span class="p">...</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="p">[</span><span class="n">foo</span> <span class="n">bar</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">});</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Kiwiの<code>shouldEventually</code>は<code>KWProbePoller</code>が0.1秒ごとに<code>NSRunLoop</code>を回し、<br/>
+<code>KWAsyncMatcherProbe</code>の  <code>isSatisfied</code>が<code>YES</code>になるまで回し続けるという実装をしています。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="c1">// KWProbePoller</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nf">check:</span><span class="p">(</span><span class="kt">id</span><span class="o">&lt;</span><span class="n">KWProbe</span><span class="o">&gt;</span><span class="p">)</span><span class="nv">probe</span><span class="p">;</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="n">KWTimeout</span> <span class="o">*</span><span class="n">timeout</span> <span class="o">=</span> <span class="p">[[</span><span class="n">KWTimeout</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithTimeout:</span><span class="n">timeoutInterval</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">while</span> <span class="p">(</span><span class="o">!</span><span class="p">[</span><span class="n">probe</span> <span class="n">isSatisfied</span><span class="p">])</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">([</span><span class="n">timeout</span> <span class="n">hasTimedOut</span><span class="p">])</span> <span class="p">{</span>
+</span><span class='line'>      <span class="p">[</span><span class="n">timeout</span> <span class="n">release</span><span class="p">];</span>
+</span><span class='line'>      <span class="k">return</span> <span class="n">NO</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="p">[[</span><span class="n">NSRunLoop</span> <span class="n">currentRunLoop</span><span class="p">]</span> <span class="nl">runUntilDate:</span><span class="p">[</span><span class="n">NSDate</span> <span class="nl">dateWithTimeIntervalSinceNow:</span><span class="n">delayInterval</span><span class="p">]];</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">probe</span> <span class="n">sample</span><span class="p">];</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">timeout</span> <span class="n">release</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">return</span> <span class="n">YES</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><code>OCMock</code>で<code>receive:</code>に相当するものは<code>expect</code>/<code>verify</code>なので、これらを使って同じことをします。</p>
+
+<p><code>OCMockObject</code>は<code>expectations</code>という<code>NSArray</code>があり、<code>expect</code>すると<code>OCMockRecorder</code>を追加し、<br/>
+メソッドが呼ばれると<code>OCMockRecorder</code>を<code>expectations</code>から外すという処理をします。<br/>
+そして、<code>verify</code>時に<code>expectations</code>が残っているとテストを失敗させる仕組みになっています。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="c1">// OCMockObject</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">verify</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="k">if</span><span class="p">([</span><span class="n">expectations</span> <span class="n">count</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span>
+</span><span class='line'>  <span class="p">{</span>
+</span><span class='line'>      <span class="p">[</span><span class="n">NSException</span> <span class="nl">raise:</span><span class="n">NSInternalInconsistencyException</span> <span class="nl">format:</span><span class="s">@&quot;%@: expected method was not invoked: %@&quot;</span><span class="p">,</span>
+</span><span class='line'>          <span class="p">[</span><span class="n">self</span> <span class="n">description</span><span class="p">],</span> <span class="p">[[</span><span class="n">expectations</span> <span class="nl">objectAtIndex:</span><span class="mi">0</span><span class="p">]</span> <span class="n">description</span><span class="p">]];</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>  <span class="k">if</span><span class="p">([</span><span class="n">expectations</span> <span class="n">count</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
+</span><span class='line'>  <span class="p">{</span>
+</span><span class='line'>      <span class="p">[</span><span class="n">NSException</span> <span class="nl">raise:</span><span class="n">NSInternalInconsistencyException</span> <span class="nl">format:</span><span class="s">@&quot;%@ : %ld expected methods were not invoked: %@&quot;</span><span class="p">,</span>
+</span><span class='line'>          <span class="p">[</span><span class="n">self</span> <span class="n">description</span><span class="p">],</span> <span class="p">[</span><span class="n">expectations</span> <span class="n">count</span><span class="p">],</span> <span class="p">[</span><span class="n">self</span> <span class="nl">_recorderDescriptions:</span><span class="n">YES</span><span class="p">]];</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>  <span class="k">if</span><span class="p">([</span><span class="n">exceptions</span> <span class="n">count</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
+</span><span class='line'>  <span class="p">{</span>
+</span><span class='line'>      <span class="p">[[</span><span class="n">exceptions</span> <span class="nl">objectAtIndex:</span><span class="mi">0</span><span class="p">]</span> <span class="n">raise</span><span class="p">];</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>なので、<code>expectations</code>が変わるまで<code>NSRunLoop</code>を回すという<code>verify</code>の代替メソッドを用意すれば、<br/>
+<code>OCMock</code>らしく<code>[[foo shouldEventually] receive:@selector(bar)]</code>に相当するものが実装できます。</p>
+
+<p>以下がその実装です。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">@implementation</span> <span class="nc">OCMockObject</span> <span class="nl">(Lazy)</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">verifyLazily</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">self</span> <span class="nl">verifyLazilyWithTimeout:</span><span class="mf">1.0</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">verifyLazilyWithTimeout:</span><span class="p">(</span><span class="n">NSTimeInterval</span><span class="p">)</span><span class="nv">timeout</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">NSTimeInterval</span> <span class="n">interval</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">NSDate</span> <span class="o">*</span><span class="n">startedDate</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSDate</span> <span class="n">date</span><span class="p">];</span>
+</span><span class='line'>    <span class="kt">BOOL</span> <span class="n">shouldContinue</span> <span class="o">=</span> <span class="n">YES</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">while</span> <span class="p">(</span><span class="n">shouldContinue</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="err">@</span><span class="n">autoreleasepool</span> <span class="p">{</span>
+</span><span class='line'>            <span class="n">shouldContinue</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSDate</span> <span class="n">date</span><span class="p">]</span> <span class="nl">timeIntervalSinceDate:</span><span class="n">startedDate</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">timeout</span><span class="p">;</span>
+</span><span class='line'>            <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">shouldContinue</span> <span class="o">||</span> <span class="p">[</span><span class="n">self</span><span class="o">-&gt;</span><span class="n">expectations</span> <span class="n">count</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>                <span class="p">[</span><span class="n">self</span> <span class="n">verify</span><span class="p">];</span>
+</span><span class='line'>            <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>            <span class="n">NSDate</span> <span class="o">*</span><span class="n">date</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSDate</span> <span class="nl">dateWithTimeIntervalSinceNow:</span><span class="n">interval</span><span class="p">];</span>
+</span><span class='line'>            <span class="p">[[</span><span class="n">NSRunLoop</span> <span class="n">currentRunLoop</span><span class="p">]</span> <span class="nl">runUntilDate:</span><span class="n">date</span><span class="p">];</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>これを利用したテストケースは以下のように書くことができます。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">testFooInvokesBarOnSomeMethod</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="kt">id</span> <span class="n">fooMock</span> <span class="o">=</span> <span class="p">[</span><span class="n">OCMockObject</span> <span class="nl">mockForClass:</span><span class="p">[</span><span class="n">Foo</span> <span class="n">class</span><span class="p">]];</span>
+</span><span class='line'>    <span class="p">[[</span><span class="n">fooMock</span> <span class="n">expect</span><span class="p">]</span> <span class="n">bar</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="p">[</span><span class="n">testObject</span> <span class="nl">someMethod:</span><span class="n">fooMock</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">STAssertNoThrow</span><span class="p">([</span><span class="n">fooMock</span> <span class="n">verifyLazily</span><span class="p">],</span> <span class="s">@&quot;foo did not invoke bar.&quot;</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>&mdash;</p>
+
+<p>勢い余ってやってみたという感じなのですが、もっと良い方法があれば知りたいです。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[xib/storyboardとの付き合い方について]]></title>
+    <link href="http://blog.ishkawa.org/blog/2013/06/25/storyboard-and-xib/"/>
+    <updated>2013-06-25T02:12:00+09:00</updated>
+    <id>http://blog.ishkawa.org/blog/2013/06/25/storyboard-and-xib</id>
+    <content type="html"><![CDATA[<p>アプリが大きくなるとstoryboardの小回りの利かなさに泣きたくなることがあると思います。<br/>
+そうした反動からすべてのUIをコードで実装しているiOS開発者も少なくないと思います。</p>
+
+<p>自分は全部storyboardにして痛い目にあってから、全部コードにしてまた痛い目に遭い、<br/>
+結局コードとxibとstoryboardを上手く使い分けるのが良いという結論に達しました。<br/>
+最近、やり方が定まってきてストレスを感じなくなってきたので方法をまとめます。</p>
+
+<p>これから書くことは個人の見解ですが、自分のやり方を決める上では無駄にならないと思います。</p>
+
+<p>　</p>
+
+<h3>使い分け方と理由</h3>
+
+<p>基本方針: 以下に挙げる条件にマッチする場合除いて、コードで実装を行います。</p>
+
+<h3>xibを使う条件</h3>
+
+<p>viewの複雑度が高い場合(subviewが2,3個以上の場合)にはxibを使います。<br/>
+xibを利用する理由は以下のような退屈なコードをたくさん書くのがつらいからです。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="n">UILabel</span> <span class="o">*</span><span class="n">label</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UILabel</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithFrame:</span><span class="n">CGRectZero</span><span class="p">];</span>
+</span><span class='line'><span class="n">label</span><span class="p">.</span><span class="n">backgroundColor</span> <span class="o">=</span> <span class="p">[</span><span class="n">UIColor</span> <span class="n">clearColor</span><span class="p">];</span>
+</span><span class='line'><span class="n">label</span><span class="p">.</span><span class="n">textColor</span> <span class="o">=</span> <span class="p">[</span><span class="n">UIColor</span> <span class="n">darkGrayColor</span><span class="p">];</span>
+</span><span class='line'><span class="n">label</span><span class="p">.</span><span class="n">textAlignment</span> <span class="o">=</span> <span class="n">UITextAlignmentCenter</span><span class="p">;</span>
+</span><span class='line'><span class="n">label</span><span class="p">.</span><span class="n">baselineAdjustment</span> <span class="o">=</span> <span class="n">UIBaselineAdjustmentAlignCenters</span><span class="p">;</span>
+</span><span class='line'><span class="n">label</span><span class="p">.</span><span class="n">shadowOffset</span> <span class="o">=</span> <span class="n">CGSizeMake</span><span class="p">(</span><span class="mf">0.f</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.f</span><span class="p">);</span>
+</span><span class='line'><span class="n">label</span><span class="p">.</span><span class="n">numberOfLines</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'><span class="n">label</span><span class="p">.</span><span class="n">frame</span> <span class="o">=</span> <span class="n">CGRectMake</span><span class="p">(</span><span class="mf">10.f</span><span class="p">,</span> <span class="mf">10.f</span><span class="p">,</span> <span class="mf">100.f</span><span class="p">,</span> <span class="mf">100.f</span><span class="p">);</span>
+</span><span class='line'><span class="n">label</span><span class="p">.</span><span class="n">autoresizingMask</span> <span class="o">=</span> <span class="n">UIViewAutoresizingFlexibleWidth</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>これはstoryboardを使う理由にもなるのですが、この条件のみの場合にはxibを使います。<br/>
+storyboardの利用に対して消極的な理由は後半の方に書きます。</p>
+
+<p>逆に、<code>UIWebView</code>だけが単品で乗っているような、<code>UIViewController</code>の<code>loadView</code>を<br/>
+オーバーライドすれば済んでしまう場合にはxibを利用せずにコードのみで実装を行います。<br/>
+配置に関するコードは大体以下のようなもので済むと思います。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">loadView</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">self</span><span class="p">.</span><span class="n">view</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UIWebView</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>storyboardを使う条件</h3>
+
+<p>xibを利用する条件に加えて以下の3つを満たす場合にはstoryboardを部分的に利用します。<br/>
+この条件にマッチしやすいのはチュートリアルや設定画面などのViewControllerです。</p>
+
+<ul>
+<li>十分に小さい単位で他の部分から切り出すことができる</li>
+<li>viewの再利用性が低い (特にUITableViewのStatic Cellsが適切な場合)</li>
+<li>segueなどのidentifierを設定する機会が少ない</li>
+</ul>
+
+
+<p>十分小さい単位でアプリの他の部分から切り出せることを条件にしている理由は以下の3つです。</p>
+
+<ul>
+<li>storyboardが大きいとどこで何が定義されているのか把握し切れなくなる</li>
+<li>storyboardが大きいとコードに対応した箇所を探すのに時間がかかる</li>
+<li>storyboardが大きいと分業するの妨げとなる</li>
+</ul>
+
+
+<p>再利用性の低さを条件にしている理由は以下の2つです。<br/>
+後者はViewの配置を決めている箇所を特定するまでに掛かる時間に影響するので、特に重要です。</p>
+
+<ul>
+<li>ViewControllerの再利用性が高い場合にはstoryboard自体が複雑になり、編集しづらくなる。</li>
+<li><code>UITableViewCell</code>などのパーツは再利用できず、xibかコードを利用することになる。</li>
+</ul>
+
+
+<p>segueなどのidentifierを設定する機会の少なさを条件にしている理由は以下の3つです。</p>
+
+<ul>
+<li>プログラムを書くのにいちいちstoryboardを見てidentifierを確認するのが面倒</li>
+<li>identifierをコードに手打ちするのが面倒な上に間違えやすい</li>
+<li>コード上でidentifierを見つけたとき、storyboardを確認しなければ正確な遷移がわからない。</li>
+</ul>
+
+
+<p>以上の条件をクリアしていると、とても気持ち良くstoryboardを利用できると思います。<br/>
+実際、設定画面で利用してstoryboard固有のストレスを感じる機会は少なかったです。</p>
+
+<p>　</p>
+
+<h3>いままでに挑戦したやり方と感想</h3>
+
+<h4>全部コードで実装する</h4>
+
+<ul>
+<li>Viewの配置の退屈なコードが増えて、プログラミングがタイピングスポーツになった。</li>
+</ul>
+
+
+<h4>xibが利用できる箇所は全部xibで実装する</h4>
+
+<ul>
+<li>特に大きな問題はないが無駄なxibがいくらかあって邪魔だった。</li>
+<li>設定画面がswitch祭りになった。</li>
+</ul>
+
+
+<h4>storyboardが利用できる箇所は全部storyboardで実装する</h4>
+
+<ul>
+<li>再利用性があるパーツにはxibを使い出したりして、結局どこに何があるかわからなくなった。</li>
+<li>長い期間を置いてから再度プロジェクトを開いたらidentifierを探すのが面倒くさかった。</li>
+</ul>
+
+
+<p>アプリの規模が十分に小さい場合には全部storyboardを利用した実装にしても問題なさそうです。<br/>
+これと関連して、プロトタイプにのみ利用するという人もいるようです。</p>
+
+<p>&mdash;</p>
+
+<p>おそらく違う考え方をする人もたくさんいると思うので、そういう人の意見も聞きたいところです。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[MantleのようなノリでJSON>NSManagedObjectを楽にしたかった]]></title>
+    <link href="http://blog.ishkawa.org/blog/2013/06/24/keymap-and-valuetransformer/"/>
+    <updated>2013-06-24T21:00:00+09:00</updated>
+    <id>http://blog.ishkawa.org/blog/2013/06/24/keymap-and-valuetransformer</id>
+    <content type="html"><![CDATA[<p>MantleのREADMEを読んでスゲーって思い、ヘッダーを読んでメンドクセーって思いました。<br/>
+CoreDataを使っていてもスゲーってところだけうまく取り込めないかと思って、考えました。</p>
+
+<p>&mdash;</p>
+
+<h3>Mantle</h3>
+
+<p>Mantleはいくらか前にGitHubがリリースしたモデルフレームワークです。<br/>
+MantleはJSONなどのkey-valueなものに対して、</p>
+
+<ul>
+<li>モデルのキーに対応するJSONのキーを定義する。</li>
+<li>各キーに対応した<code>NSValueTransformer</code>を定義する。</li>
+</ul>
+
+
+<p>というやり方で、JSONなどからモデルオブジェクトを作成します。<br/>
+具体的には、普通は以下のように書くコードを</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nf">initWithDictionary:</span><span class="p">(</span><span class="n">NSDictionary</span> <span class="o">*</span><span class="p">)</span><span class="nv">dictionary</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">self</span> <span class="o">=</span> <span class="p">[</span><span class="n">super</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">self</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">self</span><span class="p">.</span><span class="n">hogeString</span> <span class="o">=</span> <span class="p">[</span><span class="n">dictionary</span> <span class="nl">objectForKey:</span><span class="s">@&quot;hoge&quot;</span><span class="p">];</span>
+</span><span class='line'>        <span class="n">self</span><span class="p">.</span><span class="n">fugaNumber</span> <span class="o">=</span> <span class="p">[</span><span class="n">dictionary</span> <span class="nl">objectForKey:</span><span class="s">@&quot;fuga&quot;</span><span class="p">];</span>
+</span><span class='line'>        <span class="n">self</span><span class="p">.</span><span class="n">piyoURL</span>    <span class="o">=</span> <span class="p">[</span><span class="n">NSURL</span> <span class="nl">URLWithString:</span><span class="p">[</span><span class="n">dictionary</span> <span class="nl">objectForKey:</span><span class="s">@&quot;piyo&quot;</span><span class="p">]];</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">self</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>以下のように書くことで同等の処理ができるようになります。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">NSDictionary</span> <span class="o">*</span><span class="p">)</span><span class="nf">JSONKeyPathsByPropertyKey</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="err">@</span><span class="p">{</span>
+</span><span class='line'>        <span class="s">@&quot;hogeString&quot;</span><span class="o">:</span> <span class="s">@&quot;hoge&quot;</span><span class="p">,</span>
+</span><span class='line'>        <span class="s">@&quot;fugaNumber&quot;</span><span class="o">:</span> <span class="s">@&quot;fuga&quot;</span><span class="p">,</span>
+</span><span class='line'>        <span class="s">@&quot;piyoURL&quot;</span><span class="o">:</span>    <span class="s">@&quot;piyo&quot;</span><span class="p">,</span>
+</span><span class='line'>    <span class="p">};</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">NSValueTransformer</span> <span class="o">*</span><span class="p">)</span><span class="nf">piyoURLJSONTransformer</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="p">[</span><span class="n">NSValueTransformer</span> <span class="nl">valueTransformerForName:</span><span class="n">MTLURLValueTransformerName</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>キーの対応と<code>NSValueTransformer</code>さえ提供すれば、同様にして<code>NSCoding</code>や<code>NSCopying</code>などの<br/>
+プロトコルにも適合できるというのもMantleの優れているところです。　</p>
+
+<p>上記のコードのように値の操作がかなり隠蔽されてしまうため、デバッグしづらくなるのが<br/>
+個人的には少し気になりますが、そこは許すことにするという前提で話を進めます。</p>
+
+<p>&mdash;</p>
+
+<h3>自分の場合</h3>
+
+<p>既にCoreDataを使って書いたコードがたくさんあったのと、MantleのCoreDataが絡む部分を
+よく把握できていなかったことを考えて、Mantle自体の採用は見送りました。</p>
+
+<ul>
+<li>モデルのキーに対応するJSONのキーを定義する。</li>
+<li>各キーに対応した<code>NSValueTransformer</code>を定義する。</li>
+</ul>
+
+
+<p>というアイディアのみを採用してMantleを真似したインターフェースを作り、<br/>
+<code>NSManagedObject</code>でもMantleの<code>MTLModel</code>と大体同じようなことができるようにしました。</p>
+
+<h4>実装方法</h4>
+
+<p>Mantle方式の値のセットが出来る<code>NSManagedObject</code>の抽象的なサブクラスをつくります。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">@interface</span> <span class="nc">ISKeymapManagedObject</span> : <span class="nc">NSManagedObject</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">NSDictionary</span> <span class="o">*</span><span class="p">)</span><span class="nf">JSONKeymap</span><span class="p">;</span>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">NSDictionary</span> <span class="o">*</span><span class="p">)</span><span class="nf">JSONValueTransformerNames</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nf">initWithDictionary:</span><span class="p">(</span><span class="n">NSDictionary</span> <span class="o">*</span><span class="p">)</span><span class="nv">dictionary</span>
+</span><span class='line'>                  <span class="nf">entity:</span><span class="p">(</span><span class="n">NSEntityDescription</span> <span class="o">*</span><span class="p">)</span><span class="nv">entity</span>
+</span><span class='line'>    <span class="nf">managedObjectContext:</span><span class="p">(</span><span class="n">NSManagedObjectContext</span> <span class="o">*</span><span class="p">)</span><span class="nv">context</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><code>NSManagedObject</code>のキーとJSONのキーの対応を<code>JSONKeymap</code>というメソッドで定義し、
+<code>NSManagedObject</code>のキーと<code>NSValueTransformer</code>の対応を<code>JSONValueTransformerNames</code>というメソッドで定義します。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">NSDictionary</span> <span class="o">*</span><span class="p">)</span><span class="nf">JSONKeymap</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="err">@</span><span class="p">{};</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">NSDictionary</span> <span class="o">*</span><span class="p">)</span><span class="nf">JSONValueTransformerNames</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="err">@</span><span class="p">{};</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>そして、<code>NSDictionary</code>を引数に取るイニシャライザを定義して、これらの対応を行います。
+<code>NSManagedObject</code>はKVCに準拠しているので、以下のようにして<code>setValue:forKey</code>で値をセット出来ます。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nf">initWithDictionary:</span><span class="p">(</span><span class="n">NSDictionary</span> <span class="o">*</span><span class="p">)</span><span class="nv">dictionary</span>
+</span><span class='line'>                  <span class="nf">entity:</span><span class="p">(</span><span class="n">NSEntityDescription</span> <span class="o">*</span><span class="p">)</span><span class="nv">entity</span>
+</span><span class='line'>    <span class="nf">managedObjectContext:</span><span class="p">(</span><span class="n">NSManagedObjectContext</span> <span class="o">*</span><span class="p">)</span><span class="nv">context</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">self</span> <span class="o">=</span> <span class="p">[</span><span class="n">super</span> <span class="nl">initWithEntity:</span><span class="n">entity</span> <span class="nl">insertIntoManagedObjectContext:</span><span class="n">context</span><span class="p">];</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">self</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">NSDictionary</span> <span class="o">*</span><span class="n">keymap</span> <span class="o">=</span> <span class="p">[[</span><span class="n">self</span> <span class="n">class</span><span class="p">]</span> <span class="n">JSONKeymap</span><span class="p">];</span>
+</span><span class='line'>        <span class="n">NSDictionary</span> <span class="o">*</span><span class="n">valueTransformerNames</span> <span class="o">=</span> <span class="p">[[</span><span class="n">self</span> <span class="n">class</span><span class="p">]</span> <span class="n">JSONValueTransformerNames</span><span class="p">];</span>
+</span><span class='line'>        <span class="k">for</span> <span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="n">objectKey</span> <span class="k">in</span> <span class="p">[</span><span class="n">keymap</span> <span class="n">allKeys</span><span class="p">])</span> <span class="p">{</span>
+</span><span class='line'>            <span class="kt">id</span> <span class="n">dictionaryKey</span> <span class="o">=</span> <span class="p">[</span><span class="n">keymap</span> <span class="nl">objectForKey:</span><span class="n">objectKey</span><span class="p">];</span>
+</span><span class='line'>            <span class="kt">id</span> <span class="n">value</span> <span class="o">=</span> <span class="p">[</span><span class="n">dictionary</span> <span class="nl">objectForKey:</span><span class="n">dictionaryKey</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>            <span class="n">NSString</span> <span class="o">*</span><span class="n">transformerName</span> <span class="o">=</span> <span class="p">[</span><span class="n">valueTransformerNames</span> <span class="nl">objectForKey:</span><span class="n">objectKey</span><span class="p">];</span>
+</span><span class='line'>            <span class="k">if</span> <span class="p">(</span><span class="n">transformerName</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>                <span class="n">NSValueTransformer</span> <span class="o">*</span><span class="n">transformer</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSValueTransformer</span> <span class="nl">valueTransformerForName:</span><span class="n">transformerName</span><span class="p">];</span>
+</span><span class='line'>                <span class="n">value</span> <span class="o">=</span> <span class="p">[</span><span class="n">transformer</span> <span class="nl">transformedValue:</span><span class="n">value</span><span class="p">];</span>
+</span><span class='line'>            <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>            <span class="p">[</span><span class="n">self</span> <span class="nl">setValue:</span><span class="n">value</span> <span class="nl">forKey:</span><span class="n">objectKey</span><span class="p">];</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">self</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>以上で利用する準備は完了です。</p>
+
+<p>結果、以下のようにして<code>NSDictionary</code>の値がセットされた<code>NSManagedObject</code>を
+作成することができるようになります。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="n">NSDictionary</span> <span class="o">*</span><span class="n">dictionary</span><span class="p">;</span>
+</span><span class='line'><span class="n">NSEntityDescription</span> <span class="o">*</span><span class="n">entity</span><span class="p">;</span>
+</span><span class='line'><span class="n">NSManagedObjectContext</span> <span class="o">*</span><span class="n">context</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">ISKeymapManagedObject</span> <span class="o">*</span><span class="n">object</span> <span class="o">=</span>
+</span><span class='line'><span class="p">[[</span><span class="n">ISKeymapManagedObject</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithDictionary:</span><span class="n">dictionary</span>
+</span><span class='line'>                                           <span class="nl">entity:</span><span class="n">entity</span>
+</span><span class='line'>                             <span class="nl">managedObjectContext:</span><span class="n">context</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h4>サブクラスの例</h4>
+
+<p>具体的なサブクラスは以下のように定義します。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">@interface</span> <span class="nc">ISItem</span> : <span class="nc">ISKeymapManagedObject</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">,</span> <span class="n">readonly</span><span class="p">)</span> <span class="n">NSString</span> <span class="o">*</span><span class="n">identifier</span><span class="p">;</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">,</span> <span class="n">readonly</span><span class="p">)</span> <span class="n">NSString</span> <span class="o">*</span><span class="n">title</span><span class="p">;</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">,</span> <span class="n">readonly</span><span class="p">)</span> <span class="n">NSString</span> <span class="o">*</span><span class="n">authorName</span><span class="p">;</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">,</span> <span class="n">readonly</span><span class="p">)</span> <span class="n">NSURL</span>    <span class="o">*</span><span class="n">imageURL</span><span class="p">;</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">,</span> <span class="n">readonly</span><span class="p">)</span> <span class="n">NSDate</span>   <span class="o">*</span><span class="n">createdDate</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">@implementation</span> <span class="nc">ISItem</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@dynamic</span> <span class="n">identifier</span><span class="p">;</span>
+</span><span class='line'><span class="k">@dynamic</span> <span class="n">title</span><span class="p">;</span>
+</span><span class='line'><span class="k">@dynamic</span> <span class="n">authorName</span><span class="p">;</span>
+</span><span class='line'><span class="k">@dynamic</span> <span class="n">imageURL</span><span class="p">;</span>
+</span><span class='line'><span class="k">@dynamic</span> <span class="n">createdDate</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">NSDictionary</span> <span class="o">*</span><span class="p">)</span><span class="nf">JSONKeymap</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="err">@</span><span class="p">{</span><span class="s">@&quot;identifier&quot;</span><span class="o">:</span>  <span class="s">@&quot;id&quot;</span><span class="p">,</span>
+</span><span class='line'>             <span class="s">@&quot;title&quot;</span><span class="o">:</span>       <span class="s">@&quot;title&quot;</span><span class="p">,</span>
+</span><span class='line'>             <span class="s">@&quot;authorName&quot;</span><span class="o">:</span>  <span class="s">@&quot;author&quot;</span><span class="p">,</span>
+</span><span class='line'>             <span class="s">@&quot;imageURL&quot;</span><span class="o">:</span>    <span class="s">@&quot;image&quot;</span><span class="p">,</span>
+</span><span class='line'>             <span class="s">@&quot;createdDate&quot;</span><span class="o">:</span> <span class="s">@&quot;created_at&quot;</span><span class="p">,</span>  <span class="p">};</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">NSDictionary</span> <span class="o">*</span><span class="p">)</span><span class="nf">JSONValueTransformerNames</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="err">@</span><span class="p">{</span><span class="s">@&quot;imageURL&quot;</span><span class="o">:</span>    <span class="n">ISStringURLTransformerName</span><span class="p">,</span>
+</span><span class='line'>             <span class="s">@&quot;createdDate&quot;</span><span class="o">:</span> <span class="n">ISStringDateTransformerName</span><span class="p">,</span> <span class="p">};</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>※<code>NSValueTransformer</code>はあらかじめ登録されているものとしています。</p>
+
+<p>&mdash;</p>
+
+<h3>感想</h3>
+
+<p>これが良い方式なのかというとちょっと微妙だと思っていますが、<br/>
+面白そうなので趣味のアプリはしばらくこれでやってみようかと思いました。</p>
+
+<p>Mantleはモデルが軽量な場合に良さそうなので、良い機会があれば積極的に使いたいと思いました。<br/>
+CoreDataとMantleを合わせて使うのは、もう少し自分に技術がついたら試そうかなと思いました。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[頑張ってOCLintを使ってみた結果]]></title>
+    <link href="http://blog.ishkawa.org/blog/2013/06/09/oclint/"/>
+    <updated>2013-06-09T18:41:00+09:00</updated>
+    <id>http://blog.ishkawa.org/blog/2013/06/09/oclint</id>
+    <content type="html"><![CDATA[<p>意識が高まり、OCLintを使ってみました。</p>
+
+<h3>手順</h3>
+
+<p>OCLintの公式のドキュメントを頑張って読んでも使い方はわかるのですが、<br/>
+以下のリンク&#8221;Give a try&#8221;という項目に従うと手っ取り早く試せます。</p>
+
+<p><a href="http://gavrix.wordpress.com/2013/02/28/integrating-oclint-in-xcode/">Integrating OCLint in Xcode</a></p>
+
+<h3>結果</h3>
+
+<p><a href="https://github.com/ishkawa/ISRefreshControl">ISRefreshControl</a>で試しました。
+ご覧の通り、たくさん怒られています。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Pods/ISMethodSwizzling/ISMethodSwizzling/ISMethodSwizzling.m:9:1: long line P3 Line with 138 characters exceeds limit of 100
+</span><span class='line'>Pods/ISMethodSwizzling/ISMethodSwizzling/ISMethodSwizzling.m:10:1: long line P3 Line with 138 characters exceeds limit of 100
+</span><span class='line'>Pods/ISMethodSwizzling/ISMethodSwizzling/ISMethodSwizzling.m:23:1: long line P3 Line with 138 characters exceeds limit of 100
+</span><span class='line'>Pods/ISMethodSwizzling/ISMethodSwizzling/ISMethodSwizzling.m:24:1: long line P3 Line with 138 characters exceeds limit of 100
+</span><span class='line'>Pods/ISMethodSwizzling/ISMethodSwizzling/ISMethodSwizzling.m:18:5: parameter reassignment P3
+</span><span class='line'>ISRefreshControl/ISGumView.m:59:1: long line P3 Line with 124 characters exceeds limit of 100
+</span><span class='line'>ISRefreshControl/ISGumView.m:132:1: long line P3 Line with 105 characters exceeds limit of 100
+</span><span class='line'>ISRefreshControl/ISGumView.m:133:1: long line P3 Line with 102 characters exceeds limit of 100
+</span><span class='line'>ISRefreshControl/ISGumView.m:141:1: long line P3 Line with 111 characters exceeds limit of 100
+</span><span class='line'>ISRefreshControl/ISGumView.m:162:1: long line P3 Line with 103 characters exceeds limit of 100
+</span><span class='line'>ISRefreshControl/ISGumView.m:167:1: long line P3 Line with 103 characters exceeds limit of 100
+</span><span class='line'>ISRefreshControl/ISGumView.m:189:1: long line P3 Line with 101 characters exceeds limit of 100
+</span><span class='line'>ISRefreshControl/ISGumView.m:197:1: long line P3 Line with 101 characters exceeds limit of 100
+</span><span class='line'>ISRefreshControl/ISGumView.m:205:1: long line P3 Line with 105 characters exceeds limit of 100
+</span><span class='line'>ISRefreshControl/ISGumView.m:146:1: long method P3 Method with 64 lines exceeds limit of 50
+</span><span class='line'>ISRefreshControl/ISGumView.m:146:1: high ncss method P2 Method of 50 non-commenting source statements exceeds limit of 30
+</span><span class='line'>ISRefreshControl/ISRefreshControl.m:154:5: collapsible if statements P3
+</span><span class='line'>ISRefreshControl/ISRefreshControl.m:166:1: high cyclomatic complexity P2 Cyclomatic Complexity Number 16 exceeds limit of 10
+</span><span class='line'>ISRefreshControl/ISRefreshControl.m:34:13: inverted logic P3
+</span><span class='line'>ISRefreshControl/ISRefreshControl.m:35:1: long line P3 Line with 108 characters exceeds limit of 100
+</span><span class='line'>ISRefreshControl/ISRefreshControl.m:143:1: long line P3 Line with 102 characters exceeds limit of 100
+</span><span class='line'>ISRefreshControl/ISRefreshControl.m:152:1: long line P3 Line with 124 characters exceeds limit of 100
+</span><span class='line'>ISRefreshControl/ISRefreshControl.m:175:1: long line P3 Line with 106 characters exceeds limit of 100
+</span><span class='line'>ISRefreshControl/ISRefreshControl.m:179:1: long line P3 Line with 104 characters exceeds limit of 100
+</span><span class='line'>ISRefreshControl/ISRefreshControl.m:275:1: long line P3 Line with 115 characters exceeds limit of 100
+</span><span class='line'>ISRefreshControl/ISRefreshControl.m:187:5: missing break in switch statement P3
+</span><span class='line'>ISRefreshControl/ISRefreshControl.m:187:5: switch statements should have default P3
+</span><span class='line'>ISRefreshControl/UITableViewController+ISRefreshControl.m:14:1: long line P3 Line with 109 characters exceeds limit of 100
+</span><span class='line'>ISRefreshControl/UITableViewController+ISRefreshControl.m:15:1: long line P3 Line with 113 characters exceeds limit of 100
+</span><span class='line'>ISRefreshControl/UITableViewController+ISRefreshControl.m:16:1: long line P3 Line with 106 characters exceeds limit of 100
+</span><span class='line'>ISRefreshControl/UITableViewController+ISRefreshControl.m:45:1: long line P3 Line with 109 characters exceeds limit of 100
+</span><span class='line'>ISRefreshControl/UITableViewController+ISRefreshControl.m:50:1: long line P3 Line with 108 characters exceeds limit of 100
+</span><span class='line'>ISRefreshControl/UITableView+ISRefreshControl.m:12:1: long line P3 Line with 105 characters exceeds limit of 100
+</span><span class='line'>ISRefreshControl/ISScalingActivityIndicatorView.m:51:1: long line P3 Line with 107 characters exceeds limit of 100
+</span><span class='line'>ISRefreshControl/ISScalingActivityIndicatorView.m:56:1: long line P3 Line with 107 characters exceeds limit of 100
+</span><span class='line'>ISRefreshControl/ISScalingActivityIndicatorView.m:61:1: long line P3 Line with 104 characters exceeds limit of 100
+</span><span class='line'>ISRefreshControl/ISScalingActivityIndicatorView.m:65:1: long line P3 Line with 110 characters exceeds limit of 100
+</span><span class='line'>ISRefreshControl/ISScalingActivityIndicatorView.m:78:1: long line P3 Line with 101 characters exceeds limit of 100
+</span><span class='line'>ISRefreshControl/ISScalingActivityIndicatorView.m:87:1: long line P3 Line with 101 characters exceeds limit of 100
+</span><span class='line'>ISRefreshControl/ISScalingActivityIndicatorView.m:95:1: long line P3 Line with 104 characters exceeds limit of 100
+</span><span class='line'>ISRefreshControl/ISScalingActivityIndicatorView.m:99:1: long line P3 Line with 110 characters exceeds limit of 100</span></code></pre></td></tr></table></div></figure>
+
+
+<p>レポートの出力時に<code>-o=report.html -html</code>をつけるとHTMLのレポートも出してくれます。</p>
+
+<p>&mdash;</p>
+
+<h3>感想</h3>
+
+<p>OCLintの警告にはそれぞれの1〜3のPriorityがつけられていて、値が小さいほどやばいものです。<br/>
+今回の結果ではP2, P3の警告が出ていたので、それらについて感想を書きます。</p>
+
+<h3>P3</h3>
+
+<ul>
+<li>long line (行が100文字以上)</li>
+<li>long method (メソッドが50行以上)</li>
+<li>parameter reassignment (変数が使い回されている)</li>
+<li>collapsible if statements (分解できる(?)if文がある)</li>
+<li>switch statements should have default (defaultがないswitch文がある)</li>
+</ul>
+
+
+<p>全体的に正しいのですが、改めて指摘されると舌打ちしたくなるというのがP3の感想です。</p>
+
+<p>defaultがないswitch文は、typedefしてXcodeにcase漏れをチェックさせるようにしていたので、<br/>
+そちらの方を優先しようかなあと思いました。(defaultを書くとcase漏れを見つけにくいので。)</p>
+
+<h3>P2</h3>
+
+<ul>
+<li>high ncss method (30行以上コメントがないメソッドがある)</li>
+<li>high cyclomatic complexity (<a href="http://en.wikipedia.org/wiki/Cyclomatic_complexity">cyclomatic complexity</a>が10以上(とにかくなんか複雑らしい))</li>
+</ul>
+
+
+<p>P3と比べると謝る気が起きる内容でした。</p>
+
+<p>&mdash;</p>
+
+<p>この記事を書いている間に意識が下がってしまったので、OCLintは一旦見送ることにしました。<br/>
+これから使い始める人はP1, P2あたりから気にすると良いのではないでしょうか。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[ISRefreshControl 1.4.0をリリースしました]]></title>
+    <link href="http://blog.ishkawa.org/blog/2013/06/09/update-isrefreshcontrol/"/>
+    <updated>2013-06-09T01:25:00+09:00</updated>
+    <id>http://blog.ishkawa.org/blog/2013/06/09/update-isrefreshcontrol</id>
+    <content type="html"><![CDATA[<h3>内容</h3>
+
+<ul>
+<li>iOS 4に対応</li>
+<li><code>drawRect:</code>で描画する方式から<code>CAShapeLayer</code>に移行</li>
+<li><code>UIActivityIndicatorView</code>の表示/非表示を切り替えるときに回転させる</li>
+</ul>
+
+
+<p>　</p>
+
+<h3>理由</h3>
+
+<ul>
+<li>iOS 4で使えないとクソって誰かが言ってた</li>
+<li>描画周り(特に<code>beginRefreshing</code>後のアニメーション)の実装がダサくて耐え難かった</li>
+<li><code>UIRefreshControl</code>は<code>endRefreshing</code>で<code>UIActivityIndicatorView</code>を回転させながら縮小させる<br/>
+というようなことを<a href="https://twitter.com/dnpp">@DNPP</a>氏がつけ麺を食べながら言ってたので確かめてみたら本当だった</li>
+</ul>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[NSDictionaryのリテラルのnilを無視する]]></title>
+    <link href="http://blog.ishkawa.org/blog/2013/06/07/ignore-nil-of-literal-nsdictionary/"/>
+    <updated>2013-06-07T02:07:00+09:00</updated>
+    <id>http://blog.ishkawa.org/blog/2013/06/07/ignore-nil-of-literal-nsdictionary</id>
+    <content type="html"><![CDATA[<p>はじめに断っておきますが、今回のコードはプロダクトに入れるべきではありません。<br/>
+プログラムとして好ましくない上に、Appleの審査でリジェクトされる可能性もあります。</p>
+
+<p>興味本位でやってみたら動いたので書いていますが、取り扱い注意です。</p>
+
+<p>&mdash;</p>
+
+<p><code>NSDictionary</code>のリテラルを以下のように書くと、例外が投げられます。<br/>
+理由は<code>piyo</code>が<code>nil</code>だからです。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="n">NSString</span> <span class="o">*</span><span class="n">hoge</span> <span class="o">=</span> <span class="s">@&quot;hoge&quot;</span><span class="p">;</span>
+</span><span class='line'><span class="n">NSString</span> <span class="o">*</span><span class="n">fuga</span> <span class="o">=</span> <span class="s">@&quot;fuga&quot;</span><span class="p">;</span>
+</span><span class='line'><span class="n">NSString</span> <span class="o">*</span><span class="n">piyo</span> <span class="o">=</span> <span class="nb">nil</span><span class="p">;</span>
+</span><span class='line'><span class="n">NSDictionary</span> <span class="o">*</span><span class="n">dictionary</span> <span class="o">=</span> <span class="err">@</span><span class="p">{</span><span class="s">@&quot;hoge&quot;</span><span class="o">:</span> <span class="n">hoge</span><span class="p">,</span>
+</span><span class='line'>                             <span class="s">@&quot;fuga&quot;</span><span class="o">:</span> <span class="n">fuga</span><span class="p">,</span>
+</span><span class='line'>                             <span class="s">@&quot;piyo&quot;</span><span class="o">:</span> <span class="n">piyo</span><span class="p">,</span> <span class="p">};</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>この例外は至極まっとうなもので適切にフォローすべきものなのですが、<br/>
+意識が低くなってくると自動的に以下のように変換されて欲しいと思ってしまうことがあります。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="n">NSString</span> <span class="o">*</span><span class="n">hoge</span> <span class="o">=</span> <span class="s">@&quot;hoge&quot;</span><span class="p">;</span>
+</span><span class='line'><span class="n">NSString</span> <span class="o">*</span><span class="n">fuga</span> <span class="o">=</span> <span class="s">@&quot;fuga&quot;</span><span class="p">;</span>
+</span><span class='line'><span class="n">NSDictionary</span> <span class="o">*</span><span class="n">dictionary</span> <span class="o">=</span> <span class="err">@</span><span class="p">{</span><span class="s">@&quot;hoge&quot;</span><span class="o">:</span> <span class="n">hoge</span><span class="p">,</span>
+</span><span class='line'>                             <span class="s">@&quot;fuga&quot;</span><span class="o">:</span> <span class="n">fuga</span><span class="p">,</span> <span class="p">};</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>これは以下のような<code>NSDictionary</code>のカテゴリを書くことで実現出来ます。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="cp">#import &quot;NSDictionary+IgnoreNil.h&quot;</span>
+</span><span class='line'><span class="cp">#import &lt;objc/runtime.h&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@implementation</span> <span class="nc">NSDictionary</span> <span class="nl">(IgnoreNil)</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">load</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="err">@</span><span class="n">autoreleasepool</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">Class</span> <span class="n">class</span> <span class="o">=</span> <span class="n">NSClassFromString</span><span class="p">(</span><span class="s">@&quot;__NSPlaceholderDictionary&quot;</span><span class="p">);</span>
+</span><span class='line'>        <span class="n">Method</span> <span class="n">originalMethod</span> <span class="o">=</span> <span class="n">class_getInstanceMethod</span><span class="p">(</span><span class="n">class</span><span class="p">,</span> <span class="k">@selector</span><span class="p">(</span><span class="nl">initWithObjects:forKeys:count:</span><span class="p">));</span>
+</span><span class='line'>        <span class="n">Method</span> <span class="n">alternativeMethod</span> <span class="o">=</span> <span class="n">class_getInstanceMethod</span><span class="p">(</span><span class="n">class</span><span class="p">,</span> <span class="k">@selector</span><span class="p">(</span><span class="nl">_initWithObjects:forKeys:count:</span><span class="p">));</span>
+</span><span class='line'>        <span class="n">method_exchangeImplementations</span><span class="p">(</span><span class="n">originalMethod</span><span class="p">,</span> <span class="n">alternativeMethod</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nf">_initWithObjects:</span><span class="p">(</span><span class="k">const</span> <span class="kt">id</span> <span class="p">[])</span><span class="nv">objects</span> <span class="nf">forKeys:</span><span class="p">(</span><span class="k">const</span> <span class="kt">id</span><span class="o">&lt;</span><span class="n">NSCopying</span><span class="o">&gt;</span> <span class="p">[])</span><span class="nv">keys</span> <span class="nf">count:</span><span class="p">(</span><span class="n">NSUInteger</span><span class="p">)</span><span class="nv">count</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">NSMutableArray</span> <span class="o">*</span><span class="n">validObjectArray</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSMutableArray</span> <span class="n">array</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">NSMutableArray</span> <span class="o">*</span><span class="n">validKeyArray</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSMutableArray</span> <span class="n">array</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">NSInteger</span> <span class="n">validCount</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">for</span> <span class="p">(</span><span class="n">NSInteger</span> <span class="n">index</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">index</span> <span class="o">&lt;</span> <span class="n">count</span><span class="p">;</span> <span class="n">index</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="kt">id</span> <span class="n">object</span> <span class="o">=</span> <span class="n">objects</span><span class="p">[</span><span class="n">index</span><span class="p">];</span>
+</span><span class='line'>        <span class="kt">id</span> <span class="n">key</span> <span class="o">=</span> <span class="n">keys</span><span class="p">[</span><span class="n">index</span><span class="p">];</span>
+</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="n">object</span> <span class="o">&amp;&amp;</span> <span class="n">key</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>            <span class="p">[</span><span class="n">validObjectArray</span> <span class="nl">addObject:</span><span class="n">object</span><span class="p">];</span>
+</span><span class='line'>            <span class="p">[</span><span class="n">validKeyArray</span> <span class="nl">addObject:</span><span class="n">key</span><span class="p">];</span>
+</span><span class='line'>            <span class="n">validCount</span><span class="o">++</span><span class="p">;</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kt">id</span> <span class="o">*</span><span class="n">validObjects</span> <span class="o">=</span> <span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span> <span class="o">*</span> <span class="n">validCount</span><span class="p">);</span>
+</span><span class='line'>    <span class="kt">id</span> <span class="o">*</span><span class="n">validKeys</span> <span class="o">=</span> <span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span> <span class="o">*</span> <span class="n">validCount</span><span class="p">);</span>
+</span><span class='line'>    <span class="k">for</span> <span class="p">(</span><span class="n">NSInteger</span> <span class="n">index</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">index</span> <span class="o">&lt;</span> <span class="n">validCount</span><span class="p">;</span> <span class="n">index</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">validObjects</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">validObjectArray</span> <span class="nl">objectAtIndex:</span><span class="n">index</span><span class="p">];</span>
+</span><span class='line'>        <span class="n">validKeys</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">validKeyArray</span> <span class="nl">objectAtIndex:</span><span class="n">index</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">self</span> <span class="o">=</span> <span class="p">[</span><span class="n">self</span> <span class="nl">_initWithObjects:</span><span class="n">validObjects</span> <span class="nl">forKeys:</span><span class="n">validKeys</span> <span class="nl">count:</span><span class="n">validCount</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">free</span><span class="p">(</span><span class="n">validObjects</span><span class="p">);</span>
+</span><span class='line'>    <span class="n">free</span><span class="p">(</span><span class="n">validKeys</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">return</span> <span class="n">self</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>やっていることは単純です。</p>
+
+<p><code>NSDictionary</code>のリテラルは<code>__NSPlaceholderDictionary</code>(<code>NSDictionary</code>クラスクラスタの一部)の<br/>
+<code>initWithObjects:keys:count:</code>を呼ぶので、それをswizzleしてnilでないもののみを元の実装に渡しています。</p>
+
+<p>&mdash;</p>
+
+<p>このコードをプロダクトに入れると同僚に殴られ、アプリもリジェクトされると思います。<br/>
+たぶん、<code>NSArray</code>のリテラルでやっても同じ事が起きます。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[カスタマイズ可能なUIRefreshControlのインターフェースについて考えた]]></title>
+    <link href="http://blog.ishkawa.org/blog/2013/06/01/alternative-refresh-control/"/>
+    <updated>2013-06-01T01:14:00+09:00</updated>
+    <id>http://blog.ishkawa.org/blog/2013/06/01/alternative-refresh-control</id>
+    <content type="html"><![CDATA[<p>インターフェースというのはプログラム上のものを指します。</p>
+
+<p>iphone_dev_jpの勉強会で、独自の<code>UIRefreshControl</code>を実装するにはどうすればよいか、<br/>
+という質問をいただきましたので、しばらく考えていました。</p>
+
+<p><code>UIRefreshControl</code>のメソッド群はよく隠蔽化されていて、カスタマイズすることは難しいです。<br/>
+なので、独自のものをつくるには<code>UIControl</code>からスタートすることになると思います。<br/>
+どんなインターフェースがあれば<code>UIRefershControl</code>はカスタマイズ可能だったのかと考えつつ、<br/>
+独自の<code>UIRefreshControl</code>を実装するための抽象的なクラスを実装しました。</p>
+
+<p><a href="https://github.com/ishkawa/ISAlternativeRefreshControl">ISAlternativeRefreshControl</a></p>
+
+<p>&mdash;</p>
+
+<h3>抽象クラスが持つ値</h3>
+
+<ul>
+<li><code>progress</code>: <code>UIControlEventValueChanged</code>を発火させるまでの引っ張り具合(0.0〜1.0)</li>
+<li><code>refreshingState</code>: 更新前/更新中/更新後の状態</li>
+<li><code>firesOnRelease</code>: 閾値を超えたらすぐ発火するか、閾値を超えた状態で指を離してから発火するか</li>
+</ul>
+
+
+<h3><code>progress</code>の変更を通知するメソッド</h3>
+
+<ul>
+<li><code>willChangeProgress:</code></li>
+<li><code>didChangeProgress</code></li>
+</ul>
+
+
+<p>これらのタイミングで、<code>progress</code>に応じて<code>UIRefreshControl</code>を変形させます。<br/>
+公式の<code>UIRefreshControl</code>であれば<code>progress</code>に応じて伸び具合を変え、<br/>
+従来型の矢印の&#8221;引っぱって更新&#8221;であれば<code>progress</code>に応じて角度を変えます。</p>
+
+<h3><code>refreshingState</code>の変更を通知するメソッド</h3>
+
+<ul>
+<li><code>willChangeProgress:</code></li>
+<li><code>didChangeProgress</code></li>
+</ul>
+
+
+<p>これらのタイミングで、状態に応じたアニメーションを開始したりします。<br/>
+公式の<code>UIRefreshControl</code>であればガムを収縮させて<code>UIActivityIndicator</code>を拡大させ、<br/>
+従来型の矢印の&#8221;引っぱって更新&#8221;であれば矢印を消して<code>UIActivityIndicator</code>を表示します。</p>
+
+<p>&mdash;</p>
+
+<p>このようなインターフェースがあれば、上記のメソッドをオーバーライドすることで、<br/>
+独自の動きを表現する実装が可能となるはずです。<br/>
+実際、従来型の&#8221;引っぱって更新&#8221;や公式の<code>UIRefreshControl</code>はこれらの枠組みで再現できました。</p>
+
+<p>興味が有る方はリポジトリにデモアプリが入っているので見てみてください。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[第4回 iphone_dev_jp 東京iPhone/Mac勉強会に参加しました]]></title>
+    <link href="http://blog.ishkawa.org/blog/2013/05/26/iphone-dev-jp-4/"/>
+    <updated>2013-05-26T01:57:00+09:00</updated>
+    <id>http://blog.ishkawa.org/blog/2013/05/26/iphone-dev-jp-4</id>
+    <content type="html"><![CDATA[<p>ちょっと早めに会場に着いたので前方に座ったら、隣が<a href="https://twitter.com/ninjinkun">@ninjinkun</a>さんでした。</p>
+
+<h3>自分の発表</h3>
+
+<p>自分はiOS 5で動作するUIRefreshControlのつくり方を発表しました。<br/>
+つくり方は以下の5つの段階に分けて、それぞれサンプルコードを用意しました。</p>
+
+<ul>
+<li>Step 1: コントロールがUIScrollViewの上部にとどまるようにする</li>
+<li>Step 2: 閾値を超えたらコントロールを出したままにし、UIActivityIndicatorを回す。</li>
+<li>Step 3: 外見を整える。</li>
+<li>Step 4: UIRefreshControlと併用できるようにする。</li>
+<li>Step 5: Storyboardに対応させる。</li>
+</ul>
+
+
+<p><a href="https://github.com/ishkawa/iOS5UIRefreshControlTotorial">iOS5UIRefreshControlTotorial</a></p>
+
+<p>Step 4, Step 5にはいくらか黒いテクニックを使用していて、<br/>
+それらも説明しようと試みたのですが、イマイチ伝わらなかったようでした。</p>
+
+<h3>NJKWebViewProgress</h3>
+
+<p>NJKWebViewProgressは<a href="https://twitter.com/ninjinkun">@ninjinkun</a>さんが発表していたライブラリで、<br/>
+UIWebViewの読み込みの進捗を取得してくれます。</p>
+
+<p>以下のような使い方になっていて、UIWebViewとdelegateの間にproxyが入ります。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">viewDidLoad</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">super</span> <span class="n">viewDidLoad</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">self</span><span class="p">.</span><span class="n">progressProxy</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NJKWebViewProgress</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">self</span><span class="p">.</span><span class="n">webView</span><span class="p">.</span><span class="n">delegate</span> <span class="o">=</span> <span class="n">self</span><span class="p">.</span><span class="n">progressProxy</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">self</span><span class="p">.</span><span class="n">progressProxy</span><span class="p">.</span><span class="n">webViewProxyDelegate</span> <span class="o">=</span> <span class="n">self</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">self</span><span class="p">.</span><span class="n">progressProxy</span><span class="p">.</span><span class="n">progressDelegate</span> <span class="o">=</span> <span class="n">self</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">webViewProgress:</span><span class="p">(</span><span class="n">NJKWebViewProgress</span> <span class="o">*</span><span class="p">)</span><span class="nv">webViewProgress</span> <span class="nf">updateProgress:</span><span class="p">(</span><span class="kt">float</span><span class="p">)</span><span class="nv">progress</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">self</span><span class="p">.</span><span class="n">progressView</span> <span class="o">=</span> <span class="n">progress</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>発表を聞いたときにproxyなしで以下のように使えるようにしたいと思い、挑戦してみました。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">viewDidLoad</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">super</span> <span class="n">viewDidLoad</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">self</span><span class="p">.</span><span class="n">webView</span><span class="p">.</span><span class="n">delegate</span> <span class="o">=</span> <span class="n">self</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">self</span><span class="p">.</span><span class="n">webView</span><span class="p">.</span><span class="n">progressDelegate</span> <span class="o">=</span> <span class="n">self</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="cp">#pragma mark - NJKWebViewProgressDelegate</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">webViewProgress:</span><span class="p">(</span><span class="n">NJKWebViewProgress</span> <span class="o">*</span><span class="p">)</span><span class="nv">webViewProgress</span> <span class="nf">updateProgress:</span><span class="p">(</span><span class="kt">float</span><span class="p">)</span><span class="nv">progress</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">self</span><span class="p">.</span><span class="n">progressView</span> <span class="o">=</span> <span class="n">progress</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>で、出来たものが以下です。<br/>
+<a href="https://github.com/ishkawa/UIWebView-Progress">UIWebView+Progress</a></p>
+
+<p>インターフェースはなかなか良いと思うのですが、実装に黒いテクニックを多用してしまったので、<br/>
+本家のNJKWebViewProgressには送らない予定です。</p>
+
+<p>&mdash;</p>
+
+<p>その他にも面白い発表や、開発に役立つ発表がたくさんありました。<br/>
+また機会があったら参加しようと思います。</p>
+]]></content>
+  </entry>
+  
+</feed>

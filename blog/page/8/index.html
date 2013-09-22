@@ -1,0 +1,685 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title></title>
+	<meta name="author" content="ishkawa">
+
+	
+	<meta name="description" content="NSStreamを利用してiRemoconと通信する 以前、Qiita HackathonでiRemoconをいただきました。 iPhoneがあらゆるリモコンになるという画期的な製品なのですが、公式アプリは4インチ非対応な上に
+iPhoneとあまりマッチしないUIとなっているので、 &hellip;">
+	
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="blog.ishkawa.org" type="application/atom+xml">
+	<link rel="canonical" href="">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<script async="true" src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	
+</head>
+
+
+<body>
+	<header id="header" class="inner"><h1><a href="/">blog.ishkawa.org</a></h1>
+<nav id="main-nav"><ul class="main">
+  <li><a href="https://twitter.com/_ishkawa">Twitter</a></li>
+  <li><a href="https://github.com/ishkawa">GitHub</a></li>
+</ul>
+
+</nav>
+<nav id="mobile-nav">
+	<div class="alignleft menu">
+		<a class="button">Menu</a>
+		<div class="container"><ul class="main">
+  <li><a href="https://twitter.com/_ishkawa">Twitter</a></li>
+  <li><a href="https://github.com/ishkawa">GitHub</a></li>
+</ul>
+
+</div>
+	</div>
+	<div class="alignright search">
+		<a class="button"></a>
+		<div class="container">
+			<form action="http://google.com/search" method="get">
+				<input type="text" name="q" results="0">
+				<input type="hidden" name="q" value="site:blog.ishkawa.org">
+			</form>
+		</div>
+	</div>
+</nav>
+
+</header>
+	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2013/05/19/iremocon-operation/">
+		
+			NSStreamを利用してiRemoconと通信する</a>
+	</h2>
+	<div class="entry-content">
+		<p>以前、<a href="http://blog.ishkawa.org/blog/2013/02/05/qiita-hackathon/">Qiita Hackathon</a>でiRemoconをいただきました。</p>
+
+<p>iPhoneがあらゆるリモコンになるという画期的な製品なのですが、公式アプリは4インチ非対応な上に<br/>
+iPhoneとあまりマッチしないUIとなっているので、自分用に代用品をつくろうと思いました。</p>
+
+<p>おそらく、そう考える人はたくさんいると思うので、通信の仕方を紹介します。</p>
+
+<p>&mdash;</p>
+
+<p>iRemoconにはTCP/IP通信でコマンドを送信することができます。<br/>
+TCP/IP通信を行う手段には<code>NSStream</code>を採用しました。</p>
+
+<h3>NSStreamのペアを作成する</h3>
+
+<p><code>NSStream</code>自体は抽象クラスで、実際には<code>NSInputStream</code>と<code>NSOutputStream</code>のペアを利用します。<br/>
+<code>CFStreamCreatePairWithSocketToHost</code>を利用するとペアを作成してくれます。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="n">CFReadStreamRef</span> <span class="n">readStream</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+</span><span class='line'><span class="n">CFWriteStreamRef</span> <span class="n">writeStream</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+</span><span class='line'><span class="n">CFStringRef</span> <span class="n">hostNameRef</span> <span class="o">=</span> <span class="p">(</span><span class="n">__bridge</span> <span class="n">CFStringRef</span><span class="p">)</span><span class="s">@&quot;10.0.1.3&quot;</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">CFStreamCreatePairWithSocketToHost</span><span class="p">(</span><span class="nb">NULL</span><span class="p">,</span>
+</span><span class='line'>                                   <span class="n">hostNameRef</span><span class="p">,</span>
+</span><span class='line'>                                   <span class="mi">51013</span><span class="p">,</span>
+</span><span class='line'>                                   <span class="o">&amp;</span><span class="n">readStream</span><span class="p">,</span>
+</span><span class='line'>                                   <span class="o">&amp;</span><span class="n">writeStream</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">NSInputStream</span> <span class="o">*</span><span class="n">inputStream</span> <span class="o">=</span> <span class="p">(</span><span class="n">__bridge_transfer</span> <span class="n">NSInputStream</span> <span class="o">*</span><span class="p">)</span><span class="n">readStream</span><span class="p">;</span>
+</span><span class='line'><span class="n">NSOutputStream</span> <span class="o">*</span><span class="n">outputStream</span> <span class="o">=</span> <span class="p">(</span><span class="n">__bridge_transfer</span> <span class="n">NSOutputStream</span> <span class="o">*</span><span class="p">)</span><span class="n">writeStream</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>NSRunLoopにスケジュールする</h3>
+
+<p><code>NSStream</code>を<code>NSRunLoop</code>にスケジュールするとデリゲートメソッドで通知を受け取ることができます。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="n">NSRunLoop</span> <span class="o">*</span><span class="n">runLoop</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSRunLoop</span> <span class="n">currentRunLoop</span><span class="p">];</span>
+</span><span class='line'><span class="n">NSString</span> <span class="o">*</span><span class="n">mode</span> <span class="o">=</span> <span class="n">NSDefaultRunLoopMode</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">inputStream</span><span class="p">.</span><span class="n">delegate</span> <span class="o">=</span> <span class="n">self</span><span class="p">;</span>
+</span><span class='line'><span class="p">[</span><span class="n">inputStream</span> <span class="nl">scheduleInRunLoop:</span><span class="n">runLoop</span> <span class="nl">forMode:</span><span class="n">mode</span><span class="p">];</span>
+</span><span class='line'><span class="p">[</span><span class="n">inputStream</span> <span class="n">open</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">outputStream</span><span class="p">.</span><span class="n">delegate</span> <span class="o">=</span> <span class="n">self</span><span class="p">;</span>
+</span><span class='line'><span class="p">[</span><span class="n">outputStream</span> <span class="nl">scheduleInRunLoop:</span><span class="n">runLoop</span> <span class="nl">forMode:</span><span class="n">mode</span><span class="p">];</span>
+</span><span class='line'><span class="p">[</span><span class="n">outputStream</span> <span class="n">open</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><code>self</code>が何者かは特に指定していませんが、<code>NSStreamDelegate</code>に適合しているものとします。<br/>
+これらがメインスレッド以外のスレッドで実行される場合には<code>NSRunLoop</code>を回す必要があります。<br/>
+以下は非同期型の<code>NSOperation</code>での実装例です。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">do</span> <span class="p">{</span>
+</span><span class='line'>    <span class="err">@</span><span class="n">autoreleasepool</span> <span class="p">{</span>
+</span><span class='line'>        <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">runLoop</span> <span class="nl">runUntilDate:</span><span class="p">[</span><span class="n">NSDate</span> <span class="nl">dateWithTimeIntervalSinceNow:</span><span class="mf">.1</span><span class="p">]];</span>
+</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="n">self</span><span class="p">.</span><span class="n">isCancelled</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>            <span class="p">[</span><span class="n">self</span> <span class="n">unscheduleStreams</span><span class="p">];</span>
+</span><span class='line'>            <span class="p">[</span><span class="n">self</span> <span class="n">completeOperation</span><span class="p">];</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span> <span class="k">while</span> <span class="p">(</span><span class="n">self</span><span class="p">.</span><span class="n">isExecuting</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>NSStreamのイベントを受け取る</h3>
+
+<p>イベントに対して行う処理は以下の通りです。</p>
+
+<ul>
+<li>NSStreamEventHasSpaceAvailable: <code>NSOutputStream</code>にiRemoconのコマンドを書き込む</li>
+<li>NSStreamEventHasBytesAvailable: <code>NSInputStream</code>からレスポンスを読み込む</li>
+</ul>
+
+
+<p>イベントは<code>NSStreamDelegate</code>の<code>stream:handleEvent:</code>で受け取ります。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">stream:</span><span class="p">(</span><span class="n">NSStream</span> <span class="o">*</span><span class="p">)</span><span class="nv">stream</span> <span class="nf">handleEvent:</span><span class="p">(</span><span class="n">NSStreamEvent</span><span class="p">)</span><span class="nv">eventCode</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">switch</span><span class="p">(</span><span class="n">eventCode</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">case</span> <span class="nl">NSStreamEventHasBytesAvailable:</span>
+</span><span class='line'>            <span class="k">if</span> <span class="p">(</span><span class="n">stream</span> <span class="o">==</span> <span class="n">self</span><span class="p">.</span><span class="n">inputStream</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>                <span class="p">[</span><span class="n">self</span> <span class="n">readBuffer</span><span class="p">];</span>
+</span><span class='line'>            <span class="p">}</span>
+</span><span class='line'>            <span class="k">break</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">case</span> <span class="nl">NSStreamEventHasSpaceAvailable:</span>
+</span><span class='line'>            <span class="k">if</span> <span class="p">(</span><span class="n">stream</span> <span class="o">==</span> <span class="n">self</span><span class="p">.</span><span class="n">outputStream</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>                <span class="p">[</span><span class="n">self</span> <span class="n">sendCommand</span><span class="p">];</span>
+</span><span class='line'>            <span class="p">}</span>
+</span><span class='line'>            <span class="k">break</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="p">...</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>NSOutputStreamにコマンドを書き込む</h3>
+
+<p>コマンドの形式は<a href="http://i-remocon.com/development/">公式の技術資料</a>にある通りで、通信確認を行うためには<code>*au\r\n</code>を送信します。<br/>
+送信後は<code>NSOutputStream</code>が要らなくなるので<code>NSRunLoop</code>から外します。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">sendCommand</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">NSString</span> <span class="o">*</span><span class="n">command</span> <span class="o">=</span> <span class="s">@&quot;*au</span><span class="se">\r\n</span><span class="s">&quot;</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">const</span> <span class="n">uint8_t</span> <span class="o">*</span><span class="n">ccommand</span> <span class="o">=</span> <span class="p">(</span><span class="k">const</span> <span class="n">uint8_t</span> <span class="o">*</span><span class="p">)[</span><span class="n">command</span> <span class="n">UTF8String</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">outputStream</span> <span class="nl">write:</span><span class="n">ccommand</span> <span class="nl">maxLength:</span><span class="n">strlen</span><span class="p">((</span><span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="p">)</span><span class="n">ccommand</span><span class="p">)];</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">outputStream</span> <span class="n">close</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">outputStream</span> <span class="nl">removeFromRunLoop:</span><span class="n">self</span><span class="p">.</span><span class="n">runLoop</span> <span class="nl">forMode:</span><span class="n">self</span><span class="p">.</span><span class="n">mode</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>NSInputStreamからレスポンスを読み込む</h3>
+
+<p>結果が<code>ok\r\n</code>ならば通信成功です。<br/>
+レスポンスの末尾は<code>\r\n</code>なので、<code>\r\n</code>を受け取ったら<code>NSInputStream</code>も<code>NSRunLoop</code>から外します。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">readBuffer</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">uint8_t</span> <span class="n">buffer</span><span class="p">[</span><span class="mi">1024</span><span class="p">];</span>
+</span><span class='line'>    <span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">length</span> <span class="o">=</span> <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">inputStream</span> <span class="nl">read:</span><span class="n">buffer</span> <span class="nl">maxLength:</span><span class="mi">1024</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">data</span> <span class="nl">appendBytes:</span><span class="n">buffer</span> <span class="nl">length:</span><span class="n">length</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">NSString</span> <span class="o">*</span><span class="n">joinedString</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSString</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithData:</span><span class="n">self</span><span class="p">.</span><span class="n">data</span> <span class="nl">encoding:</span><span class="n">NSUTF8StringEncoding</span><span class="p">];</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">([</span><span class="n">joinedString</span> <span class="nl">rangeOfString:</span><span class="s">@&quot;</span><span class="se">\r\n</span><span class="s">&quot;</span><span class="p">].</span><span class="n">location</span> <span class="o">!=</span> <span class="n">NSNotFound</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">inputStream</span> <span class="n">close</span><span class="p">];</span>
+</span><span class='line'>        <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">inputStream</span> <span class="nl">removeFromRunLoop:</span><span class="n">self</span><span class="p">.</span><span class="n">runLoop</span> <span class="nl">forMode:</span><span class="n">self</span><span class="p">.</span><span class="n">mode</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>&mdash;</p>
+
+<p>以上で完了です。</p>
+
+<p>これらの手順を非同期型の<code>NSOperation</code>にまとめてGitHubに上げました。<br/>
+<a href="https://github.com/ishkawa/IRMCommandOperation">IRMCommandOperation</a></p>
+
+<p><code>IRMCommandOperation</code>を利用すると、以下のようにしてコマンドを送信出来ます。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="n">IRMCommandOperation</span> <span class="o">*</span><span class="n">operation</span> <span class="o">=</span>
+</span><span class='line'><span class="p">[[</span><span class="n">IRMCommandOperation</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithCommand:</span><span class="s">@&quot;is&quot;</span>
+</span><span class='line'>                                    <span class="nl">argument:</span><span class="s">@&quot;1000&quot;</span>
+</span><span class='line'>                                     <span class="nl">handler:</span><span class="o">^</span><span class="p">(</span><span class="n">NSData</span> <span class="o">*</span><span class="n">data</span><span class="p">,</span> <span class="n">NSError</span> <span class="o">*</span><span class="n">error</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>                                         <span class="c1">// completion</span>
+</span><span class='line'>                                     <span class="p">}];</span>
+</span><span class='line'><span class="p">[</span><span class="n">operation</span> <span class="n">start</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-05-19T03:59:00+09:00" pubdate data-updated="true">May 19<span>th</span>, 2013</time></div>
+	
+</div>
+
+    <br/>
+    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/05/19/iremocon-operation/" data-text="NSStreamを利用してiRemoconと通信する" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/05/19/iremocon-operation/" >Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+    </article>
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2013/04/24/ismemorycache/">
+		
+			ISMemoryCacheというのを書いた</a>
+	</h2>
+	<div class="entry-content">
+		<blockquote class="twitter-tweet" lang="ja"><p>@<a href="https://twitter.com/interface">interface</a> ISMemoryCache : NSMutableDictionary+ (ISMemoryCache *)sharedCache;- (void)removeUnretainedObjects;@<a href="https://twitter.com/end">end</a>ってのを書いた。</p>&mdash; ishkawaさん (@_ishkawa) <a href="https://twitter.com/_ishkawa/status/326752483705761792">2013年4月23日</a></blockquote>
+
+
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+
+<p>　</p>
+
+<p>メモリキャッシュとありますが、ヘッダから分かる通り<code>NSMutableDictioary</code>です。<br/>
+<code>NSCache</code>よりしぶといメモリキャッシュが欲しかったので、頭の体操をしながらつくりました。</p>
+
+<p><a href="https://github.com/ishkawa/ISMemoryCache">ISMemoryCache</a></p>
+
+<p>&mdash;</p>
+
+<h3>特徴</h3>
+
+<p>LRU的な実装ではなく、参照カウントの有無で破棄するオブジェクトを決めます。<br/>
+どこかから参照がある限りは生き残り続けるしぶといメモリキャッシュです。</p>
+
+<ul>
+<li><code>removeUnretainedObjects</code>を呼ぶと参照がないオブジェクトを調べて破棄する。</li>
+<li><code>UIApplicationDidReceiveMemoryWarningNotification</code>で<code>removeUnretainedObjects</code>を実行。</li>
+</ul>
+
+
+<p>具体的には、以下の実行後に<code>[cache objectForKey:@"key"]</code>は<code>NSObject</code>を返しますが、</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="n">NSObject</span> <span class="o">*</span><span class="n">retainedObject</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSObject</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'><span class="err">@</span><span class="n">autoreleasepool</span> <span class="p">{</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">cache</span> <span class="nl">setObject:</span><span class="n">retainedObject</span> <span class="nl">forKey:</span><span class="s">@&quot;key&quot;</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="p">[</span><span class="n">cache</span> <span class="n">removeUnretainedObjects</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>以下の実行後には<code>nil</code>を返すという感じです。　</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="err">@</span><span class="n">autoreleasepool</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">NSObject</span> <span class="o">*</span><span class="n">unretainedObject</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSObject</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">cache</span> <span class="nl">setObject:</span><span class="n">unretainedObject</span> <span class="nl">forKey:</span><span class="s">@&quot;key&quot;</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="p">[</span><span class="n">cache</span> <span class="n">removeUnretainedObjects</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>使い方</h3>
+
+<p>保持</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="p">[[</span><span class="n">ISMemoryCache</span> <span class="n">sharedCache</span><span class="p">]</span> <span class="nl">setObject:</span><span class="n">object</span> <span class="nl">forKey:</span><span class="s">@&quot;key&quot;</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>読み出し</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="p">[[</span><span class="n">ISMemoryCache</span> <span class="n">sharedCache</span><span class="p">]</span> <span class="nl">objectForKey:</span><span class="s">@&quot;key&quot;</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>使われていないオブジェクトを破棄</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="p">[[</span><span class="n">ISMemoryCache</span> <span class="n">sharedCache</span><span class="p">]</span> <span class="n">removeUnretainedObjects</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>参照があるかどうかの判定方法</h3>
+
+<p>自分の強参照を外しても生き残っていれば、他でも使われているということです。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">removeUnretainedObjects</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">for</span> <span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="n">key</span> <span class="k">in</span> <span class="p">[</span><span class="n">self</span> <span class="n">allKeys</span><span class="p">])</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">__weak</span> <span class="kt">id</span> <span class="n">wobject</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="err">@</span><span class="n">autoreleasepool</span> <span class="p">{</span>
+</span><span class='line'>            <span class="n">wobject</span> <span class="o">=</span> <span class="p">[</span><span class="n">self</span> <span class="nl">objectForKey:</span><span class="n">key</span><span class="p">];</span>
+</span><span class='line'>            <span class="p">[</span><span class="n">self</span> <span class="nl">removeObjectForKey:</span><span class="n">key</span><span class="p">];</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="n">wobject</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>            <span class="p">[</span><span class="n">self</span> <span class="nl">setObject:</span><span class="n">wobject</span> <span class="nl">forKey:</span><span class="n">key</span><span class="p">];</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>NSDictionaryのサブクラス化</h3>
+
+<p><code>NSDictionary</code>はクラスクラスタなのでサブクラス化の作法がちょっと変わっています。<br/>
+今回は面倒だったので内部に<code>NSMutableDictionary</code>を持って適宜プロキシする感じにしました。<br/>
+適宜というのは<code>NSDictionary</code>のドキュメントに書かれている以下のメソッドが呼ばれた時です。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="c1">// NSDictionary</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nf">initWithObjects:</span><span class="p">(</span><span class="n">NSArray</span> <span class="o">*</span><span class="p">)</span><span class="nv">objects</span> <span class="nf">forKeys:</span><span class="p">(</span><span class="n">NSArray</span> <span class="o">*</span><span class="p">)</span><span class="nv">keys</span><span class="p">;</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="n">NSUInteger</span><span class="p">)</span><span class="nf">count</span><span class="p">;</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nf">objectForKey:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">key</span><span class="p">;</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="n">NSEnumerator</span> <span class="o">*</span><span class="p">)</span><span class="nf">keyEnumerator</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// NSMutableDictionary</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">setObject:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">object</span> <span class="nf">forKey:</span><span class="p">(</span><span class="kt">id</span> <span class="o">&lt;</span><span class="n">NSCopying</span><span class="o">&gt;</span><span class="p">)</span><span class="nv">key</span><span class="p">;</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">removeObjectForKey:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">key</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-04-24T04:32:00+09:00" pubdate data-updated="true">Apr 24<span>th</span>, 2013</time></div>
+	
+</div>
+
+    <br/>
+    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/04/24/ismemorycache/" data-text="ISMemoryCacheというのを書いた" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/04/24/ismemorycache/" >Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+    </article>
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2013/04/14/travis-ci-ios/">
+		
+			iOSのライブラリにTravis CIを導入する</a>
+	</h2>
+	<div class="entry-content">
+		<p>最近、Travis CIがiOSのビルドに対応したようです。<br/>
+<a href="http://about.travis-ci.org/blog/introducing-mac-ios-rubymotion-testing/">Introducing Mac, iOS and RubyMotion Testing on Travis CI</a></p>
+
+<p>なので、早速拙作のISRefreshControlに導入してみました。<br/>
+<a href="https://github.com/ishkawa/ISRefreshControl">ISRefreshControl</a></p>
+
+<p><a href="https://travis-ci.org/ishkawa/ISRefreshControl"><img src="https://travis-ci.org/ishkawa/ISRefreshControl.png?branch=master" alt="Build Status" /></a></p>
+
+<h2>導入手順</h2>
+
+<p>驚くほど簡単で、基本的には以下の2つだけで導入完了となります。</p>
+
+<ul>
+<li><code>.travis.yml</code>に<code>language: objective-c</code>と書く</li>
+<li>Travis CI上でリポジトリを選択する</li>
+</ul>
+
+
+<p>デフォルトのビルドスクリプトには<a href="https://github.com/jspahrsummers/objc-build-scripts">objc-build-scripts</a>が採用されているようです。<br/>
+もちろんカスタマイズも可能で、ISRefreshControlではMakefileを書いてそちらを使っています。</p>
+
+<p>依存関係はPodfileを書いておけば自動的に解決されます。<br/>
+CocoaPods以外の方法も<code>.travis.yml</code>にスクリプトを書けば利用できるようです。</p>
+
+<p>詳細は公式ドキュメントを参照してください。<br/>
+<a href="http://about.travis-ci.org/docs/user/languages/objective-c/">Travis CI: Building an Objective-C Project</a></p>
+
+<h3>Podfileを書く</h3>
+
+<p>依存がある場合は書きます。<br/>
+ISRefreshControlはISMethodSwizzlingとKiwiを利用しています。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>pod 'ISMethodSwizzling', :git =&gt; 'https://github.com/ishkawa/ISMethodSwizzling.git'
+</span><span class='line'>
+</span><span class='line'>target :ISRefreshControlTests, :exclusive =&gt; true do
+</span><span class='line'>    pod 'Kiwi', '~&gt; 2.0.6'
+</span><span class='line'>end</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Makefileを書く</h3>
+
+<p>&ldquo;<code>xcodebuild</code>でビルドしてテストを実行してね&#8221;って書きます。<br/>
+<code>GCC_PREPROCESSOR_DEFINITIONS</code>は<code>ISRefreshControl</code>固有のものです。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>test:
+</span><span class='line'>  xcodebuild \
+</span><span class='line'>      -sdk iphonesimulator \
+</span><span class='line'>      -workspace ISRefreshControl.xcworkspace \
+</span><span class='line'>      -scheme ISRefreshControlTests \
+</span><span class='line'>      -configuration Debug \
+</span><span class='line'>      clean build \
+</span><span class='line'>      ONLY_ACTIVE_ARCH=NO \
+</span><span class='line'>      TEST_AFTER_BUILD=YES \
+</span><span class='line'>      GCC_PREPROCESSOR_DEFINITIONS="IS_TEST_FROM_COMMAND_LINE=1"</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>.travis.ymlを書く</h3>
+
+<p><code>script:</code>にmakeを利用するように書きます。<br/>
+<code>script:</code>を書かなければobjc-build-scriptsが利用されます。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>language: objective-c
+</span><span class='line'>script: make test</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>リポジトリを選択する</h3>
+
+<p>Travis CIにGitHubアカウントでログインし、リポジトリのスイッチをオンにします。<br/>
+すると、コミットフックがTravis CIに飛んでいき、自動的にビルドされるようになります。</p>
+
+<p>&mdash;</p>
+
+<p>ビルドログを見る限り、Kiwiのテストも実行されているようです。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Test Suite 'ISRefreshControlSpec' finished at 2013-04-14 07:57:09 +0000.
+</span><span class='line'>Executed 25 tests, with 0 failures (0 unexpected) in 0.318 (0.327) seconds</span></code></pre></td></tr></table></div></figure>
+
+
+<p>以下のようなStatus Imageというよくあるやつも提供されています。</p>
+
+<p><a href="https://travis-ci.org/ishkawa/ISRefreshControl"><img src="https://travis-ci.org/ishkawa/ISRefreshControl.png?branch=master" alt="Build Status" /></a></p>
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-04-14T18:37:00+09:00" pubdate data-updated="true">Apr 14<span>th</span>, 2013</time></div>
+	
+</div>
+
+    <br/>
+    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/04/14/travis-ci-ios/" data-text="iOSのライブラリにTravis CIを導入する" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/04/14/travis-ci-ios/" >Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+    </article>
+
+<nav id="pagenavi">
+    
+        <a href="/blog/page/7/" class="prev">Prev</a>
+    
+    
+        <a href="/blog/page/9/" class="next">Next</a>
+    
+    <div class="center"><a href="/blog/archives">Blog Archives</a></div>
+</nav>
+</div>
+	<footer id="footer" class="inner">Copyright &copy; 2013
+
+    ishkawa
+
+</footer>
+	<script src="/javascripts/slash.js"></script>
+<script src="/javascripts/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+	$('.fancybox').fancybox();
+})(jQuery);
+</script> <!-- Delete or comment this line to disable Fancybox -->
+
+
+
+
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-35917440-1']);
+		_gaq.push(['_trackPageview']);
+
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
+
+
+
+</body>
+</html>

@@ -1,0 +1,316 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>OCMockでも[[foo shouldEventually] receive:@selector(bar)]がしたい</title>
+	<meta name="author" content="ishkawa">
+
+	
+	<meta name="description" content="OCMockでも[[foo shouldEventually] Receive:@selector(bar)]がしたい そう思って、雑に実装をしてみました。 [[foo shouldEventually] receive:@selector(bar)]はKiwiの構文で、 &hellip;">
+	
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="blog.ishkawa.org" type="application/atom+xml">
+	<link rel="canonical" href="">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<script async="true" src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	
+</head>
+
+
+<body>
+	<header id="header" class="inner"><h1><a href="/">blog.ishkawa.org</a></h1>
+<nav id="main-nav"><ul class="main">
+  <li><a href="https://twitter.com/_ishkawa">Twitter</a></li>
+  <li><a href="https://github.com/ishkawa">GitHub</a></li>
+</ul>
+
+</nav>
+<nav id="mobile-nav">
+	<div class="alignleft menu">
+		<a class="button">Menu</a>
+		<div class="container"><ul class="main">
+  <li><a href="https://twitter.com/_ishkawa">Twitter</a></li>
+  <li><a href="https://github.com/ishkawa">GitHub</a></li>
+</ul>
+
+</div>
+	</div>
+	<div class="alignright search">
+		<a class="button"></a>
+		<div class="container">
+			<form action="http://google.com/search" method="get">
+				<input type="text" name="q" results="0">
+				<input type="hidden" name="q" value="site:blog.ishkawa.org">
+			</form>
+		</div>
+	</div>
+</nav>
+
+</header>
+	<div id="content" class="inner"><article class="post">
+	<h2 class="title">OCMockでも[[foo shouldEventually] Receive:@selector(bar)]がしたい</h2>
+	<div class="entry-content"><p>そう思って、雑に実装をしてみました。</p>
+
+<p><code>[[foo shouldEventually] receive:@selector(bar)]</code>はKiwiの構文で、<br/>
+一定時間以内に<code>bar</code>というメソッドが呼ばれないとテスト失敗とするものです。</p>
+
+<p>具体的には以下のようなプログラムで<code>foo</code>の<code>bar</code>が呼ばれるか確認するテストに使えます。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">someMethod:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">foo</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">dispatch_queue_t</span> <span class="n">queue</span> <span class="o">=</span> <span class="n">dispatch_get_global_queue</span><span class="p">(</span><span class="n">DISPATCH_QUEUE_PRIORITY_DEFAULT</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+</span><span class='line'>    <span class="n">dispatch_async</span><span class="p">(</span><span class="n">queue</span><span class="p">,</span> <span class="o">^</span><span class="p">{</span>
+</span><span class='line'>        <span class="p">...</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="p">[</span><span class="n">foo</span> <span class="n">bar</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">});</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Kiwiの<code>shouldEventually</code>は<code>KWProbePoller</code>が0.1秒ごとに<code>NSRunLoop</code>を回し、<br/>
+<code>KWAsyncMatcherProbe</code>の  <code>isSatisfied</code>が<code>YES</code>になるまで回し続けるという実装をしています。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="c1">// KWProbePoller</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nf">check:</span><span class="p">(</span><span class="kt">id</span><span class="o">&lt;</span><span class="n">KWProbe</span><span class="o">&gt;</span><span class="p">)</span><span class="nv">probe</span><span class="p">;</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="n">KWTimeout</span> <span class="o">*</span><span class="n">timeout</span> <span class="o">=</span> <span class="p">[[</span><span class="n">KWTimeout</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithTimeout:</span><span class="n">timeoutInterval</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">while</span> <span class="p">(</span><span class="o">!</span><span class="p">[</span><span class="n">probe</span> <span class="n">isSatisfied</span><span class="p">])</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">([</span><span class="n">timeout</span> <span class="n">hasTimedOut</span><span class="p">])</span> <span class="p">{</span>
+</span><span class='line'>      <span class="p">[</span><span class="n">timeout</span> <span class="n">release</span><span class="p">];</span>
+</span><span class='line'>      <span class="k">return</span> <span class="n">NO</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="p">[[</span><span class="n">NSRunLoop</span> <span class="n">currentRunLoop</span><span class="p">]</span> <span class="nl">runUntilDate:</span><span class="p">[</span><span class="n">NSDate</span> <span class="nl">dateWithTimeIntervalSinceNow:</span><span class="n">delayInterval</span><span class="p">]];</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">probe</span> <span class="n">sample</span><span class="p">];</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">timeout</span> <span class="n">release</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">return</span> <span class="n">YES</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><code>OCMock</code>で<code>receive:</code>に相当するものは<code>expect</code>/<code>verify</code>なので、これらを使って同じことをします。</p>
+
+<p><code>OCMockObject</code>は<code>expectations</code>という<code>NSArray</code>があり、<code>expect</code>すると<code>OCMockRecorder</code>を追加し、<br/>
+メソッドが呼ばれると<code>OCMockRecorder</code>を<code>expectations</code>から外すという処理をします。<br/>
+そして、<code>verify</code>時に<code>expectations</code>が残っているとテストを失敗させる仕組みになっています。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="c1">// OCMockObject</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">verify</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="k">if</span><span class="p">([</span><span class="n">expectations</span> <span class="n">count</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span>
+</span><span class='line'>  <span class="p">{</span>
+</span><span class='line'>      <span class="p">[</span><span class="n">NSException</span> <span class="nl">raise:</span><span class="n">NSInternalInconsistencyException</span> <span class="nl">format:</span><span class="s">@&quot;%@: expected method was not invoked: %@&quot;</span><span class="p">,</span>
+</span><span class='line'>          <span class="p">[</span><span class="n">self</span> <span class="n">description</span><span class="p">],</span> <span class="p">[[</span><span class="n">expectations</span> <span class="nl">objectAtIndex:</span><span class="mi">0</span><span class="p">]</span> <span class="n">description</span><span class="p">]];</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>  <span class="k">if</span><span class="p">([</span><span class="n">expectations</span> <span class="n">count</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
+</span><span class='line'>  <span class="p">{</span>
+</span><span class='line'>      <span class="p">[</span><span class="n">NSException</span> <span class="nl">raise:</span><span class="n">NSInternalInconsistencyException</span> <span class="nl">format:</span><span class="s">@&quot;%@ : %ld expected methods were not invoked: %@&quot;</span><span class="p">,</span>
+</span><span class='line'>          <span class="p">[</span><span class="n">self</span> <span class="n">description</span><span class="p">],</span> <span class="p">[</span><span class="n">expectations</span> <span class="n">count</span><span class="p">],</span> <span class="p">[</span><span class="n">self</span> <span class="nl">_recorderDescriptions:</span><span class="n">YES</span><span class="p">]];</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>  <span class="k">if</span><span class="p">([</span><span class="n">exceptions</span> <span class="n">count</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
+</span><span class='line'>  <span class="p">{</span>
+</span><span class='line'>      <span class="p">[[</span><span class="n">exceptions</span> <span class="nl">objectAtIndex:</span><span class="mi">0</span><span class="p">]</span> <span class="n">raise</span><span class="p">];</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>なので、<code>expectations</code>が変わるまで<code>NSRunLoop</code>を回すという<code>verify</code>の代替メソッドを用意すれば、<br/>
+<code>OCMock</code>らしく<code>[[foo shouldEventually] receive:@selector(bar)]</code>に相当するものが実装できます。</p>
+
+<p>以下がその実装です。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">@implementation</span> <span class="nc">OCMockObject</span> <span class="nl">(Lazy)</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">verifyLazily</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">self</span> <span class="nl">verifyLazilyWithTimeout:</span><span class="mf">1.0</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">verifyLazilyWithTimeout:</span><span class="p">(</span><span class="n">NSTimeInterval</span><span class="p">)</span><span class="nv">timeout</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">NSTimeInterval</span> <span class="n">interval</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">NSDate</span> <span class="o">*</span><span class="n">startedDate</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSDate</span> <span class="n">date</span><span class="p">];</span>
+</span><span class='line'>    <span class="kt">BOOL</span> <span class="n">shouldContinue</span> <span class="o">=</span> <span class="n">YES</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">while</span> <span class="p">(</span><span class="n">shouldContinue</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="err">@</span><span class="n">autoreleasepool</span> <span class="p">{</span>
+</span><span class='line'>            <span class="n">shouldContinue</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSDate</span> <span class="n">date</span><span class="p">]</span> <span class="nl">timeIntervalSinceDate:</span><span class="n">startedDate</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">timeout</span><span class="p">;</span>
+</span><span class='line'>            <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">shouldContinue</span> <span class="o">||</span> <span class="p">[</span><span class="n">self</span><span class="o">-&gt;</span><span class="n">expectations</span> <span class="n">count</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>                <span class="p">[</span><span class="n">self</span> <span class="n">verify</span><span class="p">];</span>
+</span><span class='line'>            <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>            <span class="n">NSDate</span> <span class="o">*</span><span class="n">date</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSDate</span> <span class="nl">dateWithTimeIntervalSinceNow:</span><span class="n">interval</span><span class="p">];</span>
+</span><span class='line'>            <span class="p">[[</span><span class="n">NSRunLoop</span> <span class="n">currentRunLoop</span><span class="p">]</span> <span class="nl">runUntilDate:</span><span class="n">date</span><span class="p">];</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>これを利用したテストケースは以下のように書くことができます。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">testFooInvokesBarOnSomeMethod</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="kt">id</span> <span class="n">fooMock</span> <span class="o">=</span> <span class="p">[</span><span class="n">OCMockObject</span> <span class="nl">mockForClass:</span><span class="p">[</span><span class="n">Foo</span> <span class="n">class</span><span class="p">]];</span>
+</span><span class='line'>    <span class="p">[[</span><span class="n">fooMock</span> <span class="n">expect</span><span class="p">]</span> <span class="n">bar</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="p">[</span><span class="n">testObject</span> <span class="nl">someMethod:</span><span class="n">fooMock</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">STAssertNoThrow</span><span class="p">([</span><span class="n">fooMock</span> <span class="n">verifyLazily</span><span class="p">],</span> <span class="s">@&quot;foo did not invoke bar.&quot;</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>&mdash;</p>
+
+<p>勢い余ってやってみたという感じなのですが、もっと良い方法があれば知りたいです。</p>
+</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-06-26T00:35:00+09:00" pubdate data-updated="true">Jun 26<span>th</span>, 2013</time></div>
+	
+</div>
+
+    <br/>
+    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/06/26/ocmock-async/" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/06/26/ocmock-async/" >Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+</article>
+
+</div>
+	<footer id="footer" class="inner">Copyright &copy; 2013
+
+    ishkawa
+
+</footer>
+	<script src="/javascripts/slash.js"></script>
+<script src="/javascripts/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+	$('.fancybox').fancybox();
+})(jQuery);
+</script> <!-- Delete or comment this line to disable Fancybox -->
+
+
+
+
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-35917440-1']);
+		_gaq.push(['_trackPageview']);
+
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
+
+
+
+</body>
+</html>

@@ -1,0 +1,115 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>ミニマルな通信モジュールを書きました</title>
+	<meta name="author" content="ishkawa">
+
+	
+	<meta name="description" content="ミニマルな通信モジュールを書きました ネットワーク通信を書くのは面倒なものです。かと言って毎回マッチョなライブラリに頼るのも気が引けるので、ネットワーク通信をするためのミニマルなモジュールを書きました。https://github.com/ishkawa/ &hellip;">
+	
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="blog.ishkawa.org" type="application/atom+xml">
+	<link rel="canonical" href="">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<script async="true" src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	
+</head>
+
+
+<body>
+	<header id="header" class="inner"><h1><a href="/">blog.ishkawa.org</a></h1>
+<nav id="main-nav"><ul class="main">
+  <li><a href="https://twitter.com/_ishkawa">Twitter</a></li>
+  <li><a href="https://github.com/ishkawa">GitHub</a></li>
+</ul>
+
+</nav>
+<nav id="mobile-nav">
+	<div class="alignleft menu">
+		<a class="button">Menu</a>
+		<div class="container"><ul class="main">
+  <li><a href="https://twitter.com/_ishkawa">Twitter</a></li>
+  <li><a href="https://github.com/ishkawa">GitHub</a></li>
+</ul>
+
+</div>
+	</div>
+	<div class="alignright search">
+		<a class="button"></a>
+		<div class="container">
+			<form action="http://google.com/search" method="get">
+				<input type="text" name="q" results="0">
+				<input type="hidden" name="q" value="site:blog.ishkawa.org">
+			</form>
+		</div>
+	</div>
+</nav>
+
+</header>
+	<div id="content" class="inner"><article class="post">
+	<h2 class="title">ミニマルな通信モジュールを書きました</h2>
+	<div class="entry-content"><div class='post'>
+ネットワーク通信を書くのは面倒なものです。<br />かと言って毎回マッチョなライブラリに頼るのも気が引けるので、<br />ネットワーク通信をするためのミニマルなモジュールを書きました。<br /><a href="https://github.com/ishkawa/ISNetwork" target="_blank">https://github.com/ishkawa/ISNetwork</a><br /><br />基本的な使い方は以下のとおりです。<br /><br /><script src="https://gist.github.com/2802460.js?file=gistfile1.txt"></script><br /><div style="margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px;">やってくれることは大体以下の3つです。<br />・NSURLConnectionDataDelegateのあれこれ<br />・NSOperationQueueを使った通信と通信インジケーターの管理<br />・終了ハンドラーの実行<br /><br />UIImageの作成やJSONパースは結構パフォーマンスに影響するので、</div>ISNetworkOperationのサブクラスではデータ加工まで別スレッドで実行し、<br />終了後のハンドラーをメインスレッドで実行するようにしています。<br /><br />通信を一括してキャンセルする場合は以下のコードを実行します。<br /><script src="https://gist.github.com/2802457.js?file=gistfile1.txt"></script><br />アプリでよく使う通信がある場合、ISNetworkOperationのサブクラスをつくると<br />通信周りのコードをかなり減らせると思います。<br /><br />例：OAuthCoreを使ってTwitterとやりとりするサブクラス<br /><br /><script src="https://gist.github.com/2802535.js?file=ISTwitterOperation.h"></script><br /><script src="https://gist.github.com/2802535.js?file=ISTwitterOperation.m"></script><br />※NSDictionaryからパラメーターを作るカテゴリも使ってます。<br /><a href="https://github.com/ishkawa/NSDictionary-URLQuery" target="_blank">https://github.com/ishkawa/NSDictionary-URLQuery</a><br /><br />このサブクラスを使うと以下のコードでTwitterとやりとりできるようになります。<br /><br /><script src="https://gist.github.com/2802535.js?file=gistfile1.m"></script><br />データの加工を変えたい場合にはprocessData:をオーバーライドしてください。<br />好きなJSONパーサを使ったりXMLをパースしたり、ご自由にどうぞ。</div>
+</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-05-27T00:00:00+09:00" pubdate data-updated="true">May 27<span>th</span>, 2012</time></div>
+	
+</div>
+
+    <br/>
+    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2012/05/27/blog-post/" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2012/05/27/blog-post/" >Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+</article>
+
+</div>
+	<footer id="footer" class="inner">Copyright &copy; 2013
+
+    ishkawa
+
+</footer>
+	<script src="/javascripts/slash.js"></script>
+<script src="/javascripts/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+	$('.fancybox').fancybox();
+})(jQuery);
+</script> <!-- Delete or comment this line to disable Fancybox -->
+
+
+
+
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-35917440-1']);
+		_gaq.push(['_trackPageview']);
+
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
+
+
+
+</body>
+</html>

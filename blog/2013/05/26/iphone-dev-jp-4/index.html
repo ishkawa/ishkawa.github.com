@@ -1,0 +1,215 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>第4回 iphone_dev_jp 東京iPhone/Mac勉強会に参加しました</title>
+	<meta name="author" content="ishkawa">
+
+	
+	<meta name="description" content="第4回 Iphone_dev_jp 東京iPhone/Mac勉強会に参加しました ちょっと早めに会場に着いたので前方に座ったら、隣が@ninjinkunさんでした。 自分の発表 自分はiOS 5で動作するUIRefreshControlのつくり方を発表しました。 &hellip;">
+	
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="blog.ishkawa.org" type="application/atom+xml">
+	<link rel="canonical" href="">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<script async="true" src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	
+</head>
+
+
+<body>
+	<header id="header" class="inner"><h1><a href="/">blog.ishkawa.org</a></h1>
+<nav id="main-nav"><ul class="main">
+  <li><a href="https://twitter.com/_ishkawa">Twitter</a></li>
+  <li><a href="https://github.com/ishkawa">GitHub</a></li>
+</ul>
+
+</nav>
+<nav id="mobile-nav">
+	<div class="alignleft menu">
+		<a class="button">Menu</a>
+		<div class="container"><ul class="main">
+  <li><a href="https://twitter.com/_ishkawa">Twitter</a></li>
+  <li><a href="https://github.com/ishkawa">GitHub</a></li>
+</ul>
+
+</div>
+	</div>
+	<div class="alignright search">
+		<a class="button"></a>
+		<div class="container">
+			<form action="http://google.com/search" method="get">
+				<input type="text" name="q" results="0">
+				<input type="hidden" name="q" value="site:blog.ishkawa.org">
+			</form>
+		</div>
+	</div>
+</nav>
+
+</header>
+	<div id="content" class="inner"><article class="post">
+	<h2 class="title">第4回 Iphone_dev_jp 東京iPhone/Mac勉強会に参加しました</h2>
+	<div class="entry-content"><p>ちょっと早めに会場に着いたので前方に座ったら、隣が<a href="https://twitter.com/ninjinkun">@ninjinkun</a>さんでした。</p>
+
+<h3>自分の発表</h3>
+
+<p>自分はiOS 5で動作するUIRefreshControlのつくり方を発表しました。<br/>
+つくり方は以下の5つの段階に分けて、それぞれサンプルコードを用意しました。</p>
+
+<ul>
+<li>Step 1: コントロールがUIScrollViewの上部にとどまるようにする</li>
+<li>Step 2: 閾値を超えたらコントロールを出したままにし、UIActivityIndicatorを回す。</li>
+<li>Step 3: 外見を整える。</li>
+<li>Step 4: UIRefreshControlと併用できるようにする。</li>
+<li>Step 5: Storyboardに対応させる。</li>
+</ul>
+
+
+<p><a href="https://github.com/ishkawa/iOS5UIRefreshControlTotorial">iOS5UIRefreshControlTotorial</a></p>
+
+<p>Step 4, Step 5にはいくらか黒いテクニックを使用していて、<br/>
+それらも説明しようと試みたのですが、イマイチ伝わらなかったようでした。</p>
+
+<h3>NJKWebViewProgress</h3>
+
+<p>NJKWebViewProgressは<a href="https://twitter.com/ninjinkun">@ninjinkun</a>さんが発表していたライブラリで、<br/>
+UIWebViewの読み込みの進捗を取得してくれます。</p>
+
+<p>以下のような使い方になっていて、UIWebViewとdelegateの間にproxyが入ります。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">viewDidLoad</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">super</span> <span class="n">viewDidLoad</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">self</span><span class="p">.</span><span class="n">progressProxy</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NJKWebViewProgress</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">self</span><span class="p">.</span><span class="n">webView</span><span class="p">.</span><span class="n">delegate</span> <span class="o">=</span> <span class="n">self</span><span class="p">.</span><span class="n">progressProxy</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">self</span><span class="p">.</span><span class="n">progressProxy</span><span class="p">.</span><span class="n">webViewProxyDelegate</span> <span class="o">=</span> <span class="n">self</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">self</span><span class="p">.</span><span class="n">progressProxy</span><span class="p">.</span><span class="n">progressDelegate</span> <span class="o">=</span> <span class="n">self</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">webViewProgress:</span><span class="p">(</span><span class="n">NJKWebViewProgress</span> <span class="o">*</span><span class="p">)</span><span class="nv">webViewProgress</span> <span class="nf">updateProgress:</span><span class="p">(</span><span class="kt">float</span><span class="p">)</span><span class="nv">progress</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">self</span><span class="p">.</span><span class="n">progressView</span> <span class="o">=</span> <span class="n">progress</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>発表を聞いたときにproxyなしで以下のように使えるようにしたいと思い、挑戦してみました。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">viewDidLoad</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">super</span> <span class="n">viewDidLoad</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">self</span><span class="p">.</span><span class="n">webView</span><span class="p">.</span><span class="n">delegate</span> <span class="o">=</span> <span class="n">self</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">self</span><span class="p">.</span><span class="n">webView</span><span class="p">.</span><span class="n">progressDelegate</span> <span class="o">=</span> <span class="n">self</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="cp">#pragma mark - NJKWebViewProgressDelegate</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">webViewProgress:</span><span class="p">(</span><span class="n">NJKWebViewProgress</span> <span class="o">*</span><span class="p">)</span><span class="nv">webViewProgress</span> <span class="nf">updateProgress:</span><span class="p">(</span><span class="kt">float</span><span class="p">)</span><span class="nv">progress</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">self</span><span class="p">.</span><span class="n">progressView</span> <span class="o">=</span> <span class="n">progress</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>で、出来たものが以下です。<br/>
+<a href="https://github.com/ishkawa/UIWebView-Progress">UIWebView+Progress</a></p>
+
+<p>インターフェースはなかなか良いと思うのですが、実装に黒いテクニックを多用してしまったので、<br/>
+本家のNJKWebViewProgressには送らない予定です。</p>
+
+<p>&mdash;</p>
+
+<p>その他にも面白い発表や、開発に役立つ発表がたくさんありました。<br/>
+また機会があったら参加しようと思います。</p>
+</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-05-26T01:57:00+09:00" pubdate data-updated="true">May 26<span>th</span>, 2013</time></div>
+	
+</div>
+
+    <br/>
+    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/05/26/iphone-dev-jp-4/" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/05/26/iphone-dev-jp-4/" >Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+</article>
+
+</div>
+	<footer id="footer" class="inner">Copyright &copy; 2013
+
+    ishkawa
+
+</footer>
+	<script src="/javascripts/slash.js"></script>
+<script src="/javascripts/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+	$('.fancybox').fancybox();
+})(jQuery);
+</script> <!-- Delete or comment this line to disable Fancybox -->
+
+
+
+
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-35917440-1']);
+		_gaq.push(['_trackPageview']);
+
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
+
+
+
+</body>
+</html>
