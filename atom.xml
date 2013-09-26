@@ -4,7 +4,7 @@
   <title><![CDATA[blog.ishkawa.org]]></title>
   <link href="http://blog.ishkawa.org/atom.xml" rel="self"/>
   <link href="http://blog.ishkawa.org/"/>
-  <updated>2013-09-22T17:40:42+09:00</updated>
+  <updated>2013-09-26T11:36:21+09:00</updated>
   <id>http://blog.ishkawa.org/</id>
   <author>
     <name><![CDATA[ishkawa]]></name>
@@ -12,6 +12,96 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[main queueのNSManagedObjectContextの話]]></title>
+    <link href="http://blog.ishkawa.org/blog/2013/09/26/main-queue-context/"/>
+    <updated>2013-09-26T02:25:00+09:00</updated>
+    <id>http://blog.ishkawa.org/blog/2013/09/26/main-queue-context</id>
+    <content type="html"><![CDATA[<p>ふとTwitterで<a href="https://twitter.com/cockscomb/status/382914504637419520">@cockscomb</a>さんと<a href="https://twitter.com/k_katsumi">@k_katsumi</a>さんとCoreDataの話になって考えました。
+これから書くことは正しさが曖昧なので、鵜呑みにしないように気をつけてください。
+なお、マルチスレッドに関する話にはここでは触れません。</p>
+
+<h3>前提</h3>
+
+<p>CoreDataを使うときにNSManagedObjectContext, NSPersistentStoreCoordinator, NSManagedObjectModelを持つ、以下のようなsingletonを作ったことがあると思います。
+こういう実装をすると確かに便利なんですが、共有されたNSManagedObjectContextが色んな所からアクセスされることになって、それをどうにかしたいなと思いました。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="cp">#import &lt;Foundation/Foundation.h&gt;</span>
+</span><span class='line'><span class="cp">#import &lt;CoreData/CoreData.h&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@interface</span> <span class="nc">CDECoreDataManager</span> : <span class="nc">NSObject</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">readonly</span><span class="p">,</span> <span class="n">strong</span><span class="p">,</span> <span class="n">nonatomic</span><span class="p">)</span> <span class="n">NSManagedObjectContext</span> <span class="o">*</span><span class="n">managedObjectContext</span><span class="p">;</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">readonly</span><span class="p">,</span> <span class="n">strong</span><span class="p">,</span> <span class="n">nonatomic</span><span class="p">)</span> <span class="n">NSManagedObjectModel</span> <span class="o">*</span><span class="n">managedObjectModel</span><span class="p">;</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">readonly</span><span class="p">,</span> <span class="n">strong</span><span class="p">,</span> <span class="n">nonatomic</span><span class="p">)</span> <span class="n">NSPersistentStoreCoordinator</span> <span class="o">*</span><span class="n">persistentStoreCoordinator</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">instancetype</span><span class="p">)</span><span class="nf">sharedManager</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>共有されたNSManagedObjectContextを避けたい理由</h3>
+
+<p>UIViewControllerは基本的に他のUIViewControllerから独立していて、1つの画面のことだけを考えて実装すればいいと思います。
+共有されたNSManagedObjectContextを避けたい理由は、このような状況を壊してしまうからです。
+singletonを介しているので当然といえばその通りなんですが、そのことに気がついたときには少し驚きました。</p>
+
+<p>例を1つ挙げます。
+NSFetchedResultsControllerのデリゲートメソッドにはcontrollerDidChangeContent:というものがあります。
+このメソッドはNSFetchedResultsControllerがNSManagedObjectContextの変更を検知したときに呼ばれるものです。
+つまり、NSManagedObjectContextが共有されている場合、どこか1箇所でNSManagedObjectContextに変更を与えると、
+生存しているすべてのNSFetchedResultControllerについてこのデリゲートメソッドが呼ばれてしまうのです。
+controllerDidChangeContent:の中身が全箇所で一斉に走っても問題ないことが多いとは思いますが、
+全箇所で意図していなかった何かが一斉に走るということはできるだけ避けたいと自分は考えました。</p>
+
+<p>再現するサンプルコードも用意しました。
+Push next view controllerというボタンを何度か押してから、+ボタンを押してみてください。
+すると、すべてのNSFetchedResultsControllerについてデリゲートメソッドが呼ばれます。</p>
+
+<p><a href="https://github.com/ishkawa/CoreDataExperiment">サンプルコード</a></p>
+
+<h3>Appleが示す方法は？</h3>
+
+<p>CoreData snippetsというドキュメントの<a href="https://developer.apple.com/library/mac/documentation/DataManagement/Conceptual/CoreDataSnippets/Articles/stack.html#//apple_ref/doc/uid/TP40008283-SW2">Accessing the Core Data Stack</a>によると、
+CoreDataを利用するUIViewControllerにはNSManagedObjectContextのpropertyを用意して、既存のNSManagedObjectContextを渡す、
+もしくは(そのUIViewControllerの編集が既存のものとは分離されている場合に)新たなNSManagedObjectContextつくりなさいとのことでした。
+既存のものとして渡されるNSManagedObjectContextはApplication Delegateが作成して、最初のUIViewControllerに渡すべきだそうです。</p>
+
+<p>つまり、Appleは共有されたNSManagedObjectContextを利用すべきと言うと同時に、編集が分離されている場合は新しいのNSManagedObjectContextもつくっていいとも言っています。
+これらに加えて以下のようにも言っています。</p>
+
+<ul>
+<li>Application DelegateのようなグローバルなオブジェクトからNSManagedObjectContextを取得するべきではない</li>
+<li>各UIViewController自身のためだけのNSManagedObjectContextをつくるべきではない</li>
+</ul>
+
+
+<p>そうなると、どちらも行き過ぎてはよくないということなんでしょうか。何がよりよいのかわからなくなってきます。</p>
+
+<h3>実際みんなどうやってるの？</h3>
+
+<p>はじめに書いた方法のような感じで、main queueのNSManagedObjectContextは1つでやっているようです。
+自分もこの方法でやっていましたが、先に紹介した理由もあってモヤモヤしています。</p>
+
+<h3>UIViewController毎にNSManagedObjectContextをつくるべきではない理由は？</h3>
+
+<p>意見募集中です。Twitterやメールなどで教えていただけると幸いです。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[YAPC::Asia 2013に参加してきました]]></title>
@@ -1735,116 +1825,6 @@ CoreDataとMantleを合わせて使うのは、もう少し自分に技術がつ
 実際、従来型の&#8221;引っぱって更新&#8221;や公式の<code>UIRefreshControl</code>はこれらの枠組みで再現できました。</p>
 
 <p>興味が有る方はリポジトリにデモアプリが入っているので見てみてください。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[第4回 iphone_dev_jp 東京iPhone/Mac勉強会に参加しました]]></title>
-    <link href="http://blog.ishkawa.org/blog/2013/05/26/iphone-dev-jp-4/"/>
-    <updated>2013-05-26T01:57:00+09:00</updated>
-    <id>http://blog.ishkawa.org/blog/2013/05/26/iphone-dev-jp-4</id>
-    <content type="html"><![CDATA[<p>ちょっと早めに会場に着いたので前方に座ったら、隣が<a href="https://twitter.com/ninjinkun">@ninjinkun</a>さんでした。</p>
-
-<h3>自分の発表</h3>
-
-<p>自分はiOS 5で動作するUIRefreshControlのつくり方を発表しました。<br/>
-つくり方は以下の5つの段階に分けて、それぞれサンプルコードを用意しました。</p>
-
-<ul>
-<li>Step 1: コントロールがUIScrollViewの上部にとどまるようにする</li>
-<li>Step 2: 閾値を超えたらコントロールを出したままにし、UIActivityIndicatorを回す。</li>
-<li>Step 3: 外見を整える。</li>
-<li>Step 4: UIRefreshControlと併用できるようにする。</li>
-<li>Step 5: Storyboardに対応させる。</li>
-</ul>
-
-
-<p><a href="https://github.com/ishkawa/iOS5UIRefreshControlTotorial">iOS5UIRefreshControlTotorial</a></p>
-
-<p>Step 4, Step 5にはいくらか黒いテクニックを使用していて、<br/>
-それらも説明しようと試みたのですが、イマイチ伝わらなかったようでした。</p>
-
-<h3>NJKWebViewProgress</h3>
-
-<p>NJKWebViewProgressは<a href="https://twitter.com/ninjinkun">@ninjinkun</a>さんが発表していたライブラリで、<br/>
-UIWebViewの読み込みの進捗を取得してくれます。</p>
-
-<p>以下のような使い方になっていて、UIWebViewとdelegateの間にproxyが入ります。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">viewDidLoad</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">super</span> <span class="n">viewDidLoad</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">self</span><span class="p">.</span><span class="n">progressProxy</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NJKWebViewProgress</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
-</span><span class='line'>    <span class="n">self</span><span class="p">.</span><span class="n">webView</span><span class="p">.</span><span class="n">delegate</span> <span class="o">=</span> <span class="n">self</span><span class="p">.</span><span class="n">progressProxy</span><span class="p">;</span>
-</span><span class='line'>    <span class="n">self</span><span class="p">.</span><span class="n">progressProxy</span><span class="p">.</span><span class="n">webViewProxyDelegate</span> <span class="o">=</span> <span class="n">self</span><span class="p">;</span>
-</span><span class='line'>    <span class="n">self</span><span class="p">.</span><span class="n">progressProxy</span><span class="p">.</span><span class="n">progressDelegate</span> <span class="o">=</span> <span class="n">self</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">-</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">webViewProgress:</span><span class="p">(</span><span class="n">NJKWebViewProgress</span> <span class="o">*</span><span class="p">)</span><span class="nv">webViewProgress</span> <span class="nf">updateProgress:</span><span class="p">(</span><span class="kt">float</span><span class="p">)</span><span class="nv">progress</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="n">self</span><span class="p">.</span><span class="n">progressView</span> <span class="o">=</span> <span class="n">progress</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>発表を聞いたときにproxyなしで以下のように使えるようにしたいと思い、挑戦してみました。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">viewDidLoad</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">super</span> <span class="n">viewDidLoad</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">self</span><span class="p">.</span><span class="n">webView</span><span class="p">.</span><span class="n">delegate</span> <span class="o">=</span> <span class="n">self</span><span class="p">;</span>
-</span><span class='line'>    <span class="n">self</span><span class="p">.</span><span class="n">webView</span><span class="p">.</span><span class="n">progressDelegate</span> <span class="o">=</span> <span class="n">self</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="cp">#pragma mark - NJKWebViewProgressDelegate</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">-</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">webViewProgress:</span><span class="p">(</span><span class="n">NJKWebViewProgress</span> <span class="o">*</span><span class="p">)</span><span class="nv">webViewProgress</span> <span class="nf">updateProgress:</span><span class="p">(</span><span class="kt">float</span><span class="p">)</span><span class="nv">progress</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="n">self</span><span class="p">.</span><span class="n">progressView</span> <span class="o">=</span> <span class="n">progress</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>で、出来たものが以下です。<br/>
-<a href="https://github.com/ishkawa/UIWebView-Progress">UIWebView+Progress</a></p>
-
-<p>インターフェースはなかなか良いと思うのですが、実装に黒いテクニックを多用してしまったので、<br/>
-本家のNJKWebViewProgressには送らない予定です。</p>
-
-<p>&mdash;</p>
-
-<p>その他にも面白い発表や、開発に役立つ発表がたくさんありました。<br/>
-また機会があったら参加しようと思います。</p>
 ]]></content>
   </entry>
   

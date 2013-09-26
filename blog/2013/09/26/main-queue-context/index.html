@@ -3,7 +3,7 @@
 <html>
 <head>
 	<meta charset="utf-8">
-	<title></title>
+	<title>main queueのNSManagedObjectContextの話</title>
 	<meta name="author" content="ishkawa">
 
 	
@@ -53,18 +53,9 @@
 </nav>
 
 </header>
-	<div id="content" class="inner">
-
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2013/09/26/main-queue-context/">
-		
-			Main queueのNSManagedObjectContextの話</a>
-	</h2>
-	<div class="entry-content">
-		<p>ふとTwitterで<a href="https://twitter.com/cockscomb/status/382914504637419520">@cockscomb</a>さんと<a href="https://twitter.com/k_katsumi">@k_katsumi</a>さんとCoreDataの話になって考えました。
+	<div id="content" class="inner"><article class="post">
+	<h2 class="title">Main queueのNSManagedObjectContextの話</h2>
+	<div class="entry-content"><p>ふとTwitterで<a href="https://twitter.com/cockscomb/status/382914504637419520">@cockscomb</a>さんと<a href="https://twitter.com/k_katsumi">@k_katsumi</a>さんとCoreDataの話になって考えました。
 これから書くことは正しさが曖昧なので、鵜呑みにしないように気をつけてください。
 なお、マルチスレッドに関する話にはここでは触れません。</p>
 
@@ -146,10 +137,7 @@ CoreDataを利用するUIViewControllerにはNSManagedObjectContextのproperty�
 <h3>UIViewController毎にNSManagedObjectContextをつくるべきではない理由は？</h3>
 
 <p>意見募集中です。Twitterやメールなどで教えていただけると幸いです。</p>
-
-		
-		
-	</div>
+</div>
 
 
 <div class="meta">
@@ -170,114 +158,10 @@ CoreDataを利用するUIViewControllerにはNSManagedObjectContextのproperty�
 </div>
 
     <br/>
-    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/09/26/main-queue-context/" data-text="main queueのNSManagedObjectContextの話" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/09/26/main-queue-context/" >Tweet</a>
+    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/09/26/main-queue-context/" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/09/26/main-queue-context/" >Tweet</a>
     <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
-    </article>
+</article>
 
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2013/09/22/yapc/">
-		
-			YAPC::Asia 2013に参加してきました</a>
-	</h2>
-	<div class="entry-content">
-		<p>Perlの人じゃなくても楽しいと聞いて参加してきました。</p>
-
-<p>Perlの世界で活躍する人たちの長めのトークを聞けるだけでもありがたいことですが、
-その後は個人的に話を聞きに行ったりできる雰囲気になっていてすごく良いなと思いました。
-会場の広場やバーでは似たような関心を持った人たちが議論していてうらやましかったのですが、
-こういうのは数日間開催されているからこそできることなんだなと思いました。</p>
-
-<p>iOS界隈でもこういうのがあったらいいですね。</p>
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-09-22T17:15:00+09:00" pubdate data-updated="true">Sep 22<span>nd</span>, 2013</time></div>
-	
-</div>
-
-    <br/>
-    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/09/22/yapc/" data-text="YAPC::Asia 2013に参加してきました" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/09/22/yapc/" >Tweet</a>
-    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
-    </article>
-
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2013/09/19/xcode-5-test/">
-		
-			Xcode 5でテストを分割実行する</a>
-	</h2>
-	<div class="entry-content">
-		<p>command + option + control + U で実行できます。</p>
-
-<p>テストコードのファイルを開いているときに、テストケース内にカーソルを置いているとそのテストケースのみ実行され、
-テストケース外にカーソルを置いているとそのファイルのテストがすべて実行されます。</p>
-
-<p>SenTestingKit, XCTestのみで動作を確認しました。
-いまのところのKiwiはまだこの機能に対応していなくて、個別の単位(<code>describe</code>, <code>context</code>, <code>it</code>など)での実行はできません。
-未確認ですが、GHUnitは仕組みから考えると全く対応していないと思います。</p>
-
-<p>分割実行できるようになると気軽にテストを走らせるようになって、テストが捗ります。<br/>
-SenTestingKitベースになったKIFも分割実行できるので、UIテストも捗りますね。</p>
-
-<h3>追記 (2013/9/20)</h3>
-
-<p>今日リリースされたKiwi 2.2.2でファイル単位の個別の実行ができるようになったみたいです。</p>
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-09-19T11:40:00+09:00" pubdate data-updated="true">Sep 19<span>th</span>, 2013</time></div>
-	
-</div>
-
-    <br/>
-    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/09/19/xcode-5-test/" data-text="Xcode 5でテストを分割実行する" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/09/19/xcode-5-test/" >Tweet</a>
-    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
-    </article>
-
-<nav id="pagenavi">
-    
-    
-        <a href="/blog/page/2/" class="next">Next</a>
-    
-    <div class="center"><a href="/blog/archives">Blog Archives</a></div>
-</nav>
 </div>
 	<footer id="footer" class="inner">Copyright &copy; 2013
 

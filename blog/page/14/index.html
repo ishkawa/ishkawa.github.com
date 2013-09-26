@@ -7,8 +7,28 @@
 	<meta name="author" content="ishkawa">
 
 	
-	<meta name="description" content="Universal Static Libraryのビルド(armv7/armv7s/i386 ) 最近のUniversal Static Libraryのビルド方法を見かけなかったので、書いておきます。
-&ldquo;最近の&#8221; &hellip;">
+	<meta name="description" content="0.1秒ごとにランダムタップするUIAutomationスクリプト 書きました。 1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+var target = UIATarget.localTarget(); function sleep( &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -53,6 +73,95 @@
 
 </header>
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2013/01/29/randomtap-uiautomation/">
+		
+			0.1秒ごとにランダムタップするUIAutomationスクリプト</a>
+	</h2>
+	<div class="entry-content">
+		<p>書きました。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">var</span> <span class="nx">target</span> <span class="o">=</span> <span class="nx">UIATarget</span><span class="p">.</span><span class="nx">localTarget</span><span class="p">();</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">function</span> <span class="nx">sleep</span><span class="p">(</span><span class="nx">time</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">d1</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Date</span><span class="p">().</span><span class="nx">getTime</span><span class="p">();</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">d2</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Date</span><span class="p">().</span><span class="nx">getTime</span><span class="p">();</span>
+</span><span class='line'>    <span class="k">while</span> <span class="p">(</span><span class="nx">d2</span> <span class="o">&lt;</span> <span class="nx">d1</span> <span class="o">+</span> <span class="nx">time</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">d2</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Date</span><span class="p">().</span><span class="nx">getTime</span><span class="p">();</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="k">return</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">var</span> <span class="nx">width</span> <span class="o">=</span> <span class="nx">target</span><span class="p">.</span><span class="nx">rect</span><span class="p">().</span><span class="nx">size</span><span class="p">.</span><span class="nx">width</span><span class="p">;</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">height</span> <span class="o">=</span> <span class="nx">target</span><span class="p">.</span><span class="nx">rect</span><span class="p">().</span><span class="nx">size</span><span class="p">.</span><span class="nx">height</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">while</span> <span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">x</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">floor</span><span class="p">(</span><span class="nb">Math</span><span class="p">.</span><span class="nx">random</span><span class="p">()</span> <span class="o">*</span> <span class="nx">width</span><span class="p">);</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">y</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">floor</span><span class="p">(</span><span class="nb">Math</span><span class="p">.</span><span class="nx">random</span><span class="p">()</span> <span class="o">*</span> <span class="nx">height</span><span class="p">);</span>
+</span><span class='line'>    <span class="nx">target</span><span class="p">.</span><span class="nx">tap</span><span class="p">({</span><span class="nx">x</span><span class="o">:</span><span class="nx">x</span><span class="p">,</span> <span class="nx">y</span><span class="o">:</span><span class="nx">y</span><span class="p">});</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nx">sleep</span><span class="p">(</span><span class="mi">100</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ol type="a">
+<li>何に使うの？</li>
+<li>わかりません…</li>
+</ol>
+
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-01-29T20:51:00+09:00" pubdate data-updated="true">Jan 29<span>th</span>, 2013</time></div>
+	
+</div>
+
+    <br/>
+    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/01/29/randomtap-uiautomation/" data-text="0.1秒ごとにランダムタップするUIAutomationスクリプト" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/01/29/randomtap-uiautomation/" >Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+    </article>
 
 
     <article class="post">
@@ -256,75 +365,6 @@ Identifierにはそれぞれ<code>Header</code>とか<code>Footer</code>とか�
 
     <br/>
     <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/01/27/uitableview-section-in-storyboard/" data-text="StoryboardでUITableViewのセクションのヘッダ/フッタを設定する" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/01/27/uitableview-section-in-storyboard/" >Tweet</a>
-    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
-    </article>
-
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2013/01/20/ls-hide-vim-backup-file/">
-		
-			lsでVimのバックアップファイルを非表示にする</a>
-	</h2>
-	<div class="entry-content">
-		<p>最近転職しました。</p>
-
-<p>転職とは関係ないのですが、最近はObjective-C以外の開発もしていてVimを使う機会が増えました。
-で、Vimでコードを書くと<code>*~</code>というファイルがたくさん出ててきてつらい気持ちになってしまうので、
-<code>ls</code>コマンドの結果から取り除く方法を調べました。</p>
-
-<p>Stack Overflowで以下の様な投稿をみつけました。<br/>
-<a href="http://stackoverflow.com/a/6011437">Can I put something in in bashrc to hide text editor (~ extension) files?</a></p>
-
-<h3>設定方法</h3>
-
-<p>どうやらMacの<code>ls</code>というのはGNUの<code>ls</code>と違うらしいので、GNUの方の<code>ls</code>をインストールします。
-その他諸々のコマンドも入り、<code>g</code>プレフィックスをつけるとそちらが使えるようです。
-<code>gls</code>は<code>ls</code>とオプションがいくらか異なり、<code>-B</code>の意味が違ったり<code>--hide</code>などが追加されていたりします。</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>brew install coreutils</span></code></pre></td></tr></table></div></figure>
-
-
-<p><code>~/.zshrc</code>で以下のようなエイリアスを設定します。(bashの方は<code>~/bashrc</code>です。)</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>alias ls='/usr/local/bin/gls -B'</span></code></pre></td></tr></table></div></figure>
-
-
-<p><code>-a</code>オプションとかをつけたときにはバックアップファイルも表示したい場合、以下のようにします。</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>alias ls="/usr/local/bin/gls --hide='*~'"</span></code></pre></td></tr></table></div></figure>
-
-
-<p>以上でおしまいです。</p>
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-01-20T23:23:00+09:00" pubdate data-updated="true">Jan 20<span>th</span>, 2013</time></div>
-	
-</div>
-
-    <br/>
-    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/01/20/ls-hide-vim-backup-file/" data-text="lsでVimのバックアップファイルを非表示にする" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/01/20/ls-hide-vim-backup-file/" >Tweet</a>
     <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
     </article>
 

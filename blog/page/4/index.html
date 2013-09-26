@@ -7,9 +7,8 @@
 	<meta name="author" content="ishkawa">
 
 	
-	<meta name="description" content="OCMArgをBlocksとして渡すときに困ること iOSの標準フレームワークでは至るところにBlocksが登場します。
-引数として渡されるBlocks自体に制限を設けたテストを書くことはあまりないので
-[OCMArg any]を指定しようと考えるのですが、 &hellip;">
+	<meta name="description" content="ISHTTPOperation 1.1.0をリリースした 朝6時に目が覚めたら意識が高かったので、ISHTTPOperationに欲しかった機能をつけてリリースしました。
+ISHTTPOperation 　 ISHTTPOperationは特徴のあるライブラリではなくて、 &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -54,6 +53,85 @@
 
 </header>
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2013/08/07/ishttpoperation/">
+		
+			ISHTTPOperation 1.1.0をリリースした</a>
+	</h2>
+	<div class="entry-content">
+		<p>朝6時に目が覚めたら意識が高かったので、ISHTTPOperationに欲しかった機能をつけてリリースしました。<br/>
+<a href="https://github.com/ishkawa/ISHTTPOperation">ISHTTPOperation</a></p>
+
+<p>　</p>
+
+<p>ISHTTPOperationは特徴のあるライブラリではなくて、単純に非同期のNSURLConnectionをラップするNSOperationです。
+こういったライブラリはたくさんあって、いわゆる車輪の再発明なのですが、わざわざ自分で作っているのには理由があります。
+理由の1つは多くの通信ライブラリは機能が多すぎるため、大量の不要なコードをプロジェクトに導入することになってしまうからです。
+もう1つはNSURLConnectionをNSOperationで正しくラップするときにはミスしやすい箇所が多いので、
+シンプルなライブラリであってもキャンセルなどの目立ちにくい動作に不具合を出しやすいからです。</p>
+
+<h3>かわったところ</h3>
+
+<ul>
+<li>テストにスタブサーバーを利用する</li>
+<li>Travis CIとCoverallsを利用して品質(?)を表示</li>
+<li>NSPredicateを利用してキャンセル</li>
+</ul>
+
+
+<p>元々、3つ目のキャンセル機構をつけたかったのですが、
+最近は<a href="http://www.tokoro.me/2013/07/09/objc-travis-coveralls/">iOSのライブラリだってTravis CIとかCoverallsとか使うべき</a>という話だったので、
+その辺りにも手を入れてみたらテストがださかったのでテストも直したという感じです。
+それと、せっかくここまでやったんだからと思ってCocoaPodsにもpull requestを送っておきました。</p>
+
+<p>NSPredicateでキャンセルというのは以下のような感じです。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="n">NSPredicate</span> <span class="o">*</span><span class="n">predicate</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSPredicate</span> <span class="nl">predicateWithFormat:</span><span class="s">@&quot;request.HTTPMethod MATCHES %@&quot;</span><span class="p">,</span> <span class="s">@&quot;GET&quot;</span><span class="p">];</span>
+</span><span class='line'><span class="p">[[</span><span class="n">ISHTTPOperationQueue</span> <span class="n">defaultQueue</span><span class="p">]</span> <span class="nl">cancelOperationsUsingPredicate:</span><span class="n">predicate</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>よく使いそうなやつには以下のようなショートカットも用意しました。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="p">[[</span><span class="n">ISHTTPOperationQueue</span> <span class="n">defaultQueue</span><span class="p">]</span> <span class="nl">cancelOperationsWithHTTPMethod:</span><span class="s">@&quot;GET&quot;</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-08-07T11:02:00+09:00" pubdate data-updated="true">Aug 7<span>th</span>, 2013</time></div>
+	
+</div>
+
+    <br/>
+    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/08/07/ishttpoperation/" data-text="ISHTTPOperation 1.1.0をリリースした" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/08/07/ishttpoperation/" >Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+    </article>
 
 
     <article class="post">
@@ -202,101 +280,6 @@ OCMConstraintがNSCopyingに適合していないので当然のことですが�
 
     <br/>
     <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/07/08/code-coverage/" data-text="コードカバレッジを計測してみた感想" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/07/08/code-coverage/" >Tweet</a>
-    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
-    </article>
-
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2013/07/01/isdiskcache/">
-		
-			ISDiskCacheというのを書いた</a>
-	</h2>
-	<div class="entry-content">
-		<p>2ヶ月ほど前に<a href="http://blog.ishkawa.org/blog/2013/04/24/ismemorycache/">ISMemoryCacheというのを書いた</a>のですが、
-実はこれと並行してISDiskCacheというのもつくっていました。
-しかし、良いアイディアが浮かばなくて完成度が十分に上がらず、リリースできないまま放置していました。
-先週末にちょうど<a href="https://objectivechackathon.appspot.com">Put Objective-C Back On the Map</a>というWeb上のイベントがあったので、
-それに参加することをモチベーションにISDiskCacheの実装に再挑戦しました。</p>
-
-<p><a href="https://github.com/ishkawa/ISDiskCache">ISDiskCache</a></p>
-
-<h3>特徴</h3>
-
-<ul>
-<li>合計のファイルサイズの上限を持ち、上限を超えたら古いファイルを自動的に削除(LRU)。</li>
-<li>NSCodingに適合するオブジェクトをキー/値に設定できる。</li>
-<li>NSDateを指定してアクセス日時が古いファイルを削除できる。</li>
-</ul>
-
-
-<p>類似のライブラリにはtumblrがつくっている<a href="https://github.com/tumblr/TMCache">TMCache</a>があります。
-TMCacheとISMemoryCache/ISDiskCacheの違いは説明するが大変なので、お互いにないものを挙げていきます。</p>
-
-<ul>
-<li>実績がある: TMCache</li>
-<li>メモリキャッシュ/ディスクキャッシュを意識せずに使える: TMCache</li>
-<li>参照がある限りキャッシュをクリアしない: ISMemoryCache/ISDiskCache</li>
-<li>NSString以外をキーにできる: ISMemoryCache/ISDiskCache</li>
-</ul>
-
-
-<p>メモリキャッシュ/ディスクキャッシュを意識させないつくりが必要かどうかは少し疑問に思いました。
-確かに同じAPIで利用できるのは手軽で便利なのですが、メモリキャッシュはメインスレッドでも同期的に扱うことができるのに、
-メモリキャッシュかディスクキャッシュかわからなくなってしまうと非同期的に処理するしかなくなってしまいます。</p>
-
-<p>自分は同期的にかける箇所は同期的に書きたかったので、メモリキャッシュとディスクキャッシュを分けることにしました。
-キャッシュを分けると利用側のコードが増えてしまうのですが、ディスクキャッシュへのアクセスとサーバーとの通信を1つのNSOperationにまとめてしまえば、
-以下のように同期的な処理と非同期的な処理の2通りを書けば済んでしまいます。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="n">UIImage</span> <span class="o">*</span><span class="n">cachedImage</span> <span class="o">=</span> <span class="p">[[</span><span class="n">ISMemoryCache</span> <span class="n">sharedCache</span><span class="p">]</span> <span class="nl">objectForKey:</span><span class="n">URL</span><span class="p">];</span>
-</span><span class='line'><span class="k">if</span> <span class="p">(</span><span class="n">cachedImage</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>    <span class="n">imageView</span><span class="p">.</span><span class="n">image</span> <span class="o">=</span> <span class="n">cachedImage</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-</span><span class='line'>    <span class="n">imageView</span><span class="p">.</span><span class="n">image</span> <span class="o">=</span> <span class="p">[</span><span class="n">UIImage</span> <span class="nl">imageNamed:</span><span class="s">@&quot;placeholder&quot;</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">ISImageLoaderOperation</span> <span class="nl">loadURL:</span><span class="n">URL</span> <span class="nl">handler:</span><span class="o">^</span><span class="p">(</span><span class="n">UIImage</span> <span class="o">*</span><span class="n">image</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="n">imageView</span><span class="p">.</span><span class="n">image</span> <span class="o">=</span> <span class="n">image</span><span class="p">;</span>
-</span><span class='line'>    <span class="p">}];</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-07-01T03:41:00+09:00" pubdate data-updated="true">Jul 1<span>st</span>, 2013</time></div>
-	
-</div>
-
-    <br/>
-    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/07/01/isdiskcache/" data-text="ISDiskCacheというのを書いた" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/07/01/isdiskcache/" >Tweet</a>
     <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
     </article>
 

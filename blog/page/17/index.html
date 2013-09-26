@@ -7,7 +7,8 @@
 	<meta name="author" content="ishkawa">
 
 	
-	<meta name="description" content="UIImageをあれこれしてスクロールを改善する スクロールアニメーションの改善には色々と方法があると思います。その中でも比較的簡単かつ有効な方法を2つ書きます。まず1つ目。画像の取得時に必要なサイズにリサイズすることです。 &hellip;">
+	<meta name="description" content="UINavigationControllerのトランジションをBlocksで記述するカテゴリ UINavigationControllerのpush/pop時のトランジションは左右にスライドするものですが、
+これをカスタマイズするためのTransitionというカテゴリを書きました。 &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -52,6 +53,114 @@
 
 </header>
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2012/09/06/transition/">
+		
+			UINavigationControllerのトランジションをBlocksで記述するカテゴリ</a>
+	</h2>
+	<div class="entry-content">
+		<p>UINavigationControllerのpush/pop時のトランジションは左右にスライドするものですが、<br/>
+これをカスタマイズするためのTransitionというカテゴリを書きました。</p>
+
+<p>アニメーションの以下のフェーズ毎に<code>fromView</code>と<code>toView</code>の配置を指定することで、<br/>
+独自のトランジションを記述することができます。</p>
+
+<ul>
+<li>アニメーション前の配置</li>
+<li>アニメーション</li>
+<li>アニメーション後の処理</li>
+</ul>
+
+
+<p>インターフェースは以下の形式です。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="p">[</span><span class="n">navigationController</span> <span class="nl">pushViewController:</span><span class="n">viewController</span>
+</span><span class='line'>                                <span class="nl">duration:</span><span class="mf">.3f</span>
+</span><span class='line'>                              <span class="nl">prelayouts:</span><span class="o">^</span><span class="p">(</span><span class="n">UIView</span> <span class="o">*</span><span class="n">fromView</span><span class="p">,</span> <span class="n">UIView</span> <span class="o">*</span><span class="n">toView</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>                                  <span class="p">;</span>
+</span><span class='line'>                              <span class="p">}</span>
+</span><span class='line'>                              <span class="nl">animations:</span><span class="o">^</span><span class="p">(</span><span class="n">UIView</span> <span class="o">*</span><span class="n">fromView</span><span class="p">,</span> <span class="n">UIView</span> <span class="o">*</span><span class="n">toView</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>                                  <span class="p">;</span>
+</span><span class='line'>                              <span class="p">}</span>
+</span><span class='line'>                              <span class="nl">completion:</span><span class="o">^</span><span class="p">(</span><span class="n">UIView</span> <span class="o">*</span><span class="n">fromView</span><span class="p">,</span> <span class="n">UIView</span> <span class="o">*</span><span class="n">toView</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>                                  <span class="p">;</span>
+</span><span class='line'>                              <span class="p">}];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="p">[</span><span class="n">navigationController</span> <span class="nl">popViewControllerWithDuration:</span><span class="mf">.3f</span>
+</span><span class='line'>                                         <span class="nl">prelayouts:</span><span class="o">^</span><span class="p">(</span><span class="n">UIView</span> <span class="o">*</span><span class="n">fromView</span><span class="p">,</span> <span class="n">UIView</span> <span class="o">*</span><span class="n">toView</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>                                             <span class="p">;</span>
+</span><span class='line'>                                         <span class="p">}</span>
+</span><span class='line'>                                         <span class="nl">animations:</span><span class="o">^</span><span class="p">(</span><span class="n">UIView</span> <span class="o">*</span><span class="n">fromView</span><span class="p">,</span> <span class="n">UIView</span> <span class="o">*</span><span class="n">toView</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>                                             <span class="p">;</span>
+</span><span class='line'>                                         <span class="p">}</span>
+</span><span class='line'>                                         <span class="nl">completion:</span><span class="o">^</span><span class="p">(</span><span class="n">UIView</span> <span class="o">*</span><span class="n">fromView</span><span class="p">,</span> <span class="n">UIView</span> <span class="o">*</span><span class="n">toView</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>                                             <span class="p">;</span>
+</span><span class='line'>                                         <span class="p">}];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>コードはGitHubで公開しています。 <br/>
+一度デモアプリを動かしてみてください。<br/>
+<a href="https://github.com/ishkawa/UINavigationController-Transition">UINavigationController-Transition</a></p>
+
+<p>READMEにも書いておきましたが、毎回上記のコードを呼ぶのは大変なので、<br/>
+これらをラップした自分用のカテゴリを書くと使いやすいと思います。</p>
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-09-06T13:07:00+09:00" pubdate data-updated="true">Sep 6<span>th</span>, 2012</time></div>
+	
+</div>
+
+    <br/>
+    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2012/09/06/transition/" data-text="UINavigationControllerのトランジションをBlocksで記述するカテゴリ" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2012/09/06/transition/" >Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+    </article>
 
 
     <article class="post">
@@ -128,45 +237,6 @@
 
     <br/>
     <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2012/07/08/uinavigationcontrollerpop/" data-text="右スワイプでUINavigationControllerのpopを呼ぶ" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2012/07/08/uinavigationcontrollerpop/" >Tweet</a>
-    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
-    </article>
-
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2012/07/01/chrome-for-iphoneui/">
-		
-			Chrome for iPhoneのタブ切り替えのUIを実装する</a>
-	</h2>
-	<div class="entry-content">
-		<div class='post'>
-最近、やっとChrome for iPhoneがリリースされました。<br />洗練されたUIで、是非ともSafariもこの刺激を受けてほしいものです。<br /><br />さて、Chrome for iPhoneのタブの切替方法には以下の2種類があります<br /><ul><li>タブボタンを押して、一覧から選択して切り替える。</li><li>ブラウザ画面の端から横フリックする。</li></ul><div>後者のものが<a href="http://blog.ishkawa.org/2012/06/ios5viewcontroller.html" target="_blank">前回のエントリー</a>でつくったものと大体同じだったので、</div><div>今回あらためてつくり方を紹介します。</div><br /><br /><span style="background-color: white;">つくり方の概要は以下のとおりです。</span><br /><div><ul><li>親となるViewControllerのScrollViewを配置。</li><li>WebViewなどを持つ子ViewControllerを親のScrollViewに並べる。</li><li>親にUIScrollViewDelegateを実装し、ScrollViewのスクロール量を取得。</li><li>スクロール量に応じて、子のViewControllerのlayerのtransformを変更。</li></ul><div><span style="background-color: white;">ScrollViewの置き方やUIScrollViewDelegateプロトコルへの適合の詳細は省きます。</span><br /><br /><span style="background-color: white;">まず、親ViewControllerのScrollViewに子ViewContollerを並べます。</span><br /><br /><script src="https://gist.github.com/3028415.js?file=1.m"></script></div></div><br />つづいて、スクロール量に応じてlayerをtransformを変更します。<br />fabs(offset-x)がscrollView.frame.size.widthも小さければ、そのviewは<br />scrollViewに表示されることになるので、これらのtransformを変更してやります。<br /><br /><script src="https://gist.github.com/3028415.js?file=2.m"></script><br />scaleの下限を調整することで、画面の引き具合を調整することができます。 <br /><br />コードはISColumnsControllerという名前でGitHubで公開しています。<br />直したいところがあれば、是非pull requestをください。<br /><a href="https://github.com/ishkawa/ISColumnsController" target="_blank">https://github.com/ishkawa/ISColumnsController</a></div>
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-07-01T00:00:00+09:00" pubdate data-updated="true">Jul 1<span>st</span>, 2012</time></div>
-	
-</div>
-
-    <br/>
-    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2012/07/01/chrome-for-iphoneui/" data-text="Chrome for iPhoneのタブ切り替えのUIを実装する" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2012/07/01/chrome-for-iphoneui/" >Tweet</a>
     <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
     </article>
 
