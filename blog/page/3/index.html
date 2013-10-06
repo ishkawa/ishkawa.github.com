@@ -7,8 +7,9 @@
 	<meta name="author" content="ishkawa">
 
 	
-	<meta name="description" content="GHFeedで利用しているライブラリ一覧 先日GHFeedというGitHubのフィードを読めるiOSアプリをリリースしました。
-今日はGHFeedの開発に利用したライブラリを紹介しようと思います。 NJKWebViewProgress &hellip;">
+	<meta name="description" content="iOS開発でのユニットテストを身につけるには テストがないコードはクソとか、このテストツールこそ至高みたいな話が世に溢れているわけですが、
+そういう状況になってくると、どうやって始めたらいいのかわからなかったりすると思います。
+そういう人のために、何を読んで勉強し、 &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -53,6 +54,119 @@
 
 </header>
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2013/08/31/unit-test/">
+		
+			iOS開発でのユニットテストを身につけるには</a>
+	</h2>
+	<div class="entry-content">
+		<p>テストがないコードはクソとか、このテストツールこそ至高みたいな話が世に溢れているわけですが、
+そういう状況になってくると、どうやって始めたらいいのかわからなかったりすると思います。
+そういう人のために、何を読んで勉強し、何を使って何を書くと始めやすいかという抽象的な解説をしようと思います。</p>
+
+<h3>テストフレームワークの選択</h3>
+
+<p>テスト初心者の最初の壁はフレームワークの選択です。
+iOSのテストについて調べると、SenTestingKitはクソとかGHUnit最高とかKiwiこそ至高とか言っている人がいると思います。
+ですが、入門に最も適しているのはSenTestingKitです。
+セットアップが他と比べて簡単だということと、機能が十分に小さくて機能に溺れることがないということが理由です。</p>
+
+<h3>SenTestingKitの使い方を学ぶ</h3>
+
+<p>いきなり突き放すようなんですが、Appleの公式のドキュメントを読むのがいいと思います。
+プロジェクトのセットアップ方法が詳細に説明されているので、途方に暮れることもないと思います。
+おそらく、初めて読んだ時点ではロジックテストとアプリケーションテストの違いがよくわからないと思いますが、
+ひとまずアプリに対するテストはアプリケーションテストとしてセットアップするのが良いと思います。
+理由はUIApplicationやNSBundleの扱い方がプロダクトコードと揃うからです。</p>
+
+<p><a href="https://developer.apple.com/jp/devcenter/ios/library/documentation/UnitTesting.pdf">Xcode ユニットテスト ガイド (公式ドキュメント)</a></p>
+
+<h3>テストの対象を決める</h3>
+
+<p>iOSアプリのテストは書きづらいと言われることがありますが、ほとんどのコードに対するテストを書くことは可能です。
+ですが、テストを書くコストに見合った分だけの利益がないと、テストを書き続けるモチベーションは下がると思いますので、
+初めは恩恵を受けやすいモデルのテストのみを書くことを勧めます。
+UIViewControllerのテストを書くことも出来ますが、
+初めは完璧を目指すよりも無理のない範囲で安定した粒度のテストを書くことの方が大切です。</p>
+
+<h3>サンプルコードを動かす</h3>
+
+<p>続いてすべきことは、Appleが提供しているサンプルコードを動かすことだと思います。
+このサンプルコードから学ぶべきことは、モデルに対するテストケースの書き方です。
+<code>CalculatorLogicTests.m</code>を読むとモデルに対してどのようにテストを書けばいいか分かるはずです。
+(<code>iOS_CalcTests.m</code>にはUIViewControllerに対するテストが書かれているのですが、前節でやらないことにしたので省きます。)</p>
+
+<p><a href="https://developer.apple.com/library/mac/samplecode/UnitTests/Introduction/Intro.html">Unit Testing Apps and Frameworks (サンプルコード)</a></p>
+
+<p>実行するにはXcodeのスキームを以下のようにして、command+Uを押します。</p>
+
+<p><img src="/images/2013-08-31/scheme.png"></p>
+
+<p>ここまで実行すれば、テストをセットアップして、テストコードを書き、テストを実行する方法がわかると思います。
+あとは自分のプロジェクトでこれらの手順を実行すれば、iOSテストに入門できたといえると思います。</p>
+
+<h3>他のテストツールについて</h3>
+
+<p>ひと通り実行してみると、SenTestingKitについて以下の点に気がつくと思います。</p>
+
+<ul>
+<li>非同期の処理が完了する前にテストケースが終わってしまう</li>
+<li>このメソッドを呼んだらこのメソッドが呼ばれるというテストができない</li>
+<li>テストしたい条件を作ることが難しい</li>
+</ul>
+
+
+<p>1番目の非同期の問題はNSRunLoopを回して待つことで解決可能ですが、
+Kiwiなどのフレームワークレベルで解決しているものを利用するという手もあります。
+そもそもモデルの層で非同期の処理が入っているコードはテストしづらいコードだという説もあります。</p>
+
+<p>2,3番目の問題はモック/スタブを提供するライブラリを導入することで解決できます。
+OCMockなどのモック/スタブ単品のライブラリもあれば、Kiwiのようにフレームワークの一部として提供しているものもあります。</p>
+
+<p>必要に応じてこういった外部のライブラリを導入するとテストが楽になるので、
+なんかテストが書きづらいなあと思ったときは、それを上手く解決しているライブラリを探すといいと思います。</p>
+
+<h3>SenTestingKitに対するよくある誤解</h3>
+
+<p>SenTestingKitは誤解されやすいので、SenTestingKitに対するよくある誤解を並べておきます。</p>
+
+<ul>
+<li>非同期処理を含むテストを実行できない &ndash;> NSRunLoopを回して完了を待つことはできる</li>
+<li>実機上でテストを実行できない &ndash;> アプリケーションテストは実機でも実行できる</li>
+<li>ターミナルからテストを実行できない &ndash;> xcodebuildコマンドで実行可能</li>
+</ul>
+
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-08-31T01:39:00+09:00" pubdate data-updated="true">Aug 31<span>st</span>, 2013</time></div>
+	
+</div>
+
+    <br/>
+    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/08/31/unit-test/" data-text="iOS開発でのユニットテストを身につけるには" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/08/31/unit-test/" >Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+    </article>
 
 
     <article class="post">
@@ -230,177 +344,6 @@ NSRunLoopを回しながらverifyを反復して実行するというアレ気�
 
     <br/>
     <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/08/27/ghfeed/" data-text="モバイル版のGitHubにフィードがなかったので、補うiOSアプリをつくってリリースした" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/08/27/ghfeed/" >Tweet</a>
-    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
-    </article>
-
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2013/08/17/synthesize-in-2013/">
-		
-			2013年の@synthesize</a>
-	</h2>
-	<div class="entry-content">
-		<p>Xcode 4.4でApple LLVM Compiler 4.0が採用されてから、いわゆるModern Objective-Cの一環として
-<code>@synthesize</code>を書かなくても<code>@synthesize foo = _foo;</code>を書いたときと同等の実装が暗黙的に行われるようになりました。
-この仕様が追加されたモダンなプロジェクトでは2度と<code>@synthesize</code>は書かれないのかというと、そうではなくて、
-以下のようなコードを書く場合に<code>@synthesize</code>を使うことがあります。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">@interface</span> <span class="nc">FOOViewController</span> : <span class="nc">UITableViewController</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">,</span> <span class="n">readonly</span><span class="p">)</span> <span class="n">NSFetchedResultsController</span> <span class="o">*</span><span class="n">fetchedResultsController</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@end</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'><span class="k">@implementation</span> <span class="nc">FOOViewController</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@synthesize</span> <span class="n">fetchedResultsController</span> <span class="o">=</span> <span class="n">_fetchedResultsController</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="n">NSFetchedResultsController</span> <span class="o">*</span><span class="p">)</span><span class="nf">fetchedResultsController</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">_fetchedResultsController</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="k">return</span> <span class="n">_fetchedResultsController</span><span class="p">;</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">NSManagedObjectContext</span> <span class="o">*</span><span class="n">context</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSManagedObjectContext</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithConcurrencyType:</span><span class="n">NSMainQueueConcurrencyType</span><span class="p">];</span>
-</span><span class='line'>    <span class="n">NSFetchRequest</span> <span class="o">*</span><span class="n">reqeust</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSFetchRequest</span> <span class="nl">fetchRequestWithEntityName:</span><span class="s">@&quot;Foo&quot;</span><span class="p">];</span>
-</span><span class='line'>    <span class="n">reqeust</span><span class="p">.</span><span class="n">sortDescriptors</span> <span class="o">=</span> <span class="err">@</span><span class="p">[[</span><span class="n">NSSortDescriptor</span> <span class="nl">sortDescriptorWithKey:</span><span class="s">@&quot;bar&quot;</span> <span class="nl">ascending:</span><span class="n">YES</span><span class="p">]];</span>
-</span><span class='line'>    <span class="n">_fetchedResultsController</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSFetchedResultsController</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithFetchRequest:</span><span class="n">reqeust</span>
-</span><span class='line'>                                                                    <span class="nl">managedObjectContext:</span><span class="n">context</span>
-</span><span class='line'>                                                                      <span class="nl">sectionNameKeyPath:</span><span class="nb">nil</span>
-</span><span class='line'>                                                                               <span class="nl">cacheName:</span><span class="nb">nil</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">return</span> <span class="n">_fetchedResultsController</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p><code>@synthesize fetchedResultsController = _fetchedResultsController;</code>が必要な理由は、
-getterの実装を独自に行なっているのでインスタンス変数<code>_fetchedResultsController</code>が宣言されないからです。
-インスタンス変数を宣言するためだけに<code>@synthesize</code>を使うのが気持ち悪い場合には以下のように書くこともでき、
-<code>@synthesize</code>とは永遠の別れを告げることができます。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">@interface</span> <span class="nc">FOOViewController</span> : <span class="nc">UITableViewController</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">,</span> <span class="n">readonly</span><span class="p">)</span> <span class="n">NSFetchedResultsController</span> <span class="o">*</span><span class="n">fetchedResultsController</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@end</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'><span class="k">@implementation</span> <span class="nc">FOOViewController</span> <span class="p">{</span>
-</span><span class='line'>    <span class="n">NSFetchedResultsController</span> <span class="o">*</span><span class="n">_fetchedResultsController</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">-</span> <span class="p">(</span><span class="n">NSFetchedResultsController</span> <span class="o">*</span><span class="p">)</span><span class="n">fetchedResultsController</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">_fetchedResultsController</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="k">return</span> <span class="n">_fetchedResultsController</span><span class="p">;</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">NSManagedObjectContext</span> <span class="o">*</span><span class="n">context</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSManagedObjectContext</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithConcurrencyType:</span><span class="n">NSMainQueueConcurrencyType</span><span class="p">];</span>
-</span><span class='line'>    <span class="n">NSFetchRequest</span> <span class="o">*</span><span class="n">reqeust</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSFetchRequest</span> <span class="nl">fetchRequestWithEntityName:</span><span class="s">@&quot;Foo&quot;</span><span class="p">];</span>
-</span><span class='line'>    <span class="n">reqeust</span><span class="p">.</span><span class="n">sortDescriptors</span> <span class="o">=</span> <span class="err">@</span><span class="p">[[</span><span class="n">NSSortDescriptor</span> <span class="nl">sortDescriptorWithKey:</span><span class="s">@&quot;bar&quot;</span> <span class="nl">ascending:</span><span class="n">YES</span><span class="p">]];</span>
-</span><span class='line'>    <span class="n">_fetchedResultsController</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSFetchedResultsController</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithFetchRequest:</span><span class="n">reqeust</span>
-</span><span class='line'>                                                                    <span class="nl">managedObjectContext:</span><span class="n">context</span>
-</span><span class='line'>                                                                      <span class="nl">sectionNameKeyPath:</span><span class="nb">nil</span>
-</span><span class='line'>                                                                               <span class="nl">cacheName:</span><span class="nb">nil</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">return</span> <span class="n">_fetchedResultsController</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>ここまで書き終えてから思い出しましたが、NSManagedObjectのentityにないプロパティをつくるときにも<code>@synthesize</code>が必要でした。
-もう書く気力がないのでそれはまた別の機会に。</p>
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-08-17T15:20:00+09:00" pubdate data-updated="true">Aug 17<span>th</span>, 2013</time></div>
-	
-</div>
-
-    <br/>
-    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/08/17/synthesize-in-2013/" data-text="2013年の@synthesize" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/08/17/synthesize-in-2013/" >Tweet</a>
     <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
     </article>
 

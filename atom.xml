@@ -4,7 +4,7 @@
   <title><![CDATA[blog.ishkawa.org]]></title>
   <link href="http://blog.ishkawa.org/atom.xml" rel="self"/>
   <link href="http://blog.ishkawa.org/"/>
-  <updated>2013-09-26T11:36:21+09:00</updated>
+  <updated>2013-10-06T22:18:38+09:00</updated>
   <id>http://blog.ishkawa.org/</id>
   <author>
     <name><![CDATA[ishkawa]]></name>
@@ -12,6 +12,88 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[複数のiOSバージョンでのテストを自動的実行する]]></title>
+    <link href="http://blog.ishkawa.org/blog/2013/10/06/run-tests-for-all-destinations/"/>
+    <updated>2013-10-06T21:47:00+09:00</updated>
+    <id>http://blog.ishkawa.org/blog/2013/10/06/run-tests-for-all-destinations</id>
+    <content type="html"><![CDATA[<p>Xcode 5になって<code>xcodebuild</code>コマンドも進化したらしいのですが、あまり変更を追えていませんでした。
+今日、ぼんやりと<code>man xcodebuild</code>を眺めていたら<code>-destination</code>というオプションをみつけました。
+これを使えば任意のiOSバージョンでテストを走らせられるなと思ってやってみました。</p>
+
+<p>はじめはXCTestで実行したかったのですが、<code>iPhoneSimulator6.0.sdk</code>や<code>iPhoneSimulator5.0.sdk</code>には
+<code>xctest</code>という実行ファイルが含まれていないため、以下のようなコマンドでテストを実行することができませんでした。
+(OS=7.0だと実行できます。)</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>xcodebuild <span class="nb">test</span> -scheme Example -destination <span class="s2">&quot;name=iPhone,OS=6.0&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>OCUnitを実行する<code>ounit</code>という実行ファイルは<code>iPhoneSimulator6.0.sdk</code>や<code>iPhoneSimulator5.0.sdk</code>にも含まれているので、
+仕方がなくOCUnitでセットアップしなおしました。
+すると、同じコマンドでiOS 6のシミュレーターでのテストを実行できるようになりました。</p>
+
+<p>ここまでできれば、あとは複数のdestinationに対して自動的に実行できるようにするだけです。
+以下のようなRakefileを書いておくと<code>DESTINATIONS</code>に並べたすべてのdestinationでのテストが、
+<code>rake</code>で実行できるようになります。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">SCHEME</span> <span class="o">=</span> <span class="s2">&quot;Example&quot;</span>
+</span><span class='line'><span class="no">DESTINATIONS</span> <span class="o">=</span> <span class="o">[</span><span class="s2">&quot;name=iPhone,OS=5.0&quot;</span><span class="p">,</span>
+</span><span class='line'>                <span class="s2">&quot;name=iPhone,OS=6.0&quot;</span><span class="p">,</span>
+</span><span class='line'>                <span class="s2">&quot;name=iPhone Retina (3.5-inch),OS=5.0&quot;</span><span class="p">,</span>
+</span><span class='line'>                <span class="s2">&quot;name=iPhone Retina (3.5-inch),OS=6.0&quot;</span><span class="p">,</span>
+</span><span class='line'>                <span class="s2">&quot;name=iPhone Retina (3.5-inch),OS=7.0&quot;</span><span class="p">,</span>
+</span><span class='line'>                <span class="s2">&quot;name=iPhone Retina (4-inch),OS=6.0&quot;</span><span class="p">,</span>
+</span><span class='line'>                <span class="s2">&quot;name=iPhone Retina (4-inch),OS=7.0&quot;</span><span class="p">,</span>
+</span><span class='line'>                <span class="s2">&quot;name=iPhone Retina (4-inch 64-bit),OS=7.0&quot;</span><span class="p">,</span> <span class="o">]</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">task</span> <span class="ss">:default</span> <span class="o">=&gt;</span> <span class="o">[</span><span class="ss">:clean</span><span class="p">,</span> <span class="ss">:test</span><span class="o">]</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">desc</span> <span class="s2">&quot;clean&quot;</span>
+</span><span class='line'><span class="n">task</span> <span class="ss">:clean</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">sh</span> <span class="s2">&quot;xcodebuild clean&quot;</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">desc</span> <span class="s2">&quot;run unit tests&quot;</span>
+</span><span class='line'><span class="n">task</span> <span class="ss">:test</span> <span class="k">do</span>
+</span><span class='line'>  <span class="no">DESTINATIONS</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">destination</span><span class="o">|</span>
+</span><span class='line'>    <span class="n">sh</span> <span class="s2">&quot;xcodebuild test -scheme </span><span class="si">#{</span><span class="no">SCHEME</span><span class="si">}</span><span class="s2"> -destination </span><span class="se">\&quot;</span><span class="si">#{</span><span class="n">destination</span><span class="si">}</span><span class="se">\&quot;</span><span class="s2">&quot;</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>サンプルのプロジェクトはGitHubに置いてあります。<br/>
+<a href="https://github.com/ishkawa/RunTestsForAllDestinationsExample">ishkawa/RunTestsForAllDestinationsExample</a></p>
+
+<p>Travis CIがXcode 5に対応するのが楽しみになりました。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[main queueのNSManagedObjectContextの話]]></title>
@@ -1763,68 +1845,6 @@ CoreDataとMantleを合わせて使うのは、もう少し自分に技術がつ
 
 <p>このコードをプロダクトに入れると同僚に殴られ、アプリもリジェクトされると思います。<br/>
 たぶん、<code>NSArray</code>のリテラルでやっても同じ事が起きます。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[カスタマイズ可能なUIRefreshControlのインターフェースについて考えた]]></title>
-    <link href="http://blog.ishkawa.org/blog/2013/06/01/alternative-refresh-control/"/>
-    <updated>2013-06-01T01:14:00+09:00</updated>
-    <id>http://blog.ishkawa.org/blog/2013/06/01/alternative-refresh-control</id>
-    <content type="html"><![CDATA[<p>インターフェースというのはプログラム上のものを指します。</p>
-
-<p>iphone_dev_jpの勉強会で、独自の<code>UIRefreshControl</code>を実装するにはどうすればよいか、<br/>
-という質問をいただきましたので、しばらく考えていました。</p>
-
-<p><code>UIRefreshControl</code>のメソッド群はよく隠蔽化されていて、カスタマイズすることは難しいです。<br/>
-なので、独自のものをつくるには<code>UIControl</code>からスタートすることになると思います。<br/>
-どんなインターフェースがあれば<code>UIRefershControl</code>はカスタマイズ可能だったのかと考えつつ、<br/>
-独自の<code>UIRefreshControl</code>を実装するための抽象的なクラスを実装しました。</p>
-
-<p><a href="https://github.com/ishkawa/ISAlternativeRefreshControl">ISAlternativeRefreshControl</a></p>
-
-<p>&mdash;</p>
-
-<h3>抽象クラスが持つ値</h3>
-
-<ul>
-<li><code>progress</code>: <code>UIControlEventValueChanged</code>を発火させるまでの引っ張り具合(0.0〜1.0)</li>
-<li><code>refreshingState</code>: 更新前/更新中/更新後の状態</li>
-<li><code>firesOnRelease</code>: 閾値を超えたらすぐ発火するか、閾値を超えた状態で指を離してから発火するか</li>
-</ul>
-
-
-<h3><code>progress</code>の変更を通知するメソッド</h3>
-
-<ul>
-<li><code>willChangeProgress:</code></li>
-<li><code>didChangeProgress</code></li>
-</ul>
-
-
-<p>これらのタイミングで、<code>progress</code>に応じて<code>UIRefreshControl</code>を変形させます。<br/>
-公式の<code>UIRefreshControl</code>であれば<code>progress</code>に応じて伸び具合を変え、<br/>
-従来型の矢印の&#8221;引っぱって更新&#8221;であれば<code>progress</code>に応じて角度を変えます。</p>
-
-<h3><code>refreshingState</code>の変更を通知するメソッド</h3>
-
-<ul>
-<li><code>willChangeProgress:</code></li>
-<li><code>didChangeProgress</code></li>
-</ul>
-
-
-<p>これらのタイミングで、状態に応じたアニメーションを開始したりします。<br/>
-公式の<code>UIRefreshControl</code>であればガムを収縮させて<code>UIActivityIndicator</code>を拡大させ、<br/>
-従来型の矢印の&#8221;引っぱって更新&#8221;であれば矢印を消して<code>UIActivityIndicator</code>を表示します。</p>
-
-<p>&mdash;</p>
-
-<p>このようなインターフェースがあれば、上記のメソッドをオーバーライドすることで、<br/>
-独自の動きを表現する実装が可能となるはずです。<br/>
-実際、従来型の&#8221;引っぱって更新&#8221;や公式の<code>UIRefreshControl</code>はこれらの枠組みで再現できました。</p>
-
-<p>興味が有る方はリポジトリにデモアプリが入っているので見てみてください。</p>
 ]]></content>
   </entry>
   

@@ -7,7 +7,7 @@
 	<meta name="author" content="ishkawa">
 
 	
-	<meta name="description" content="Chrome for iPhoneのタブ切り替えのUIを実装する 最近、やっとChrome for iPhoneがリリースされました。洗練されたUIで、是非ともSafariもこの刺激を受けてほしいものです。さて、Chrome for &hellip;">
+	<meta name="description" content="右スワイプでUINavigationControllerのpopを呼ぶ 最近流行ってる気がするので、書きました。右スワイプを認識してpopViewControllerを呼んでいるだけですが、カテゴリにしておくと結構カジュアルに使える気がします。self. &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -52,6 +52,45 @@
 
 </header>
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2012/07/08/uinavigationcontrollerpop/">
+		
+			右スワイプでUINavigationControllerのpopを呼ぶ</a>
+	</h2>
+	<div class="entry-content">
+		<div class='post'>
+最近流行ってる気がするので、書きました。<br /><br />右スワイプを認識してpopViewControllerを呼んでいるだけですが、<br />カテゴリにしておくと結構カジュアルに使える気がします。<br /><br /><script src="https://gist.github.com/3069164.js?file=UIViewController+SwipePop.m"></script><br />self.navigationControllerの深さを見たいので、viewWillAppearで<br />setupSwipePopRecognizerを呼ぶことにしています。</div>
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-07-08T00:00:00+09:00" pubdate data-updated="true">Jul 8<span>th</span>, 2012</time></div>
+	
+</div>
+
+    <br/>
+    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2012/07/08/uinavigationcontrollerpop/" data-text="右スワイプでUINavigationControllerのpopを呼ぶ" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2012/07/08/uinavigationcontrollerpop/" >Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+    </article>
 
 
     <article class="post">
@@ -128,45 +167,6 @@ iOS5プログラミングブックという本が出版されたので、読ん�
 
     <br/>
     <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2012/06/19/ios5viewcontroller/" data-text="iOS5のコンテナViewControllerを試す" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2012/06/19/ios5viewcontroller/" >Tweet</a>
-    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
-    </article>
-
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2012/06/09/instruments/">
-		
-			Instrumentsを使ってメモリ使用量を測定する</a>
-	</h2>
-	<div class="entry-content">
-		<div class='post'>
-<br />iOS開発にメモリ管理はつきものです。<br />適当に開発しているとメモリ使用量がめでたいことになることがあります。<br /><br />Xcodeにはプログラムの静的解析によって参照カウントの管理を<br />チェックする機能がありますが(Product-&gt;Analyse)、それだけではアプリの<br />メモリ使用量が安定していることを確かめることはできません。<br /><br />そこで、Instrumentsの出番というわけです。<br />InstrumentsはProduct-&gt;Profileから起動することができます。<br /><br />以下のようなメソッドを用意して、メモリの使用量を測ってみました。<br /><br /><script src="https://gist.github.com/2899770.js?file=gistfile1.m"></script><br />交互に読んで2回ずつ実行するとInstrumentsのグラフに2つの山が現れました。<br />それぞれの始まりにloadImage、終わりにreleaseImageを呼んでいます。<br /><br /><div class="separator" style="clear: both; text-align: center;"><a href="http://1.bp.blogspot.com/-rgZwZxXMV-Y/T9LrOFUaNhI/AAAAAAAAAGI/arBMxj_JgUY/s1600/Screen+Shot+2012-06-09+at+15.19.39.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="249" src="http://1.bp.blogspot.com/-rgZwZxXMV-Y/T9LrOFUaNhI/AAAAAAAAAGI/arBMxj_JgUY/s320/Screen+Shot+2012-06-09+at+15.19.39.png" width="320" /></a></div><br />これで、メモリがきちんと解放されていることが確認できそうです。<br />ViewControllerのソースは以下のURLに置いてあります。<br /><a href="https://gist.github.com/2899770" target="_blank">https://gist.github.com/2899770</a></div>
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-06-09T00:00:00+09:00" pubdate data-updated="true">Jun 9<span>th</span>, 2012</time></div>
-	
-</div>
-
-    <br/>
-    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2012/06/09/instruments/" data-text="Instrumentsを使ってメモリ使用量を測定する" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2012/06/09/instruments/" >Tweet</a>
     <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
     </article>
 

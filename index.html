@@ -7,9 +7,8 @@
 	<meta name="author" content="ishkawa">
 
 	
-	<meta name="description" content="Main queueのNSManagedObjectContextの話 ふとTwitterで@cockscombさんと@k_katsumiさんとCoreDataの話になって考えました。
-これから書くことは正しさが曖昧なので、鵜呑みにしないように気をつけてください。
-なお、 &hellip;">
+	<meta name="description" content="複数のiOSバージョンでのテストを自動的実行する Xcode 5になってxcodebuildコマンドも進化したらしいのですが、あまり変更を追えていませんでした。
+今日、ぼんやりとman xcodebuildを眺めていたら-destinationというオプションをみつけました。 &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -54,6 +53,117 @@
 
 </header>
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2013/10/06/run-tests-for-all-destinations/">
+		
+			複数のiOSバージョンでのテストを自動的実行する</a>
+	</h2>
+	<div class="entry-content">
+		<p>Xcode 5になって<code>xcodebuild</code>コマンドも進化したらしいのですが、あまり変更を追えていませんでした。
+今日、ぼんやりと<code>man xcodebuild</code>を眺めていたら<code>-destination</code>というオプションをみつけました。
+これを使えば任意のiOSバージョンでテストを走らせられるなと思ってやってみました。</p>
+
+<p>はじめはXCTestで実行したかったのですが、<code>iPhoneSimulator6.0.sdk</code>や<code>iPhoneSimulator5.0.sdk</code>には
+<code>xctest</code>という実行ファイルが含まれていないため、以下のようなコマンドでテストを実行することができませんでした。
+(OS=7.0だと実行できます。)</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>xcodebuild <span class="nb">test</span> -scheme Example -destination <span class="s2">&quot;name=iPhone,OS=6.0&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>OCUnitを実行する<code>ounit</code>という実行ファイルは<code>iPhoneSimulator6.0.sdk</code>や<code>iPhoneSimulator5.0.sdk</code>にも含まれているので、
+仕方がなくOCUnitでセットアップしなおしました。
+すると、同じコマンドでiOS 6のシミュレーターでのテストを実行できるようになりました。</p>
+
+<p>ここまでできれば、あとは複数のdestinationに対して自動的に実行できるようにするだけです。
+以下のようなRakefileを書いておくと<code>DESTINATIONS</code>に並べたすべてのdestinationでのテストが、
+<code>rake</code>で実行できるようになります。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">SCHEME</span> <span class="o">=</span> <span class="s2">&quot;Example&quot;</span>
+</span><span class='line'><span class="no">DESTINATIONS</span> <span class="o">=</span> <span class="o">[</span><span class="s2">&quot;name=iPhone,OS=5.0&quot;</span><span class="p">,</span>
+</span><span class='line'>                <span class="s2">&quot;name=iPhone,OS=6.0&quot;</span><span class="p">,</span>
+</span><span class='line'>                <span class="s2">&quot;name=iPhone Retina (3.5-inch),OS=5.0&quot;</span><span class="p">,</span>
+</span><span class='line'>                <span class="s2">&quot;name=iPhone Retina (3.5-inch),OS=6.0&quot;</span><span class="p">,</span>
+</span><span class='line'>                <span class="s2">&quot;name=iPhone Retina (3.5-inch),OS=7.0&quot;</span><span class="p">,</span>
+</span><span class='line'>                <span class="s2">&quot;name=iPhone Retina (4-inch),OS=6.0&quot;</span><span class="p">,</span>
+</span><span class='line'>                <span class="s2">&quot;name=iPhone Retina (4-inch),OS=7.0&quot;</span><span class="p">,</span>
+</span><span class='line'>                <span class="s2">&quot;name=iPhone Retina (4-inch 64-bit),OS=7.0&quot;</span><span class="p">,</span> <span class="o">]</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">task</span> <span class="ss">:default</span> <span class="o">=&gt;</span> <span class="o">[</span><span class="ss">:clean</span><span class="p">,</span> <span class="ss">:test</span><span class="o">]</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">desc</span> <span class="s2">&quot;clean&quot;</span>
+</span><span class='line'><span class="n">task</span> <span class="ss">:clean</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">sh</span> <span class="s2">&quot;xcodebuild clean&quot;</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">desc</span> <span class="s2">&quot;run unit tests&quot;</span>
+</span><span class='line'><span class="n">task</span> <span class="ss">:test</span> <span class="k">do</span>
+</span><span class='line'>  <span class="no">DESTINATIONS</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">destination</span><span class="o">|</span>
+</span><span class='line'>    <span class="n">sh</span> <span class="s2">&quot;xcodebuild test -scheme </span><span class="si">#{</span><span class="no">SCHEME</span><span class="si">}</span><span class="s2"> -destination </span><span class="se">\&quot;</span><span class="si">#{</span><span class="n">destination</span><span class="si">}</span><span class="se">\&quot;</span><span class="s2">&quot;</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>サンプルのプロジェクトはGitHubに置いてあります。<br/>
+<a href="https://github.com/ishkawa/RunTestsForAllDestinationsExample">ishkawa/RunTestsForAllDestinationsExample</a></p>
+
+<p>Travis CIがXcode 5に対応するのが楽しみになりました。</p>
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-10-06T21:47:00+09:00" pubdate data-updated="true">Oct 6<span>th</span>, 2013</time></div>
+	
+</div>
+
+    <br/>
+    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/10/06/run-tests-for-all-destinations/" data-text="複数のiOSバージョンでのテストを自動的実行する" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/10/06/run-tests-for-all-destinations/" >Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+    </article>
 
 
     <article class="post">
@@ -216,58 +326,6 @@ CoreDataを利用するUIViewControllerにはNSManagedObjectContextのproperty�
 
     <br/>
     <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/09/22/yapc/" data-text="YAPC::Asia 2013に参加してきました" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/09/22/yapc/" >Tweet</a>
-    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
-    </article>
-
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2013/09/19/xcode-5-test/">
-		
-			Xcode 5でテストを分割実行する</a>
-	</h2>
-	<div class="entry-content">
-		<p>command + option + control + U で実行できます。</p>
-
-<p>テストコードのファイルを開いているときに、テストケース内にカーソルを置いているとそのテストケースのみ実行され、
-テストケース外にカーソルを置いているとそのファイルのテストがすべて実行されます。</p>
-
-<p>SenTestingKit, XCTestのみで動作を確認しました。
-いまのところのKiwiはまだこの機能に対応していなくて、個別の単位(<code>describe</code>, <code>context</code>, <code>it</code>など)での実行はできません。
-未確認ですが、GHUnitは仕組みから考えると全く対応していないと思います。</p>
-
-<p>分割実行できるようになると気軽にテストを走らせるようになって、テストが捗ります。<br/>
-SenTestingKitベースになったKIFも分割実行できるので、UIテストも捗りますね。</p>
-
-<h3>追記 (2013/9/20)</h3>
-
-<p>今日リリースされたKiwi 2.2.2でファイル単位の個別の実行ができるようになったみたいです。</p>
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-09-19T11:40:00+09:00" pubdate data-updated="true">Sep 19<span>th</span>, 2013</time></div>
-	
-</div>
-
-    <br/>
-    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/09/19/xcode-5-test/" data-text="Xcode 5でテストを分割実行する" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/09/19/xcode-5-test/" >Tweet</a>
     <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
     </article>
 

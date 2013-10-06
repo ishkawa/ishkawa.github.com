@@ -7,8 +7,8 @@
 	<meta name="author" content="ishkawa">
 
 	
-	<meta name="description" content="ISHTTPOperation 1.1.0をリリースした 朝6時に目が覚めたら意識が高かったので、ISHTTPOperationに欲しかった機能をつけてリリースしました。
-ISHTTPOperation 　 ISHTTPOperationは特徴のあるライブラリではなくて、 &hellip;">
+	<meta name="description" content="2013年の@synthesize Xcode 4.4でApple LLVM Compiler 4.0が採用されてから、いわゆるModern Objective-Cの一環として
+@synthesizeを書かなくても@synthesize foo = _foo; &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -53,6 +53,177 @@ ISHTTPOperation 　 ISHTTPOperationは特徴のあるライブラリではなく
 
 </header>
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2013/08/17/synthesize-in-2013/">
+		
+			2013年の@synthesize</a>
+	</h2>
+	<div class="entry-content">
+		<p>Xcode 4.4でApple LLVM Compiler 4.0が採用されてから、いわゆるModern Objective-Cの一環として
+<code>@synthesize</code>を書かなくても<code>@synthesize foo = _foo;</code>を書いたときと同等の実装が暗黙的に行われるようになりました。
+この仕様が追加されたモダンなプロジェクトでは2度と<code>@synthesize</code>は書かれないのかというと、そうではなくて、
+以下のようなコードを書く場合に<code>@synthesize</code>を使うことがあります。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">@interface</span> <span class="nc">FOOViewController</span> : <span class="nc">UITableViewController</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">,</span> <span class="n">readonly</span><span class="p">)</span> <span class="n">NSFetchedResultsController</span> <span class="o">*</span><span class="n">fetchedResultsController</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="k">@implementation</span> <span class="nc">FOOViewController</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@synthesize</span> <span class="n">fetchedResultsController</span> <span class="o">=</span> <span class="n">_fetchedResultsController</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="n">NSFetchedResultsController</span> <span class="o">*</span><span class="p">)</span><span class="nf">fetchedResultsController</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">_fetchedResultsController</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">_fetchedResultsController</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">NSManagedObjectContext</span> <span class="o">*</span><span class="n">context</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSManagedObjectContext</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithConcurrencyType:</span><span class="n">NSMainQueueConcurrencyType</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">NSFetchRequest</span> <span class="o">*</span><span class="n">reqeust</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSFetchRequest</span> <span class="nl">fetchRequestWithEntityName:</span><span class="s">@&quot;Foo&quot;</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">reqeust</span><span class="p">.</span><span class="n">sortDescriptors</span> <span class="o">=</span> <span class="err">@</span><span class="p">[[</span><span class="n">NSSortDescriptor</span> <span class="nl">sortDescriptorWithKey:</span><span class="s">@&quot;bar&quot;</span> <span class="nl">ascending:</span><span class="n">YES</span><span class="p">]];</span>
+</span><span class='line'>    <span class="n">_fetchedResultsController</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSFetchedResultsController</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithFetchRequest:</span><span class="n">reqeust</span>
+</span><span class='line'>                                                                    <span class="nl">managedObjectContext:</span><span class="n">context</span>
+</span><span class='line'>                                                                      <span class="nl">sectionNameKeyPath:</span><span class="nb">nil</span>
+</span><span class='line'>                                                                               <span class="nl">cacheName:</span><span class="nb">nil</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">return</span> <span class="n">_fetchedResultsController</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><code>@synthesize fetchedResultsController = _fetchedResultsController;</code>が必要な理由は、
+getterの実装を独自に行なっているのでインスタンス変数<code>_fetchedResultsController</code>が宣言されないからです。
+インスタンス変数を宣言するためだけに<code>@synthesize</code>を使うのが気持ち悪い場合には以下のように書くこともでき、
+<code>@synthesize</code>とは永遠の別れを告げることができます。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">@interface</span> <span class="nc">FOOViewController</span> : <span class="nc">UITableViewController</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">,</span> <span class="n">readonly</span><span class="p">)</span> <span class="n">NSFetchedResultsController</span> <span class="o">*</span><span class="n">fetchedResultsController</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="k">@implementation</span> <span class="nc">FOOViewController</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">NSFetchedResultsController</span> <span class="o">*</span><span class="n">_fetchedResultsController</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">-</span> <span class="p">(</span><span class="n">NSFetchedResultsController</span> <span class="o">*</span><span class="p">)</span><span class="n">fetchedResultsController</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">_fetchedResultsController</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">_fetchedResultsController</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">NSManagedObjectContext</span> <span class="o">*</span><span class="n">context</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSManagedObjectContext</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithConcurrencyType:</span><span class="n">NSMainQueueConcurrencyType</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">NSFetchRequest</span> <span class="o">*</span><span class="n">reqeust</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSFetchRequest</span> <span class="nl">fetchRequestWithEntityName:</span><span class="s">@&quot;Foo&quot;</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">reqeust</span><span class="p">.</span><span class="n">sortDescriptors</span> <span class="o">=</span> <span class="err">@</span><span class="p">[[</span><span class="n">NSSortDescriptor</span> <span class="nl">sortDescriptorWithKey:</span><span class="s">@&quot;bar&quot;</span> <span class="nl">ascending:</span><span class="n">YES</span><span class="p">]];</span>
+</span><span class='line'>    <span class="n">_fetchedResultsController</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSFetchedResultsController</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithFetchRequest:</span><span class="n">reqeust</span>
+</span><span class='line'>                                                                    <span class="nl">managedObjectContext:</span><span class="n">context</span>
+</span><span class='line'>                                                                      <span class="nl">sectionNameKeyPath:</span><span class="nb">nil</span>
+</span><span class='line'>                                                                               <span class="nl">cacheName:</span><span class="nb">nil</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">return</span> <span class="n">_fetchedResultsController</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>ここまで書き終えてから思い出しましたが、NSManagedObjectのentityにないプロパティをつくるときにも<code>@synthesize</code>が必要でした。
+もう書く気力がないのでそれはまた別の機会に。</p>
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-08-17T15:20:00+09:00" pubdate data-updated="true">Aug 17<span>th</span>, 2013</time></div>
+	
+</div>
+
+    <br/>
+    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/08/17/synthesize-in-2013/" data-text="2013年の@synthesize" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/08/17/synthesize-in-2013/" >Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+    </article>
 
 
     <article class="post">
@@ -222,64 +393,6 @@ OCMConstraintがNSCopyingに適合していないので当然のことですが�
 
     <br/>
     <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/07/15/ocmarg-block/" data-text="OCMArgをBlocksとして渡すときに困ること" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/07/15/ocmarg-block/" >Tweet</a>
-    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
-    </article>
-
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2013/07/08/code-coverage/">
-		
-			コードカバレッジを計測してみた感想</a>
-	</h2>
-	<div class="entry-content">
-		<p>先週末、およそ3ヶ月ぶりにNode.jsのコードを書きました。</p>
-
-<p>いつの間にかテストをそれほど苦労せずに書けるようになっていて、
-たくさんテストを書いて意識が高まり、コードカバレッジを計測しようと思いました。
-コードカバレッジを計測するのは今回が生まれて初めてでした。
-何処かで&#8221;コードカバレッジは目安に過ぎない&#8221;みたいな話を聞いて、
-コードカバレッジの効果に対しては半信半疑なところがありましたが、
-とにかくそのときは意識が高まっていたので頑張って計測できるようにしました。
-参考にしたのは以下のブログ記事です。
-あまり深いことはわからないのですが、jscoverageが実行回数を測定できるプロダクトコードのコピーを生成し、
-テストコードからそれを実行することでコードカバレッジを計測できるという感じの仕組みのようです。</p>
-
-<p><a href="http://www.seejohncode.com/2012/03/13/setting-up-mocha-jscoverage/">http://www.seejohncode.com/2012/03/13/setting-up-mocha-jscoverage/</a></p>
-
-<h4>感想</h4>
-
-<p>&ldquo;コードカバレッジは目安に過ぎない&#8221;というのは、コードカバレッジを計測した経験がある人とない人とでは捉え方が変わると思いました。
-コードカバレッジを計測してみる前は&#8221;目安に過ぎないから計測してもしなくても大差ない&#8221;というような気がしていたのですが、
-計測してその結果を活用して開発をしてみると&#8221;無意味な変更でパーセンテージが変化する場合があるから目安&#8221;なのかなと思いました。
-で、結局目安と言いながらも明らかにカバーできていない箇所を発見できたりして開発にとても役立つので、
-本業のiOS開発の方でも頑張ってやってみようと思いました。</p>
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-07-08T20:52:00+09:00" pubdate data-updated="true">Jul 8<span>th</span>, 2013</time></div>
-	
-</div>
-
-    <br/>
-    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/07/08/code-coverage/" data-text="コードカバレッジを計測してみた感想" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/07/08/code-coverage/" >Tweet</a>
     <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
     </article>
 
