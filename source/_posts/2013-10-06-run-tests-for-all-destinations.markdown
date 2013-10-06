@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "複数のiOSバージョンでのテストを自動的実行する"
+title: "複数のiOSバージョンでのテストを自動的に実行する"
 date: 2013-10-06 21:47
 comments: true
 categories: 
