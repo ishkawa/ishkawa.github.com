@@ -4,7 +4,7 @@
   <title><![CDATA[blog.ishkawa.org]]></title>
   <link href="http://blog.ishkawa.org/atom.xml" rel="self"/>
   <link href="http://blog.ishkawa.org/"/>
-  <updated>2013-10-06T22:18:38+09:00</updated>
+  <updated>2013-10-06T22:22:02+09:00</updated>
   <id>http://blog.ishkawa.org/</id>
   <author>
     <name><![CDATA[ishkawa]]></name>
@@ -14,7 +14,7 @@
 
   
   <entry>
-    <title type="html"><![CDATA[複数のiOSバージョンでのテストを自動的実行する]]></title>
+    <title type="html"><![CDATA[複数のiOSバージョンでのテストを自動的に実行する]]></title>
     <link href="http://blog.ishkawa.org/blog/2013/10/06/run-tests-for-all-destinations/"/>
     <updated>2013-10-06T21:47:00+09:00</updated>
     <id>http://blog.ishkawa.org/blog/2013/10/06/run-tests-for-all-destinations</id>
