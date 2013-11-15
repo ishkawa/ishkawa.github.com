@@ -7,7 +7,7 @@
 	<meta name="author" content="ishkawa">
 
 	
-	<meta name="description" content="Xcode 4.3のテンプレートを変更する Xcodeのテンプレートは何かと世話を焼きすぎる感がありますが、これらを書き換えて、好きな構成のプロジェクト/ファイルを作ることができます。4.3からXcode関係のファイル構成が色々変わったようですが、今回の説明対象はXcode 4.3.2です。 &hellip;">
+	<meta name="description" content="iOS向けフレームワークを作成するテンプレート XcodeにはMac向けフレームワークのテンプレートが用意されているのですが、iOSには静的ライブラリのプロジェクトテンプレートしか用意されていません。フレームワークを自力で作成するのはちょっとつらそうだなあと思っていたら、 &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -52,6 +52,45 @@
 
 </header>
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2012/04/24/ios/">
+		
+			iOS向けフレームワークを作成するテンプレート</a>
+	</h2>
+	<div class="entry-content">
+		<div class='post'>
+XcodeにはMac向けフレームワークのテンプレートが用意されているのですが、<div>iOSには静的ライブラリのプロジェクトテンプレートしか用意されていません。</div><div><br /></div><div>フレームワークを自力で作成するのはちょっとつらそうだなあと思っていたら、</div><div>iOS向けフレームワークのテンプレートを作成してくれていた人がいました。</div><div>インストールはシェルを実行するだけです。</div><div><a href="https://github.com/kstenerud/iOS-Universal-Framework" target="_blank">https://github.com/kstenerud/iOS-Universal-Framework</a></div><div><br /></div><div>Fake FrameworkとReal Frameworkの2種類が用意されています。</div><div>Fake Frameworkを使うと、サンプルアプリのビルドをフレームワークのビルドに従属させることで、アプリに組み込みながらフレームワークを開発するというようなことができるようです。</div></div>
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-04-24T00:00:00+09:00" pubdate data-updated="true">Apr 24<span>th</span>, 2012</time></div>
+	
+</div>
+
+    <br/>
+    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2012/04/24/ios/" data-text="iOS向けフレームワークを作成するテンプレート" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2012/04/24/ios/" >Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+    </article>
 
 
     <article class="post">
@@ -131,49 +170,12 @@ Facebook iOS SDKのコードを軽く読んでみて、あまり使う気がし�
     <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
     </article>
 
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2012/03/05/ios5/">
-		
-			iOS5の非同期通信が楽になっていた。</a>
-	</h2>
-	<div class="entry-content">
-		<div class='post'>
-iOS5になってからNSURLConnectionまわりの様子が変わったなあと思っていたら、<br />sendAsynchronousRequest:queue:completionHandler:<br />という便利なメソッドが追加されていました。<br /><br />というわけで、TwitterのSearch APIを叩くサンプルを書きました。<br /><script src="https://gist.github.com/1973714.js?file=AsyncOS5"></script><br />ちなみにですが、Search APIはOAuth認証不要です。<br /><a href="https://dev.twitter.com/docs/api/1/get/search" target="_blank">https://dev.twitter.com/docs/api/1/get/search</a></div>
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-03-05T00:00:00+09:00" pubdate data-updated="true">Mar 5<span>th</span>, 2012</time></div>
-	
-</div>
-
-    <br/>
-    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2012/03/05/ios5/" data-text="iOS5の非同期通信が楽になっていた。" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2012/03/05/ios5/" >Tweet</a>
-    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
-    </article>
-
 <nav id="pagenavi">
     
         <a href="/blog/page/19/" class="prev">Prev</a>
     
+    
+        <a href="/blog/page/21/" class="next">Next</a>
     
     <div class="center"><a href="/blog/archives">Blog Archives</a></div>
 </nav>

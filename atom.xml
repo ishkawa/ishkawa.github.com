@@ -4,7 +4,7 @@
   <title><![CDATA[blog.ishkawa.org]]></title>
   <link href="http://blog.ishkawa.org/atom.xml" rel="self"/>
   <link href="http://blog.ishkawa.org/"/>
-  <updated>2013-10-06T22:22:02+09:00</updated>
+  <updated>2013-11-15T01:51:21+09:00</updated>
   <id>http://blog.ishkawa.org/</id>
   <author>
     <name><![CDATA[ishkawa]]></name>
@@ -12,6 +12,57 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[#potatotips で隅々までタップできるUINavigationBarの話をしました]]></title>
+    <link href="http://blog.ishkawa.org/blog/2013/11/15/potatotips-1/"/>
+    <updated>2013-11-15T01:22:00+09:00</updated>
+    <id>http://blog.ishkawa.org/blog/2013/11/15/potatotips-1</id>
+    <content type="html"><![CDATA[<p>potatotipsというのはクックパッドさんが開催しているiOS/Android開発者のtips共有会です。
+普段は社内のメンバーで定期的に行っているそうなんですが、今回は社外の開発者も含めて開催でした。
+持ち時間は1人あたり5分と短かったので、すぐに活用できそうなtipsが多かったように思います。</p>
+
+<h3>話したこと</h3>
+
+<p>iOS 7になってからUINavigationBarのcustomViewが中央寄りになってしまい、
+バーの両サイドに配置されたカスタムボタンが押しにくいという問題が起きました。
+これだけを理由にUINavigationBarを使うのを辞めるのはもったいないので、
+customViewのフレームに影響されずに隅々までタップできるUINavigationBarを実現する方法を考えました。</p>
+
+<p>実装のアイディアは結構単純で、customViewのフレーム外であってもタッチイベントの位置にsubviewがあれば、
+タッチイベントを貫通させるというものです。イメージがつきにくい話だとは思うのですが、
+たぶん同じような問題に直面した人には通じる話だと思います。</p>
+
+<p>　</p>
+
+<script async class="speakerdeck-embed" data-id="9d882ad02e7e0131dc8166d07d2effc2" data-ratio="1.33333333333333" src="http://blog.ishkawa.org//speakerdeck.com/assets/embed.js"></script>
+
+
+<p>一応このtipsをライブラリにまとめたので、何を言ってるのかサッパリわからなかった人も、
+以下のライブラリを入れればとにかくUINavigationBarが隅々までタップできるようになります。</p>
+
+<p><a href="https://github.com/ishkawa/ISInteractiveEdgesNavigationBar">ISInteractiveEdgesNavigationBar</a></p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="n">Class</span> <span class="n">navigationBarClass</span> <span class="o">=</span> <span class="p">[</span><span class="n">ISInteractiveEdgesNavigationBar</span> <span class="n">class</span><span class="p">];</span>
+</span><span class='line'><span class="n">Class</span> <span class="n">toolbarClass</span> <span class="o">=</span> <span class="p">[</span><span class="n">UIToolbar</span> <span class="n">class</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">UINavigationController</span> <span class="o">*</span><span class="n">navigationController</span> <span class="o">=</span>
+</span><span class='line'><span class="p">[[</span><span class="n">UINavigationController</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithNavigationBarClass:</span><span class="n">navigationBarClass</span>
+</span><span class='line'>                                              <span class="nl">toolbarClass:</span><span class="n">toolbarClass</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>感想</h3>
+
+<p>tips共有会は小規模なら簡単に開催できるし有益なので、周りを適当に誘ってみよう思いました。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[複数のiOSバージョンでのテストを自動的に実行する]]></title>
@@ -1690,161 +1741,6 @@ CoreDataとMantleを合わせて使うのは、もう少し自分に技術がつ
 というようなことを<a href="https://twitter.com/dnpp">@DNPP</a>氏がつけ麺を食べながら言ってたので確かめてみたら本当だった</li>
 </ul>
 
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[NSDictionaryのリテラルのnilを無視する]]></title>
-    <link href="http://blog.ishkawa.org/blog/2013/06/07/ignore-nil-of-literal-nsdictionary/"/>
-    <updated>2013-06-07T02:07:00+09:00</updated>
-    <id>http://blog.ishkawa.org/blog/2013/06/07/ignore-nil-of-literal-nsdictionary</id>
-    <content type="html"><![CDATA[<p>はじめに断っておきますが、今回のコードはプロダクトに入れるべきではありません。<br/>
-プログラムとして好ましくない上に、Appleの審査でリジェクトされる可能性もあります。</p>
-
-<p>興味本位でやってみたら動いたので書いていますが、取り扱い注意です。</p>
-
-<p>&mdash;</p>
-
-<p><code>NSDictionary</code>のリテラルを以下のように書くと、例外が投げられます。<br/>
-理由は<code>piyo</code>が<code>nil</code>だからです。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="n">NSString</span> <span class="o">*</span><span class="n">hoge</span> <span class="o">=</span> <span class="s">@&quot;hoge&quot;</span><span class="p">;</span>
-</span><span class='line'><span class="n">NSString</span> <span class="o">*</span><span class="n">fuga</span> <span class="o">=</span> <span class="s">@&quot;fuga&quot;</span><span class="p">;</span>
-</span><span class='line'><span class="n">NSString</span> <span class="o">*</span><span class="n">piyo</span> <span class="o">=</span> <span class="nb">nil</span><span class="p">;</span>
-</span><span class='line'><span class="n">NSDictionary</span> <span class="o">*</span><span class="n">dictionary</span> <span class="o">=</span> <span class="err">@</span><span class="p">{</span><span class="s">@&quot;hoge&quot;</span><span class="o">:</span> <span class="n">hoge</span><span class="p">,</span>
-</span><span class='line'>                             <span class="s">@&quot;fuga&quot;</span><span class="o">:</span> <span class="n">fuga</span><span class="p">,</span>
-</span><span class='line'>                             <span class="s">@&quot;piyo&quot;</span><span class="o">:</span> <span class="n">piyo</span><span class="p">,</span> <span class="p">};</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>この例外は至極まっとうなもので適切にフォローすべきものなのですが、<br/>
-意識が低くなってくると自動的に以下のように変換されて欲しいと思ってしまうことがあります。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="n">NSString</span> <span class="o">*</span><span class="n">hoge</span> <span class="o">=</span> <span class="s">@&quot;hoge&quot;</span><span class="p">;</span>
-</span><span class='line'><span class="n">NSString</span> <span class="o">*</span><span class="n">fuga</span> <span class="o">=</span> <span class="s">@&quot;fuga&quot;</span><span class="p">;</span>
-</span><span class='line'><span class="n">NSDictionary</span> <span class="o">*</span><span class="n">dictionary</span> <span class="o">=</span> <span class="err">@</span><span class="p">{</span><span class="s">@&quot;hoge&quot;</span><span class="o">:</span> <span class="n">hoge</span><span class="p">,</span>
-</span><span class='line'>                             <span class="s">@&quot;fuga&quot;</span><span class="o">:</span> <span class="n">fuga</span><span class="p">,</span> <span class="p">};</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>これは以下のような<code>NSDictionary</code>のカテゴリを書くことで実現出来ます。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-<span class='line-number'>47</span>
-</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="cp">#import &quot;NSDictionary+IgnoreNil.h&quot;</span>
-</span><span class='line'><span class="cp">#import &lt;objc/runtime.h&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@implementation</span> <span class="nc">NSDictionary</span> <span class="nl">(IgnoreNil)</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">load</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="err">@</span><span class="n">autoreleasepool</span> <span class="p">{</span>
-</span><span class='line'>        <span class="n">Class</span> <span class="n">class</span> <span class="o">=</span> <span class="n">NSClassFromString</span><span class="p">(</span><span class="s">@&quot;__NSPlaceholderDictionary&quot;</span><span class="p">);</span>
-</span><span class='line'>        <span class="n">Method</span> <span class="n">originalMethod</span> <span class="o">=</span> <span class="n">class_getInstanceMethod</span><span class="p">(</span><span class="n">class</span><span class="p">,</span> <span class="k">@selector</span><span class="p">(</span><span class="nl">initWithObjects:forKeys:count:</span><span class="p">));</span>
-</span><span class='line'>        <span class="n">Method</span> <span class="n">alternativeMethod</span> <span class="o">=</span> <span class="n">class_getInstanceMethod</span><span class="p">(</span><span class="n">class</span><span class="p">,</span> <span class="k">@selector</span><span class="p">(</span><span class="nl">_initWithObjects:forKeys:count:</span><span class="p">));</span>
-</span><span class='line'>        <span class="n">method_exchangeImplementations</span><span class="p">(</span><span class="n">originalMethod</span><span class="p">,</span> <span class="n">alternativeMethod</span><span class="p">);</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nf">_initWithObjects:</span><span class="p">(</span><span class="k">const</span> <span class="kt">id</span> <span class="p">[])</span><span class="nv">objects</span> <span class="nf">forKeys:</span><span class="p">(</span><span class="k">const</span> <span class="kt">id</span><span class="o">&lt;</span><span class="n">NSCopying</span><span class="o">&gt;</span> <span class="p">[])</span><span class="nv">keys</span> <span class="nf">count:</span><span class="p">(</span><span class="n">NSUInteger</span><span class="p">)</span><span class="nv">count</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="n">NSMutableArray</span> <span class="o">*</span><span class="n">validObjectArray</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSMutableArray</span> <span class="n">array</span><span class="p">];</span>
-</span><span class='line'>    <span class="n">NSMutableArray</span> <span class="o">*</span><span class="n">validKeyArray</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSMutableArray</span> <span class="n">array</span><span class="p">];</span>
-</span><span class='line'>    <span class="n">NSInteger</span> <span class="n">validCount</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">for</span> <span class="p">(</span><span class="n">NSInteger</span> <span class="n">index</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">index</span> <span class="o">&lt;</span> <span class="n">count</span><span class="p">;</span> <span class="n">index</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="kt">id</span> <span class="n">object</span> <span class="o">=</span> <span class="n">objects</span><span class="p">[</span><span class="n">index</span><span class="p">];</span>
-</span><span class='line'>        <span class="kt">id</span> <span class="n">key</span> <span class="o">=</span> <span class="n">keys</span><span class="p">[</span><span class="n">index</span><span class="p">];</span>
-</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="n">object</span> <span class="o">&amp;&amp;</span> <span class="n">key</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>            <span class="p">[</span><span class="n">validObjectArray</span> <span class="nl">addObject:</span><span class="n">object</span><span class="p">];</span>
-</span><span class='line'>            <span class="p">[</span><span class="n">validKeyArray</span> <span class="nl">addObject:</span><span class="n">key</span><span class="p">];</span>
-</span><span class='line'>            <span class="n">validCount</span><span class="o">++</span><span class="p">;</span>
-</span><span class='line'>        <span class="p">}</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="kt">id</span> <span class="o">*</span><span class="n">validObjects</span> <span class="o">=</span> <span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span> <span class="o">*</span> <span class="n">validCount</span><span class="p">);</span>
-</span><span class='line'>    <span class="kt">id</span> <span class="o">*</span><span class="n">validKeys</span> <span class="o">=</span> <span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span> <span class="o">*</span> <span class="n">validCount</span><span class="p">);</span>
-</span><span class='line'>    <span class="k">for</span> <span class="p">(</span><span class="n">NSInteger</span> <span class="n">index</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">index</span> <span class="o">&lt;</span> <span class="n">validCount</span><span class="p">;</span> <span class="n">index</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="n">validObjects</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">validObjectArray</span> <span class="nl">objectAtIndex:</span><span class="n">index</span><span class="p">];</span>
-</span><span class='line'>        <span class="n">validKeys</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">validKeyArray</span> <span class="nl">objectAtIndex:</span><span class="n">index</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">self</span> <span class="o">=</span> <span class="p">[</span><span class="n">self</span> <span class="nl">_initWithObjects:</span><span class="n">validObjects</span> <span class="nl">forKeys:</span><span class="n">validKeys</span> <span class="nl">count:</span><span class="n">validCount</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">free</span><span class="p">(</span><span class="n">validObjects</span><span class="p">);</span>
-</span><span class='line'>    <span class="n">free</span><span class="p">(</span><span class="n">validKeys</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">return</span> <span class="n">self</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>やっていることは単純です。</p>
-
-<p><code>NSDictionary</code>のリテラルは<code>__NSPlaceholderDictionary</code>(<code>NSDictionary</code>クラスクラスタの一部)の<br/>
-<code>initWithObjects:keys:count:</code>を呼ぶので、それをswizzleしてnilでないもののみを元の実装に渡しています。</p>
-
-<p>&mdash;</p>
-
-<p>このコードをプロダクトに入れると同僚に殴られ、アプリもリジェクトされると思います。<br/>
-たぶん、<code>NSArray</code>のリテラルでやっても同じ事が起きます。</p>
 ]]></content>
   </entry>
   

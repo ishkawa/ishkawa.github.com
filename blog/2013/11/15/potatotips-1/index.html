@@ -1,0 +1,157 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>#potatotips で隅々までタップできるUINavigationBarの話をしました</title>
+	<meta name="author" content="ishkawa">
+
+	
+	<meta name="description" content="#potatotips で隅々までタップできるUINavigationBarの話をしました potatotipsというのはクックパッドさんが開催しているiOS/Android開発者のtips共有会です。
+普段は社内のメンバーで定期的に行っているそうなんですが、今回は社外の開発者も含めて開催でした &hellip;">
+	
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="blog.ishkawa.org" type="application/atom+xml">
+	<link rel="canonical" href="">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<script async="true" src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	
+</head>
+
+
+<body>
+	<header id="header" class="inner"><h1><a href="/">blog.ishkawa.org</a></h1>
+<nav id="main-nav"><ul class="main">
+  <li><a href="https://twitter.com/_ishkawa">Twitter</a></li>
+  <li><a href="https://github.com/ishkawa">GitHub</a></li>
+</ul>
+
+</nav>
+<nav id="mobile-nav">
+	<div class="alignleft menu">
+		<a class="button">Menu</a>
+		<div class="container"><ul class="main">
+  <li><a href="https://twitter.com/_ishkawa">Twitter</a></li>
+  <li><a href="https://github.com/ishkawa">GitHub</a></li>
+</ul>
+
+</div>
+	</div>
+	<div class="alignright search">
+		<a class="button"></a>
+		<div class="container">
+			<form action="http://google.com/search" method="get">
+				<input type="text" name="q" results="0">
+				<input type="hidden" name="q" value="site:blog.ishkawa.org">
+			</form>
+		</div>
+	</div>
+</nav>
+
+</header>
+	<div id="content" class="inner"><article class="post">
+	<h2 class="title">#potatotips で隅々までタップできるUINavigationBarの話をしました</h2>
+	<div class="entry-content"><p>potatotipsというのはクックパッドさんが開催しているiOS/Android開発者のtips共有会です。
+普段は社内のメンバーで定期的に行っているそうなんですが、今回は社外の開発者も含めて開催でした。
+持ち時間は1人あたり5分と短かったので、すぐに活用できそうなtipsが多かったように思います。</p>
+
+<h3>話したこと</h3>
+
+<p>iOS 7になってからUINavigationBarのcustomViewが中央寄りになってしまい、
+バーの両サイドに配置されたカスタムボタンが押しにくいという問題が起きました。
+これだけを理由にUINavigationBarを使うのを辞めるのはもったいないので、
+customViewのフレームに影響されずに隅々までタップできるUINavigationBarを実現する方法を考えました。</p>
+
+<p>実装のアイディアは結構単純で、customViewのフレーム外であってもタッチイベントの位置にsubviewがあれば、
+タッチイベントを貫通させるというものです。イメージがつきにくい話だとは思うのですが、
+たぶん同じような問題に直面した人には通じる話だと思います。</p>
+
+<p>　</p>
+
+<script async class="speakerdeck-embed" data-id="9d882ad02e7e0131dc8166d07d2effc2" data-ratio="1.33333333333333" src="//speakerdeck.com/assets/embed.js"></script>
+
+
+<p>一応このtipsをライブラリにまとめたので、何を言ってるのかサッパリわからなかった人も、
+以下のライブラリを入れればとにかくUINavigationBarが隅々までタップできるようになります。</p>
+
+<p><a href="https://github.com/ishkawa/ISInteractiveEdgesNavigationBar">ISInteractiveEdgesNavigationBar</a></p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="n">Class</span> <span class="n">navigationBarClass</span> <span class="o">=</span> <span class="p">[</span><span class="n">ISInteractiveEdgesNavigationBar</span> <span class="n">class</span><span class="p">];</span>
+</span><span class='line'><span class="n">Class</span> <span class="n">toolbarClass</span> <span class="o">=</span> <span class="p">[</span><span class="n">UIToolbar</span> <span class="n">class</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">UINavigationController</span> <span class="o">*</span><span class="n">navigationController</span> <span class="o">=</span>
+</span><span class='line'><span class="p">[[</span><span class="n">UINavigationController</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithNavigationBarClass:</span><span class="n">navigationBarClass</span>
+</span><span class='line'>                                              <span class="nl">toolbarClass:</span><span class="n">toolbarClass</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>感想</h3>
+
+<p>tips共有会は小規模なら簡単に開催できるし有益なので、周りを適当に誘ってみよう思いました。</p>
+</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-11-15T01:22:00+09:00" pubdate data-updated="true">Nov 15<span>th</span>, 2013</time></div>
+	
+</div>
+
+    <br/>
+    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/11/15/potatotips-1/" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/11/15/potatotips-1/" >Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+</article>
+
+</div>
+	<footer id="footer" class="inner">Copyright &copy; 2013
+
+    ishkawa
+
+</footer>
+	<script src="/javascripts/slash.js"></script>
+<script src="/javascripts/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+	$('.fancybox').fancybox();
+})(jQuery);
+</script> <!-- Delete or comment this line to disable Fancybox -->
+
+
+
+
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-35917440-1']);
+		_gaq.push(['_trackPageview']);
+
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
+
+
+
+</body>
+</html>

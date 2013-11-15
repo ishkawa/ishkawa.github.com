@@ -7,7 +7,8 @@
 	<meta name="author" content="ishkawa">
 
 	
-	<meta name="description" content="第4回 Iphone_dev_jp 東京iPhone/Mac勉強会に参加しました ちょっと早めに会場に着いたので前方に座ったら、隣が@ninjinkunさんでした。 自分の発表 自分はiOS 5で動作するUIRefreshControlのつくり方を発表しました。 &hellip;">
+	<meta name="description" content="カスタマイズ可能なUIRefreshControlのインターフェースについて考えた インターフェースというのはプログラム上のものを指します。 iphone_dev_jpの勉強会で、独自のUIRefreshControlを実装するにはどうすればよいか、
+という質問をいただきましたので、 &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -52,6 +53,97 @@
 
 </header>
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2013/06/01/alternative-refresh-control/">
+		
+			カスタマイズ可能なUIRefreshControlのインターフェースについて考えた</a>
+	</h2>
+	<div class="entry-content">
+		<p>インターフェースというのはプログラム上のものを指します。</p>
+
+<p>iphone_dev_jpの勉強会で、独自の<code>UIRefreshControl</code>を実装するにはどうすればよいか、<br/>
+という質問をいただきましたので、しばらく考えていました。</p>
+
+<p><code>UIRefreshControl</code>のメソッド群はよく隠蔽化されていて、カスタマイズすることは難しいです。<br/>
+なので、独自のものをつくるには<code>UIControl</code>からスタートすることになると思います。<br/>
+どんなインターフェースがあれば<code>UIRefershControl</code>はカスタマイズ可能だったのかと考えつつ、<br/>
+独自の<code>UIRefreshControl</code>を実装するための抽象的なクラスを実装しました。</p>
+
+<p><a href="https://github.com/ishkawa/ISAlternativeRefreshControl">ISAlternativeRefreshControl</a></p>
+
+<p>&mdash;</p>
+
+<h3>抽象クラスが持つ値</h3>
+
+<ul>
+<li><code>progress</code>: <code>UIControlEventValueChanged</code>を発火させるまでの引っ張り具合(0.0〜1.0)</li>
+<li><code>refreshingState</code>: 更新前/更新中/更新後の状態</li>
+<li><code>firesOnRelease</code>: 閾値を超えたらすぐ発火するか、閾値を超えた状態で指を離してから発火するか</li>
+</ul>
+
+
+<h3><code>progress</code>の変更を通知するメソッド</h3>
+
+<ul>
+<li><code>willChangeProgress:</code></li>
+<li><code>didChangeProgress</code></li>
+</ul>
+
+
+<p>これらのタイミングで、<code>progress</code>に応じて<code>UIRefreshControl</code>を変形させます。<br/>
+公式の<code>UIRefreshControl</code>であれば<code>progress</code>に応じて伸び具合を変え、<br/>
+従来型の矢印の&#8221;引っぱって更新&#8221;であれば<code>progress</code>に応じて角度を変えます。</p>
+
+<h3><code>refreshingState</code>の変更を通知するメソッド</h3>
+
+<ul>
+<li><code>willChangeProgress:</code></li>
+<li><code>didChangeProgress</code></li>
+</ul>
+
+
+<p>これらのタイミングで、状態に応じたアニメーションを開始したりします。<br/>
+公式の<code>UIRefreshControl</code>であればガムを収縮させて<code>UIActivityIndicator</code>を拡大させ、<br/>
+従来型の矢印の&#8221;引っぱって更新&#8221;であれば矢印を消して<code>UIActivityIndicator</code>を表示します。</p>
+
+<p>&mdash;</p>
+
+<p>このようなインターフェースがあれば、上記のメソッドをオーバーライドすることで、<br/>
+独自の動きを表現する実装が可能となるはずです。<br/>
+実際、従来型の&#8221;引っぱって更新&#8221;や公式の<code>UIRefreshControl</code>はこれらの枠組みで再現できました。</p>
+
+<p>興味が有る方はリポジトリにデモアプリが入っているので見てみてください。</p>
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-06-01T01:14:00+09:00" pubdate data-updated="true">Jun 1<span>st</span>, 2013</time></div>
+	
+</div>
+
+    <br/>
+    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/06/01/alternative-refresh-control/" data-text="カスタマイズ可能なUIRefreshControlのインターフェースについて考えた" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/06/01/alternative-refresh-control/" >Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+    </article>
 
 
     <article class="post">
@@ -264,275 +356,6 @@ UIWebViewの読み込みの進捗を取得してくれます。</p>
 
     <br/>
     <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/05/22/xctool/" data-text="xctoolが良い" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/05/22/xctool/" >Tweet</a>
-    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
-    </article>
-
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2013/05/19/iremocon-operation/">
-		
-			NSStreamを利用してiRemoconと通信する</a>
-	</h2>
-	<div class="entry-content">
-		<p>以前、<a href="http://blog.ishkawa.org/blog/2013/02/05/qiita-hackathon/">Qiita Hackathon</a>でiRemoconをいただきました。</p>
-
-<p>iPhoneがあらゆるリモコンになるという画期的な製品なのですが、公式アプリは4インチ非対応な上に<br/>
-iPhoneとあまりマッチしないUIとなっているので、自分用に代用品をつくろうと思いました。</p>
-
-<p>おそらく、そう考える人はたくさんいると思うので、通信の仕方を紹介します。</p>
-
-<p>&mdash;</p>
-
-<p>iRemoconにはTCP/IP通信でコマンドを送信することができます。<br/>
-TCP/IP通信を行う手段には<code>NSStream</code>を採用しました。</p>
-
-<h3>NSStreamのペアを作成する</h3>
-
-<p><code>NSStream</code>自体は抽象クラスで、実際には<code>NSInputStream</code>と<code>NSOutputStream</code>のペアを利用します。<br/>
-<code>CFStreamCreatePairWithSocketToHost</code>を利用するとペアを作成してくれます。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="n">CFReadStreamRef</span> <span class="n">readStream</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
-</span><span class='line'><span class="n">CFWriteStreamRef</span> <span class="n">writeStream</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
-</span><span class='line'><span class="n">CFStringRef</span> <span class="n">hostNameRef</span> <span class="o">=</span> <span class="p">(</span><span class="n">__bridge</span> <span class="n">CFStringRef</span><span class="p">)</span><span class="s">@&quot;10.0.1.3&quot;</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">CFStreamCreatePairWithSocketToHost</span><span class="p">(</span><span class="nb">NULL</span><span class="p">,</span>
-</span><span class='line'>                                   <span class="n">hostNameRef</span><span class="p">,</span>
-</span><span class='line'>                                   <span class="mi">51013</span><span class="p">,</span>
-</span><span class='line'>                                   <span class="o">&amp;</span><span class="n">readStream</span><span class="p">,</span>
-</span><span class='line'>                                   <span class="o">&amp;</span><span class="n">writeStream</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">NSInputStream</span> <span class="o">*</span><span class="n">inputStream</span> <span class="o">=</span> <span class="p">(</span><span class="n">__bridge_transfer</span> <span class="n">NSInputStream</span> <span class="o">*</span><span class="p">)</span><span class="n">readStream</span><span class="p">;</span>
-</span><span class='line'><span class="n">NSOutputStream</span> <span class="o">*</span><span class="n">outputStream</span> <span class="o">=</span> <span class="p">(</span><span class="n">__bridge_transfer</span> <span class="n">NSOutputStream</span> <span class="o">*</span><span class="p">)</span><span class="n">writeStream</span><span class="p">;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>NSRunLoopにスケジュールする</h3>
-
-<p><code>NSStream</code>を<code>NSRunLoop</code>にスケジュールするとデリゲートメソッドで通知を受け取ることができます。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="n">NSRunLoop</span> <span class="o">*</span><span class="n">runLoop</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSRunLoop</span> <span class="n">currentRunLoop</span><span class="p">];</span>
-</span><span class='line'><span class="n">NSString</span> <span class="o">*</span><span class="n">mode</span> <span class="o">=</span> <span class="n">NSDefaultRunLoopMode</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">inputStream</span><span class="p">.</span><span class="n">delegate</span> <span class="o">=</span> <span class="n">self</span><span class="p">;</span>
-</span><span class='line'><span class="p">[</span><span class="n">inputStream</span> <span class="nl">scheduleInRunLoop:</span><span class="n">runLoop</span> <span class="nl">forMode:</span><span class="n">mode</span><span class="p">];</span>
-</span><span class='line'><span class="p">[</span><span class="n">inputStream</span> <span class="n">open</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">outputStream</span><span class="p">.</span><span class="n">delegate</span> <span class="o">=</span> <span class="n">self</span><span class="p">;</span>
-</span><span class='line'><span class="p">[</span><span class="n">outputStream</span> <span class="nl">scheduleInRunLoop:</span><span class="n">runLoop</span> <span class="nl">forMode:</span><span class="n">mode</span><span class="p">];</span>
-</span><span class='line'><span class="p">[</span><span class="n">outputStream</span> <span class="n">open</span><span class="p">];</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p><code>self</code>が何者かは特に指定していませんが、<code>NSStreamDelegate</code>に適合しているものとします。<br/>
-これらがメインスレッド以外のスレッドで実行される場合には<code>NSRunLoop</code>を回す必要があります。<br/>
-以下は非同期型の<code>NSOperation</code>での実装例です。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">do</span> <span class="p">{</span>
-</span><span class='line'>    <span class="err">@</span><span class="n">autoreleasepool</span> <span class="p">{</span>
-</span><span class='line'>        <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">runLoop</span> <span class="nl">runUntilDate:</span><span class="p">[</span><span class="n">NSDate</span> <span class="nl">dateWithTimeIntervalSinceNow:</span><span class="mf">.1</span><span class="p">]];</span>
-</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="n">self</span><span class="p">.</span><span class="n">isCancelled</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>            <span class="p">[</span><span class="n">self</span> <span class="n">unscheduleStreams</span><span class="p">];</span>
-</span><span class='line'>            <span class="p">[</span><span class="n">self</span> <span class="n">completeOperation</span><span class="p">];</span>
-</span><span class='line'>        <span class="p">}</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'><span class="p">}</span> <span class="k">while</span> <span class="p">(</span><span class="n">self</span><span class="p">.</span><span class="n">isExecuting</span><span class="p">);</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>NSStreamのイベントを受け取る</h3>
-
-<p>イベントに対して行う処理は以下の通りです。</p>
-
-<ul>
-<li>NSStreamEventHasSpaceAvailable: <code>NSOutputStream</code>にiRemoconのコマンドを書き込む</li>
-<li>NSStreamEventHasBytesAvailable: <code>NSInputStream</code>からレスポンスを読み込む</li>
-</ul>
-
-
-<p>イベントは<code>NSStreamDelegate</code>の<code>stream:handleEvent:</code>で受け取ります。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">stream:</span><span class="p">(</span><span class="n">NSStream</span> <span class="o">*</span><span class="p">)</span><span class="nv">stream</span> <span class="nf">handleEvent:</span><span class="p">(</span><span class="n">NSStreamEvent</span><span class="p">)</span><span class="nv">eventCode</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">switch</span><span class="p">(</span><span class="n">eventCode</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="k">case</span> <span class="nl">NSStreamEventHasBytesAvailable:</span>
-</span><span class='line'>            <span class="k">if</span> <span class="p">(</span><span class="n">stream</span> <span class="o">==</span> <span class="n">self</span><span class="p">.</span><span class="n">inputStream</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>                <span class="p">[</span><span class="n">self</span> <span class="n">readBuffer</span><span class="p">];</span>
-</span><span class='line'>            <span class="p">}</span>
-</span><span class='line'>            <span class="k">break</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="k">case</span> <span class="nl">NSStreamEventHasSpaceAvailable:</span>
-</span><span class='line'>            <span class="k">if</span> <span class="p">(</span><span class="n">stream</span> <span class="o">==</span> <span class="n">self</span><span class="p">.</span><span class="n">outputStream</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>                <span class="p">[</span><span class="n">self</span> <span class="n">sendCommand</span><span class="p">];</span>
-</span><span class='line'>            <span class="p">}</span>
-</span><span class='line'>            <span class="k">break</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="p">...</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>NSOutputStreamにコマンドを書き込む</h3>
-
-<p>コマンドの形式は<a href="http://i-remocon.com/development/">公式の技術資料</a>にある通りで、通信確認を行うためには<code>*au\r\n</code>を送信します。<br/>
-送信後は<code>NSOutputStream</code>が要らなくなるので<code>NSRunLoop</code>から外します。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">sendCommand</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="n">NSString</span> <span class="o">*</span><span class="n">command</span> <span class="o">=</span> <span class="s">@&quot;*au</span><span class="se">\r\n</span><span class="s">&quot;</span><span class="p">;</span>
-</span><span class='line'>    <span class="k">const</span> <span class="n">uint8_t</span> <span class="o">*</span><span class="n">ccommand</span> <span class="o">=</span> <span class="p">(</span><span class="k">const</span> <span class="n">uint8_t</span> <span class="o">*</span><span class="p">)[</span><span class="n">command</span> <span class="n">UTF8String</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">outputStream</span> <span class="nl">write:</span><span class="n">ccommand</span> <span class="nl">maxLength:</span><span class="n">strlen</span><span class="p">((</span><span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="p">)</span><span class="n">ccommand</span><span class="p">)];</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">outputStream</span> <span class="n">close</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">outputStream</span> <span class="nl">removeFromRunLoop:</span><span class="n">self</span><span class="p">.</span><span class="n">runLoop</span> <span class="nl">forMode:</span><span class="n">self</span><span class="p">.</span><span class="n">mode</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>NSInputStreamからレスポンスを読み込む</h3>
-
-<p>結果が<code>ok\r\n</code>ならば通信成功です。<br/>
-レスポンスの末尾は<code>\r\n</code>なので、<code>\r\n</code>を受け取ったら<code>NSInputStream</code>も<code>NSRunLoop</code>から外します。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">readBuffer</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="n">uint8_t</span> <span class="n">buffer</span><span class="p">[</span><span class="mi">1024</span><span class="p">];</span>
-</span><span class='line'>    <span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">length</span> <span class="o">=</span> <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">inputStream</span> <span class="nl">read:</span><span class="n">buffer</span> <span class="nl">maxLength:</span><span class="mi">1024</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">data</span> <span class="nl">appendBytes:</span><span class="n">buffer</span> <span class="nl">length:</span><span class="n">length</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">NSString</span> <span class="o">*</span><span class="n">joinedString</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSString</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithData:</span><span class="n">self</span><span class="p">.</span><span class="n">data</span> <span class="nl">encoding:</span><span class="n">NSUTF8StringEncoding</span><span class="p">];</span>
-</span><span class='line'>    <span class="k">if</span> <span class="p">([</span><span class="n">joinedString</span> <span class="nl">rangeOfString:</span><span class="s">@&quot;</span><span class="se">\r\n</span><span class="s">&quot;</span><span class="p">].</span><span class="n">location</span> <span class="o">!=</span> <span class="n">NSNotFound</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">inputStream</span> <span class="n">close</span><span class="p">];</span>
-</span><span class='line'>        <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">inputStream</span> <span class="nl">removeFromRunLoop:</span><span class="n">self</span><span class="p">.</span><span class="n">runLoop</span> <span class="nl">forMode:</span><span class="n">self</span><span class="p">.</span><span class="n">mode</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>&mdash;</p>
-
-<p>以上で完了です。</p>
-
-<p>これらの手順を非同期型の<code>NSOperation</code>にまとめてGitHubに上げました。<br/>
-<a href="https://github.com/ishkawa/IRMCommandOperation">IRMCommandOperation</a></p>
-
-<p><code>IRMCommandOperation</code>を利用すると、以下のようにしてコマンドを送信出来ます。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="n">IRMCommandOperation</span> <span class="o">*</span><span class="n">operation</span> <span class="o">=</span>
-</span><span class='line'><span class="p">[[</span><span class="n">IRMCommandOperation</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithCommand:</span><span class="s">@&quot;is&quot;</span>
-</span><span class='line'>                                    <span class="nl">argument:</span><span class="s">@&quot;1000&quot;</span>
-</span><span class='line'>                                     <span class="nl">handler:</span><span class="o">^</span><span class="p">(</span><span class="n">NSData</span> <span class="o">*</span><span class="n">data</span><span class="p">,</span> <span class="n">NSError</span> <span class="o">*</span><span class="n">error</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>                                         <span class="c1">// completion</span>
-</span><span class='line'>                                     <span class="p">}];</span>
-</span><span class='line'><span class="p">[</span><span class="n">operation</span> <span class="n">start</span><span class="p">];</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-05-19T03:59:00+09:00" pubdate data-updated="true">May 19<span>th</span>, 2013</time></div>
-	
-</div>
-
-    <br/>
-    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/05/19/iremocon-operation/" data-text="NSStreamを利用してiRemoconと通信する" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/05/19/iremocon-operation/" >Tweet</a>
     <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
     </article>
 
