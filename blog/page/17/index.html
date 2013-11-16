@@ -7,8 +7,9 @@
 	<meta name="author" content="ishkawa">
 
 	
-	<meta name="description" content="画像を含むCoreDataのフェッチ速度を改善する LRUなディスクキャッシュを実装する場合など、CoreDataに画像を突っ込みたくなることがあると思います。
-しかし、画像をそのままattributesに突っ込むことはフェッチ速度の低下につながります。 何か上手い方法はないかな〜 &hellip;">
+	<meta name="description" content="iCloudのリマインダーを利用してみる Mac版のリマインダーがどうしても邪魔になってしまう人(自分)のために、remindコマンドをつくりました。
+閲覧はiPadが担当するので、投稿専用です。 GitHub: ishkawa/remind 1
+remind "項目名" ソース(OS X) 1 &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -53,6 +54,208 @@
 
 </header>
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2012/11/28/ekreminder/">
+		
+			iCloudのリマインダーを利用してみる</a>
+	</h2>
+	<div class="entry-content">
+		<p>Mac版のリマインダーがどうしても邪魔になってしまう人(自分)のために、<code>remind</code>コマンドをつくりました。<br/>
+閲覧はiPadが担当するので、投稿専用です。</p>
+
+<p><a href="https://github.com/ishkawa/remind">GitHub: ishkawa/remind</a></p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>remind "項目名"</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>ソース(OS X)</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="cp">#import &lt;Foundation/Foundation.h&gt;</span>
+</span><span class='line'><span class="cp">#import &lt;EventKit/EventKit.h&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">NSString</span> <span class="o">*</span><span class="k">const</span> <span class="n">kCalendarTitle</span> <span class="o">=</span> <span class="s">@&quot;Reminder&quot;</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span> <span class="n">argv</span><span class="p">[])</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="err">@</span><span class="n">autoreleasepool</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="n">argc</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>            <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;usage: remind </span><span class="se">\&quot;</span><span class="s">title of task</span><span class="se">\&quot;</span><span class="s">&quot;</span><span class="p">);</span>
+</span><span class='line'>            <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="n">EKEventStore</span> <span class="o">*</span><span class="n">store</span> <span class="o">=</span> <span class="p">[[</span><span class="n">EKEventStore</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithAccessToEntityTypes:</span><span class="n">EKEntityMaskReminder</span><span class="p">];</span>
+</span><span class='line'>        <span class="n">EKReminder</span> <span class="o">*</span><span class="n">reminder</span> <span class="o">=</span> <span class="p">[</span><span class="n">EKReminder</span> <span class="nl">reminderWithEventStore:</span><span class="n">store</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="n">reminder</span><span class="p">.</span><span class="n">title</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSString</span> <span class="nl">stringWithCString:</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="nl">encoding:</span><span class="n">NSUTF8StringEncoding</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">for</span> <span class="p">(</span><span class="n">EKCalendar</span> <span class="o">*</span><span class="n">calendar</span> <span class="k">in</span> <span class="p">[</span><span class="n">store</span> <span class="nl">calendarsForEntityType:</span><span class="n">EKEntityTypeReminder</span><span class="p">])</span> <span class="p">{</span>
+</span><span class='line'>            <span class="k">if</span> <span class="p">([</span><span class="n">calendar</span><span class="p">.</span><span class="n">title</span> <span class="nl">isEqualToString:</span><span class="n">kCalendarTitle</span><span class="p">])</span> <span class="p">{</span>
+</span><span class='line'>                <span class="n">reminder</span><span class="p">.</span><span class="n">calendar</span> <span class="o">=</span> <span class="n">calendar</span><span class="p">;</span>
+</span><span class='line'>                <span class="k">break</span><span class="p">;</span>
+</span><span class='line'>            <span class="p">}</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">reminder</span><span class="p">.</span><span class="n">calendar</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>            <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;could not find specified calendar </span><span class="se">\&quot;</span><span class="s">%@</span><span class="se">\&quot;</span><span class="s">.&quot;</span><span class="p">,</span> <span class="n">kCalendarTitle</span><span class="p">);</span>
+</span><span class='line'>            <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="n">NSError</span> <span class="o">*</span><span class="n">error</span> <span class="o">=</span> <span class="nb">nil</span><span class="p">;</span>
+</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="p">[</span><span class="n">store</span> <span class="nl">saveReminder:</span><span class="n">reminder</span> <span class="nl">commit:</span><span class="n">YES</span> <span class="nl">error:</span><span class="o">&amp;</span><span class="n">error</span><span class="p">])</span> <span class="p">{</span>
+</span><span class='line'>            <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;error: %@&quot;</span><span class="p">,</span> <span class="n">error</span><span class="p">);</span>
+</span><span class='line'>            <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>iOSの場合</h3>
+
+<p>iOSで使う予定はないのですが、せっかくなので試してみました。<br/>
+<code>requestAccessToEntityType:completion:</code>を実行するとユーザーにアクセス許可を求めます。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="n">NSString</span> <span class="o">*</span><span class="k">const</span> <span class="n">kCalendarTitle</span> <span class="o">=</span> <span class="s">@&quot;Reminder&quot;</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">EKEventStore</span> <span class="o">*</span><span class="n">store</span> <span class="o">=</span> <span class="p">[[</span><span class="n">EKEventStore</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'><span class="p">[</span><span class="n">store</span> <span class="nl">requestAccessToEntityType:</span><span class="n">EKEntityTypeReminder</span>
+</span><span class='line'>                      <span class="nl">completion:</span><span class="o">^</span><span class="p">(</span><span class="kt">BOOL</span> <span class="n">granted</span><span class="p">,</span> <span class="n">NSError</span> <span class="o">*</span><span class="n">error</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>                          <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">granted</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>                              <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;denied.&quot;</span><span class="p">);</span>
+</span><span class='line'>                              <span class="k">return</span><span class="p">;</span>
+</span><span class='line'>                          <span class="p">}</span>
+</span><span class='line'>                          <span class="k">if</span> <span class="p">(</span><span class="n">error</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>                              <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;error: %@&quot;</span><span class="p">,</span> <span class="n">error</span><span class="p">);</span>
+</span><span class='line'>                              <span class="k">return</span><span class="p">;</span>
+</span><span class='line'>                          <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>                          <span class="n">EKReminder</span> <span class="o">*</span><span class="n">reminder</span> <span class="o">=</span> <span class="p">[</span><span class="n">EKReminder</span> <span class="nl">reminderWithEventStore:</span><span class="n">store</span><span class="p">];</span>
+</span><span class='line'>                          <span class="n">reminder</span><span class="p">.</span><span class="n">title</span> <span class="o">=</span> <span class="s">@&quot;hoge&quot;</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>                          <span class="k">for</span> <span class="p">(</span><span class="n">EKCalendar</span> <span class="o">*</span><span class="n">calendar</span> <span class="k">in</span> <span class="p">[</span><span class="n">store</span> <span class="nl">calendarsForEntityType:</span><span class="n">EKEntityTypeReminder</span><span class="p">])</span> <span class="p">{</span>
+</span><span class='line'>                              <span class="k">if</span> <span class="p">([</span><span class="n">calendar</span><span class="p">.</span><span class="n">title</span> <span class="nl">isEqualToString:</span><span class="n">kCalendarTitle</span><span class="p">])</span> <span class="p">{</span>
+</span><span class='line'>                                  <span class="n">reminder</span><span class="p">.</span><span class="n">calendar</span> <span class="o">=</span> <span class="n">calendar</span><span class="p">;</span>
+</span><span class='line'>                                  <span class="k">break</span><span class="p">;</span>
+</span><span class='line'>                              <span class="p">}</span>
+</span><span class='line'>                          <span class="p">}</span>
+</span><span class='line'>                          <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">reminder</span><span class="p">.</span><span class="n">calendar</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>                              <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;could not find specified calendar </span><span class="se">\&quot;</span><span class="s">%@</span><span class="se">\&quot;</span><span class="s">.&quot;</span><span class="p">,</span> <span class="n">kCalendarTitle</span><span class="p">);</span>
+</span><span class='line'>                              <span class="k">return</span><span class="p">;</span>
+</span><span class='line'>                          <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>                          <span class="n">NSError</span> <span class="o">*</span><span class="n">saveError</span> <span class="o">=</span> <span class="nb">nil</span><span class="p">;</span>
+</span><span class='line'>                          <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="p">[</span><span class="n">store</span> <span class="nl">saveReminder:</span><span class="n">reminder</span> <span class="nl">commit:</span><span class="n">YES</span> <span class="nl">error:</span><span class="o">&amp;</span><span class="n">saveError</span><span class="p">])</span> <span class="p">{</span>
+</span><span class='line'>                              <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;error: %@&quot;</span><span class="p">,</span> <span class="n">error</span><span class="p">);</span>
+</span><span class='line'>                              <span class="k">return</span><span class="p">;</span>
+</span><span class='line'>                          <span class="p">}</span>
+</span><span class='line'>                      <span class="p">}];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-11-28T19:45:00+09:00" pubdate data-updated="true">Nov 28<span>th</span>, 2012</time></div>
+	
+</div>
+
+    <br/>
+    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2012/11/28/ekreminder/" data-text="iCloudのリマインダーを利用してみる" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2012/11/28/ekreminder/" >Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+    </article>
 
 
     <article class="post">
@@ -377,114 +580,6 @@ Xcode上の参照のみを削除することをおすすめします。　</p>
 
     <br/>
     <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2012/10/27/xcode-git/" data-text="iOS開発でGitを利用する際のTips" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2012/10/27/xcode-git/" >Tweet</a>
-    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
-    </article>
-
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2012/09/06/transition/">
-		
-			UINavigationControllerのトランジションをBlocksで記述するカテゴリ</a>
-	</h2>
-	<div class="entry-content">
-		<p>UINavigationControllerのpush/pop時のトランジションは左右にスライドするものですが、<br/>
-これをカスタマイズするためのTransitionというカテゴリを書きました。</p>
-
-<p>アニメーションの以下のフェーズ毎に<code>fromView</code>と<code>toView</code>の配置を指定することで、<br/>
-独自のトランジションを記述することができます。</p>
-
-<ul>
-<li>アニメーション前の配置</li>
-<li>アニメーション</li>
-<li>アニメーション後の処理</li>
-</ul>
-
-
-<p>インターフェースは以下の形式です。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="p">[</span><span class="n">navigationController</span> <span class="nl">pushViewController:</span><span class="n">viewController</span>
-</span><span class='line'>                                <span class="nl">duration:</span><span class="mf">.3f</span>
-</span><span class='line'>                              <span class="nl">prelayouts:</span><span class="o">^</span><span class="p">(</span><span class="n">UIView</span> <span class="o">*</span><span class="n">fromView</span><span class="p">,</span> <span class="n">UIView</span> <span class="o">*</span><span class="n">toView</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>                                  <span class="p">;</span>
-</span><span class='line'>                              <span class="p">}</span>
-</span><span class='line'>                              <span class="nl">animations:</span><span class="o">^</span><span class="p">(</span><span class="n">UIView</span> <span class="o">*</span><span class="n">fromView</span><span class="p">,</span> <span class="n">UIView</span> <span class="o">*</span><span class="n">toView</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>                                  <span class="p">;</span>
-</span><span class='line'>                              <span class="p">}</span>
-</span><span class='line'>                              <span class="nl">completion:</span><span class="o">^</span><span class="p">(</span><span class="n">UIView</span> <span class="o">*</span><span class="n">fromView</span><span class="p">,</span> <span class="n">UIView</span> <span class="o">*</span><span class="n">toView</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>                                  <span class="p">;</span>
-</span><span class='line'>                              <span class="p">}];</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="p">[</span><span class="n">navigationController</span> <span class="nl">popViewControllerWithDuration:</span><span class="mf">.3f</span>
-</span><span class='line'>                                         <span class="nl">prelayouts:</span><span class="o">^</span><span class="p">(</span><span class="n">UIView</span> <span class="o">*</span><span class="n">fromView</span><span class="p">,</span> <span class="n">UIView</span> <span class="o">*</span><span class="n">toView</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>                                             <span class="p">;</span>
-</span><span class='line'>                                         <span class="p">}</span>
-</span><span class='line'>                                         <span class="nl">animations:</span><span class="o">^</span><span class="p">(</span><span class="n">UIView</span> <span class="o">*</span><span class="n">fromView</span><span class="p">,</span> <span class="n">UIView</span> <span class="o">*</span><span class="n">toView</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>                                             <span class="p">;</span>
-</span><span class='line'>                                         <span class="p">}</span>
-</span><span class='line'>                                         <span class="nl">completion:</span><span class="o">^</span><span class="p">(</span><span class="n">UIView</span> <span class="o">*</span><span class="n">fromView</span><span class="p">,</span> <span class="n">UIView</span> <span class="o">*</span><span class="n">toView</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>                                             <span class="p">;</span>
-</span><span class='line'>                                         <span class="p">}];</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>コードはGitHubで公開しています。 <br/>
-一度デモアプリを動かしてみてください。<br/>
-<a href="https://github.com/ishkawa/UINavigationController-Transition">UINavigationController-Transition</a></p>
-
-<p>READMEにも書いておきましたが、毎回上記のコードを呼ぶのは大変なので、<br/>
-これらをラップした自分用のカテゴリを書くと使いやすいと思います。</p>
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-09-06T13:07:00+09:00" pubdate data-updated="true">Sep 6<span>th</span>, 2012</time></div>
-	
-</div>
-
-    <br/>
-    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2012/09/06/transition/" data-text="UINavigationControllerのトランジションをBlocksで記述するカテゴリ" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2012/09/06/transition/" >Tweet</a>
     <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
     </article>
 

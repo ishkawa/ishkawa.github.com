@@ -4,7 +4,7 @@
   <title><![CDATA[blog.ishkawa.org]]></title>
   <link href="http://blog.ishkawa.org/atom.xml" rel="self"/>
   <link href="http://blog.ishkawa.org/"/>
-  <updated>2013-11-15T01:51:21+09:00</updated>
+  <updated>2013-11-16T22:28:47+09:00</updated>
   <id>http://blog.ishkawa.org/</id>
   <author>
     <name><![CDATA[ishkawa]]></name>
@@ -12,6 +12,106 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[JSONにNSNullが入ってきたとき]]></title>
+    <link href="http://blog.ishkawa.org/blog/2013/11/16/nsnull/"/>
+    <updated>2013-11-16T20:55:00+09:00</updated>
+    <id>http://blog.ishkawa.org/blog/2013/11/16/nsnull</id>
+    <content type="html"><![CDATA[<p>多くのiOSアプリはサーバーとの通信が必要で、やりとりされるデータのフォーマットにはJSONが採用されることが多いと思います。
+iOS 5からは標準ライブラリにNSJSONSerializationが導入され、特に理由がなければJSONのエンコード/デコードにはこれを利用します。
+NSJSONSerializationが扱うオブジェクトは以下の5種類のオブジェクトです。</p>
+
+<ul>
+<li>NSString</li>
+<li>NSNumber</li>
+<li>NSArray</li>
+<li>NSDictionary</li>
+<li>NSNull</li>
+</ul>
+
+
+<p>そこで心配になるのが、予期しないところにNSNullが入ってきて&#8221;unrecognized selector sent to instance.&ldquo;となってしまうことです。
+NSNullではなくてnilが入っていてほしいと考える人は多いようですが、そもそもNSArrayやNSDictonaryはnilを含むことはできず、
+そのような状況でnull値を表すためにNSNullが存在するのです。NSNullのドキュメントにもまさにその通りのことが書いてあります。</p>
+
+<blockquote><p>The NSNull class defines a singleton object used to represent null values in collection objects (which don’t allow nil values).</p></blockquote>
+
+<p>しかし、実際NSNullが原因となってクラッシュすることもあるので、それを回避する方法と、
+それらの方法を利用するときに気をつけるべきことを書きます。</p>
+
+<h3>NSNullをnilとして振る舞わせる方法</h3>
+
+<p>NSNullのforwardInvocation:とmethodSignatureForSelector:を上手く書き換えると、
+NSNullは実装されていないメソッドの呼び出しは無視するようになり、&#8221;unrecognized selector sent to instance.&ldquo;を回避できるようになります。
+このテクニックは以前からよく知られていたもので、自分は<a href="https://twitter.com/k_katsumi">@k_katsumi</a>さんの
+<a href="http://d.hatena.ne.jp/KishikawaKatsumi/20110505/1304598102">ブログ</a>で見たのが最初でした。
+ライブラリとしてまとまっているものにはnicklockwood氏の<a href="https://github.com/nicklockwood/nullsafe">NullSafe</a>などがあります。</p>
+
+<p>このテクニックの良いところはNSNullがオブジェクトであることを半分忘れてしまって、まるでnilのように扱えることです。
+一度アプリの何処かでこれを実装してしまえば、二度とNSNullが&#8221;unrecognized selector sent to instance.&ldquo;をあげることがなくなります。</p>
+
+<p>逆に良くないところもあって、その1つはNSNullは完全にnilになるわけではないということです。
+例えば以下のコードで<code>[dictionary objectForKey:@"foo"]</code>がNSNullを返す場合、条件式はYESとなります。
+つまり、NSNullは依然としてnilではなく、単に&#8221;unrecognized selector sent to instance&#8221;をあげなくなっただけということを頭に入れなければなりません。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">if</span> <span class="p">([</span><span class="n">dictionary</span> <span class="nl">objectForKey:</span><span class="s">@&quot;foo&quot;</span><span class="p">])</span> <span class="p">{</span>
+</span><span class='line'>    <span class="c1">// do something ...</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>また、アプリ全体に影響を与えてしまうということもあまり良いことではないのかもしれません。
+このテクニックはNSNullの本来の役割である&#8221;null値を表すsingleton&#8221;という性質を壊すことなく実装されているのですが、
+CocoaPodsが十分に普及してきた昨今、グローバルなものの振る舞いを変えることは十分に検討した方が良さそうです。
+それと、&#8221;処理上に明示されてない何かによって本来とは違う挙動になる&#8221;ということも忘れてはいけません。</p>
+
+<h3>NSNullを一括で削除してしまう方法</h3>
+
+<p>前の方法が高度なテクニックを利用したhackだったのに対して、こちらは愚直な方法です。
+NSArrayやNSDictionaryのvalueを探索してNSNullを削除してしまえば、[NSArray objectAtIndex:]や
+[NSDictionary objectForKey:]でNSNullが返ってくることはありません。
+NSDictionaryに関して言えば、元々NSNullが入っていたkeyに対してobjectForKey:は本物のnilを返すので、
+前のテクニックよりも望ましい状態になると言えます。</p>
+
+<p>当然のことなんですが、NSNullが削除されてしまうと[NSArray count]や[[NSDictionary allValues] count]は変わってしまうので、
+countが重要なケースではNSNullが削除されていることを頭に入れておく必要はあります。</p>
+
+<p>NSNullの一括削除を実装するのは地味に面倒な上にミスをしやすいので、
+自分はいつも<a href="https://github.com/ishkawa/ISRemoveNull">ISRemoveNull</a>を利用しています。
+以下のようなコードでNSNullがすべて削除されたNSDictionaryを得ることができます。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="n">NSDictionary</span> <span class="o">*</span><span class="n">strippedDictionary</span> <span class="o">=</span> <span class="p">[</span><span class="n">dictionary</span> <span class="n">dictionaryByRemovingNull</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>ISRemoveNullはデフォルトで再帰的にNSArrayやNSDictionaryを探索するつくりになっているので、
+深いネストがあるJSONのNSNullもすべて取り除くことができます。</p>
+
+<h3>おまけ: NSNullを判別する条件式</h3>
+
+<p>NSNullを判別する条件式は以下のものが妥当なようです。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">if</span> <span class="p">(</span><span class="n">object</span> <span class="o">==</span> <span class="p">[</span><span class="n">NSNull</span> <span class="n">null</span><span class="p">])</span> <span class="p">{</span>
+</span><span class='line'>    <span class="c1">// object is null</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>もちろん、<code>[object isEqual:[NSNull null]]</code>や<code>[object isKindOfClass:[NSNull class]]</code>でも判別できるのですが、
+NSNullはそもそもsingletonなのでisEqual:やisKindOfClass:で比較する必要はないのです。
+(必要はないというだけで、isEqual:やisKindOfClass:が間違いというわけではありません。)</p>
+
+<p>ちなみに、Appleのサンプルコードでも<code>object == [NSNull null]</code>が利用されていました。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[#potatotips で隅々までタップできるUINavigationBarの話をしました]]></title>
@@ -1713,34 +1813,6 @@ CoreDataとMantleを合わせて使うのは、もう少し自分に技術がつ
 
 <p>この記事を書いている間に意識が下がってしまったので、OCLintは一旦見送ることにしました。<br/>
 これから使い始める人はP1, P2あたりから気にすると良いのではないでしょうか。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[ISRefreshControl 1.4.0をリリースしました]]></title>
-    <link href="http://blog.ishkawa.org/blog/2013/06/09/update-isrefreshcontrol/"/>
-    <updated>2013-06-09T01:25:00+09:00</updated>
-    <id>http://blog.ishkawa.org/blog/2013/06/09/update-isrefreshcontrol</id>
-    <content type="html"><![CDATA[<h3>内容</h3>
-
-<ul>
-<li>iOS 4に対応</li>
-<li><code>drawRect:</code>で描画する方式から<code>CAShapeLayer</code>に移行</li>
-<li><code>UIActivityIndicatorView</code>の表示/非表示を切り替えるときに回転させる</li>
-</ul>
-
-
-<p>　</p>
-
-<h3>理由</h3>
-
-<ul>
-<li>iOS 4で使えないとクソって誰かが言ってた</li>
-<li>描画周り(特に<code>beginRefreshing</code>後のアニメーション)の実装がダサくて耐え難かった</li>
-<li><code>UIRefreshControl</code>は<code>endRefreshing</code>で<code>UIActivityIndicatorView</code>を回転させながら縮小させる<br/>
-というようなことを<a href="https://twitter.com/dnpp">@DNPP</a>氏がつけ麺を食べながら言ってたので確かめてみたら本当だった</li>
-</ul>
-
 ]]></content>
   </entry>
   
