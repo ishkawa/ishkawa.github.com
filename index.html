@@ -7,8 +7,8 @@
 	<meta name="author" content="ishkawa">
 
 	
-	<meta name="description" content="JSONにNSNullが入ってきたとき 多くのiOSアプリはサーバーとの通信が必要で、やりとりされるデータのフォーマットにはJSONが採用されることが多いと思います。
-iOS 5からは標準ライブラリにNSJSONSerializationが導入され、特に理由がなければJSONのエンコード/ &hellip;">
+	<meta name="description" content="ISPersistentStackというCoreDataのヘルパーを書いた 最近iOS 4を相手にする機会がなくなったので、いつも使うCoreDataのヘルパーを共通化しようと思い、ついでに公開することにしました。
+あまり他人が使うことを想定したつくりになっていないので、 &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -53,6 +53,93 @@ iOS 5からは標準ライブラリにNSJSONSerializationが導入され、特�
 
 </header>
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2013/11/18/persistent-stack/">
+		
+			ISPersistentStackというCoreDataのヘルパーを書いた</a>
+	</h2>
+	<div class="entry-content">
+		<p>最近iOS 4を相手にする機会がなくなったので、いつも使うCoreDataのヘルパーを共通化しようと思い、ついでに公開することにしました。
+あまり他人が使うことを想定したつくりになっていないので、そのまま使おうとするとちょっと苦労するかもしれません。</p>
+
+<p><a href="https://github.com/ishkawa/ISPersistentStack">ISPersistentStack</a></p>
+
+<p>いままで使っていたものをそのままコピペすればOKかと思っていたんですが、できるだけ幅広い構造に対応できるようにするには
+いくらか抽象化が必要となりました。サブクラスを作ってしまえば&#8221;一般的な&#8221;ケースには対応できると思うのですが、
+少し凝ったつくりには対応できない場合があると思います。(そういう理由もあって、CocoaPodsには送らない予定です。)</p>
+
+<h3>主な機能</h3>
+
+<ul>
+<li>メインのNSManagedObjectContextの提供</li>
+<li>永続ストアとNSManagedObjectModelの互換性のチェック</li>
+<li>永続ストアの廃棄</li>
+</ul>
+
+
+<p>Web APIのクライアントのアプリの場合、消してはいけないデータはあまりないので、自分はよく以下のようにして使います。
+このようにすると、永続ストアのモデルとバンドルされているモデルが一致しない場合にデータベースを捨ててくれます。
+捨ててはいけないデータがある場合にも<code>#ifdef DEBUG</code>を利用すればデバッグに役立つかもしれません。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="n">ISPersistentStack</span> <span class="o">*</span><span class="n">persistentStack</span> <span class="o">=</span> <span class="p">[</span><span class="n">ISPersistentStack</span> <span class="n">sharedStack</span><span class="p">];</span>
+</span><span class='line'><span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">persistentStack</span><span class="p">.</span><span class="n">isCompatibleWithCurrentStore</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">persistentStack</span> <span class="n">deleteCurrentStore</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>想定しているケース</h3>
+
+<ul>
+<li>単一のNSPersistentStore</li>
+<li>単一のNSManagedObjectModel(複数バージョンは想定内)</li>
+<li>複数のNSManagedObjectContext(ただし、main queueのcontextはISPersistentStackが提供するものを利用)</li>
+</ul>
+
+
+<p>デフォルトで使用するNSPersistentStoreはドキュメント以下の<code>Model.sqlite</code>となっていて、
+モデルはメインバンドル以下の<code>Model.momd</code>となっています。
+もしここから外れる場合にはISPersistentStackのサブクラスを作成してstoreURL, modelURL, sharedStackをオーバーライドする必要があります。
+その他にもmanagedObjectModel, persistentStoreCoordinator, managedObjectContextをオーバーライドすることもできます。</p>
+
+<h3>感想</h3>
+
+<p>CoreDataのオレオレ便利ヘルパーは他人にとっても使いやすい形にするのは難しいなあと思いました。</p>
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-11-18T01:23:00+09:00" pubdate data-updated="true">Nov 18<span>th</span>, 2013</time></div>
+	
+</div>
+
+    <br/>
+    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/11/18/persistent-stack/" data-text="ISPersistentStackというCoreDataのヘルパーを書いた" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/11/18/persistent-stack/" >Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+    </article>
 
 
     <article class="post">
@@ -260,117 +347,6 @@ customViewのフレームに影響されずに隅々までタップできるUINa
 
     <br/>
     <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/11/15/potatotips-1/" data-text="#potatotips で隅々までタップできるUINavigationBarの話をしました" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/11/15/potatotips-1/" >Tweet</a>
-    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
-    </article>
-
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2013/10/06/run-tests-for-all-destinations/">
-		
-			複数のiOSバージョンでのテストを自動的に実行する</a>
-	</h2>
-	<div class="entry-content">
-		<p>Xcode 5になって<code>xcodebuild</code>コマンドも進化したらしいのですが、あまり変更を追えていませんでした。
-今日、ぼんやりと<code>man xcodebuild</code>を眺めていたら<code>-destination</code>というオプションをみつけました。
-これを使えば任意のiOSバージョンでテストを走らせられるなと思ってやってみました。</p>
-
-<p>はじめはXCTestで実行したかったのですが、<code>iPhoneSimulator6.0.sdk</code>や<code>iPhoneSimulator5.0.sdk</code>には
-<code>xctest</code>という実行ファイルが含まれていないため、以下のようなコマンドでテストを実行することができませんでした。
-(OS=7.0だと実行できます。)</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='sh'><span class='line'>xcodebuild <span class="nb">test</span> -scheme Example -destination <span class="s2">&quot;name=iPhone,OS=6.0&quot;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>OCUnitを実行する<code>ounit</code>という実行ファイルは<code>iPhoneSimulator6.0.sdk</code>や<code>iPhoneSimulator5.0.sdk</code>にも含まれているので、
-仕方がなくOCUnitでセットアップしなおしました。
-すると、同じコマンドでiOS 6のシミュレーターでのテストを実行できるようになりました。</p>
-
-<p>ここまでできれば、あとは複数のdestinationに対して自動的に実行できるようにするだけです。
-以下のようなRakefileを書いておくと<code>DESTINATIONS</code>に並べたすべてのdestinationでのテストが、
-<code>rake</code>で実行できるようになります。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">SCHEME</span> <span class="o">=</span> <span class="s2">&quot;Example&quot;</span>
-</span><span class='line'><span class="no">DESTINATIONS</span> <span class="o">=</span> <span class="o">[</span><span class="s2">&quot;name=iPhone,OS=5.0&quot;</span><span class="p">,</span>
-</span><span class='line'>                <span class="s2">&quot;name=iPhone,OS=6.0&quot;</span><span class="p">,</span>
-</span><span class='line'>                <span class="s2">&quot;name=iPhone Retina (3.5-inch),OS=5.0&quot;</span><span class="p">,</span>
-</span><span class='line'>                <span class="s2">&quot;name=iPhone Retina (3.5-inch),OS=6.0&quot;</span><span class="p">,</span>
-</span><span class='line'>                <span class="s2">&quot;name=iPhone Retina (3.5-inch),OS=7.0&quot;</span><span class="p">,</span>
-</span><span class='line'>                <span class="s2">&quot;name=iPhone Retina (4-inch),OS=6.0&quot;</span><span class="p">,</span>
-</span><span class='line'>                <span class="s2">&quot;name=iPhone Retina (4-inch),OS=7.0&quot;</span><span class="p">,</span>
-</span><span class='line'>                <span class="s2">&quot;name=iPhone Retina (4-inch 64-bit),OS=7.0&quot;</span><span class="p">,</span> <span class="o">]</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">task</span> <span class="ss">:default</span> <span class="o">=&gt;</span> <span class="o">[</span><span class="ss">:clean</span><span class="p">,</span> <span class="ss">:test</span><span class="o">]</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">desc</span> <span class="s2">&quot;clean&quot;</span>
-</span><span class='line'><span class="n">task</span> <span class="ss">:clean</span> <span class="k">do</span>
-</span><span class='line'>  <span class="n">sh</span> <span class="s2">&quot;xcodebuild clean&quot;</span>
-</span><span class='line'><span class="k">end</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">desc</span> <span class="s2">&quot;run unit tests&quot;</span>
-</span><span class='line'><span class="n">task</span> <span class="ss">:test</span> <span class="k">do</span>
-</span><span class='line'>  <span class="no">DESTINATIONS</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">destination</span><span class="o">|</span>
-</span><span class='line'>    <span class="n">sh</span> <span class="s2">&quot;xcodebuild test -scheme </span><span class="si">#{</span><span class="no">SCHEME</span><span class="si">}</span><span class="s2"> -destination </span><span class="se">\&quot;</span><span class="si">#{</span><span class="n">destination</span><span class="si">}</span><span class="se">\&quot;</span><span class="s2">&quot;</span>
-</span><span class='line'>  <span class="k">end</span>
-</span><span class='line'><span class="k">end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>サンプルのプロジェクトはGitHubに置いてあります。<br/>
-<a href="https://github.com/ishkawa/RunTestsForAllDestinationsExample">ishkawa/RunTestsForAllDestinationsExample</a></p>
-
-<p>Travis CIがXcode 5に対応するのが楽しみになりました。</p>
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-10-06T21:47:00+09:00" pubdate data-updated="true">Oct 6<span>th</span>, 2013</time></div>
-	
-</div>
-
-    <br/>
-    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/10/06/run-tests-for-all-destinations/" data-text="複数のiOSバージョンでのテストを自動的に実行する" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/10/06/run-tests-for-all-destinations/" >Tweet</a>
     <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
     </article>
 

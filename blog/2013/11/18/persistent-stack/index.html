@@ -1,0 +1,164 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>ISPersistentStackというCoreDataのヘルパーを書いた</title>
+	<meta name="author" content="ishkawa">
+
+	
+	<meta name="description" content="ISPersistentStackというCoreDataのヘルパーを書いた 最近iOS 4を相手にする機会がなくなったので、いつも使うCoreDataのヘルパーを共通化しようと思い、ついでに公開することにしました。
+あまり他人が使うことを想定したつくりになっていないので、 &hellip;">
+	
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="blog.ishkawa.org" type="application/atom+xml">
+	<link rel="canonical" href="">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<script async="true" src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	
+</head>
+
+
+<body>
+	<header id="header" class="inner"><h1><a href="/">blog.ishkawa.org</a></h1>
+<nav id="main-nav"><ul class="main">
+  <li><a href="https://twitter.com/_ishkawa">Twitter</a></li>
+  <li><a href="https://github.com/ishkawa">GitHub</a></li>
+</ul>
+
+</nav>
+<nav id="mobile-nav">
+	<div class="alignleft menu">
+		<a class="button">Menu</a>
+		<div class="container"><ul class="main">
+  <li><a href="https://twitter.com/_ishkawa">Twitter</a></li>
+  <li><a href="https://github.com/ishkawa">GitHub</a></li>
+</ul>
+
+</div>
+	</div>
+	<div class="alignright search">
+		<a class="button"></a>
+		<div class="container">
+			<form action="http://google.com/search" method="get">
+				<input type="text" name="q" results="0">
+				<input type="hidden" name="q" value="site:blog.ishkawa.org">
+			</form>
+		</div>
+	</div>
+</nav>
+
+</header>
+	<div id="content" class="inner"><article class="post">
+	<h2 class="title">ISPersistentStackというCoreDataのヘルパーを書いた</h2>
+	<div class="entry-content"><p>最近iOS 4を相手にする機会がなくなったので、いつも使うCoreDataのヘルパーを共通化しようと思い、ついでに公開することにしました。
+あまり他人が使うことを想定したつくりになっていないので、そのまま使おうとするとちょっと苦労するかもしれません。</p>
+
+<p><a href="https://github.com/ishkawa/ISPersistentStack">ISPersistentStack</a></p>
+
+<p>いままで使っていたものをそのままコピペすればOKかと思っていたんですが、できるだけ幅広い構造に対応できるようにするには
+いくらか抽象化が必要となりました。サブクラスを作ってしまえば&#8221;一般的な&#8221;ケースには対応できると思うのですが、
+少し凝ったつくりには対応できない場合があると思います。(そういう理由もあって、CocoaPodsには送らない予定です。)</p>
+
+<h3>主な機能</h3>
+
+<ul>
+<li>メインのNSManagedObjectContextの提供</li>
+<li>永続ストアとNSManagedObjectModelの互換性のチェック</li>
+<li>永続ストアの廃棄</li>
+</ul>
+
+
+<p>Web APIのクライアントのアプリの場合、消してはいけないデータはあまりないので、自分はよく以下のようにして使います。
+このようにすると、永続ストアのモデルとバンドルされているモデルが一致しない場合にデータベースを捨ててくれます。
+捨ててはいけないデータがある場合にも<code>#ifdef DEBUG</code>を利用すればデバッグに役立つかもしれません。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="n">ISPersistentStack</span> <span class="o">*</span><span class="n">persistentStack</span> <span class="o">=</span> <span class="p">[</span><span class="n">ISPersistentStack</span> <span class="n">sharedStack</span><span class="p">];</span>
+</span><span class='line'><span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">persistentStack</span><span class="p">.</span><span class="n">isCompatibleWithCurrentStore</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">persistentStack</span> <span class="n">deleteCurrentStore</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>想定しているケース</h3>
+
+<ul>
+<li>単一のNSPersistentStore</li>
+<li>単一のNSManagedObjectModel(複数バージョンは想定内)</li>
+<li>複数のNSManagedObjectContext(ただし、main queueのcontextはISPersistentStackが提供するものを利用)</li>
+</ul>
+
+
+<p>デフォルトで使用するNSPersistentStoreはドキュメント以下の<code>Model.sqlite</code>となっていて、
+モデルはメインバンドル以下の<code>Model.momd</code>となっています。
+もしここから外れる場合にはISPersistentStackのサブクラスを作成してstoreURL, modelURL, sharedStackをオーバーライドする必要があります。
+その他にもmanagedObjectModel, persistentStoreCoordinator, managedObjectContextをオーバーライドすることもできます。</p>
+
+<h3>感想</h3>
+
+<p>CoreDataのオレオレ便利ヘルパーは他人にとっても使いやすい形にするのは難しいなあと思いました。</p>
+</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-11-18T01:23:00+09:00" pubdate data-updated="true">Nov 18<span>th</span>, 2013</time></div>
+	
+</div>
+
+    <br/>
+    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/11/18/persistent-stack/" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/11/18/persistent-stack/" >Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+</article>
+
+</div>
+	<footer id="footer" class="inner">Copyright &copy; 2013
+
+    ishkawa
+
+</footer>
+	<script src="/javascripts/slash.js"></script>
+<script src="/javascripts/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+	$('.fancybox').fancybox();
+})(jQuery);
+</script> <!-- Delete or comment this line to disable Fancybox -->
+
+
+
+
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-35917440-1']);
+		_gaq.push(['_trackPageview']);
+
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
+
+
+
+</body>
+</html>

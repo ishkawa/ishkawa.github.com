@@ -7,8 +7,7 @@
 	<meta name="author" content="ishkawa">
 
 	
-	<meta name="description" content="Xctoolが良い xctoolとはxcodebuildの代わりとなるツールで、いくつかの機能が追加されています。
-少し前に@azu_reさんがツイートしていたので試しました。 xctool &mdash; 良いところ Application Tests(Logic Testsじゃない方) &hellip;">
+	<meta name="description" content="第4回 Iphone_dev_jp 東京iPhone/Mac勉強会に参加しました ちょっと早めに会場に着いたので前方に座ったら、隣が@ninjinkunさんでした。 自分の発表 自分はiOS 5で動作するUIRefreshControlのつくり方を発表しました。 &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -53,6 +52,145 @@
 
 </header>
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2013/05/26/iphone-dev-jp-4/">
+		
+			第4回 Iphone_dev_jp 東京iPhone/Mac勉強会に参加しました</a>
+	</h2>
+	<div class="entry-content">
+		<p>ちょっと早めに会場に着いたので前方に座ったら、隣が<a href="https://twitter.com/ninjinkun">@ninjinkun</a>さんでした。</p>
+
+<h3>自分の発表</h3>
+
+<p>自分はiOS 5で動作するUIRefreshControlのつくり方を発表しました。<br/>
+つくり方は以下の5つの段階に分けて、それぞれサンプルコードを用意しました。</p>
+
+<ul>
+<li>Step 1: コントロールがUIScrollViewの上部にとどまるようにする</li>
+<li>Step 2: 閾値を超えたらコントロールを出したままにし、UIActivityIndicatorを回す。</li>
+<li>Step 3: 外見を整える。</li>
+<li>Step 4: UIRefreshControlと併用できるようにする。</li>
+<li>Step 5: Storyboardに対応させる。</li>
+</ul>
+
+
+<p><a href="https://github.com/ishkawa/iOS5UIRefreshControlTotorial">iOS5UIRefreshControlTotorial</a></p>
+
+<p>Step 4, Step 5にはいくらか黒いテクニックを使用していて、<br/>
+それらも説明しようと試みたのですが、イマイチ伝わらなかったようでした。</p>
+
+<h3>NJKWebViewProgress</h3>
+
+<p>NJKWebViewProgressは<a href="https://twitter.com/ninjinkun">@ninjinkun</a>さんが発表していたライブラリで、<br/>
+UIWebViewの読み込みの進捗を取得してくれます。</p>
+
+<p>以下のような使い方になっていて、UIWebViewとdelegateの間にproxyが入ります。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">viewDidLoad</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">super</span> <span class="n">viewDidLoad</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">self</span><span class="p">.</span><span class="n">progressProxy</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NJKWebViewProgress</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">self</span><span class="p">.</span><span class="n">webView</span><span class="p">.</span><span class="n">delegate</span> <span class="o">=</span> <span class="n">self</span><span class="p">.</span><span class="n">progressProxy</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">self</span><span class="p">.</span><span class="n">progressProxy</span><span class="p">.</span><span class="n">webViewProxyDelegate</span> <span class="o">=</span> <span class="n">self</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">self</span><span class="p">.</span><span class="n">progressProxy</span><span class="p">.</span><span class="n">progressDelegate</span> <span class="o">=</span> <span class="n">self</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">webViewProgress:</span><span class="p">(</span><span class="n">NJKWebViewProgress</span> <span class="o">*</span><span class="p">)</span><span class="nv">webViewProgress</span> <span class="nf">updateProgress:</span><span class="p">(</span><span class="kt">float</span><span class="p">)</span><span class="nv">progress</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">self</span><span class="p">.</span><span class="n">progressView</span> <span class="o">=</span> <span class="n">progress</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>発表を聞いたときにproxyなしで以下のように使えるようにしたいと思い、挑戦してみました。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">viewDidLoad</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">super</span> <span class="n">viewDidLoad</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">self</span><span class="p">.</span><span class="n">webView</span><span class="p">.</span><span class="n">delegate</span> <span class="o">=</span> <span class="n">self</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">self</span><span class="p">.</span><span class="n">webView</span><span class="p">.</span><span class="n">progressDelegate</span> <span class="o">=</span> <span class="n">self</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="cp">#pragma mark - NJKWebViewProgressDelegate</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">webViewProgress:</span><span class="p">(</span><span class="n">NJKWebViewProgress</span> <span class="o">*</span><span class="p">)</span><span class="nv">webViewProgress</span> <span class="nf">updateProgress:</span><span class="p">(</span><span class="kt">float</span><span class="p">)</span><span class="nv">progress</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">self</span><span class="p">.</span><span class="n">progressView</span> <span class="o">=</span> <span class="n">progress</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>で、出来たものが以下です。<br/>
+<a href="https://github.com/ishkawa/UIWebView-Progress">UIWebView+Progress</a></p>
+
+<p>インターフェースはなかなか良いと思うのですが、実装に黒いテクニックを多用してしまったので、<br/>
+本家のNJKWebViewProgressには送らない予定です。</p>
+
+<p>&mdash;</p>
+
+<p>その他にも面白い発表や、開発に役立つ発表がたくさんありました。<br/>
+また機会があったら参加しようと思います。</p>
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-05-26T01:57:00+09:00" pubdate data-updated="true">May 26<span>th</span>, 2013</time></div>
+	
+</div>
+
+    <br/>
+    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/05/26/iphone-dev-jp-4/" data-text="第4回 iphone_dev_jp 東京iPhone/Mac勉強会に参加しました" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/05/26/iphone-dev-jp-4/" >Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+    </article>
 
 
     <article class="post">
@@ -395,187 +533,6 @@ TCP/IP通信を行う手段には<code>NSStream</code>を採用しました。</
 
     <br/>
     <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/05/19/iremocon-operation/" data-text="NSStreamを利用してiRemoconと通信する" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/05/19/iremocon-operation/" >Tweet</a>
-    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
-    </article>
-
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2013/04/24/ismemorycache/">
-		
-			ISMemoryCacheというのを書いた</a>
-	</h2>
-	<div class="entry-content">
-		<blockquote class="twitter-tweet" lang="ja"><p>@<a href="https://twitter.com/interface">interface</a> ISMemoryCache : NSMutableDictionary+ (ISMemoryCache *)sharedCache;- (void)removeUnretainedObjects;@<a href="https://twitter.com/end">end</a>ってのを書いた。</p>&mdash; ishkawaさん (@_ishkawa) <a href="https://twitter.com/_ishkawa/status/326752483705761792">2013年4月23日</a></blockquote>
-
-
-<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
-
-
-<p>　</p>
-
-<p>メモリキャッシュとありますが、ヘッダから分かる通り<code>NSMutableDictioary</code>です。<br/>
-<code>NSCache</code>よりしぶといメモリキャッシュが欲しかったので、頭の体操をしながらつくりました。</p>
-
-<p><a href="https://github.com/ishkawa/ISMemoryCache">ISMemoryCache</a></p>
-
-<p>&mdash;</p>
-
-<h3>特徴</h3>
-
-<p>LRU的な実装ではなく、参照カウントの有無で破棄するオブジェクトを決めます。<br/>
-どこかから参照がある限りは生き残り続けるしぶといメモリキャッシュです。</p>
-
-<ul>
-<li><code>removeUnretainedObjects</code>を呼ぶと参照がないオブジェクトを調べて破棄する。</li>
-<li><code>UIApplicationDidReceiveMemoryWarningNotification</code>で<code>removeUnretainedObjects</code>を実行。</li>
-</ul>
-
-
-<p>具体的には、以下の実行後に<code>[cache objectForKey:@"key"]</code>は<code>NSObject</code>を返しますが、</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="n">NSObject</span> <span class="o">*</span><span class="n">retainedObject</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSObject</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
-</span><span class='line'><span class="err">@</span><span class="n">autoreleasepool</span> <span class="p">{</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">cache</span> <span class="nl">setObject:</span><span class="n">retainedObject</span> <span class="nl">forKey:</span><span class="s">@&quot;key&quot;</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'><span class="p">[</span><span class="n">cache</span> <span class="n">removeUnretainedObjects</span><span class="p">];</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>以下の実行後には<code>nil</code>を返すという感じです。　</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="err">@</span><span class="n">autoreleasepool</span> <span class="p">{</span>
-</span><span class='line'>    <span class="n">NSObject</span> <span class="o">*</span><span class="n">unretainedObject</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSObject</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">cache</span> <span class="nl">setObject:</span><span class="n">unretainedObject</span> <span class="nl">forKey:</span><span class="s">@&quot;key&quot;</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'><span class="p">[</span><span class="n">cache</span> <span class="n">removeUnretainedObjects</span><span class="p">];</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>使い方</h3>
-
-<p>保持</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="p">[[</span><span class="n">ISMemoryCache</span> <span class="n">sharedCache</span><span class="p">]</span> <span class="nl">setObject:</span><span class="n">object</span> <span class="nl">forKey:</span><span class="s">@&quot;key&quot;</span><span class="p">];</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>読み出し</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="p">[[</span><span class="n">ISMemoryCache</span> <span class="n">sharedCache</span><span class="p">]</span> <span class="nl">objectForKey:</span><span class="s">@&quot;key&quot;</span><span class="p">];</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>使われていないオブジェクトを破棄</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="p">[[</span><span class="n">ISMemoryCache</span> <span class="n">sharedCache</span><span class="p">]</span> <span class="n">removeUnretainedObjects</span><span class="p">];</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>参照があるかどうかの判定方法</h3>
-
-<p>自分の強参照を外しても生き残っていれば、他でも使われているということです。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">removeUnretainedObjects</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">for</span> <span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="n">key</span> <span class="k">in</span> <span class="p">[</span><span class="n">self</span> <span class="n">allKeys</span><span class="p">])</span> <span class="p">{</span>
-</span><span class='line'>        <span class="n">__weak</span> <span class="kt">id</span> <span class="n">wobject</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="err">@</span><span class="n">autoreleasepool</span> <span class="p">{</span>
-</span><span class='line'>            <span class="n">wobject</span> <span class="o">=</span> <span class="p">[</span><span class="n">self</span> <span class="nl">objectForKey:</span><span class="n">key</span><span class="p">];</span>
-</span><span class='line'>            <span class="p">[</span><span class="n">self</span> <span class="nl">removeObjectForKey:</span><span class="n">key</span><span class="p">];</span>
-</span><span class='line'>        <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="n">wobject</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>            <span class="p">[</span><span class="n">self</span> <span class="nl">setObject:</span><span class="n">wobject</span> <span class="nl">forKey:</span><span class="n">key</span><span class="p">];</span>
-</span><span class='line'>        <span class="p">}</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>NSDictionaryのサブクラス化</h3>
-
-<p><code>NSDictionary</code>はクラスクラスタなのでサブクラス化の作法がちょっと変わっています。<br/>
-今回は面倒だったので内部に<code>NSMutableDictionary</code>を持って適宜プロキシする感じにしました。<br/>
-適宜というのは<code>NSDictionary</code>のドキュメントに書かれている以下のメソッドが呼ばれた時です。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="c1">// NSDictionary</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nf">initWithObjects:</span><span class="p">(</span><span class="n">NSArray</span> <span class="o">*</span><span class="p">)</span><span class="nv">objects</span> <span class="nf">forKeys:</span><span class="p">(</span><span class="n">NSArray</span> <span class="o">*</span><span class="p">)</span><span class="nv">keys</span><span class="p">;</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="n">NSUInteger</span><span class="p">)</span><span class="nf">count</span><span class="p">;</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nf">objectForKey:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">key</span><span class="p">;</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="n">NSEnumerator</span> <span class="o">*</span><span class="p">)</span><span class="nf">keyEnumerator</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">// NSMutableDictionary</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">setObject:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">object</span> <span class="nf">forKey:</span><span class="p">(</span><span class="kt">id</span> <span class="o">&lt;</span><span class="n">NSCopying</span><span class="o">&gt;</span><span class="p">)</span><span class="nv">key</span><span class="p">;</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">removeObjectForKey:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">key</span><span class="p">;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-04-24T04:32:00+09:00" pubdate data-updated="true">Apr 24<span>th</span>, 2013</time></div>
-	
-</div>
-
-    <br/>
-    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/04/24/ismemorycache/" data-text="ISMemoryCacheというのを書いた" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/04/24/ismemorycache/" >Tweet</a>
     <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
     </article>
 

@@ -7,8 +7,9 @@
 	<meta name="author" content="ishkawa">
 
 	
-	<meta name="description" content="lsでVimのバックアップファイルを非表示にする 最近転職しました。 転職とは関係ないのですが、最近はObjective-C以外の開発もしていてVimを使う機会が増えました。
-で、Vimでコードを書くと*~というファイルがたくさん出ててきてつらい気持ちになってしまうので、 &hellip;">
+	<meta name="description" content="StoryboardでUITableViewのセクションのヘッダ/フッタを設定する StackOverflowで見つけました。
+おそらく正攻法ではないのですが、面白かったので紹介します。
+How to Implement Custom Table View Section Headers and &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -53,6 +54,111 @@
 
 </header>
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2013/01/27/uitableview-section-in-storyboard/">
+		
+			StoryboardでUITableViewのセクションのヘッダ/フッタを設定する</a>
+	</h2>
+	<div class="entry-content">
+		<p>StackOverflowで見つけました。<br/>
+おそらく正攻法ではないのですが、面白かったので紹介します。<br/>
+<a href="http://stackoverflow.com/a/11396643">How to Implement Custom Table View Section Headers and Footers with Storyboard</a></p>
+
+<p>以下のようなStoryboardを組んで<br/>
+<img src="/images/2013-01-27/storyboard.png"></p>
+
+<p>以下のような結果を得られます。<br/>
+<img src="/images/2013-01-27/ss.png"></p>
+
+<h2>やり方</h2>
+
+<ul>
+<li>Storyboardで<code>UITableView</code>にヘッダ用とフッタ用のプロトタイプセルを追加する。<br/>
+Identifierにはそれぞれ<code>Header</code>とか<code>Footer</code>とかを設定します。</li>
+<li><code>tableView:viewForHeaderInSection:</code>で先ほど指定したIdentifierのセルをdequeueします。</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="n">UIView</span> <span class="o">*</span><span class="p">)</span><span class="nf">tableView:</span><span class="p">(</span><span class="n">UITableView</span> <span class="o">*</span><span class="p">)</span><span class="nv">tableView</span> <span class="nf">viewForHeaderInSection:</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nv">section</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">static</span> <span class="n">NSString</span> <span class="o">*</span><span class="n">identifier</span> <span class="o">=</span> <span class="s">@&quot;Header&quot;</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">UITableViewCell</span> <span class="o">*</span><span class="n">headerView</span> <span class="o">=</span> <span class="p">[</span><span class="n">tableView</span> <span class="nl">dequeueReusableCellWithIdentifier:</span><span class="n">identifier</span><span class="p">];</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">headerView</span> <span class="o">==</span> <span class="nb">nil</span><span class="p">){</span>
+</span><span class='line'>        <span class="p">[</span><span class="n">NSException</span> <span class="nl">raise:</span><span class="s">@&quot;headerView == nil..&quot;</span> <span class="nl">format:</span><span class="s">@&quot;No cells with matching CellIdentifier loaded from your storyboard&quot;</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">headerView</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>高さも指定する場合は<code>tableView:heightForHeaderInSection:</code>も実装します。</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="n">CGFloat</span><span class="p">)</span><span class="nf">tableView:</span><span class="p">(</span><span class="n">UITableView</span> <span class="o">*</span><span class="p">)</span><span class="nv">tableView</span> <span class="nf">heightForHeaderInSection:</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nv">section</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">static</span> <span class="n">NSString</span> <span class="o">*</span><span class="n">identifier</span> <span class="o">=</span> <span class="s">@&quot;Header&quot;</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">UITableViewCell</span> <span class="o">*</span><span class="n">headerView</span> <span class="o">=</span> <span class="p">[</span><span class="n">tableView</span> <span class="nl">dequeueReusableCellWithIdentifier:</span><span class="n">identifier</span><span class="p">];</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">headerView</span> <span class="o">==</span> <span class="nb">nil</span><span class="p">){</span>
+</span><span class='line'>        <span class="p">[</span><span class="n">NSException</span> <span class="nl">raise:</span><span class="s">@&quot;headerView == nil..&quot;</span> <span class="nl">format:</span><span class="s">@&quot;No cells with matching CellIdentifier loaded from your storyboard&quot;</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">headerView</span><span class="p">.</span><span class="n">frame</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">height</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>そのうち、Storyboardで公式にヘッダが設定できるようになるのかもしれませんが、<br/>
+それまでのつなぎとしては良いのかもしれません。</p>
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-01-27T03:47:00+09:00" pubdate data-updated="true">Jan 27<span>th</span>, 2013</time></div>
+	
+</div>
+
+    <br/>
+    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/01/27/uitableview-section-in-storyboard/" data-text="StoryboardでUITableViewのセクションのヘッダ/フッタを設定する" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/01/27/uitableview-section-in-storyboard/" >Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+    </article>
 
 
     <article class="post">
@@ -521,130 +627,6 @@ drawRectでスクロール量に応じたものを<code>CGPath</code>で描画�
 
     <br/>
     <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2012/12/13/ios5-refreshcontrol/" data-text="iOS5で動作するUIRefreshControlのライブラリをつくったときの話" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2012/12/13/ios5-refreshcontrol/" >Tweet</a>
-    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
-    </article>
-
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2012/12/09/cocoapods/">
-		
-			CocoaPodsを使ってみた</a>
-	</h2>
-	<div class="entry-content">
-		<p>最近、<a href="http://www.cocoacontrols.com/posts/2012/12/03/cocoa-controls-now-supports-cocoapods">CocoaControlsがCocoaPodsに対応した</a>ようですね。</p>
-
-<p><a href="blog/2012/10/27/xcode-git">以前の記事</a>で書いたように、いままで<code>git submodule</code>でライブラリを管理していました。
-CocoaPodsのことは聞いてはいたのですが、&#8221;<code>git submodule</code>で十分じゃん&#8221;と思って使っていませんでした。
-どうやらCocoaPodsはそれ以上の事をしてくれるようなので、試してみました。</p>
-
-<h2>導入手順</h2>
-
-<p><a href="http://cocoapods.org">cocoapods.org</a>に書いてある手順に従います。</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>gem install cocoapods
-</span><span class='line'>pod setup</span></code></pre></td></tr></table></div></figure>
-
-
-<p>プロジェクトのディレクトリに以下のような<code>Podfile</code>を作成します。</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>platform :ios, '5.0'
-</span><span class='line'>pod 'ISColumnsController', '~&gt; 1.0.0'</span></code></pre></td></tr></table></div></figure>
-
-
-<p><code>Podfile</code>に書いたライブラリをインストールします。</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>pod install</span></code></pre></td></tr></table></div></figure>
-
-
-<p>以上で導入は完了です。</p>
-
-<p>元々のプロジェクト(<code>Hoge.xcodeproj</code>)とは別にワークスペースが(<code>Hoge.xcworkspace</code>)作成されるので、以降の作業ではこちらを使うようにします。
-Project Navigatorは以下のようになっているはずです。</p>
-
-<p><img src="/images/2012-12-09/pods.png"></p>
-
-<p>どうやらライブラリ群を<code>libPods.a</code>というスタティックライブラリにまとめて、リンクしているようです。</p>
-
-<h2>CocoaPodsの良いところ</h2>
-
-<p><code>git submodule</code>を直接使っている場合と比較したメリットを書きます。</p>
-
-<h3>プロジェクトへの導入の自動化</h3>
-
-<p><code>git submodule</code>はライブラリの<strong>ソースコード</strong>を管理するのであって、
-どのようにXcodeプロジェクトに導入されるかまでは管理していません。
-つまり、ライブラリを導入するには手動で以下の手順を行う必要があります。</p>
-
-<ul>
-<li>導入に必要なファイルのみをXcodeプロジェクトに追加</li>
-<li>必要に応じてフレームワークがあればリンクする。(<code>CoreData.framework</code>など)</li>
-<li>必要に応じてコンパイルオプションを設定する。(<code>-fno-objc-arc</code>など)</li>
-<li>必要に応じてリンカフラグを追加する。(<code>-ObjC</code>など)</li>
-</ul>
-
-
-<p>また、ライブラリに以下のような変更があった場合、手動でプロジェクトを変更しなければなりません。</p>
-
-<ul>
-<li>ファイル構造が変わった</li>
-<li>リンクするフレームワークに変更があった</li>
-</ul>
-
-
-<p>CocoaPodsはこういった手順を自動化してくれるようです。<br/>
-<code>Pods.xcconfig</code>を覗いてみると、その様子の一端を見ることができます。</p>
-
-<h3>導入可能か自動チェック</h3>
-
-<p>CocoaPodsは<code>Podfile</code>に書いたプロジェクトの環境とライブラリの環境を比較して、
-そのライブラリが導入可能か自動的にチェックしてくれます。
-例えば、先ほど<code>Podfile</code>に<code>platform :ios, '5.0'</code>と書きましたが、これはDeployment Targetを表していて、
-iOS 5.0に対応していないライブラリは導入の時点で弾かれるようになっています。</p>
-
-<p>Deployment Targetの他にも、ARCへの対応状況やOSXへの対応状況も考慮してくれるようです。</p>
-
-<h2>まとめ</h2>
-
-<ul>
-<li>CocoaPodsはXcodeプロジェクトの設定も含めたライブラリ管理をしてくれる。</li>
-<li>導入可能性もチェックしてくれる</li>
-</ul>
-
-
-<p>まだまだ使い込んでいないので良いことばかり書いてますが、実際的な問題もあるのかもしれません。<br/>
-ハマりどころがありそうだったら、また更新します。</p>
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-12-09T15:56:00+09:00" pubdate data-updated="true">Dec 9<span>th</span>, 2012</time></div>
-	
-</div>
-
-    <br/>
-    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2012/12/09/cocoapods/" data-text="CocoaPodsを使ってみた" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2012/12/09/cocoapods/" >Tweet</a>
     <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
     </article>
 

@@ -4,7 +4,7 @@
   <title><![CDATA[blog.ishkawa.org]]></title>
   <link href="http://blog.ishkawa.org/atom.xml" rel="self"/>
   <link href="http://blog.ishkawa.org/"/>
-  <updated>2013-11-16T22:28:47+09:00</updated>
+  <updated>2013-11-20T08:23:53+09:00</updated>
   <id>http://blog.ishkawa.org/</id>
   <author>
     <name><![CDATA[ishkawa]]></name>
@@ -12,6 +12,64 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[ISPersistentStackというCoreDataのヘルパーを書いた]]></title>
+    <link href="http://blog.ishkawa.org/blog/2013/11/18/persistent-stack/"/>
+    <updated>2013-11-18T01:23:00+09:00</updated>
+    <id>http://blog.ishkawa.org/blog/2013/11/18/persistent-stack</id>
+    <content type="html"><![CDATA[<p>最近iOS 4を相手にする機会がなくなったので、いつも使うCoreDataのヘルパーを共通化しようと思い、ついでに公開することにしました。
+あまり他人が使うことを想定したつくりになっていないので、そのまま使おうとするとちょっと苦労するかもしれません。</p>
+
+<p><a href="https://github.com/ishkawa/ISPersistentStack">ISPersistentStack</a></p>
+
+<p>いままで使っていたものをそのままコピペすればOKかと思っていたんですが、できるだけ幅広い構造に対応できるようにするには
+いくらか抽象化が必要となりました。サブクラスを作ってしまえば&#8221;一般的な&#8221;ケースには対応できると思うのですが、
+少し凝ったつくりには対応できない場合があると思います。(そういう理由もあって、CocoaPodsには送らない予定です。)</p>
+
+<h3>主な機能</h3>
+
+<ul>
+<li>メインのNSManagedObjectContextの提供</li>
+<li>永続ストアとNSManagedObjectModelの互換性のチェック</li>
+<li>永続ストアの廃棄</li>
+</ul>
+
+
+<p>Web APIのクライアントのアプリの場合、消してはいけないデータはあまりないので、自分はよく以下のようにして使います。
+このようにすると、永続ストアのモデルとバンドルされているモデルが一致しない場合にデータベースを捨ててくれます。
+捨ててはいけないデータがある場合にも<code>#ifdef DEBUG</code>を利用すればデバッグに役立つかもしれません。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="n">ISPersistentStack</span> <span class="o">*</span><span class="n">persistentStack</span> <span class="o">=</span> <span class="p">[</span><span class="n">ISPersistentStack</span> <span class="n">sharedStack</span><span class="p">];</span>
+</span><span class='line'><span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">persistentStack</span><span class="p">.</span><span class="n">isCompatibleWithCurrentStore</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">persistentStack</span> <span class="n">deleteCurrentStore</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>想定しているケース</h3>
+
+<ul>
+<li>単一のNSPersistentStore</li>
+<li>単一のNSManagedObjectModel(複数バージョンは想定内)</li>
+<li>複数のNSManagedObjectContext(ただし、main queueのcontextはISPersistentStackが提供するものを利用)</li>
+</ul>
+
+
+<p>デフォルトで使用するNSPersistentStoreはドキュメント以下の<code>Model.sqlite</code>となっていて、
+モデルはメインバンドル以下の<code>Model.momd</code>となっています。
+もしここから外れる場合にはISPersistentStackのサブクラスを作成してstoreURL, modelURL, sharedStackをオーバーライドする必要があります。
+その他にもmanagedObjectModel, persistentStoreCoordinator, managedObjectContextをオーバーライドすることもできます。</p>
+
+<h3>感想</h3>
+
+<p>CoreDataのオレオレ便利ヘルパーは他人にとっても使いやすい形にするのは難しいなあと思いました。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[JSONにNSNullが入ってきたとき]]></title>
@@ -1668,151 +1726,6 @@ MantleはJSONなどのkey-valueなものに対して、</p>
 
 <p>Mantleはモデルが軽量な場合に良さそうなので、良い機会があれば積極的に使いたいと思いました。<br/>
 CoreDataとMantleを合わせて使うのは、もう少し自分に技術がついたら試そうかなと思いました。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[頑張ってOCLintを使ってみた結果]]></title>
-    <link href="http://blog.ishkawa.org/blog/2013/06/09/oclint/"/>
-    <updated>2013-06-09T18:41:00+09:00</updated>
-    <id>http://blog.ishkawa.org/blog/2013/06/09/oclint</id>
-    <content type="html"><![CDATA[<p>意識が高まり、OCLintを使ってみました。</p>
-
-<h3>手順</h3>
-
-<p>OCLintの公式のドキュメントを頑張って読んでも使い方はわかるのですが、<br/>
-以下のリンク&#8221;Give a try&#8221;という項目に従うと手っ取り早く試せます。</p>
-
-<p><a href="http://gavrix.wordpress.com/2013/02/28/integrating-oclint-in-xcode/">Integrating OCLint in Xcode</a></p>
-
-<h3>結果</h3>
-
-<p><a href="https://github.com/ishkawa/ISRefreshControl">ISRefreshControl</a>で試しました。
-ご覧の通り、たくさん怒られています。</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>Pods/ISMethodSwizzling/ISMethodSwizzling/ISMethodSwizzling.m:9:1: long line P3 Line with 138 characters exceeds limit of 100
-</span><span class='line'>Pods/ISMethodSwizzling/ISMethodSwizzling/ISMethodSwizzling.m:10:1: long line P3 Line with 138 characters exceeds limit of 100
-</span><span class='line'>Pods/ISMethodSwizzling/ISMethodSwizzling/ISMethodSwizzling.m:23:1: long line P3 Line with 138 characters exceeds limit of 100
-</span><span class='line'>Pods/ISMethodSwizzling/ISMethodSwizzling/ISMethodSwizzling.m:24:1: long line P3 Line with 138 characters exceeds limit of 100
-</span><span class='line'>Pods/ISMethodSwizzling/ISMethodSwizzling/ISMethodSwizzling.m:18:5: parameter reassignment P3
-</span><span class='line'>ISRefreshControl/ISGumView.m:59:1: long line P3 Line with 124 characters exceeds limit of 100
-</span><span class='line'>ISRefreshControl/ISGumView.m:132:1: long line P3 Line with 105 characters exceeds limit of 100
-</span><span class='line'>ISRefreshControl/ISGumView.m:133:1: long line P3 Line with 102 characters exceeds limit of 100
-</span><span class='line'>ISRefreshControl/ISGumView.m:141:1: long line P3 Line with 111 characters exceeds limit of 100
-</span><span class='line'>ISRefreshControl/ISGumView.m:162:1: long line P3 Line with 103 characters exceeds limit of 100
-</span><span class='line'>ISRefreshControl/ISGumView.m:167:1: long line P3 Line with 103 characters exceeds limit of 100
-</span><span class='line'>ISRefreshControl/ISGumView.m:189:1: long line P3 Line with 101 characters exceeds limit of 100
-</span><span class='line'>ISRefreshControl/ISGumView.m:197:1: long line P3 Line with 101 characters exceeds limit of 100
-</span><span class='line'>ISRefreshControl/ISGumView.m:205:1: long line P3 Line with 105 characters exceeds limit of 100
-</span><span class='line'>ISRefreshControl/ISGumView.m:146:1: long method P3 Method with 64 lines exceeds limit of 50
-</span><span class='line'>ISRefreshControl/ISGumView.m:146:1: high ncss method P2 Method of 50 non-commenting source statements exceeds limit of 30
-</span><span class='line'>ISRefreshControl/ISRefreshControl.m:154:5: collapsible if statements P3
-</span><span class='line'>ISRefreshControl/ISRefreshControl.m:166:1: high cyclomatic complexity P2 Cyclomatic Complexity Number 16 exceeds limit of 10
-</span><span class='line'>ISRefreshControl/ISRefreshControl.m:34:13: inverted logic P3
-</span><span class='line'>ISRefreshControl/ISRefreshControl.m:35:1: long line P3 Line with 108 characters exceeds limit of 100
-</span><span class='line'>ISRefreshControl/ISRefreshControl.m:143:1: long line P3 Line with 102 characters exceeds limit of 100
-</span><span class='line'>ISRefreshControl/ISRefreshControl.m:152:1: long line P3 Line with 124 characters exceeds limit of 100
-</span><span class='line'>ISRefreshControl/ISRefreshControl.m:175:1: long line P3 Line with 106 characters exceeds limit of 100
-</span><span class='line'>ISRefreshControl/ISRefreshControl.m:179:1: long line P3 Line with 104 characters exceeds limit of 100
-</span><span class='line'>ISRefreshControl/ISRefreshControl.m:275:1: long line P3 Line with 115 characters exceeds limit of 100
-</span><span class='line'>ISRefreshControl/ISRefreshControl.m:187:5: missing break in switch statement P3
-</span><span class='line'>ISRefreshControl/ISRefreshControl.m:187:5: switch statements should have default P3
-</span><span class='line'>ISRefreshControl/UITableViewController+ISRefreshControl.m:14:1: long line P3 Line with 109 characters exceeds limit of 100
-</span><span class='line'>ISRefreshControl/UITableViewController+ISRefreshControl.m:15:1: long line P3 Line with 113 characters exceeds limit of 100
-</span><span class='line'>ISRefreshControl/UITableViewController+ISRefreshControl.m:16:1: long line P3 Line with 106 characters exceeds limit of 100
-</span><span class='line'>ISRefreshControl/UITableViewController+ISRefreshControl.m:45:1: long line P3 Line with 109 characters exceeds limit of 100
-</span><span class='line'>ISRefreshControl/UITableViewController+ISRefreshControl.m:50:1: long line P3 Line with 108 characters exceeds limit of 100
-</span><span class='line'>ISRefreshControl/UITableView+ISRefreshControl.m:12:1: long line P3 Line with 105 characters exceeds limit of 100
-</span><span class='line'>ISRefreshControl/ISScalingActivityIndicatorView.m:51:1: long line P3 Line with 107 characters exceeds limit of 100
-</span><span class='line'>ISRefreshControl/ISScalingActivityIndicatorView.m:56:1: long line P3 Line with 107 characters exceeds limit of 100
-</span><span class='line'>ISRefreshControl/ISScalingActivityIndicatorView.m:61:1: long line P3 Line with 104 characters exceeds limit of 100
-</span><span class='line'>ISRefreshControl/ISScalingActivityIndicatorView.m:65:1: long line P3 Line with 110 characters exceeds limit of 100
-</span><span class='line'>ISRefreshControl/ISScalingActivityIndicatorView.m:78:1: long line P3 Line with 101 characters exceeds limit of 100
-</span><span class='line'>ISRefreshControl/ISScalingActivityIndicatorView.m:87:1: long line P3 Line with 101 characters exceeds limit of 100
-</span><span class='line'>ISRefreshControl/ISScalingActivityIndicatorView.m:95:1: long line P3 Line with 104 characters exceeds limit of 100
-</span><span class='line'>ISRefreshControl/ISScalingActivityIndicatorView.m:99:1: long line P3 Line with 110 characters exceeds limit of 100</span></code></pre></td></tr></table></div></figure>
-
-
-<p>レポートの出力時に<code>-o=report.html -html</code>をつけるとHTMLのレポートも出してくれます。</p>
-
-<p>&mdash;</p>
-
-<h3>感想</h3>
-
-<p>OCLintの警告にはそれぞれの1〜3のPriorityがつけられていて、値が小さいほどやばいものです。<br/>
-今回の結果ではP2, P3の警告が出ていたので、それらについて感想を書きます。</p>
-
-<h3>P3</h3>
-
-<ul>
-<li>long line (行が100文字以上)</li>
-<li>long method (メソッドが50行以上)</li>
-<li>parameter reassignment (変数が使い回されている)</li>
-<li>collapsible if statements (分解できる(?)if文がある)</li>
-<li>switch statements should have default (defaultがないswitch文がある)</li>
-</ul>
-
-
-<p>全体的に正しいのですが、改めて指摘されると舌打ちしたくなるというのがP3の感想です。</p>
-
-<p>defaultがないswitch文は、typedefしてXcodeにcase漏れをチェックさせるようにしていたので、<br/>
-そちらの方を優先しようかなあと思いました。(defaultを書くとcase漏れを見つけにくいので。)</p>
-
-<h3>P2</h3>
-
-<ul>
-<li>high ncss method (30行以上コメントがないメソッドがある)</li>
-<li>high cyclomatic complexity (<a href="http://en.wikipedia.org/wiki/Cyclomatic_complexity">cyclomatic complexity</a>が10以上(とにかくなんか複雑らしい))</li>
-</ul>
-
-
-<p>P3と比べると謝る気が起きる内容でした。</p>
-
-<p>&mdash;</p>
-
-<p>この記事を書いている間に意識が下がってしまったので、OCLintは一旦見送ることにしました。<br/>
-これから使い始める人はP1, P2あたりから気にすると良いのではないでしょうか。</p>
 ]]></content>
   </entry>
   

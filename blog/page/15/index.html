@@ -7,28 +7,9 @@
 	<meta name="author" content="ishkawa">
 
 	
-	<meta name="description" content="0.1秒ごとにランダムタップするUIAutomationスクリプト 書きました。 1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-20
-21
-var target = UIATarget.localTarget(); function sleep( &hellip;">
+	<meta name="description" content="ISNotificationHelperというのを書いた Mountain LionからOSXにも通知センターが導入されました。 スクリプトの実行完了時とかに通知したいと思って使い方を調べたのですが、
+どうやらCommand Line ToolからはこのAPIを叩けないようでした。
+なので、 &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -73,6 +54,65 @@ var target = UIATarget.localTarget(); function sleep( &hellip;">
 
 </header>
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2013/01/31/notification-center-helper/">
+		
+			ISNotificationHelperというのを書いた</a>
+	</h2>
+	<div class="entry-content">
+		<p>Mountain LionからOSXにも通知センターが導入されました。</p>
+
+<p>スクリプトの実行完了時とかに通知したいと思って使い方を調べたのですが、
+どうやらCommand Line ToolからはこのAPIを叩けないようでした。
+なので、Cocoaアプリ(ISNotificationHelper)を常駐させて、Command Line Toolから
+<code>NSDistributedNotification</code>を投げることにしました。</p>
+
+<p><a href="https://github.com/ishkawa/ISNotificationHelper">ISNotificationHelper</a></p>
+
+<h3>使い方</h3>
+
+<p>ISNotificationHelper.appを起動しておいて、<code>ISNotification</code>という名前の
+<code>NSDistributedNotification</code>を投げると通知センターに表示されます。
+<code>userInfo</code>に<code>title</code>, <code>subtitle</code>, <code>informativeText</code>を入れると表示内容を設定出来ます。</p>
+
+<p><code>isnotify</code>というツールも同梱していて、以下のコマンドで<code>NSDistributedNotification</code>を投げられます。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>isnotify -t title -s subtitle -i informativeText</span></code></pre></td></tr></table></div></figure>
+
+
+<p>全体的に結構雑な作りになっているので、ちゃんと作ってやるぜって方は完成したらおしえてください。</p>
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-01-31T21:13:00+09:00" pubdate data-updated="true">Jan 31<span>st</span>, 2013</time></div>
+	
+</div>
+
+    <br/>
+    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/01/31/notification-center-helper/" data-text="ISNotificationHelperというのを書いた" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/01/31/notification-center-helper/" >Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+    </article>
 
 
     <article class="post">
@@ -260,111 +300,6 @@ Xcodeの<code>xcrun -sdk iphoneos lipo</code>ではarmv7sと表示されます�
 
     <br/>
     <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/01/28/universal-static-library-2013/" data-text="Universal Static Libraryのビルド(armv7/armv7s/i386 )" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/01/28/universal-static-library-2013/" >Tweet</a>
-    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
-    </article>
-
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2013/01/27/uitableview-section-in-storyboard/">
-		
-			StoryboardでUITableViewのセクションのヘッダ/フッタを設定する</a>
-	</h2>
-	<div class="entry-content">
-		<p>StackOverflowで見つけました。<br/>
-おそらく正攻法ではないのですが、面白かったので紹介します。<br/>
-<a href="http://stackoverflow.com/a/11396643">How to Implement Custom Table View Section Headers and Footers with Storyboard</a></p>
-
-<p>以下のようなStoryboardを組んで<br/>
-<img src="/images/2013-01-27/storyboard.png"></p>
-
-<p>以下のような結果を得られます。<br/>
-<img src="/images/2013-01-27/ss.png"></p>
-
-<h2>やり方</h2>
-
-<ul>
-<li>Storyboardで<code>UITableView</code>にヘッダ用とフッタ用のプロトタイプセルを追加する。<br/>
-Identifierにはそれぞれ<code>Header</code>とか<code>Footer</code>とかを設定します。</li>
-<li><code>tableView:viewForHeaderInSection:</code>で先ほど指定したIdentifierのセルをdequeueします。</li>
-</ul>
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="n">UIView</span> <span class="o">*</span><span class="p">)</span><span class="nf">tableView:</span><span class="p">(</span><span class="n">UITableView</span> <span class="o">*</span><span class="p">)</span><span class="nv">tableView</span> <span class="nf">viewForHeaderInSection:</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nv">section</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">static</span> <span class="n">NSString</span> <span class="o">*</span><span class="n">identifier</span> <span class="o">=</span> <span class="s">@&quot;Header&quot;</span><span class="p">;</span>
-</span><span class='line'>    <span class="n">UITableViewCell</span> <span class="o">*</span><span class="n">headerView</span> <span class="o">=</span> <span class="p">[</span><span class="n">tableView</span> <span class="nl">dequeueReusableCellWithIdentifier:</span><span class="n">identifier</span><span class="p">];</span>
-</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">headerView</span> <span class="o">==</span> <span class="nb">nil</span><span class="p">){</span>
-</span><span class='line'>        <span class="p">[</span><span class="n">NSException</span> <span class="nl">raise:</span><span class="s">@&quot;headerView == nil..&quot;</span> <span class="nl">format:</span><span class="s">@&quot;No cells with matching CellIdentifier loaded from your storyboard&quot;</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>    <span class="k">return</span> <span class="n">headerView</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<ul>
-<li>高さも指定する場合は<code>tableView:heightForHeaderInSection:</code>も実装します。</li>
-</ul>
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="n">CGFloat</span><span class="p">)</span><span class="nf">tableView:</span><span class="p">(</span><span class="n">UITableView</span> <span class="o">*</span><span class="p">)</span><span class="nv">tableView</span> <span class="nf">heightForHeaderInSection:</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nv">section</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">static</span> <span class="n">NSString</span> <span class="o">*</span><span class="n">identifier</span> <span class="o">=</span> <span class="s">@&quot;Header&quot;</span><span class="p">;</span>
-</span><span class='line'>    <span class="n">UITableViewCell</span> <span class="o">*</span><span class="n">headerView</span> <span class="o">=</span> <span class="p">[</span><span class="n">tableView</span> <span class="nl">dequeueReusableCellWithIdentifier:</span><span class="n">identifier</span><span class="p">];</span>
-</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">headerView</span> <span class="o">==</span> <span class="nb">nil</span><span class="p">){</span>
-</span><span class='line'>        <span class="p">[</span><span class="n">NSException</span> <span class="nl">raise:</span><span class="s">@&quot;headerView == nil..&quot;</span> <span class="nl">format:</span><span class="s">@&quot;No cells with matching CellIdentifier loaded from your storyboard&quot;</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>    <span class="k">return</span> <span class="n">headerView</span><span class="p">.</span><span class="n">frame</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">height</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>そのうち、Storyboardで公式にヘッダが設定できるようになるのかもしれませんが、<br/>
-それまでのつなぎとしては良いのかもしれません。</p>
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-01-27T03:47:00+09:00" pubdate data-updated="true">Jan 27<span>th</span>, 2013</time></div>
-	
-</div>
-
-    <br/>
-    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/01/27/uitableview-section-in-storyboard/" data-text="StoryboardでUITableViewのセクションのヘッダ/フッタを設定する" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/01/27/uitableview-section-in-storyboard/" >Tweet</a>
     <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
     </article>
 

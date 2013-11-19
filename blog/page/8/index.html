@@ -7,8 +7,9 @@
 	<meta name="author" content="ishkawa">
 
 	
-	<meta name="description" content="NSDictionaryのリテラルのnilを無視する はじめに断っておきますが、今回のコードはプロダクトに入れるべきではありません。
-プログラムとして好ましくない上に、Appleの審査でリジェクトされる可能性もあります。 興味本位でやってみたら動いたので書いていますが、取り扱い注意です。 & &hellip;">
+	<meta name="description" content="ISRefreshControl 1.4.0をリリースしました 内容 iOS 4に対応
+drawRect:で描画する方式からCAShapeLayerに移行
+UIActivityIndicatorViewの表示/非表示を切り替えるときに回転させる 　 理由 iOS &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -53,6 +54,63 @@
 
 </header>
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2013/06/09/update-isrefreshcontrol/">
+		
+			ISRefreshControl 1.4.0をリリースしました</a>
+	</h2>
+	<div class="entry-content">
+		<h3>内容</h3>
+
+<ul>
+<li>iOS 4に対応</li>
+<li><code>drawRect:</code>で描画する方式から<code>CAShapeLayer</code>に移行</li>
+<li><code>UIActivityIndicatorView</code>の表示/非表示を切り替えるときに回転させる</li>
+</ul>
+
+
+<p>　</p>
+
+<h3>理由</h3>
+
+<ul>
+<li>iOS 4で使えないとクソって誰かが言ってた</li>
+<li>描画周り(特に<code>beginRefreshing</code>後のアニメーション)の実装がダサくて耐え難かった</li>
+<li><code>UIRefreshControl</code>は<code>endRefreshing</code>で<code>UIActivityIndicatorView</code>を回転させながら縮小させる<br/>
+というようなことを<a href="https://twitter.com/dnpp">@DNPP</a>氏がつけ麺を食べながら言ってたので確かめてみたら本当だった</li>
+</ul>
+
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-06-09T01:25:00+09:00" pubdate data-updated="true">Jun 9<span>th</span>, 2013</time></div>
+	
+</div>
+
+    <br/>
+    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/06/09/update-isrefreshcontrol/" data-text="ISRefreshControl 1.4.0をリリースしました" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/06/09/update-isrefreshcontrol/" >Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+    </article>
 
 
     <article class="post">
@@ -326,145 +384,6 @@
 
     <br/>
     <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/06/01/alternative-refresh-control/" data-text="カスタマイズ可能なUIRefreshControlのインターフェースについて考えた" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/06/01/alternative-refresh-control/" >Tweet</a>
-    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
-    </article>
-
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2013/05/26/iphone-dev-jp-4/">
-		
-			第4回 Iphone_dev_jp 東京iPhone/Mac勉強会に参加しました</a>
-	</h2>
-	<div class="entry-content">
-		<p>ちょっと早めに会場に着いたので前方に座ったら、隣が<a href="https://twitter.com/ninjinkun">@ninjinkun</a>さんでした。</p>
-
-<h3>自分の発表</h3>
-
-<p>自分はiOS 5で動作するUIRefreshControlのつくり方を発表しました。<br/>
-つくり方は以下の5つの段階に分けて、それぞれサンプルコードを用意しました。</p>
-
-<ul>
-<li>Step 1: コントロールがUIScrollViewの上部にとどまるようにする</li>
-<li>Step 2: 閾値を超えたらコントロールを出したままにし、UIActivityIndicatorを回す。</li>
-<li>Step 3: 外見を整える。</li>
-<li>Step 4: UIRefreshControlと併用できるようにする。</li>
-<li>Step 5: Storyboardに対応させる。</li>
-</ul>
-
-
-<p><a href="https://github.com/ishkawa/iOS5UIRefreshControlTotorial">iOS5UIRefreshControlTotorial</a></p>
-
-<p>Step 4, Step 5にはいくらか黒いテクニックを使用していて、<br/>
-それらも説明しようと試みたのですが、イマイチ伝わらなかったようでした。</p>
-
-<h3>NJKWebViewProgress</h3>
-
-<p>NJKWebViewProgressは<a href="https://twitter.com/ninjinkun">@ninjinkun</a>さんが発表していたライブラリで、<br/>
-UIWebViewの読み込みの進捗を取得してくれます。</p>
-
-<p>以下のような使い方になっていて、UIWebViewとdelegateの間にproxyが入ります。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">viewDidLoad</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">super</span> <span class="n">viewDidLoad</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">self</span><span class="p">.</span><span class="n">progressProxy</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NJKWebViewProgress</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
-</span><span class='line'>    <span class="n">self</span><span class="p">.</span><span class="n">webView</span><span class="p">.</span><span class="n">delegate</span> <span class="o">=</span> <span class="n">self</span><span class="p">.</span><span class="n">progressProxy</span><span class="p">;</span>
-</span><span class='line'>    <span class="n">self</span><span class="p">.</span><span class="n">progressProxy</span><span class="p">.</span><span class="n">webViewProxyDelegate</span> <span class="o">=</span> <span class="n">self</span><span class="p">;</span>
-</span><span class='line'>    <span class="n">self</span><span class="p">.</span><span class="n">progressProxy</span><span class="p">.</span><span class="n">progressDelegate</span> <span class="o">=</span> <span class="n">self</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">-</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">webViewProgress:</span><span class="p">(</span><span class="n">NJKWebViewProgress</span> <span class="o">*</span><span class="p">)</span><span class="nv">webViewProgress</span> <span class="nf">updateProgress:</span><span class="p">(</span><span class="kt">float</span><span class="p">)</span><span class="nv">progress</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="n">self</span><span class="p">.</span><span class="n">progressView</span> <span class="o">=</span> <span class="n">progress</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>発表を聞いたときにproxyなしで以下のように使えるようにしたいと思い、挑戦してみました。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">viewDidLoad</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">super</span> <span class="n">viewDidLoad</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">self</span><span class="p">.</span><span class="n">webView</span><span class="p">.</span><span class="n">delegate</span> <span class="o">=</span> <span class="n">self</span><span class="p">;</span>
-</span><span class='line'>    <span class="n">self</span><span class="p">.</span><span class="n">webView</span><span class="p">.</span><span class="n">progressDelegate</span> <span class="o">=</span> <span class="n">self</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="cp">#pragma mark - NJKWebViewProgressDelegate</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">-</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">webViewProgress:</span><span class="p">(</span><span class="n">NJKWebViewProgress</span> <span class="o">*</span><span class="p">)</span><span class="nv">webViewProgress</span> <span class="nf">updateProgress:</span><span class="p">(</span><span class="kt">float</span><span class="p">)</span><span class="nv">progress</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="n">self</span><span class="p">.</span><span class="n">progressView</span> <span class="o">=</span> <span class="n">progress</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>で、出来たものが以下です。<br/>
-<a href="https://github.com/ishkawa/UIWebView-Progress">UIWebView+Progress</a></p>
-
-<p>インターフェースはなかなか良いと思うのですが、実装に黒いテクニックを多用してしまったので、<br/>
-本家のNJKWebViewProgressには送らない予定です。</p>
-
-<p>&mdash;</p>
-
-<p>その他にも面白い発表や、開発に役立つ発表がたくさんありました。<br/>
-また機会があったら参加しようと思います。</p>
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-05-26T01:57:00+09:00" pubdate data-updated="true">May 26<span>th</span>, 2013</time></div>
-	
-</div>
-
-    <br/>
-    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/05/26/iphone-dev-jp-4/" data-text="第4回 iphone_dev_jp 東京iPhone/Mac勉強会に参加しました" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/05/26/iphone-dev-jp-4/" >Tweet</a>
     <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
     </article>
 
