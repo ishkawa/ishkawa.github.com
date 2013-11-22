@@ -7,9 +7,9 @@
 	<meta name="author" content="ishkawa">
 
 	
-	<meta name="description" content="OCUnitのLogic Testsではできないこと [UIApplication sharedApplication]が絡むテスト
-[NSBundle mainBundle]が絡むテスト
-ドキュメントディレクトリへのアクセスが絡むテスト いずれもApplication Testsでは可能です &hellip;">
+	<meta name="description" content="iOS6(ARC)でのGCDのメモリ管理 Deployment TargetがiOS6.0以上の場合、GCDのオブジェクトもARCの管轄下になるらしいです。　　
+以下のStack Overflowによると&lt;os/object.h&gt;というヘッダに書かれているそうです。
+Why is &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -54,6 +54,219 @@
 
 </header>
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2013/03/21/dispatch-release-ios6/">
+		
+			iOS6(ARC)でのGCDのメモリ管理</a>
+	</h2>
+	<div class="entry-content">
+		<p>Deployment TargetがiOS6.0以上の場合、GCDのオブジェクトもARCの管轄下になるらしいです。　　
+以下のStack Overflowによると<code>&lt;os/object.h&gt;</code>というヘッダに書かれているそうです。<br/>
+<a href="http://stackoverflow.com/questions/13702701/why-is-arc-complaining-about-dispatch-queue-create-and-dispatch-release-in-ios-6">Why is ARC complaining about dispatch_queue_create and dispatch_release in iOS 6?</a></p>
+
+<p>これが適用される場合には<code>dispatch_release</code>などに対してXcodeが警告を出してくれます。</p>
+
+<p>で、GCDのオブジェクトをプロパティとして持つ場合にどうしたらいいのか、<br/>
+ちょっと迷ったので、<code>dispatch_semaphore_t</code>を例に書いておきます。</p>
+
+<h3>Deployment Targetが6.0未満の場合</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">@interface</span> <span class="nc">ISHoge</span> <span class="p">()</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">,</span> <span class="n">assign</span><span class="p">)</span> <span class="n">dispatch_semaphore_t</span> <span class="n">semaphore</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@implementation</span> <span class="nc">ISHTTPOperation</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nf">init</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">self</span> <span class="o">=</span> <span class="p">[</span><span class="n">super</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">self</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">_semaphore</span> <span class="o">=</span> <span class="n">dispatch_semaphore_create</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">self</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">dealloc</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">dispatch_release</span><span class="p">(</span><span class="n">_semaphore</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Deployment Targetが6.0以上の場合</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">@interface</span> <span class="nc">ISHoge</span> <span class="p">()</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">,</span> <span class="n">strong</span><span class="p">)</span> <span class="n">dispatch_semaphore_t</span> <span class="n">semaphore</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@implementation</span> <span class="nc">ISHoge</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nf">init</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">self</span> <span class="o">=</span> <span class="p">[</span><span class="n">super</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">self</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">_semaphore</span> <span class="o">=</span> <span class="n">dispatch_semaphore_create</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">self</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>どっちでも大丈夫にしたい場合</h3>
+
+<p>ライブラリをつくったりする場合です。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">@interface</span> <span class="nc">ISHoge</span> <span class="p">()</span>
+</span><span class='line'>
+</span><span class='line'><span class="cp">#if OS_OBJECT_USE_OBJC</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">,</span> <span class="n">strong</span><span class="p">)</span> <span class="n">dispatch_semaphore_t</span> <span class="n">semaphore</span><span class="p">;</span>
+</span><span class='line'><span class="cp">#else</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">,</span> <span class="n">assign</span><span class="p">)</span> <span class="n">dispatch_semaphore_t</span> <span class="n">semaphore</span><span class="p">;</span>
+</span><span class='line'><span class="cp">#endif</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@implementation</span> <span class="nc">ISHoge</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nf">init</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">self</span> <span class="o">=</span> <span class="p">[</span><span class="n">super</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">self</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">_semaphore</span> <span class="o">=</span> <span class="n">dispatch_semaphore_create</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">self</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">dealloc</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'><span class="cp">#if !OS_OBJECT_USE_OBJC</span>
+</span><span class='line'>    <span class="n">dispatch_release</span><span class="p">(</span><span class="n">self</span><span class="p">.</span><span class="n">semaphore</span><span class="p">);</span>
+</span><span class='line'><span class="cp">#endif</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>　</p>
+
+<p>間違ってたら教えてください。</p>
+
+<h4>追記(3/22)</h4>
+
+<p>Twitterで@nakiwo さんに<code>OS_OBJECT_USE_OBJC</code>を教えて頂きました。</p>
+
+<blockquote class="twitter-tweet" data-conversation="none" lang="ja"><p>@<a href="https://twitter.com/akisutesama">akisutesama</a> @<a href="https://twitter.com/_ishkawa">_ishkawa</a> この挙動、OS_OBJECT_USE_OBJC マクロで制御可能です</p>&mdash; Yuichi Fujishigeさん (@nakiwo) <a href="https://twitter.com/nakiwo/status/314770719257006081">2013年3月21日</a></blockquote>
+
+
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+
+<p>こちらのほうが<code>__IPHONE_OS_VERSION_MIN_REQUIRED</code>より適切ですので、<br/>
+<code>__IPHONE_OS_VERSION_MIN_REQUIRED &lt; 60000</code>としていたところを<br/>
+<code>OS_OBJECT_USE_OBJC</code>に
+置き換えました。</p>
+
+<h4>さらに追記</h4>
+
+<p><code>#ifdef</code>ではなく<code>#if</code>に修正しました。</p>
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-03-21T20:30:00+09:00" pubdate data-updated="true">Mar 21<span>st</span>, 2013</time></div>
+	
+</div>
+
+    <br/>
+    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/03/21/dispatch-release-ios6/" data-text="iOS6(ARC)でのGCDのメモリ管理" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/03/21/dispatch-release-ios6/" >Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+    </article>
 
 
     <article class="post">
@@ -160,147 +373,6 @@ Menlo 11pt祭になってますが気にしないでください。<br/>
 
     <br/>
     <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/03/12/xcode-solarized/" data-text="XcodeのSolarizedを入れ替えた" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/03/12/xcode-solarized/" >Tweet</a>
-    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
-    </article>
-
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2013/03/07/sentestingkit/">
-		
-			GHUnitをやめてSenTestingKitを使う理由</a>
-	</h2>
-	<div class="entry-content">
-		<p>※ はじめにことわっておきますが、GHUnitを批判したくて書いているわけではなく、<br/>
-SenTestingKitが意外と使えたということを書きたくて書いています。</p>
-
-<p>&mdash;</p>
-
-<ul>
-<li>特定のテストがターミナルから実行できないという問題に遭遇した。</li>
-<li>GHUnitは新しいXcodeやiOS SDKが出たときに対応されるまでにラグがある。</li>
-<li>やっぱりcommand+Uでマメにテストを実行したい。</li>
-<li>SenTestingKitではできないと思い込んでいたことが実はできた。</li>
-</ul>
-
-
-<p>以下、誤解していたことについて書きます。</p>
-
-<h3>SenTestingKitへの誤解</h3>
-
-<ul>
-<li>実機ではテストを実行できない。</li>
-<li>UIKitが絡むテストは書けない。</li>
-<li>非同期のテストが書きづらい。</li>
-</ul>
-
-
-<h4>実機での実行</h4>
-
-<p>SenTestingKitで実行できるテストにはLogic Unit TestsとApplication Unit Testsがあります。<br/>
-前者は実機での実行はできないのですが、後者はできます。<br/>
-具体的なセットアップ手順は<a href="https://developer.apple.com/library/ios/#documentation/DeveloperTools/Conceptual/UnitTesting/02-Setting_Up_Unit_Tests_in_a_Project/setting_up.html#//apple_ref/doc/uid/TP40002143-CH3-SW1">Xcode Unit Testing Guide</a>を参照してください。</p>
-
-<h4>非同期のテスト</h4>
-
-<p><a href="http://d.hatena.ne.jp/glass-_-onion/20120702/1341241666">@glassonion1 さんの方法</a>で書くことができます。<br/>
-自分は<code>tearDown</code>で<code>NSRunLoop</code>を回す前に<code>dispatch_after</code>でタイムアウトを設定しています。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">tearDown</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="kt">double</span> <span class="n">delayInSeconds</span> <span class="o">=</span> <span class="n">self</span><span class="p">.</span><span class="n">timeoutInterval</span><span class="p">;</span>
-</span><span class='line'>    <span class="n">dispatch_time_t</span> <span class="n">popTime</span> <span class="o">=</span> <span class="n">dispatch_time</span><span class="p">(</span><span class="n">DISPATCH_TIME_NOW</span><span class="p">,</span> <span class="p">(</span><span class="n">int64_t</span><span class="p">)(</span><span class="n">delayInSeconds</span> <span class="o">*</span> <span class="n">NSEC_PER_SEC</span><span class="p">));</span>
-</span><span class='line'>    <span class="n">dispatch_after</span><span class="p">(</span><span class="n">popTime</span><span class="p">,</span> <span class="n">dispatch_get_main_queue</span><span class="p">(),</span> <span class="o">^</span><span class="p">(</span><span class="kt">void</span><span class="p">){</span>
-</span><span class='line'>        <span class="n">STFail</span><span class="p">(</span><span class="s">@&quot;timed out.&quot;</span><span class="p">);</span>
-</span><span class='line'>        <span class="n">self</span><span class="p">.</span><span class="n">finished</span> <span class="o">=</span> <span class="n">YES</span><span class="p">;</span>
-</span><span class='line'>    <span class="p">});</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">do</span> <span class="p">{</span>
-</span><span class='line'>        <span class="p">[[</span><span class="n">NSRunLoop</span> <span class="n">currentRunLoop</span><span class="p">]</span> <span class="nl">runUntilDate:</span><span class="p">[</span><span class="n">NSDate</span> <span class="nl">dateWithTimeIntervalSinceNow:</span><span class="mf">.1</span><span class="p">]];</span>
-</span><span class='line'>    <span class="p">}</span> <span class="k">while</span> <span class="p">(</span><span class="o">!</span><span class="n">self</span><span class="p">.</span><span class="n">isFinished</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="p">[</span><span class="n">super</span> <span class="n">tearDown</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>非同期の処理ををまとめて<code>SenAsyncTestCase</code>というクラスにしておけば、<br/>
-追加で必要なことはテストケースの終了時に<code>self.finished = YES</code>を書くことだけです。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">testHoge</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="n">NSURL</span> <span class="o">*</span><span class="n">URL</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSURL</span> <span class="nl">URLWithString:</span><span class="s">@&quot;http://www.apple.com&quot;</span><span class="p">];</span>
-</span><span class='line'>    <span class="n">NSURLRequest</span> <span class="o">*</span><span class="n">reqeust</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSURLRequest</span> <span class="nl">requestWithURL:</span><span class="n">URL</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">NSURLConnection</span> <span class="nl">sendAsynchronousRequest:</span><span class="n">reqeust</span>
-</span><span class='line'>                                       <span class="nl">queue:</span><span class="p">[</span><span class="n">NSOperationQueue</span> <span class="n">mainQueue</span><span class="p">]</span>
-</span><span class='line'>                           <span class="nl">completionHandler:</span><span class="o">^</span><span class="p">(</span><span class="n">NSURLResponse</span> <span class="o">*</span><span class="n">response</span><span class="p">,</span> <span class="n">NSData</span> <span class="o">*</span><span class="n">data</span><span class="p">,</span> <span class="n">NSError</span> <span class="o">*</span><span class="n">error</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>                               <span class="n">NSInteger</span> <span class="n">statusCode</span> <span class="o">=</span> <span class="p">[(</span><span class="n">NSHTTPURLResponse</span> <span class="o">*</span><span class="p">)</span><span class="n">response</span> <span class="n">statusCode</span><span class="p">];</span>
-</span><span class='line'>                               <span class="n">STAssertEquals</span><span class="p">(</span><span class="n">statusCode</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="nb">nil</span><span class="p">);</span>
-</span><span class='line'>                               <span class="n">STAssertNil</span><span class="p">(</span><span class="n">error</span><span class="p">,</span> <span class="nb">nil</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>                               <span class="n">self</span><span class="p">.</span><span class="n">finished</span> <span class="o">=</span> <span class="n">YES</span><span class="p">;</span>
-</span><span class='line'>                           <span class="p">}];</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p><code>SenAsyncTestCase</code>の例は以下にアップしてあります。<br/>
-<a href="https://github.com/ishkawa/SenAsyncTestCase">SenAsyncTestCase</a></p>
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-03-07T21:38:00+09:00" pubdate data-updated="true">Mar 7<span>th</span>, 2013</time></div>
-	
-</div>
-
-    <br/>
-    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/03/07/sentestingkit/" data-text="GHUnitをやめてSenTestingKitを使う理由" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/03/07/sentestingkit/" >Tweet</a>
     <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
     </article>
 

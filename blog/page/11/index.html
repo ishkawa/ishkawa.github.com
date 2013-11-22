@@ -7,8 +7,8 @@
 	<meta name="author" content="ishkawa">
 
 	
-	<meta name="description" content="ISHTTPOperationMockifierをKiwiで使う 最近、OCUnit+OCMockからKiwiに乗り換えました。 Kiwiを使えばあらゆる業から逃れられます。
-つまり、解脱です。 そんなKiwiでISHTTPOperationMockifierを使ってみました。 &hellip;">
+	<meta name="description" content="supertestでNode.jsのテストを始めました 最近、Node.jsを始めました。 サーバーサイドの経験はほとんどないので色々と新鮮に感じています。
+クライアントサイドと違ってテストがないとプログラムが動いているかよくわからないのですが、 &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -53,6 +53,154 @@
 
 </header>
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2013/03/31/supertest/">
+		
+			supertestでNode.jsのテストを始めました</a>
+	</h2>
+	<div class="entry-content">
+		<p>最近、Node.jsを始めました。</p>
+
+<p>サーバーサイドの経験はほとんどないので色々と新鮮に感じています。<br/>
+クライアントサイドと違ってテストがないとプログラムが動いているかよくわからないのですが、<br/>
+テストってどうやって書くのか全然わかんねーって感じだったのであれこれ模索しました。</p>
+
+<p>その結果、supertestを使ってリクエストとレスポンスの対応をテストすることから始めるのが<br/>
+良さそうかなと思いましたので紹介します。</p>
+
+<p>対象はExpressアプリとします。</p>
+
+<h3>supertestとMochaをインストール</h3>
+
+<p>mochaはなくても使えるのですが、あった方が楽なのでインストールします。<br/>
+mochaについては以下のページが詳しいです。<br/>
+<a href="http://d.hatena.ne.jp/hokaccha/20111202/1322840375">http://d.hatena.ne.jp/hokaccha/20111202/1322840375</a></p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>npm install supertest --save
+</span><span class='line'>npm install -g mocha</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>app.jsをエクスポート</h3>
+
+<p>テストファイルからappにアクセスできるようにエクスポートします。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">module</span><span class="p">.</span><span class="nx">exports</span> <span class="o">=</span> <span class="nx">app</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>テストを書く</h3>
+
+<p><code>test/</code>以下にテストを書く<code>.js</code>ファイルを作成します。<br/>
+例として以下のような緩い仕様を例にテストを書いてみます。</p>
+
+<ul>
+<li>username/passwordのいずれかが空だと400</li>
+<li>username/passwordの両方があれば200</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">var</span> <span class="nx">request</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;supertest&#39;</span><span class="p">);</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">app</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;../app&#39;</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">describe</span><span class="p">(</span><span class="s1">&#39;POST /signup&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">it</span><span class="p">(</span><span class="s1">&#39;returns 400 if username is empty&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">done</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">request</span><span class="p">(</span><span class="nx">app</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">.</span><span class="nx">post</span><span class="p">(</span><span class="s1">&#39;/signup&#39;</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">.</span><span class="nx">expect</span><span class="p">(</span><span class="mi">400</span><span class="p">,</span> <span class="nx">done</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">});</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nx">it</span><span class="p">(</span><span class="s1">&#39;returns 400 if password is empty&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">done</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">request</span><span class="p">(</span><span class="nx">app</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">.</span><span class="nx">post</span><span class="p">(</span><span class="s1">&#39;/signup&#39;</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">.</span><span class="nx">expect</span><span class="p">(</span><span class="mi">400</span><span class="p">,</span> <span class="nx">done</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">});</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nx">it</span><span class="p">(</span><span class="s1">&#39;returns 200 when parameters are valid&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">done</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">request</span><span class="p">(</span><span class="nx">app</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">.</span><span class="nx">post</span><span class="p">(</span><span class="s1">&#39;/signup&#39;</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">.</span><span class="nx">send</span><span class="p">({</span><span class="nx">username</span><span class="o">:</span> <span class="s1">&#39;hoge&#39;</span><span class="p">,</span> <span class="nx">password</span><span class="o">:</span> <span class="s1">&#39;hoge&#39;</span><span class="p">})</span>
+</span><span class='line'>    <span class="p">.</span><span class="nx">expect</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="nx">done</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">});</span>
+</span><span class='line'><span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>実行する</h3>
+
+<p>mochaコマンドで実行します。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">mocha</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>すると、以下のような感じの出力が得られます。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="mi">3</span> <span class="nx">tests</span> <span class="nx">complete</span> <span class="p">(</span><span class="mi">72</span> <span class="nx">ms</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>　</p>
+
+<p>早くまともにテストを書けるようになりたいものです。</p>
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-03-31T21:54:00+09:00" pubdate data-updated="true">Mar 31<span>st</span>, 2013</time></div>
+	
+</div>
+
+    <br/>
+    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/03/31/supertest/" data-text="supertestでNode.jsのテストを始めました" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/03/31/supertest/" >Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+    </article>
 
 
     <article class="post">
@@ -585,219 +733,6 @@
 
     <br/>
     <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/03/23/mock-connection/" data-text="通信用のNSOperationをモック化する" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/03/23/mock-connection/" >Tweet</a>
-    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
-    </article>
-
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2013/03/21/dispatch-release-ios6/">
-		
-			iOS6(ARC)でのGCDのメモリ管理</a>
-	</h2>
-	<div class="entry-content">
-		<p>Deployment TargetがiOS6.0以上の場合、GCDのオブジェクトもARCの管轄下になるらしいです。　　
-以下のStack Overflowによると<code>&lt;os/object.h&gt;</code>というヘッダに書かれているそうです。<br/>
-<a href="http://stackoverflow.com/questions/13702701/why-is-arc-complaining-about-dispatch-queue-create-and-dispatch-release-in-ios-6">Why is ARC complaining about dispatch_queue_create and dispatch_release in iOS 6?</a></p>
-
-<p>これが適用される場合には<code>dispatch_release</code>などに対してXcodeが警告を出してくれます。</p>
-
-<p>で、GCDのオブジェクトをプロパティとして持つ場合にどうしたらいいのか、<br/>
-ちょっと迷ったので、<code>dispatch_semaphore_t</code>を例に書いておきます。</p>
-
-<h3>Deployment Targetが6.0未満の場合</h3>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">@interface</span> <span class="nc">ISHoge</span> <span class="p">()</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">,</span> <span class="n">assign</span><span class="p">)</span> <span class="n">dispatch_semaphore_t</span> <span class="n">semaphore</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@end</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@implementation</span> <span class="nc">ISHTTPOperation</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nf">init</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="n">self</span> <span class="o">=</span> <span class="p">[</span><span class="n">super</span> <span class="n">init</span><span class="p">];</span>
-</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">self</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="n">_semaphore</span> <span class="o">=</span> <span class="n">dispatch_semaphore_create</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>    <span class="k">return</span> <span class="n">self</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">dealloc</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="n">dispatch_release</span><span class="p">(</span><span class="n">_semaphore</span><span class="p">);</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>Deployment Targetが6.0以上の場合</h3>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">@interface</span> <span class="nc">ISHoge</span> <span class="p">()</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">,</span> <span class="n">strong</span><span class="p">)</span> <span class="n">dispatch_semaphore_t</span> <span class="n">semaphore</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@end</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@implementation</span> <span class="nc">ISHoge</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nf">init</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="n">self</span> <span class="o">=</span> <span class="p">[</span><span class="n">super</span> <span class="n">init</span><span class="p">];</span>
-</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">self</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="n">_semaphore</span> <span class="o">=</span> <span class="n">dispatch_semaphore_create</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>    <span class="k">return</span> <span class="n">self</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>どっちでも大丈夫にしたい場合</h3>
-
-<p>ライブラリをつくったりする場合です。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">@interface</span> <span class="nc">ISHoge</span> <span class="p">()</span>
-</span><span class='line'>
-</span><span class='line'><span class="cp">#if OS_OBJECT_USE_OBJC</span>
-</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">,</span> <span class="n">strong</span><span class="p">)</span> <span class="n">dispatch_semaphore_t</span> <span class="n">semaphore</span><span class="p">;</span>
-</span><span class='line'><span class="cp">#else</span>
-</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">,</span> <span class="n">assign</span><span class="p">)</span> <span class="n">dispatch_semaphore_t</span> <span class="n">semaphore</span><span class="p">;</span>
-</span><span class='line'><span class="cp">#endif</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@end</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@implementation</span> <span class="nc">ISHoge</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nf">init</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="n">self</span> <span class="o">=</span> <span class="p">[</span><span class="n">super</span> <span class="n">init</span><span class="p">];</span>
-</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">self</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="n">_semaphore</span> <span class="o">=</span> <span class="n">dispatch_semaphore_create</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>    <span class="k">return</span> <span class="n">self</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">dealloc</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'><span class="cp">#if !OS_OBJECT_USE_OBJC</span>
-</span><span class='line'>    <span class="n">dispatch_release</span><span class="p">(</span><span class="n">self</span><span class="p">.</span><span class="n">semaphore</span><span class="p">);</span>
-</span><span class='line'><span class="cp">#endif</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>　</p>
-
-<p>間違ってたら教えてください。</p>
-
-<h4>追記(3/22)</h4>
-
-<p>Twitterで@nakiwo さんに<code>OS_OBJECT_USE_OBJC</code>を教えて頂きました。</p>
-
-<blockquote class="twitter-tweet" data-conversation="none" lang="ja"><p>@<a href="https://twitter.com/akisutesama">akisutesama</a> @<a href="https://twitter.com/_ishkawa">_ishkawa</a> この挙動、OS_OBJECT_USE_OBJC マクロで制御可能です</p>&mdash; Yuichi Fujishigeさん (@nakiwo) <a href="https://twitter.com/nakiwo/status/314770719257006081">2013年3月21日</a></blockquote>
-
-
-<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
-
-
-<p>こちらのほうが<code>__IPHONE_OS_VERSION_MIN_REQUIRED</code>より適切ですので、<br/>
-<code>__IPHONE_OS_VERSION_MIN_REQUIRED &lt; 60000</code>としていたところを<br/>
-<code>OS_OBJECT_USE_OBJC</code>に
-置き換えました。</p>
-
-<h4>さらに追記</h4>
-
-<p><code>#ifdef</code>ではなく<code>#if</code>に修正しました。</p>
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-03-21T20:30:00+09:00" pubdate data-updated="true">Mar 21<span>st</span>, 2013</time></div>
-	
-</div>
-
-    <br/>
-    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/03/21/dispatch-release-ios6/" data-text="iOS6(ARC)でのGCDのメモリ管理" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/03/21/dispatch-release-ios6/" >Tweet</a>
     <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
     </article>
 

@@ -7,9 +7,8 @@
 	<meta name="author" content="ishkawa">
 
 	
-	<meta name="description" content="ISNotificationHelperというのを書いた Mountain LionからOSXにも通知センターが導入されました。 スクリプトの実行完了時とかに通知したいと思って使い方を調べたのですが、
-どうやらCommand Line ToolからはこのAPIを叩けないようでした。
-なので、 &hellip;">
+	<meta name="description" content="Qiita Hackathonに参加しました テーマはGitHub APIを利用してプログラマーの問題を解決するというものでした。
+http://qiitahackathon03.peatix.com 　 つくったもの Gitのコミット毎に親コミットとのdiffからTODO:やFIXME: &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -54,6 +53,102 @@
 
 </header>
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2013/02/05/qiita-hackathon/">
+		
+			Qiita Hackathonに参加しました</a>
+	</h2>
+	<div class="entry-content">
+		<p>テーマはGitHub APIを利用してプログラマーの問題を解決するというものでした。<br/>
+<a href="http://qiitahackathon03.peatix.com">http://qiitahackathon03.peatix.com</a></p>
+
+<p>　</p>
+
+<h3>つくったもの</h3>
+
+<p>Gitのコミット毎に親コミットとのdiffから<code>TODO:</code>や<code>FIXME:</code>というコメントを探し出し、
+それを元に自動的にissueのオープン/クローズを行うツールをつくりました。
+このツールを使うと、<code>TODO:</code>コメントの挿入/削除 = issueのオープン/クローズとなります。
+あまりウケないかなと思っていたのですが、思いの外受け入れてくれた方がいて嬉しかったです。</p>
+
+<h3>スライド</h3>
+
+<p>GitHubのゲストの方向けに資料は英語で書かれていますが、発表は日本語でした。</p>
+
+<script async class="speakerdeck-embed" data-id="928eba30511601308fcd1231381d555c" data-ratio="1.33333333333333" src="//speakerdeck.com/assets/embed.js"></script>
+
+
+<p></p>
+
+<p>　</p>
+
+<h3>デモビデオ</h3>
+
+<p>発表のときはその場で実演しました。<br/>
+かなり緊張しました。</p>
+
+<iframe src="http://player.vimeo.com/video/58906330?title=0&amp;byline=0&amp;portrait=0" width="500" height="281" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>
+
+
+<p>(音声はありません。)</p>
+
+<p>　</p>
+
+<h3>実装方法</h3>
+
+<p>いつも通り、Objective-Cで書きました。<br/>
+前後のコミットの取得やdiffの取得にはlibgit2を利用しました。</p>
+
+<h3>結果</h3>
+
+<p>最優秀賞をいただきました。<br/>
+GitHubのScott Chacon氏にも&#8221;Great Idea&#8221;と褒めていただき、票も入れてくれたそうです。</p>
+
+<h3>今後</h3>
+
+<p>大変ありがたいことに、もし公開することになったら連絡をくださいと言ってくださった方が数名いました。
+が、現在のコードでは一部の実装が甘かったり、実行環境を整えるのに手間がかかったりするので、
+もう少し磨いてからソースを公開しようと思います。</p>
+
+<p>連絡先をいただいた方には、公開時にあらためて連絡いたします。</p>
+
+<p>&mdash;</p>
+
+<p>2日目は疲れてしまってほとんどコードが書けませんでしたが、
+なんとか動かせるところまで持って行けてよかったです。
+酔っ払いながら書いた部分が汚くて今の悩みの種となってしまいましたが、
+ハッカソンの夜はとても楽しかったです。</p>
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-02-05T00:45:00+09:00" pubdate data-updated="true">Feb 5<span>th</span>, 2013</time></div>
+	
+</div>
+
+    <br/>
+    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/02/05/qiita-hackathon/" data-text="Qiita Hackathonに参加しました" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/02/05/qiita-hackathon/" >Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+    </article>
 
 
     <article class="post">
@@ -200,106 +295,6 @@
 
     <br/>
     <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/01/29/randomtap-uiautomation/" data-text="0.1秒ごとにランダムタップするUIAutomationスクリプト" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/01/29/randomtap-uiautomation/" >Tweet</a>
-    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
-    </article>
-
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2013/01/28/universal-static-library-2013/">
-		
-			Universal Static Libraryのビルド(armv7/armv7s/i386 )</a>
-	</h2>
-	<div class="entry-content">
-		<p>最近のUniversal Static Libraryのビルド方法を見かけなかったので、書いておきます。<br/>
-&ldquo;最近の&#8221;と言っても変更点はarmv6がなくなってarmv7sが追加されただけです。</p>
-
-<h3>概要</h3>
-
-<p>何も難しいことはありません。</p>
-
-<ul>
-<li>実機用にビルド(armv7, armv7s)</li>
-<li>シミュレーター用にビルド(i386)</li>
-<li><code>lipo</code>でくっつける</li>
-<li>必要なヘッダーもコピーする</li>
-</ul>
-
-
-<h3>実行例</h3>
-
-<p><a href="https://github.com/johnezang/JSONKit">JSONKit</a>のUniversal Static Libraryを作る例です。</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>xcodebuild -sdk iphoneos -arch armv7 -arch armv7s clean build
-</span><span class='line'>xcodebuild -sdk iphonesimulator -arch i386 clean build
-</span><span class='line'>
-</span><span class='line'>rm -R Product
-</span><span class='line'>mkdir Product/
-</span><span class='line'>
-</span><span class='line'>xcrun lipo -create build/Release-iphonesimulator/libJSONKit.a build/Release-iphoneos/libJSONKit.a -output Product/libJSONKit.a
-</span><span class='line'>cp JSONKit/*.h Product/</span></code></pre></td></tr></table></div></figure>
-
-
-<p>できたものを確認します。</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>xcrun -sdk iphoneos lipo -info Product/libJSONKit.a</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>Architectures in the fat file: build/Release-universal/libJSONKit.a are: i386 armv7 armv7s</span></code></pre></td></tr></table></div></figure>
-
-
-<p>できてますね。</p>
-
-<h3>補足</h3>
-
-<p><code>/usr/bin/lipo</code>はarmv7sのことを知らないらしく、<code>lipo -info ...</code>としてもarmv7sとして表示してくれません。
-Xcodeの<code>xcrun -sdk iphoneos lipo</code>ではarmv7sと表示されます。</p>
-
-<h3>参考</h3>
-
-<ul>
-<li><a href="http://cocoadays.blogspot.jp/2010/11/ios-static-library-4-universal-static.html">[iOS] Static Library (4) Universal Static Library</a></li>
-<li><a href="http://stackoverflow.com/questions/12549489/compile-library-for-armv7s-cputype-12-and-cpusubtype-11">Compile Library for armv7s &ndash; cputype (12) and cpusubtype (11)</a></li>
-</ul>
-
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-01-28T12:31:00+09:00" pubdate data-updated="true">Jan 28<span>th</span>, 2013</time></div>
-	
-</div>
-
-    <br/>
-    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/01/28/universal-static-library-2013/" data-text="Universal Static Libraryのビルド(armv7/armv7s/i386 )" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/01/28/universal-static-library-2013/" >Tweet</a>
     <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
     </article>
 
