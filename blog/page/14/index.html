@@ -7,8 +7,10 @@
 	<meta name="author" content="ishkawa">
 
 	
-	<meta name="description" content="1行で導入するback gestureの話とUINavigationBarを拡張した話 一昨日、conferenceWithDevelopersのLTで、1行で導入するback gestureの話をしてきました。
-LTの内容と、やろうとして間に合わなかったことの紹介を書きます。 &hellip;">
+	<meta name="description" content=".ipaをサッとつくる iOSアプリの.ipaを配布して他の人にテストしてもらうとき、 Xocdeを起動
+メニューのProduct &ndash;> Archiveを選択。
+OrganizerからArchiveを選んでのDistribute。
+Save for Enterprise or Ad- &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -53,6 +55,120 @@ LTの内容と、やろうとして間に合わなかったことの紹介を書
 
 </header>
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2013/02/27/make-ipa/">
+		
+			.ipaをサッとつくる</a>
+	</h2>
+	<div class="entry-content">
+		<p>iOSアプリの.ipaを配布して他の人にテストしてもらうとき、</p>
+
+<ol>
+<li>Xocdeを起動</li>
+<li>メニューのProduct &ndash;> Archiveを選択。</li>
+<li>OrganizerからArchiveを選んでのDistribute。</li>
+<li>Save for Enterprise or Ad-Hoc Deploymentを選択。</li>
+<li>Code Sign Identityを選択</li>
+<li>保存先を指定</li>
+<li>保存したipaをサーバーにアップロードする。</li>
+</ol>
+
+
+<p>という面倒な手順を踏んでいる人も多いと思います。<br/>
+実はこれらはコマンドでも実行できるので<code>make</code>でサッとできます。</p>
+
+<h3>Makefile</h3>
+
+<p><code>.xcodeproj</code>などと同じ階層に<code>Makefile</code>を作成します。<br/>
+<code>***</code>ってなってるところは適宜読み替えてください。</p>
+
+<h4>.xcodeprojを使っている場合</h4>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>default:
+</span><span class='line'>  xcodebuild -sdk iphoneos -target *** -configuration Release build
+</span><span class='line'>
+</span><span class='line'>adhoc:
+</span><span class='line'>    <span class="k">if</span> <span class="o">[</span> -a build<span class="o">]</span>; <span class="k">then </span>rm -R build; <span class="k">fi</span>;
+</span><span class='line'>    xcodebuild -sdk iphoneos -target *** -configuration Release clean build <span class="nv">PROVISIONING_PROFILE</span><span class="o">=</span>****-****-****-****-**********
+</span><span class='line'>    xcrun -sdk iphoneos PackageApplication build/Release-iphoneos/***.app -o <span class="k">$(</span>PWD<span class="k">)</span>/build/***.ipa --embed ****.mobileprovision
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h4>.xcworkspaceを使っている場合</h4>
+
+<p>CocoaPodsとか使っている場合ですね。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>default:
+</span><span class='line'>  xcodebuild -workspace ***.xcworkspace -scheme *** -configuration Release -sdk iphoneos clean build
+</span><span class='line'>
+</span><span class='line'>adhoc:
+</span><span class='line'>  <span class="k">if</span> <span class="o">[</span> -a build<span class="o">]</span>; <span class="k">then </span>rm -R build; <span class="k">fi</span>;
+</span><span class='line'>  xcodebuild -sdk iphoneos -workspace ***.xcworkspace -scheme *** -configuration Release clean build <span class="nv">CONFIGURATION_BUILD_DIR</span><span class="o">=</span><span class="k">$(</span>PWD<span class="k">)</span>/build <span class="nv">PROVISIONING_PROFILE</span><span class="o">=</span>****-****-****-****-**********
+</span><span class='line'>  xcrun -sdk iphoneos PackageApplication build/***.app -o <span class="k">$(</span>PWD<span class="k">)</span>/build/***.ipa --embed ***.mobileprovision
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>使い方</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>make adhoc
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>を実行すると、<code>build/</code>以下に.ipaが作成されます。Xcodeでやるより簡単ですね。<br/>
+dSYMなどを手元に貯めて行きたい場合にはもうひと頑張りしてください。</p>
+
+<p>TestFlightなどのように.ipaを保持するサーバーにAPIがあるなら、<br/>
+<code>adhoc:</code>の末尾に<code>curl</code>を追加して自動的にアップロードすると更に楽になります。</p>
+
+<p>　</p>
+
+<p>なんでJenkins使ってる時に気づかなかったんだろうな〜。</p>
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-02-27T19:21:00+09:00" pubdate data-updated="true">Feb 27<span>th</span>, 2013</time></div>
+	
+</div>
+
+    <br/>
+    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/02/27/make-ipa/" data-text=".ipaをサッとつくる" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/02/27/make-ipa/" >Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+    </article>
 
 
     <article class="post">
@@ -408,65 +524,6 @@ Mountain Lion以降で動作します。</p>
 
     <br/>
     <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/02/19/menubar-pomodoro/" data-text="ミニマルなPomodoroタイマーを書きました" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/02/19/menubar-pomodoro/" >Tweet</a>
-    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
-    </article>
-
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2013/02/06/tts/">
-		
-			ターミナルにTwitterのUser Streamを流す</a>
-	</h2>
-	<div class="entry-content">
-		<p>また雑なプログラムを書いて公開しました。<br/>
-<a href="https://github.com/ishkawa/ttw">https://github.com/ishkawa/ttw</a></p>
-
-<p>ターミナルにTwitterのUser Streamを流せます。</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>ttw stream</span></code></pre></td></tr></table></div></figure>
-
-
-<p>ツイートの投稿もできます。</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>ttw post hoge</span></code></pre></td></tr></table></div></figure>
-
-
-<ol type="a">
-<li>なんでつくったの？</li>
-<li>起動するアプリを減らしたかったので。</li>
-</ol>
-
-
-<p>Twitter Streaming APIを使ってみたい方には参考になるかもしれません。</p>
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-02-06T01:14:00+09:00" pubdate data-updated="true">Feb 6<span>th</span>, 2013</time></div>
-	
-</div>
-
-    <br/>
-    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/02/06/tts/" data-text="ターミナルにTwitterのUser Streamを流す" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/02/06/tts/" >Tweet</a>
     <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
     </article>
 

@@ -7,7 +7,8 @@
 	<meta name="author" content="ishkawa">
 
 	
-	<meta name="description" content="モバイル版のGitHubにフィードがなかったので、補うiOSアプリをつくってリリースした プッシュ通知などもついていて、なかなか便利なものになりました。 アプリをダウンロード 　 　 　 GitHubのモバイル版(Web)はかなり良くできていて流石だなあと思っていたのですが、 &hellip;">
+	<meta name="description" content="GHFeedで利用しているライブラリ一覧 先日GHFeedというGitHubのフィードを読めるiOSアプリをリリースしました。
+今日はGHFeedの開発に利用したライブラリを紹介しようと思います。 NJKWebViewProgress &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -52,6 +53,107 @@
 
 </header>
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2013/08/28/ghfeed-libraries/">
+		
+			GHFeedで利用しているライブラリ一覧</a>
+	</h2>
+	<div class="entry-content">
+		<p>先日GHFeedというGitHubのフィードを読めるiOSアプリをリリースしました。<br/>
+今日はGHFeedの開発に利用したライブラリを紹介しようと思います。</p>
+
+<h4>NJKWebViewProgress</h4>
+
+<p>UIWebViewの読み込み状況を取得してくれるライブラリです。
+作者は<a href="https://twitter.com/ninjinkun">@ninjinkun</a>さんです。
+このライブラリが出してくれる値は大体0.0, 0.1, 1.0なので、
+GHFeedではこれらの値を補間するようなアニメーションを追加で実装しています。</p>
+
+<h4>KLSwitch</h4>
+
+<p>フラットデザインなUIButtonのライブラリです。<br/>
+UIAppearanceにも対応するなど、結構細かいところまで実装が行き届いていました。</p>
+
+<h4>TUSafariActivity</h4>
+
+<p>UIActivityViewControllerにOpen in Safariを追加するライブラリです。</p>
+
+<h4>SSKeychain</h4>
+
+<p>キーチェーンのwrapperです。</p>
+
+<h4>SVProgressHUD</h4>
+
+<p>ユーザーに待ってもらいたいときに表示するUIViewです。</p>
+
+<h4>ISHTTPOperation</h4>
+
+<p>NSURLConnectionをwrapしたNSOperationです。
+実際には直接ISHTTPOperationを使うのではなく、JSONパースまで含んだサブクラスや、
+画像のディスクキャッシュへの保存/読込を追加したサブクラスを利用しています。</p>
+
+<h4>ISDiskCache</h4>
+
+<p>ディスクキャッシュです。画像と通知APIのレスポンスのキャッシュに利用しています。</p>
+
+<h4>ISMemoryCache</h4>
+
+<p>メモリキャッシュです。画像のキャッシュにのみ利用しています。</p>
+
+<h4>ISRemoveNull</h4>
+
+<p>GitHub APIのレスポンスからNSNullを外すのに利用しています。</p>
+
+<p>　</p>
+
+<h3>テストのライブラリ</h3>
+
+<p>SenTestingKitを利用しています。</p>
+
+<h4>OHHTTPStubs</h4>
+
+<p>スタブサーバーです。通信を含む処理をテストできます。</p>
+
+<h4>OCMock</h4>
+
+<p>スタブ/モックを提供してくれるライブラリです。</p>
+
+<h4>OCMockObject+Lazy</h4>
+
+<p>OCMockのverifyを非同期のAPIに対しても実行できるようにする拡張です。
+NSRunLoopを回しながらverifyを反復して実行するというアレ気味な実装になっているので、
+もう少しマシなものを考えたいものです。</p>
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-08-28T08:18:00+09:00" pubdate data-updated="true">Aug 28<span>th</span>, 2013</time></div>
+	
+</div>
+
+    <br/>
+    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/08/28/ghfeed-libraries/" data-text="GHFeedで利用しているライブラリ一覧" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/08/28/ghfeed-libraries/" >Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+    </article>
 
 
     <article class="post">
@@ -299,85 +401,6 @@ getterの実装を独自に行なっているのでインスタンス変数<code
 
     <br/>
     <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/08/17/synthesize-in-2013/" data-text="2013年の@synthesize" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/08/17/synthesize-in-2013/" >Tweet</a>
-    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
-    </article>
-
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2013/08/07/ishttpoperation/">
-		
-			ISHTTPOperation 1.1.0をリリースした</a>
-	</h2>
-	<div class="entry-content">
-		<p>朝6時に目が覚めたら意識が高かったので、ISHTTPOperationに欲しかった機能をつけてリリースしました。<br/>
-<a href="https://github.com/ishkawa/ISHTTPOperation">ISHTTPOperation</a></p>
-
-<p>　</p>
-
-<p>ISHTTPOperationは特徴のあるライブラリではなくて、単純に非同期のNSURLConnectionをラップするNSOperationです。
-こういったライブラリはたくさんあって、いわゆる車輪の再発明なのですが、わざわざ自分で作っているのには理由があります。
-理由の1つは多くの通信ライブラリは機能が多すぎるため、大量の不要なコードをプロジェクトに導入することになってしまうからです。
-もう1つはNSURLConnectionをNSOperationで正しくラップするときにはミスしやすい箇所が多いので、
-シンプルなライブラリであってもキャンセルなどの目立ちにくい動作に不具合を出しやすいからです。</p>
-
-<h3>かわったところ</h3>
-
-<ul>
-<li>テストにスタブサーバーを利用する</li>
-<li>Travis CIとCoverallsを利用して品質(?)を表示</li>
-<li>NSPredicateを利用してキャンセル</li>
-</ul>
-
-
-<p>元々、3つ目のキャンセル機構をつけたかったのですが、
-最近は<a href="http://www.tokoro.me/2013/07/09/objc-travis-coveralls/">iOSのライブラリだってTravis CIとかCoverallsとか使うべき</a>という話だったので、
-その辺りにも手を入れてみたらテストがださかったのでテストも直したという感じです。
-それと、せっかくここまでやったんだからと思ってCocoaPodsにもpull requestを送っておきました。</p>
-
-<p>NSPredicateでキャンセルというのは以下のような感じです。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="n">NSPredicate</span> <span class="o">*</span><span class="n">predicate</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSPredicate</span> <span class="nl">predicateWithFormat:</span><span class="s">@&quot;request.HTTPMethod MATCHES %@&quot;</span><span class="p">,</span> <span class="s">@&quot;GET&quot;</span><span class="p">];</span>
-</span><span class='line'><span class="p">[[</span><span class="n">ISHTTPOperationQueue</span> <span class="n">defaultQueue</span><span class="p">]</span> <span class="nl">cancelOperationsUsingPredicate:</span><span class="n">predicate</span><span class="p">];</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>よく使いそうなやつには以下のようなショートカットも用意しました。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="p">[[</span><span class="n">ISHTTPOperationQueue</span> <span class="n">defaultQueue</span><span class="p">]</span> <span class="nl">cancelOperationsWithHTTPMethod:</span><span class="s">@&quot;GET&quot;</span><span class="p">];</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-08-07T11:02:00+09:00" pubdate data-updated="true">Aug 7<span>th</span>, 2013</time></div>
-	
-</div>
-
-    <br/>
-    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/08/07/ishttpoperation/" data-text="ISHTTPOperation 1.1.0をリリースした" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/08/07/ishttpoperation/" >Tweet</a>
     <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
     </article>
 

@@ -7,8 +7,8 @@
 	<meta name="author" content="ishkawa">
 
 	
-	<meta name="description" content="GHUnitをやめてSenTestingKitを使う理由 ※ はじめにことわっておきますが、GHUnitを批判したくて書いているわけではなく、
-SenTestingKitが意外と使えたということを書きたくて書いています。 &mdash; &hellip;">
+	<meta name="description" content="XcodeのSolarizedを入れ替えた VimやiTermのカラースキームにはSolarized Darkを使っていて大変気に入っているのですが、
+XcodeのSolarizedはなんだかきつい色の組み合わせが頻出すると思ったのでちょっと変えました。 ちなみにオリジナルは以下です。 &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -53,6 +53,65 @@ SenTestingKitが意外と使えたということを書きたくて書いてい�
 
 </header>
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2013/03/12/xcode-solarized/">
+		
+			XcodeのSolarizedを入れ替えた</a>
+	</h2>
+	<div class="entry-content">
+		<p>VimやiTermのカラースキームにはSolarized Darkを使っていて大変気に入っているのですが、<br/>
+XcodeのSolarizedはなんだかきつい色の組み合わせが頻出すると思ったのでちょっと変えました。</p>
+
+<p>ちなみにオリジナルは以下です。<br/>
+<a href="https://github.com/brianmichel/solarized/tree/master/apple-xcode4-solarized">brianmichel / solarized</a></p>
+
+<h4>Before</h4>
+
+<p><img src="/images/2013-03-12/before.png"></p>
+
+<h4>After</h4>
+
+<p><img src="/images/2013-03-12/after.png"></p>
+
+<p>　</p>
+
+<p>本当はコンパイラディレクティブとその他のキーワードも分けたかったのですが、<br/>
+そのような分別がなさそうだったのであきらめました。</p>
+
+<p>ソースはこちらです。<br/>
+Menlo 11pt祭になってますが気にしないでください。<br/>
+<a href="https://gist.github.com/ishkawa/5140559">ishkawa / Solarized &ndash; Dark 2.dvtcolortheme</a></p>
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-03-12T21:32:00+09:00" pubdate data-updated="true">Mar 12<span>th</span>, 2013</time></div>
+	
+</div>
+
+    <br/>
+    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/03/12/xcode-solarized/" data-text="XcodeのSolarizedを入れ替えた" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/03/12/xcode-solarized/" >Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+    </article>
 
 
     <article class="post">
@@ -293,120 +352,6 @@ Blocksの循環参照など、メモリ管理の落とし穴は依然として�
 
     <br/>
     <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/03/06/test-dealloc/" data-text="ARC環境でdeallocされるかテストする" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/03/06/test-dealloc/" >Tweet</a>
-    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
-    </article>
-
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2013/02/27/make-ipa/">
-		
-			.ipaをサッとつくる</a>
-	</h2>
-	<div class="entry-content">
-		<p>iOSアプリの.ipaを配布して他の人にテストしてもらうとき、</p>
-
-<ol>
-<li>Xocdeを起動</li>
-<li>メニューのProduct &ndash;> Archiveを選択。</li>
-<li>OrganizerからArchiveを選んでのDistribute。</li>
-<li>Save for Enterprise or Ad-Hoc Deploymentを選択。</li>
-<li>Code Sign Identityを選択</li>
-<li>保存先を指定</li>
-<li>保存したipaをサーバーにアップロードする。</li>
-</ol>
-
-
-<p>という面倒な手順を踏んでいる人も多いと思います。<br/>
-実はこれらはコマンドでも実行できるので<code>make</code>でサッとできます。</p>
-
-<h3>Makefile</h3>
-
-<p><code>.xcodeproj</code>などと同じ階層に<code>Makefile</code>を作成します。<br/>
-<code>***</code>ってなってるところは適宜読み替えてください。</p>
-
-<h4>.xcodeprojを使っている場合</h4>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class='sh'><span class='line'>default:
-</span><span class='line'>  xcodebuild -sdk iphoneos -target *** -configuration Release build
-</span><span class='line'>
-</span><span class='line'>adhoc:
-</span><span class='line'>    <span class="k">if</span> <span class="o">[</span> -a build<span class="o">]</span>; <span class="k">then </span>rm -R build; <span class="k">fi</span>;
-</span><span class='line'>    xcodebuild -sdk iphoneos -target *** -configuration Release clean build <span class="nv">PROVISIONING_PROFILE</span><span class="o">=</span>****-****-****-****-**********
-</span><span class='line'>    xcrun -sdk iphoneos PackageApplication build/Release-iphoneos/***.app -o <span class="k">$(</span>PWD<span class="k">)</span>/build/***.ipa --embed ****.mobileprovision
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h4>.xcworkspaceを使っている場合</h4>
-
-<p>CocoaPodsとか使っている場合ですね。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class='sh'><span class='line'>default:
-</span><span class='line'>  xcodebuild -workspace ***.xcworkspace -scheme *** -configuration Release -sdk iphoneos clean build
-</span><span class='line'>
-</span><span class='line'>adhoc:
-</span><span class='line'>  <span class="k">if</span> <span class="o">[</span> -a build<span class="o">]</span>; <span class="k">then </span>rm -R build; <span class="k">fi</span>;
-</span><span class='line'>  xcodebuild -sdk iphoneos -workspace ***.xcworkspace -scheme *** -configuration Release clean build <span class="nv">CONFIGURATION_BUILD_DIR</span><span class="o">=</span><span class="k">$(</span>PWD<span class="k">)</span>/build <span class="nv">PROVISIONING_PROFILE</span><span class="o">=</span>****-****-****-****-**********
-</span><span class='line'>  xcrun -sdk iphoneos PackageApplication build/***.app -o <span class="k">$(</span>PWD<span class="k">)</span>/build/***.ipa --embed ***.mobileprovision
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>使い方</h3>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='sh'><span class='line'>make adhoc
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>を実行すると、<code>build/</code>以下に.ipaが作成されます。Xcodeでやるより簡単ですね。<br/>
-dSYMなどを手元に貯めて行きたい場合にはもうひと頑張りしてください。</p>
-
-<p>TestFlightなどのように.ipaを保持するサーバーにAPIがあるなら、<br/>
-<code>adhoc:</code>の末尾に<code>curl</code>を追加して自動的にアップロードすると更に楽になります。</p>
-
-<p>　</p>
-
-<p>なんでJenkins使ってる時に気づかなかったんだろうな〜。</p>
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-02-27T19:21:00+09:00" pubdate data-updated="true">Feb 27<span>th</span>, 2013</time></div>
-	
-</div>
-
-    <br/>
-    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/02/27/make-ipa/" data-text=".ipaをサッとつくる" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/02/27/make-ipa/" >Tweet</a>
     <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
     </article>
 

@@ -7,8 +7,8 @@
 	<meta name="author" content="ishkawa">
 
 	
-	<meta name="description" content="iOS5で動作するUIRefreshControlのライブラリをつくったときの話 先日、iOS5でも動作するUIRefreshControlと銘打ったISRefreshControlというライブラリを公開しました。
-今回はISRefreshControlでやっていることについて、 &hellip;">
+	<meta name="description" content="lsでVimのバックアップファイルを非表示にする 最近転職しました。 転職とは関係ないのですが、最近はObjective-C以外の開発もしていてVimを使う機会が増えました。
+で、Vimでコードを書くと*~というファイルがたくさん出ててきてつらい気持ちになってしまうので、 &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -53,6 +53,75 @@
 
 </header>
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2013/01/20/ls-hide-vim-backup-file/">
+		
+			lsでVimのバックアップファイルを非表示にする</a>
+	</h2>
+	<div class="entry-content">
+		<p>最近転職しました。</p>
+
+<p>転職とは関係ないのですが、最近はObjective-C以外の開発もしていてVimを使う機会が増えました。
+で、Vimでコードを書くと<code>*~</code>というファイルがたくさん出ててきてつらい気持ちになってしまうので、
+<code>ls</code>コマンドの結果から取り除く方法を調べました。</p>
+
+<p>Stack Overflowで以下の様な投稿をみつけました。<br/>
+<a href="http://stackoverflow.com/a/6011437">Can I put something in in bashrc to hide text editor (~ extension) files?</a></p>
+
+<h3>設定方法</h3>
+
+<p>どうやらMacの<code>ls</code>というのはGNUの<code>ls</code>と違うらしいので、GNUの方の<code>ls</code>をインストールします。
+その他諸々のコマンドも入り、<code>g</code>プレフィックスをつけるとそちらが使えるようです。
+<code>gls</code>は<code>ls</code>とオプションがいくらか異なり、<code>-B</code>の意味が違ったり<code>--hide</code>などが追加されていたりします。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>brew install coreutils</span></code></pre></td></tr></table></div></figure>
+
+
+<p><code>~/.zshrc</code>で以下のようなエイリアスを設定します。(bashの方は<code>~/bashrc</code>です。)</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>alias ls='/usr/local/bin/gls -B'</span></code></pre></td></tr></table></div></figure>
+
+
+<p><code>-a</code>オプションとかをつけたときにはバックアップファイルも表示したい場合、以下のようにします。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>alias ls="/usr/local/bin/gls --hide='*~'"</span></code></pre></td></tr></table></div></figure>
+
+
+<p>以上でおしまいです。</p>
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-01-20T23:23:00+09:00" pubdate data-updated="true">Jan 20<span>th</span>, 2013</time></div>
+	
+</div>
+
+    <br/>
+    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/01/20/ls-hide-vim-backup-file/" data-text="lsでVimのバックアップファイルを非表示にする" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/01/20/ls-hide-vim-backup-file/" >Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+    </article>
 
 
     <article class="post">
@@ -576,208 +645,6 @@ iOS 5.0に対応していないライブラリは導入の時点で弾かれる�
 
     <br/>
     <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2012/12/09/cocoapods/" data-text="CocoaPodsを使ってみた" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2012/12/09/cocoapods/" >Tweet</a>
-    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
-    </article>
-
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2012/11/28/ekreminder/">
-		
-			iCloudのリマインダーを利用してみる</a>
-	</h2>
-	<div class="entry-content">
-		<p>Mac版のリマインダーがどうしても邪魔になってしまう人(自分)のために、<code>remind</code>コマンドをつくりました。<br/>
-閲覧はiPadが担当するので、投稿専用です。</p>
-
-<p><a href="https://github.com/ishkawa/remind">GitHub: ishkawa/remind</a></p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>remind "項目名"</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>ソース(OS X)</h3>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="cp">#import &lt;Foundation/Foundation.h&gt;</span>
-</span><span class='line'><span class="cp">#import &lt;EventKit/EventKit.h&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">NSString</span> <span class="o">*</span><span class="k">const</span> <span class="n">kCalendarTitle</span> <span class="o">=</span> <span class="s">@&quot;Reminder&quot;</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span> <span class="n">argv</span><span class="p">[])</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="err">@</span><span class="n">autoreleasepool</span> <span class="p">{</span>
-</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="n">argc</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>            <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;usage: remind </span><span class="se">\&quot;</span><span class="s">title of task</span><span class="se">\&quot;</span><span class="s">&quot;</span><span class="p">);</span>
-</span><span class='line'>            <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
-</span><span class='line'>        <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="n">EKEventStore</span> <span class="o">*</span><span class="n">store</span> <span class="o">=</span> <span class="p">[[</span><span class="n">EKEventStore</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithAccessToEntityTypes:</span><span class="n">EKEntityMaskReminder</span><span class="p">];</span>
-</span><span class='line'>        <span class="n">EKReminder</span> <span class="o">*</span><span class="n">reminder</span> <span class="o">=</span> <span class="p">[</span><span class="n">EKReminder</span> <span class="nl">reminderWithEventStore:</span><span class="n">store</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="n">reminder</span><span class="p">.</span><span class="n">title</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSString</span> <span class="nl">stringWithCString:</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="nl">encoding:</span><span class="n">NSUTF8StringEncoding</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="k">for</span> <span class="p">(</span><span class="n">EKCalendar</span> <span class="o">*</span><span class="n">calendar</span> <span class="k">in</span> <span class="p">[</span><span class="n">store</span> <span class="nl">calendarsForEntityType:</span><span class="n">EKEntityTypeReminder</span><span class="p">])</span> <span class="p">{</span>
-</span><span class='line'>            <span class="k">if</span> <span class="p">([</span><span class="n">calendar</span><span class="p">.</span><span class="n">title</span> <span class="nl">isEqualToString:</span><span class="n">kCalendarTitle</span><span class="p">])</span> <span class="p">{</span>
-</span><span class='line'>                <span class="n">reminder</span><span class="p">.</span><span class="n">calendar</span> <span class="o">=</span> <span class="n">calendar</span><span class="p">;</span>
-</span><span class='line'>                <span class="k">break</span><span class="p">;</span>
-</span><span class='line'>            <span class="p">}</span>
-</span><span class='line'>        <span class="p">}</span>
-</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">reminder</span><span class="p">.</span><span class="n">calendar</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>            <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;could not find specified calendar </span><span class="se">\&quot;</span><span class="s">%@</span><span class="se">\&quot;</span><span class="s">.&quot;</span><span class="p">,</span> <span class="n">kCalendarTitle</span><span class="p">);</span>
-</span><span class='line'>            <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
-</span><span class='line'>        <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="n">NSError</span> <span class="o">*</span><span class="n">error</span> <span class="o">=</span> <span class="nb">nil</span><span class="p">;</span>
-</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="p">[</span><span class="n">store</span> <span class="nl">saveReminder:</span><span class="n">reminder</span> <span class="nl">commit:</span><span class="n">YES</span> <span class="nl">error:</span><span class="o">&amp;</span><span class="n">error</span><span class="p">])</span> <span class="p">{</span>
-</span><span class='line'>            <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;error: %@&quot;</span><span class="p">,</span> <span class="n">error</span><span class="p">);</span>
-</span><span class='line'>            <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
-</span><span class='line'>        <span class="p">}</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>iOSの場合</h3>
-
-<p>iOSで使う予定はないのですが、せっかくなので試してみました。<br/>
-<code>requestAccessToEntityType:completion:</code>を実行するとユーザーにアクセス許可を求めます。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="n">NSString</span> <span class="o">*</span><span class="k">const</span> <span class="n">kCalendarTitle</span> <span class="o">=</span> <span class="s">@&quot;Reminder&quot;</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">EKEventStore</span> <span class="o">*</span><span class="n">store</span> <span class="o">=</span> <span class="p">[[</span><span class="n">EKEventStore</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
-</span><span class='line'><span class="p">[</span><span class="n">store</span> <span class="nl">requestAccessToEntityType:</span><span class="n">EKEntityTypeReminder</span>
-</span><span class='line'>                      <span class="nl">completion:</span><span class="o">^</span><span class="p">(</span><span class="kt">BOOL</span> <span class="n">granted</span><span class="p">,</span> <span class="n">NSError</span> <span class="o">*</span><span class="n">error</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>                          <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">granted</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>                              <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;denied.&quot;</span><span class="p">);</span>
-</span><span class='line'>                              <span class="k">return</span><span class="p">;</span>
-</span><span class='line'>                          <span class="p">}</span>
-</span><span class='line'>                          <span class="k">if</span> <span class="p">(</span><span class="n">error</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>                              <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;error: %@&quot;</span><span class="p">,</span> <span class="n">error</span><span class="p">);</span>
-</span><span class='line'>                              <span class="k">return</span><span class="p">;</span>
-</span><span class='line'>                          <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>                          <span class="n">EKReminder</span> <span class="o">*</span><span class="n">reminder</span> <span class="o">=</span> <span class="p">[</span><span class="n">EKReminder</span> <span class="nl">reminderWithEventStore:</span><span class="n">store</span><span class="p">];</span>
-</span><span class='line'>                          <span class="n">reminder</span><span class="p">.</span><span class="n">title</span> <span class="o">=</span> <span class="s">@&quot;hoge&quot;</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>                          <span class="k">for</span> <span class="p">(</span><span class="n">EKCalendar</span> <span class="o">*</span><span class="n">calendar</span> <span class="k">in</span> <span class="p">[</span><span class="n">store</span> <span class="nl">calendarsForEntityType:</span><span class="n">EKEntityTypeReminder</span><span class="p">])</span> <span class="p">{</span>
-</span><span class='line'>                              <span class="k">if</span> <span class="p">([</span><span class="n">calendar</span><span class="p">.</span><span class="n">title</span> <span class="nl">isEqualToString:</span><span class="n">kCalendarTitle</span><span class="p">])</span> <span class="p">{</span>
-</span><span class='line'>                                  <span class="n">reminder</span><span class="p">.</span><span class="n">calendar</span> <span class="o">=</span> <span class="n">calendar</span><span class="p">;</span>
-</span><span class='line'>                                  <span class="k">break</span><span class="p">;</span>
-</span><span class='line'>                              <span class="p">}</span>
-</span><span class='line'>                          <span class="p">}</span>
-</span><span class='line'>                          <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">reminder</span><span class="p">.</span><span class="n">calendar</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>                              <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;could not find specified calendar </span><span class="se">\&quot;</span><span class="s">%@</span><span class="se">\&quot;</span><span class="s">.&quot;</span><span class="p">,</span> <span class="n">kCalendarTitle</span><span class="p">);</span>
-</span><span class='line'>                              <span class="k">return</span><span class="p">;</span>
-</span><span class='line'>                          <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>                          <span class="n">NSError</span> <span class="o">*</span><span class="n">saveError</span> <span class="o">=</span> <span class="nb">nil</span><span class="p">;</span>
-</span><span class='line'>                          <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="p">[</span><span class="n">store</span> <span class="nl">saveReminder:</span><span class="n">reminder</span> <span class="nl">commit:</span><span class="n">YES</span> <span class="nl">error:</span><span class="o">&amp;</span><span class="n">saveError</span><span class="p">])</span> <span class="p">{</span>
-</span><span class='line'>                              <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;error: %@&quot;</span><span class="p">,</span> <span class="n">error</span><span class="p">);</span>
-</span><span class='line'>                              <span class="k">return</span><span class="p">;</span>
-</span><span class='line'>                          <span class="p">}</span>
-</span><span class='line'>                      <span class="p">}];</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-11-28T19:45:00+09:00" pubdate data-updated="true">Nov 28<span>th</span>, 2012</time></div>
-	
-</div>
-
-    <br/>
-    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2012/11/28/ekreminder/" data-text="iCloudのリマインダーを利用してみる" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2012/11/28/ekreminder/" >Tweet</a>
     <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
     </article>
 

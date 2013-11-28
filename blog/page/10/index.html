@@ -7,8 +7,8 @@
 	<meta name="author" content="ishkawa">
 
 	
-	<meta name="description" content="NSStreamを利用してiRemoconと通信する 以前、Qiita HackathonでiRemoconをいただきました。 iPhoneがあらゆるリモコンになるという画期的な製品なのですが、公式アプリは4インチ非対応な上に
-iPhoneとあまりマッチしないUIとなっているので、 &hellip;">
+	<meta name="description" content="Xctoolが良い xctoolとはxcodebuildの代わりとなるツールで、いくつかの機能が追加されています。
+少し前に@azu_reさんがツイートしていたので試しました。 xctool &mdash; 良いところ Application Tests(Logic Testsじゃない方) &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -53,6 +53,81 @@ iPhoneとあまりマッチしないUIとなっているので、 &hellip;">
 
 </header>
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2013/05/22/xctool/">
+		
+			Xctoolが良い</a>
+	</h2>
+	<div class="entry-content">
+		<p><code>xctool</code>とは<code>xcodebuild</code>の代わりとなるツールで、いくつかの機能が追加されています。<br/>
+少し前に<a href="https://twitter.com/azu_re">@azu_re</a>さんがツイートしていたので試しました。</p>
+
+<p><a href="https://github.com/facebook/xctool">xctool</a></p>
+
+<p>&mdash;</p>
+
+<h3>良いところ</h3>
+
+<ul>
+<li>Application Tests(Logic Testsじゃない方)が簡単に実行できる</li>
+<li>出力が見やすい</li>
+</ul>
+
+
+<p>普段はKiwiでApplication Testsを書いているのですが、難なく実行できました。</p>
+
+<h3>インストール方法</h3>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>brew update
+</span><span class='line'>brew install xctool</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>使い方</h3>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>xctool -workspace Hoge.xcworkspace -scheme HogeTests build test ONLY_ACTIVE_ARCH=NO</span></code></pre></td></tr></table></div></figure>
+
+
+<p>自分は以下のようなMakefileに書いて<code>make test</code>できるようにしました。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>test:
+</span><span class='line'>  xctool -workspace Hoge.xcworkspace -scheme HogeTests build test ONLY_ACTIVE_ARCH=NO</span></code></pre></td></tr></table></div></figure>
+
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-05-22T22:52:00+09:00" pubdate data-updated="true">May 22<span>nd</span>, 2013</time></div>
+	
+</div>
+
+    <br/>
+    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/05/22/xctool/" data-text="xctoolが良い" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/05/22/xctool/" >Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+    </article>
 
 
     <article class="post">
@@ -501,143 +576,6 @@ TCP/IP通信を行う手段には<code>NSStream</code>を採用しました。</
 
     <br/>
     <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/04/24/ismemorycache/" data-text="ISMemoryCacheというのを書いた" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/04/24/ismemorycache/" >Tweet</a>
-    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
-    </article>
-
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2013/04/14/travis-ci-ios/">
-		
-			iOSのライブラリにTravis CIを導入する</a>
-	</h2>
-	<div class="entry-content">
-		<p>最近、Travis CIがiOSのビルドに対応したようです。<br/>
-<a href="http://about.travis-ci.org/blog/introducing-mac-ios-rubymotion-testing/">Introducing Mac, iOS and RubyMotion Testing on Travis CI</a></p>
-
-<p>なので、早速拙作のISRefreshControlに導入してみました。<br/>
-<a href="https://github.com/ishkawa/ISRefreshControl">ISRefreshControl</a></p>
-
-<p><a href="https://travis-ci.org/ishkawa/ISRefreshControl"><img src="https://travis-ci.org/ishkawa/ISRefreshControl.png?branch=master" alt="Build Status" /></a></p>
-
-<h2>導入手順</h2>
-
-<p>驚くほど簡単で、基本的には以下の2つだけで導入完了となります。</p>
-
-<ul>
-<li><code>.travis.yml</code>に<code>language: objective-c</code>と書く</li>
-<li>Travis CI上でリポジトリを選択する</li>
-</ul>
-
-
-<p>デフォルトのビルドスクリプトには<a href="https://github.com/jspahrsummers/objc-build-scripts">objc-build-scripts</a>が採用されているようです。<br/>
-もちろんカスタマイズも可能で、ISRefreshControlではMakefileを書いてそちらを使っています。</p>
-
-<p>依存関係はPodfileを書いておけば自動的に解決されます。<br/>
-CocoaPods以外の方法も<code>.travis.yml</code>にスクリプトを書けば利用できるようです。</p>
-
-<p>詳細は公式ドキュメントを参照してください。<br/>
-<a href="http://about.travis-ci.org/docs/user/languages/objective-c/">Travis CI: Building an Objective-C Project</a></p>
-
-<h3>Podfileを書く</h3>
-
-<p>依存がある場合は書きます。<br/>
-ISRefreshControlはISMethodSwizzlingとKiwiを利用しています。</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>pod 'ISMethodSwizzling', :git =&gt; 'https://github.com/ishkawa/ISMethodSwizzling.git'
-</span><span class='line'>
-</span><span class='line'>target :ISRefreshControlTests, :exclusive =&gt; true do
-</span><span class='line'>    pod 'Kiwi', '~&gt; 2.0.6'
-</span><span class='line'>end</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>Makefileを書く</h3>
-
-<p>&ldquo;<code>xcodebuild</code>でビルドしてテストを実行してね&#8221;って書きます。<br/>
-<code>GCC_PREPROCESSOR_DEFINITIONS</code>は<code>ISRefreshControl</code>固有のものです。</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>test:
-</span><span class='line'>  xcodebuild \
-</span><span class='line'>      -sdk iphonesimulator \
-</span><span class='line'>      -workspace ISRefreshControl.xcworkspace \
-</span><span class='line'>      -scheme ISRefreshControlTests \
-</span><span class='line'>      -configuration Debug \
-</span><span class='line'>      clean build \
-</span><span class='line'>      ONLY_ACTIVE_ARCH=NO \
-</span><span class='line'>      TEST_AFTER_BUILD=YES \
-</span><span class='line'>      GCC_PREPROCESSOR_DEFINITIONS="IS_TEST_FROM_COMMAND_LINE=1"</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>.travis.ymlを書く</h3>
-
-<p><code>script:</code>にmakeを利用するように書きます。<br/>
-<code>script:</code>を書かなければobjc-build-scriptsが利用されます。</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>language: objective-c
-</span><span class='line'>script: make test</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>リポジトリを選択する</h3>
-
-<p>Travis CIにGitHubアカウントでログインし、リポジトリのスイッチをオンにします。<br/>
-すると、コミットフックがTravis CIに飛んでいき、自動的にビルドされるようになります。</p>
-
-<p>&mdash;</p>
-
-<p>ビルドログを見る限り、Kiwiのテストも実行されているようです。</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>Test Suite 'ISRefreshControlSpec' finished at 2013-04-14 07:57:09 +0000.
-</span><span class='line'>Executed 25 tests, with 0 failures (0 unexpected) in 0.318 (0.327) seconds</span></code></pre></td></tr></table></div></figure>
-
-
-<p>以下のようなStatus Imageというよくあるやつも提供されています。</p>
-
-<p><a href="https://travis-ci.org/ishkawa/ISRefreshControl"><img src="https://travis-ci.org/ishkawa/ISRefreshControl.png?branch=master" alt="Build Status" /></a></p>
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-04-14T18:37:00+09:00" pubdate data-updated="true">Apr 14<span>th</span>, 2013</time></div>
-	
-</div>
-
-    <br/>
-    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/04/14/travis-ci-ios/" data-text="iOSのライブラリにTravis CIを導入する" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/04/14/travis-ci-ios/" >Tweet</a>
     <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
     </article>
 

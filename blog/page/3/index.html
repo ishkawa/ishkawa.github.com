@@ -7,8 +7,9 @@
 	<meta name="author" content="ishkawa">
 
 	
-	<meta name="description" content="YAPC::Asia 2013に参加してきました Perlの人じゃなくても楽しいと聞いて参加してきました。 Perlの世界で活躍する人たちの長めのトークを聞けるだけでもありがたいことですが、
-その後は個人的に話を聞きに行ったりできる雰囲気になっていてすごく良いなと思いました。 &hellip;">
+	<meta name="description" content="Main queueのNSManagedObjectContextの話 ふとTwitterで@cockscombさんと@k_katsumiさんとCoreDataの話になって考えました。
+これから書くことは正しさが曖昧なので、鵜呑みにしないように気をつけてください。
+なお、 &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -53,6 +54,125 @@
 
 </header>
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2013/09/26/main-queue-context/">
+		
+			Main queueのNSManagedObjectContextの話</a>
+	</h2>
+	<div class="entry-content">
+		<p>ふとTwitterで<a href="https://twitter.com/cockscomb/status/382914504637419520">@cockscomb</a>さんと<a href="https://twitter.com/k_katsumi">@k_katsumi</a>さんとCoreDataの話になって考えました。
+これから書くことは正しさが曖昧なので、鵜呑みにしないように気をつけてください。
+なお、マルチスレッドに関する話にはここでは触れません。</p>
+
+<h3>前提</h3>
+
+<p>CoreDataを使うときにNSManagedObjectContext, NSPersistentStoreCoordinator, NSManagedObjectModelを持つ、以下のようなsingletonを作ったことがあると思います。
+こういう実装をすると確かに便利なんですが、共有されたNSManagedObjectContextが色んな所からアクセスされることになって、それをどうにかしたいなと思いました。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="cp">#import &lt;Foundation/Foundation.h&gt;</span>
+</span><span class='line'><span class="cp">#import &lt;CoreData/CoreData.h&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@interface</span> <span class="nc">CDECoreDataManager</span> : <span class="nc">NSObject</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">readonly</span><span class="p">,</span> <span class="n">strong</span><span class="p">,</span> <span class="n">nonatomic</span><span class="p">)</span> <span class="n">NSManagedObjectContext</span> <span class="o">*</span><span class="n">managedObjectContext</span><span class="p">;</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">readonly</span><span class="p">,</span> <span class="n">strong</span><span class="p">,</span> <span class="n">nonatomic</span><span class="p">)</span> <span class="n">NSManagedObjectModel</span> <span class="o">*</span><span class="n">managedObjectModel</span><span class="p">;</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">readonly</span><span class="p">,</span> <span class="n">strong</span><span class="p">,</span> <span class="n">nonatomic</span><span class="p">)</span> <span class="n">NSPersistentStoreCoordinator</span> <span class="o">*</span><span class="n">persistentStoreCoordinator</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">instancetype</span><span class="p">)</span><span class="nf">sharedManager</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>共有されたNSManagedObjectContextを避けたい理由</h3>
+
+<p>UIViewControllerは基本的に他のUIViewControllerから独立していて、1つの画面のことだけを考えて実装すればいいと思います。
+共有されたNSManagedObjectContextを避けたい理由は、このような状況を壊してしまうからです。
+singletonを介しているので当然といえばその通りなんですが、そのことに気がついたときには少し驚きました。</p>
+
+<p>例を1つ挙げます。
+NSFetchedResultsControllerのデリゲートメソッドにはcontrollerDidChangeContent:というものがあります。
+このメソッドはNSFetchedResultsControllerがNSManagedObjectContextの変更を検知したときに呼ばれるものです。
+つまり、NSManagedObjectContextが共有されている場合、どこか1箇所でNSManagedObjectContextに変更を与えると、
+生存しているすべてのNSFetchedResultControllerについてこのデリゲートメソッドが呼ばれてしまうのです。
+controllerDidChangeContent:の中身が全箇所で一斉に走っても問題ないことが多いとは思いますが、
+全箇所で意図していなかった何かが一斉に走るということはできるだけ避けたいと自分は考えました。</p>
+
+<p>再現するサンプルコードも用意しました。
+Push next view controllerというボタンを何度か押してから、+ボタンを押してみてください。
+すると、すべてのNSFetchedResultsControllerについてデリゲートメソッドが呼ばれます。</p>
+
+<p><a href="https://github.com/ishkawa/CoreDataExperiment">サンプルコード</a></p>
+
+<h3>Appleが示す方法は？</h3>
+
+<p>CoreData snippetsというドキュメントの<a href="https://developer.apple.com/library/mac/documentation/DataManagement/Conceptual/CoreDataSnippets/Articles/stack.html#//apple_ref/doc/uid/TP40008283-SW2">Accessing the Core Data Stack</a>によると、
+CoreDataを利用するUIViewControllerにはNSManagedObjectContextのpropertyを用意して、既存のNSManagedObjectContextを渡す、
+もしくは(そのUIViewControllerの編集が既存のものとは分離されている場合に)新たなNSManagedObjectContextつくりなさいとのことでした。
+既存のものとして渡されるNSManagedObjectContextはApplication Delegateが作成して、最初のUIViewControllerに渡すべきだそうです。</p>
+
+<p>つまり、Appleは共有されたNSManagedObjectContextを利用すべきと言うと同時に、編集が分離されている場合は新しいのNSManagedObjectContextもつくっていいとも言っています。
+これらに加えて以下のようにも言っています。</p>
+
+<ul>
+<li>Application DelegateのようなグローバルなオブジェクトからNSManagedObjectContextを取得するべきではない</li>
+<li>各UIViewController自身のためだけのNSManagedObjectContextをつくるべきではない</li>
+</ul>
+
+
+<p>そうなると、どちらも行き過ぎてはよくないということなんでしょうか。何がよりよいのかわからなくなってきます。</p>
+
+<h3>実際みんなどうやってるの？</h3>
+
+<p>はじめに書いた方法のような感じで、main queueのNSManagedObjectContextは1つでやっているようです。
+自分もこの方法でやっていましたが、先に紹介した理由もあってモヤモヤしています。</p>
+
+<h3>UIViewController毎にNSManagedObjectContextをつくるべきではない理由は？</h3>
+
+<p>意見募集中です。Twitterやメールなどで教えていただけると幸いです。</p>
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-09-26T02:25:00+09:00" pubdate data-updated="true">Sep 26<span>th</span>, 2013</time></div>
+	
+</div>
+
+    <br/>
+    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/09/26/main-queue-context/" data-text="main queueのNSManagedObjectContextの話" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/09/26/main-queue-context/" >Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+    </article>
 
 
     <article class="post">
@@ -148,63 +268,6 @@ SenTestingKitベースになったKIFも分割実行できるので、UIテス�
 
     <br/>
     <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/09/19/xcode-5-test/" data-text="Xcode 5でテストを分割実行する" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/09/19/xcode-5-test/" >Tweet</a>
-    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
-    </article>
-
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2013/09/15/hhk/">
-		
-			HHK無刻印モデルを3週間使った感想</a>
-	</h2>
-	<div class="entry-content">
-		<p>最近<a href="http://www.pfu.fujitsu.com/hhkeyboard/lineup/pdkb400bn.html">HHK Pro 2の無刻印モデル</a>を使い始めました。<br/>
-<a href="http://twitter.com/soh335">斜に構えおじさん</a>に中2とか言われてバカにされたりしました。</p>
-
-<blockquote class="twitter-tweet"><p>無刻印 メリット 何</p>&mdash; soh335 (@soh335) <a href="https://twitter.com/soh335/statuses/371610150659825664">August 25, 2013</a></blockquote>
-
-
-<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
-
-
-<p>　</p>
-
-<p>3週間くらい使って結構慣れてきたので感想を書きます。</p>
-
-<ul>
-<li>意外とタッチタイピングができていなかったことに気づいた</li>
-<li>タッチタイピングができるようになって視線の移動がかなり減った</li>
-<li>キーを入れ替えるのに抵抗がなくなった</li>
-<li>ｯﾀｰﾝってやるの最高に気持ちいい</li>
-</ul>
-
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-09-15T10:51:00+09:00" pubdate data-updated="true">Sep 15<span>th</span>, 2013</time></div>
-	
-</div>
-
-    <br/>
-    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/09/15/hhk/" data-text="HHK無刻印モデルを3週間使った感想" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/09/15/hhk/" >Tweet</a>
     <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
     </article>
 
