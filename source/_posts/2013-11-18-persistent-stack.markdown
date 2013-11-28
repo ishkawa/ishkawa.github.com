@@ -1,12 +1,13 @@
 ---
 layout: post
-title: "ISPersistentStackというもの書いた"
+title: "ISPersistentStackというCoreDataのヘルパーを書いた"
 date: 2013-11-18 01:23
 comments: true
 categories: 
 ---
 
 最近iOS 4を相手にする機会がなくなったので、いつも使うCoreDataのヘルパーを共通化しようと思い、ついでに公開することにしました。
+あまり他人が使うことを想定したつくりになっていないので、そのまま使おうとするとちょっと苦労するかもしれません。
 
 [ISPersistentStack](https://github.com/ishkawa/ISPersistentStack)
 
@@ -44,5 +45,5 @@ if (!persistentStack.isCompatibleWithCurrentStore) {
 
 ### 感想
 
-エントリを書いていて、CoreDataのオレオレ便利ヘルパーは他人にとっても使いやすい形にするのは難しいなあと思いました。
+CoreDataのオレオレ便利ヘルパーは他人にとっても使いやすい形にするのは難しいなあと思いました。
 
