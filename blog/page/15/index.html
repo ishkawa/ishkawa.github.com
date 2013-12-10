@@ -7,10 +7,8 @@
 	<meta name="author" content="ishkawa">
 
 	
-	<meta name="description" content="ターミナルにTwitterのUser Streamを流す また雑なプログラムを書いて公開しました。
-https://github.com/ishkawa/ttw ターミナルにTwitterのUser Streamを流せます。 1
-ttw stream ツイートの投稿もできます。 1
-ttw &hellip;">
+	<meta name="description" content="ミニマルなPomodoroタイマーを書きました 仕事に集中する方法は色々あると思いますが、その1つにPomodoroがあります。 25分仕事をして5分休憩するというのを4セットやって、30分休むというものです。
+作業を何セットでできるか見積もってやるらしいのですが、 &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -55,6 +53,73 @@ ttw &hellip;">
 
 </header>
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2013/02/19/menubar-pomodoro/">
+		
+			ミニマルなPomodoroタイマーを書きました</a>
+	</h2>
+	<div class="entry-content">
+		<p>仕事に集中する方法は色々あると思いますが、その1つにPomodoroがあります。</p>
+
+<p>25分仕事をして5分休憩するというのを4セットやって、30分休むというものです。<br/>
+作業を何セットでできるか見積もってやるらしいのですが、方法自体に縛られたくなかったので、<br/>
+単純に集中とダラダラを区切る目的でやってみました。</p>
+
+<p>始めるために210円でタイマーアプリを買ったのですが、自分に合わなかったのでつくりました。<br/>
+Mountain Lion以降で動作します。</p>
+
+<p><a href="/images/2013-02-19/PMDR.dmg">PMDR.dmg</a></p>
+
+<p>　</p>
+
+<h3>機能</h3>
+
+<p>以下のスクリーンショットの通り、Start, Stop, Quitしかありません。</p>
+
+<p><img src="/images/2013-02-19/menu.png"></p>
+
+<p>25分経つと以下のように通知センターに通知してくれます。</p>
+
+<p><img src="/images/2013-02-19/notification.png"></p>
+
+<p>その後5分経つとまた通知してくれ、また25分数え始めます。<br/>
+これがずっと続きます。</p>
+
+<p>&mdash;</p>
+
+<p>ソースはこちらにおいてあります。<br/>
+<a href="https://github.com/ishkawa/PMDR">https://github.com/ishkawa/PMDR</a></p>
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-02-19T22:48:00+09:00" pubdate data-updated="true">Feb 19<span>th</span>, 2013</time></div>
+	
+</div>
+
+    <br/>
+    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/02/19/menubar-pomodoro/" data-text="ミニマルなPomodoroタイマーを書きました" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/02/19/menubar-pomodoro/" >Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+    </article>
 
 
     <article class="post">
@@ -208,65 +273,6 @@ GitHubのScott Chacon氏にも&#8221;Great Idea&#8221;と褒めていただき�
 
     <br/>
     <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/02/05/qiita-hackathon/" data-text="Qiita Hackathonに参加しました" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/02/05/qiita-hackathon/" >Tweet</a>
-    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
-    </article>
-
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2013/01/31/notification-center-helper/">
-		
-			ISNotificationHelperというのを書いた</a>
-	</h2>
-	<div class="entry-content">
-		<p>Mountain LionからOSXにも通知センターが導入されました。</p>
-
-<p>スクリプトの実行完了時とかに通知したいと思って使い方を調べたのですが、
-どうやらCommand Line ToolからはこのAPIを叩けないようでした。
-なので、Cocoaアプリ(ISNotificationHelper)を常駐させて、Command Line Toolから
-<code>NSDistributedNotification</code>を投げることにしました。</p>
-
-<p><a href="https://github.com/ishkawa/ISNotificationHelper">ISNotificationHelper</a></p>
-
-<h3>使い方</h3>
-
-<p>ISNotificationHelper.appを起動しておいて、<code>ISNotification</code>という名前の
-<code>NSDistributedNotification</code>を投げると通知センターに表示されます。
-<code>userInfo</code>に<code>title</code>, <code>subtitle</code>, <code>informativeText</code>を入れると表示内容を設定出来ます。</p>
-
-<p><code>isnotify</code>というツールも同梱していて、以下のコマンドで<code>NSDistributedNotification</code>を投げられます。</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>isnotify -t title -s subtitle -i informativeText</span></code></pre></td></tr></table></div></figure>
-
-
-<p>全体的に結構雑な作りになっているので、ちゃんと作ってやるぜって方は完成したらおしえてください。</p>
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-01-31T21:13:00+09:00" pubdate data-updated="true">Jan 31<span>st</span>, 2013</time></div>
-	
-</div>
-
-    <br/>
-    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/01/31/notification-center-helper/" data-text="ISNotificationHelperというのを書いた" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/01/31/notification-center-helper/" >Tweet</a>
     <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
     </article>
 

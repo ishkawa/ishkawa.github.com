@@ -7,8 +7,7 @@
 	<meta name="author" content="ishkawa">
 
 	
-	<meta name="description" content="iOSのライブラリにTravis CIを導入する 最近、Travis CIがiOSのビルドに対応したようです。
-Introducing Mac, iOS and RubyMotion Testing on Travis CI なので、早速拙作のISRefreshControlに導入してみました &hellip;">
+	<meta name="description" content="ISMemoryCacheというのを書いた @interface ISMemoryCache : NSMutableDictionary+ (ISMemoryCache *)sharedCache;- (void)removeUnretainedObjects;@endってのを書いた。& &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -53,6 +52,187 @@ Introducing Mac, iOS and RubyMotion Testing on Travis CI なので、早速拙�
 
 </header>
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2013/04/24/ismemorycache/">
+		
+			ISMemoryCacheというのを書いた</a>
+	</h2>
+	<div class="entry-content">
+		<blockquote class="twitter-tweet" lang="ja"><p>@<a href="https://twitter.com/interface">interface</a> ISMemoryCache : NSMutableDictionary+ (ISMemoryCache *)sharedCache;- (void)removeUnretainedObjects;@<a href="https://twitter.com/end">end</a>ってのを書いた。</p>&mdash; ishkawaさん (@_ishkawa) <a href="https://twitter.com/_ishkawa/status/326752483705761792">2013年4月23日</a></blockquote>
+
+
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+
+<p>　</p>
+
+<p>メモリキャッシュとありますが、ヘッダから分かる通り<code>NSMutableDictioary</code>です。<br/>
+<code>NSCache</code>よりしぶといメモリキャッシュが欲しかったので、頭の体操をしながらつくりました。</p>
+
+<p><a href="https://github.com/ishkawa/ISMemoryCache">ISMemoryCache</a></p>
+
+<p>&mdash;</p>
+
+<h3>特徴</h3>
+
+<p>LRU的な実装ではなく、参照カウントの有無で破棄するオブジェクトを決めます。<br/>
+どこかから参照がある限りは生き残り続けるしぶといメモリキャッシュです。</p>
+
+<ul>
+<li><code>removeUnretainedObjects</code>を呼ぶと参照がないオブジェクトを調べて破棄する。</li>
+<li><code>UIApplicationDidReceiveMemoryWarningNotification</code>で<code>removeUnretainedObjects</code>を実行。</li>
+</ul>
+
+
+<p>具体的には、以下の実行後に<code>[cache objectForKey:@"key"]</code>は<code>NSObject</code>を返しますが、</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="n">NSObject</span> <span class="o">*</span><span class="n">retainedObject</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSObject</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'><span class="err">@</span><span class="n">autoreleasepool</span> <span class="p">{</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">cache</span> <span class="nl">setObject:</span><span class="n">retainedObject</span> <span class="nl">forKey:</span><span class="s">@&quot;key&quot;</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="p">[</span><span class="n">cache</span> <span class="n">removeUnretainedObjects</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>以下の実行後には<code>nil</code>を返すという感じです。　</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="err">@</span><span class="n">autoreleasepool</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">NSObject</span> <span class="o">*</span><span class="n">unretainedObject</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSObject</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">cache</span> <span class="nl">setObject:</span><span class="n">unretainedObject</span> <span class="nl">forKey:</span><span class="s">@&quot;key&quot;</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="p">[</span><span class="n">cache</span> <span class="n">removeUnretainedObjects</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>使い方</h3>
+
+<p>保持</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="p">[[</span><span class="n">ISMemoryCache</span> <span class="n">sharedCache</span><span class="p">]</span> <span class="nl">setObject:</span><span class="n">object</span> <span class="nl">forKey:</span><span class="s">@&quot;key&quot;</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>読み出し</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="p">[[</span><span class="n">ISMemoryCache</span> <span class="n">sharedCache</span><span class="p">]</span> <span class="nl">objectForKey:</span><span class="s">@&quot;key&quot;</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>使われていないオブジェクトを破棄</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="p">[[</span><span class="n">ISMemoryCache</span> <span class="n">sharedCache</span><span class="p">]</span> <span class="n">removeUnretainedObjects</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>参照があるかどうかの判定方法</h3>
+
+<p>自分の強参照を外しても生き残っていれば、他でも使われているということです。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">removeUnretainedObjects</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">for</span> <span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="n">key</span> <span class="k">in</span> <span class="p">[</span><span class="n">self</span> <span class="n">allKeys</span><span class="p">])</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">__weak</span> <span class="kt">id</span> <span class="n">wobject</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="err">@</span><span class="n">autoreleasepool</span> <span class="p">{</span>
+</span><span class='line'>            <span class="n">wobject</span> <span class="o">=</span> <span class="p">[</span><span class="n">self</span> <span class="nl">objectForKey:</span><span class="n">key</span><span class="p">];</span>
+</span><span class='line'>            <span class="p">[</span><span class="n">self</span> <span class="nl">removeObjectForKey:</span><span class="n">key</span><span class="p">];</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="n">wobject</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>            <span class="p">[</span><span class="n">self</span> <span class="nl">setObject:</span><span class="n">wobject</span> <span class="nl">forKey:</span><span class="n">key</span><span class="p">];</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>NSDictionaryのサブクラス化</h3>
+
+<p><code>NSDictionary</code>はクラスクラスタなのでサブクラス化の作法がちょっと変わっています。<br/>
+今回は面倒だったので内部に<code>NSMutableDictionary</code>を持って適宜プロキシする感じにしました。<br/>
+適宜というのは<code>NSDictionary</code>のドキュメントに書かれている以下のメソッドが呼ばれた時です。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="c1">// NSDictionary</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nf">initWithObjects:</span><span class="p">(</span><span class="n">NSArray</span> <span class="o">*</span><span class="p">)</span><span class="nv">objects</span> <span class="nf">forKeys:</span><span class="p">(</span><span class="n">NSArray</span> <span class="o">*</span><span class="p">)</span><span class="nv">keys</span><span class="p">;</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="n">NSUInteger</span><span class="p">)</span><span class="nf">count</span><span class="p">;</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nf">objectForKey:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">key</span><span class="p">;</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="n">NSEnumerator</span> <span class="o">*</span><span class="p">)</span><span class="nf">keyEnumerator</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// NSMutableDictionary</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">setObject:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">object</span> <span class="nf">forKey:</span><span class="p">(</span><span class="kt">id</span> <span class="o">&lt;</span><span class="n">NSCopying</span><span class="o">&gt;</span><span class="p">)</span><span class="nv">key</span><span class="p">;</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">removeObjectForKey:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">key</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-04-24T04:32:00+09:00" pubdate data-updated="true">Apr 24<span>th</span>, 2013</time></div>
+	
+</div>
+
+    <br/>
+    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/04/24/ismemorycache/" data-text="ISMemoryCacheというのを書いた" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/04/24/ismemorycache/" >Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+    </article>
 
 
     <article class="post">
@@ -336,224 +516,6 @@ mochaについては以下のページが詳しいです。<br/>
 
     <br/>
     <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/03/31/supertest/" data-text="supertestでNode.jsのテストを始めました" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/03/31/supertest/" >Tweet</a>
-    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
-    </article>
-
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2013/03/30/mockifier-with-kiwi/">
-		
-			ISHTTPOperationMockifierをKiwiで使う</a>
-	</h2>
-	<div class="entry-content">
-		<p>最近、OCUnit+OCMockからKiwiに乗り換えました。</p>
-
-<p>Kiwiを使えばあらゆる業から逃れられます。<br/>
-つまり、解脱です。</p>
-
-<p>そんなKiwiで<code>ISHTTPOperationMockifier</code>を使ってみました。</p>
-
-<h3>ISViewController.h</h3>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">@interface</span> <span class="nc">ISViewController</span> : <span class="nc">UIViewController</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">refresh</span><span class="p">;</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">insertObjectsWithData:</span><span class="p">(</span><span class="n">NSData</span> <span class="o">*</span><span class="p">)</span><span class="nv">data</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>ISViewController.m</h3>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">@implementation</span> <span class="nc">ISViewController</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">refresh</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="n">NSURL</span> <span class="o">*</span><span class="n">URL</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSURL</span> <span class="nl">URLWithString:</span><span class="s">@&quot;http://date.jsontest.com&quot;</span><span class="p">];</span>
-</span><span class='line'>    <span class="n">NSURLRequest</span> <span class="o">*</span><span class="n">request</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSURLRequest</span> <span class="nl">requestWithURL:</span><span class="n">URL</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">ISHTTPOperation</span> <span class="nl">sendRequest:</span><span class="n">request</span> <span class="nl">handler:</span><span class="o">^</span><span class="p">(</span><span class="n">NSHTTPURLResponse</span> <span class="o">*</span><span class="n">response</span><span class="p">,</span> <span class="kt">id</span> <span class="n">object</span><span class="p">,</span> <span class="n">NSError</span> <span class="o">*</span><span class="n">error</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="n">error</span> <span class="o">||</span> <span class="n">response</span><span class="p">.</span><span class="n">statusCode</span> <span class="o">!=</span> <span class="mi">200</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>            <span class="k">return</span><span class="p">;</span>
-</span><span class='line'>        <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="p">[</span><span class="n">self</span> <span class="nl">insertObjectsWithData:</span><span class="n">object</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">}];</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">insertObjectsWithData:</span><span class="p">(</span><span class="n">NSData</span> <span class="o">*</span><span class="p">)</span><span class="nv">data</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="c1">// NSManagedObjectをつくったりする</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>ISViewControllerSpec.m</h3>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-<span class='line-number'>47</span>
-<span class='line-number'>48</span>
-<span class='line-number'>49</span>
-<span class='line-number'>50</span>
-<span class='line-number'>51</span>
-<span class='line-number'>52</span>
-</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="cp">#import &quot;Kiwi.h&quot;</span>
-</span><span class='line'><span class="cp">#import &quot;ISViewController.h&quot;</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">SPEC_BEGIN</span><span class="p">(</span><span class="n">ISViewControllerSpec</span><span class="p">)</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">describe</span><span class="p">(</span><span class="s">@&quot;ISViewController&quot;</span><span class="p">,</span> <span class="o">^</span><span class="p">{</span>
-</span><span class='line'>    <span class="n">__block</span> <span class="n">ISViewController</span> <span class="o">*</span><span class="n">viewController</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">beforeEach</span><span class="p">(</span><span class="o">^</span><span class="p">{</span>
-</span><span class='line'>        <span class="n">viewController</span> <span class="o">=</span> <span class="p">[[</span><span class="n">ISViewController</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">});</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">context</span><span class="p">(</span><span class="s">@&quot;when succeeded refreshing&quot;</span><span class="p">,</span> <span class="o">^</span><span class="p">{</span>
-</span><span class='line'>        <span class="n">ISHTTPOperationMockifier</span> <span class="o">*</span><span class="n">mockifier</span> <span class="o">=</span> <span class="p">[[</span><span class="n">ISHTTPOperationMockifier</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
-</span><span class='line'>        <span class="n">mockifier</span><span class="p">.</span><span class="n">statusCode</span> <span class="o">=</span> <span class="mi">200</span><span class="p">;</span>
-</span><span class='line'>        <span class="n">mockifier</span><span class="p">.</span><span class="n">object</span> <span class="o">=</span> <span class="p">[</span><span class="s">@&quot;data&quot;</span> <span class="nl">dataUsingEncoding:</span><span class="n">NSUTF8StringEncoding</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="n">beforeEach</span><span class="p">(</span><span class="o">^</span><span class="p">{</span>
-</span><span class='line'>            <span class="p">[</span><span class="n">mockifier</span> <span class="n">mockify</span><span class="p">];</span>
-</span><span class='line'>        <span class="p">});</span>
-</span><span class='line'>        <span class="n">afterEach</span><span class="p">(</span><span class="o">^</span><span class="p">{</span>
-</span><span class='line'>            <span class="p">[</span><span class="n">mockifier</span> <span class="n">unmockify</span><span class="p">];</span>
-</span><span class='line'>        <span class="p">});</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="n">it</span><span class="p">(</span><span class="s">@&quot;invokes insertObjectsWithData&quot;</span><span class="p">,</span> <span class="o">^</span><span class="p">{</span>
-</span><span class='line'>            <span class="p">[[</span><span class="n">viewController</span> <span class="n">shouldEventually</span><span class="p">]</span> <span class="nl">receive:</span><span class="k">@selector</span><span class="p">(</span><span class="nl">insertObjectsWithData:</span><span class="p">)];</span>
-</span><span class='line'>            <span class="p">[</span><span class="n">viewController</span> <span class="n">refresh</span><span class="p">];</span>
-</span><span class='line'>        <span class="p">});</span>
-</span><span class='line'>    <span class="p">});</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">context</span><span class="p">(</span><span class="s">@&quot;when failed refreshing&quot;</span><span class="p">,</span> <span class="o">^</span><span class="p">{</span>
-</span><span class='line'>        <span class="n">ISHTTPOperationMockifier</span> <span class="o">*</span><span class="n">mockifier</span> <span class="o">=</span> <span class="p">[[</span><span class="n">ISHTTPOperationMockifier</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
-</span><span class='line'>        <span class="n">mockifier</span><span class="p">.</span><span class="n">error</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSError</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="n">beforeEach</span><span class="p">(</span><span class="o">^</span><span class="p">{</span>
-</span><span class='line'>            <span class="p">[</span><span class="n">mockifier</span> <span class="n">mockify</span><span class="p">];</span>
-</span><span class='line'>        <span class="p">});</span>
-</span><span class='line'>        <span class="n">afterEach</span><span class="p">(</span><span class="o">^</span><span class="p">{</span>
-</span><span class='line'>            <span class="p">[</span><span class="n">mockifier</span> <span class="n">unmockify</span><span class="p">];</span>
-</span><span class='line'>        <span class="p">});</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="n">it</span><span class="p">(</span><span class="s">@&quot;does not invoke insertObjectsWithData&quot;</span><span class="p">,</span> <span class="o">^</span><span class="p">{</span>
-</span><span class='line'>            <span class="p">[[</span><span class="n">viewController</span> <span class="n">shouldNot</span><span class="p">]</span> <span class="nl">receive:</span><span class="k">@selector</span><span class="p">(</span><span class="nl">insertObjectsWithData:</span><span class="p">)];</span>
-</span><span class='line'>            <span class="p">[</span><span class="n">viewController</span> <span class="n">refresh</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>            <span class="c1">// wait a moment</span>
-</span><span class='line'>            <span class="p">[[</span><span class="n">NSRunLoop</span> <span class="n">currentRunLoop</span><span class="p">]</span> <span class="nl">runUntilDate:</span><span class="p">[</span><span class="n">NSDate</span> <span class="nl">dateWithTimeIntervalSinceNow:</span><span class="mf">0.1</span><span class="p">]];</span>
-</span><span class='line'>        <span class="p">});</span>
-</span><span class='line'>    <span class="p">});</span>
-</span><span class='line'><span class="p">});</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">SPEC_END</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-03-30T12:34:00+09:00" pubdate data-updated="true">Mar 30<span>th</span>, 2013</time></div>
-	
-</div>
-
-    <br/>
-    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/03/30/mockifier-with-kiwi/" data-text="ISHTTPOperationMockifierをKiwiで使う" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/03/30/mockifier-with-kiwi/" >Tweet</a>
     <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
     </article>
 

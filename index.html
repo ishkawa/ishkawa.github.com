@@ -7,8 +7,8 @@
 	<meta name="author" content="ishkawa">
 
 	
-	<meta name="description" content="Travis CIがXcode 5に対応してからのあれこれ Xcode 5のxcodebuildでテストを実行するにはxcodebuild testを使うといいみたいです。
-man xcodebuildのbuildactionの説明に以下のように書かれているので-scheme &hellip;">
+	<meta name="description" content="Xcodebuildのログをxcprettyで整える Xcode 5になってからxcodebuildも進化していて、Xcode 4までネックになっていたApplication Testsの実行も簡単になりました。
+そういうわけで自分にとってのxctoolの必要性は薄まり、 &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -53,6 +53,133 @@ man xcodebuildのbuildactionの説明に以下のように書かれているの�
 
 </header>
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2013/12/11/xcpretty/">
+		
+			Xcodebuildのログをxcprettyで整える</a>
+	</h2>
+	<div class="entry-content">
+		<p>Xcode 5になってから<code>xcodebuild</code>も進化していて、Xcode 4までネックになっていたApplication Testsの実行も簡単になりました。
+そういうわけで自分にとっての<code>xctool</code>の必要性は薄まり、あとはログさえキレイになってくれればいいのになあと思っていたのですが、そんなときに<code>xcpretty</code>が登場しました。</p>
+
+<p><a href="https://github.com/mneorr/XCPretty">mneorr/XCPretty</a></p>
+
+<h3>xctoolとの違い</h3>
+
+<p><code>xctool</code>は<code>xcodebuild</code>を置き換えることを目的としていましたが、<code>xcpretty</code>は<code>xcodebuild</code>と共存してログの整形のみを行います。
+<code>xctool</code>の場合、&#8221;<code>xcodebuild</code>では動くけど<code>xctool</code>では動かない&#8221;という状況に遭遇することがありますが、
+<code>xcpretty</code>はビルドやテストの実行自体に<code>xcodebuild</code>を利用するので、既に<code>xcodebuild</code>で進んでいるプロジェクトでは簡単に利用を始めることができます。</p>
+
+<h3>インストール方法</h3>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>gem install xcpretty</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>使い方</h3>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>xcodebuild | xcpretty -c</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>実行例</h3>
+
+<p>例として<a href="https://github.com/ishkawa/ISHTTPOperation">ISHTTPOperation</a>のユニットテストの結果を<code>xcpretty</code>で出力します。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>xcodebuild clean test -sdk iphonesimulator -scheme ISHTTPOperation -configuration Debug -destination "name=iPhone Retina (3.5-inch),OS=7.0" | xcpretty -c</span></code></pre></td></tr></table></div></figure>
+
+
+<p>結果は以下のようになります。テスト結果として必要十分な情報量だと思います。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>✓ Cleaning ISHTTPOperation/ISHTTPOperation [Debug]
+</span><span class='line'>✓ Building ISHTTPOperation/ISHTTPOperation [Debug]
+</span><span class='line'>✓ Compiling ISHTTPOperationQueue.m
+</span><span class='line'>✓ Compiling NSOperationQueue+HTTP.m
+</span><span class='line'>✓ Compiling ISHTTPOperation.m
+</span><span class='line'>✓ Building library libISHTTPOperation.a
+</span><span class='line'>✓ Building ISHTTPOperation/ISHTTPOperationTests [Debug]
+</span><span class='line'>✓ Running script 'Run Script'
+</span><span class='line'>Test Suite '/Users/ishkawa/Library/Developer/Xcode/DerivedData/ISHTTPOperation-bmnqbihsbwzsicguaxfhmfoznrvq/Build/Products/Debug-iphonesimulator/ISHTTPOperationTests.octest(Tests)' started
+</span><span class='line'>Test Suite 'ISHTTPOperationQueueTests' started
+</span><span class='line'>✓  ISHTTPOperationQueueTests testCancelOperationsWithHTTPMethod (0.016 seconds)
+</span><span class='line'>✓  ISHTTPOperationQueueTests testCancelOperationsWithHost (0.001 seconds)
+</span><span class='line'>✓  ISHTTPOperationQueueTests testCancelOperationsWithPath (0.001 seconds)
+</span><span class='line'>✓  ISHTTPOperationQueueTests testCancelOperationsWithURL (0.000 seconds)
+</span><span class='line'>✓  ISHTTPOperationQueueTests testDefaultQueue (0.002 seconds)
+</span><span class='line'>Test Suite 'ISHTTPOperationTests' started
+</span><span class='line'>✓  ISHTTPOperationTests testCancel (0.100 seconds)
+</span><span class='line'>✓  ISHTTPOperationTests testCancelAsynchronously (0.000 seconds)
+</span><span class='line'>✓  ISHTTPOperationTests testConcurrencyType (0.000 seconds)
+</span><span class='line'>✓  ISHTTPOperationTests testDeallocOnCancelAfterStart (0.100 seconds)
+</span><span class='line'>✓  ISHTTPOperationTests testDeallocOnCancelBeforeStart (0.100 seconds)
+</span><span class='line'>✓  ISHTTPOperationTests testDesignatedInitializer (0.000 seconds)
+</span><span class='line'>✓  ISHTTPOperationTests testErrorConnection (0.101 seconds)
+</span><span class='line'>✓  ISHTTPOperationTests testNormalConnection (0.202 seconds)
+</span><span class='line'>✓  ISHTTPOperationTests testQueueing (0.000 seconds)
+</span><span class='line'>Test Suite 'NSOperationQueueHTTPTests' started
+</span><span class='line'>✓  NSOperationQueueHTTPTests testDefaultHTTPQueue (0.000 seconds)</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-12-11T00:16:00+09:00" pubdate data-updated="true">Dec 11<span>th</span>, 2013</time></div>
+	
+</div>
+
+    <br/>
+    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/12/11/xcpretty/" data-text="xcodebuildのログをxcprettyで整える" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/12/11/xcpretty/" >Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+    </article>
 
 
     <article class="post">
@@ -263,93 +390,6 @@ BOOL *を渡すアイディアはNSArrayのenumerateObjectsUsingBlock:を真似�
 
     <br/>
     <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/11/22/wait-async-task/" data-text="単体テストの実行時に非同期処理を待つ" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/11/22/wait-async-task/" >Tweet</a>
-    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
-    </article>
-
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2013/11/18/persistent-stack/">
-		
-			ISPersistentStackというCoreDataのヘルパーを書いた</a>
-	</h2>
-	<div class="entry-content">
-		<p>最近iOS 4を相手にする機会がなくなったので、いつも使うCoreDataのヘルパーを共通化しようと思い、ついでに公開することにしました。
-あまり他人が使うことを想定したつくりになっていないので、そのまま使おうとするとちょっと苦労するかもしれません。</p>
-
-<p><a href="https://github.com/ishkawa/ISPersistentStack">ISPersistentStack</a></p>
-
-<p>いままで使っていたものをそのままコピペすればOKかと思っていたんですが、できるだけ幅広い構造に対応できるようにするには
-いくらか抽象化が必要となりました。サブクラスを作ってしまえば&#8221;一般的な&#8221;ケースには対応できると思うのですが、
-少し凝ったつくりには対応できない場合があると思います。(そういう理由もあって、CocoaPodsには送らない予定です。)</p>
-
-<h3>主な機能</h3>
-
-<ul>
-<li>メインのNSManagedObjectContextの提供</li>
-<li>永続ストアとNSManagedObjectModelの互換性のチェック</li>
-<li>永続ストアの廃棄</li>
-</ul>
-
-
-<p>Web APIのクライアントのアプリの場合、消してはいけないデータはあまりないので、自分はよく以下のようにして使います。
-このようにすると、永続ストアのモデルとバンドルされているモデルが一致しない場合にデータベースを捨ててくれます。
-捨ててはいけないデータがある場合にも<code>#ifdef DEBUG</code>を利用すればデバッグに役立つかもしれません。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="n">ISPersistentStack</span> <span class="o">*</span><span class="n">persistentStack</span> <span class="o">=</span> <span class="p">[</span><span class="n">ISPersistentStack</span> <span class="n">sharedStack</span><span class="p">];</span>
-</span><span class='line'><span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">persistentStack</span><span class="p">.</span><span class="n">isCompatibleWithCurrentStore</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">persistentStack</span> <span class="n">deleteCurrentStore</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>想定しているケース</h3>
-
-<ul>
-<li>単一のNSPersistentStore</li>
-<li>単一のNSManagedObjectModel(複数バージョンは想定内)</li>
-<li>複数のNSManagedObjectContext(ただし、main queueのcontextはISPersistentStackが提供するものを利用)</li>
-</ul>
-
-
-<p>デフォルトで使用するNSPersistentStoreはドキュメント以下の<code>Model.sqlite</code>となっていて、
-モデルはメインバンドル以下の<code>Model.momd</code>となっています。
-もしここから外れる場合にはISPersistentStackのサブクラスを作成してstoreURL, modelURL, sharedStackをオーバーライドする必要があります。
-その他にもmanagedObjectModel, persistentStoreCoordinator, managedObjectContextをオーバーライドすることもできます。</p>
-
-<h3>感想</h3>
-
-<p>CoreDataのオレオレ便利ヘルパーは他人にとっても使いやすい形にするのは難しいなあと思いました。</p>
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-11-18T01:23:00+09:00" pubdate data-updated="true">Nov 18<span>th</span>, 2013</time></div>
-	
-</div>
-
-    <br/>
-    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/11/18/persistent-stack/" data-text="ISPersistentStackというCoreDataのヘルパーを書いた" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/11/18/persistent-stack/" >Tweet</a>
     <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
     </article>
 

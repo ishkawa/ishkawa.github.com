@@ -4,7 +4,7 @@
   <title><![CDATA[blog.ishkawa.org]]></title>
   <link href="http://blog.ishkawa.org/atom.xml" rel="self"/>
   <link href="http://blog.ishkawa.org/"/>
-  <updated>2013-11-28T21:11:23+09:00</updated>
+  <updated>2013-12-11T00:53:03+09:00</updated>
   <id>http://blog.ishkawa.org/</id>
   <author>
     <name><![CDATA[ishkawa]]></name>
@@ -12,6 +12,104 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[xcodebuildのログをxcprettyで整える]]></title>
+    <link href="http://blog.ishkawa.org/blog/2013/12/11/xcpretty/"/>
+    <updated>2013-12-11T00:16:00+09:00</updated>
+    <id>http://blog.ishkawa.org/blog/2013/12/11/xcpretty</id>
+    <content type="html"><![CDATA[<p>Xcode 5になってから<code>xcodebuild</code>も進化していて、Xcode 4までネックになっていたApplication Testsの実行も簡単になりました。
+そういうわけで自分にとっての<code>xctool</code>の必要性は薄まり、あとはログさえキレイになってくれればいいのになあと思っていたのですが、そんなときに<code>xcpretty</code>が登場しました。</p>
+
+<p><a href="https://github.com/mneorr/XCPretty">mneorr/XCPretty</a></p>
+
+<h3>xctoolとの違い</h3>
+
+<p><code>xctool</code>は<code>xcodebuild</code>を置き換えることを目的としていましたが、<code>xcpretty</code>は<code>xcodebuild</code>と共存してログの整形のみを行います。
+<code>xctool</code>の場合、&#8221;<code>xcodebuild</code>では動くけど<code>xctool</code>では動かない&#8221;という状況に遭遇することがありますが、
+<code>xcpretty</code>はビルドやテストの実行自体に<code>xcodebuild</code>を利用するので、既に<code>xcodebuild</code>で進んでいるプロジェクトでは簡単に利用を始めることができます。</p>
+
+<h3>インストール方法</h3>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>gem install xcpretty</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>使い方</h3>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>xcodebuild | xcpretty -c</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>実行例</h3>
+
+<p>例として<a href="https://github.com/ishkawa/ISHTTPOperation">ISHTTPOperation</a>のユニットテストの結果を<code>xcpretty</code>で出力します。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>xcodebuild clean test -sdk iphonesimulator -scheme ISHTTPOperation -configuration Debug -destination "name=iPhone Retina (3.5-inch),OS=7.0" | xcpretty -c</span></code></pre></td></tr></table></div></figure>
+
+
+<p>結果は以下のようになります。テスト結果として必要十分な情報量だと思います。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>✓ Cleaning ISHTTPOperation/ISHTTPOperation [Debug]
+</span><span class='line'>✓ Building ISHTTPOperation/ISHTTPOperation [Debug]
+</span><span class='line'>✓ Compiling ISHTTPOperationQueue.m
+</span><span class='line'>✓ Compiling NSOperationQueue+HTTP.m
+</span><span class='line'>✓ Compiling ISHTTPOperation.m
+</span><span class='line'>✓ Building library libISHTTPOperation.a
+</span><span class='line'>✓ Building ISHTTPOperation/ISHTTPOperationTests [Debug]
+</span><span class='line'>✓ Running script 'Run Script'
+</span><span class='line'>Test Suite '/Users/ishkawa/Library/Developer/Xcode/DerivedData/ISHTTPOperation-bmnqbihsbwzsicguaxfhmfoznrvq/Build/Products/Debug-iphonesimulator/ISHTTPOperationTests.octest(Tests)' started
+</span><span class='line'>Test Suite 'ISHTTPOperationQueueTests' started
+</span><span class='line'>✓  ISHTTPOperationQueueTests testCancelOperationsWithHTTPMethod (0.016 seconds)
+</span><span class='line'>✓  ISHTTPOperationQueueTests testCancelOperationsWithHost (0.001 seconds)
+</span><span class='line'>✓  ISHTTPOperationQueueTests testCancelOperationsWithPath (0.001 seconds)
+</span><span class='line'>✓  ISHTTPOperationQueueTests testCancelOperationsWithURL (0.000 seconds)
+</span><span class='line'>✓  ISHTTPOperationQueueTests testDefaultQueue (0.002 seconds)
+</span><span class='line'>Test Suite 'ISHTTPOperationTests' started
+</span><span class='line'>✓  ISHTTPOperationTests testCancel (0.100 seconds)
+</span><span class='line'>✓  ISHTTPOperationTests testCancelAsynchronously (0.000 seconds)
+</span><span class='line'>✓  ISHTTPOperationTests testConcurrencyType (0.000 seconds)
+</span><span class='line'>✓  ISHTTPOperationTests testDeallocOnCancelAfterStart (0.100 seconds)
+</span><span class='line'>✓  ISHTTPOperationTests testDeallocOnCancelBeforeStart (0.100 seconds)
+</span><span class='line'>✓  ISHTTPOperationTests testDesignatedInitializer (0.000 seconds)
+</span><span class='line'>✓  ISHTTPOperationTests testErrorConnection (0.101 seconds)
+</span><span class='line'>✓  ISHTTPOperationTests testNormalConnection (0.202 seconds)
+</span><span class='line'>✓  ISHTTPOperationTests testQueueing (0.000 seconds)
+</span><span class='line'>Test Suite 'NSOperationQueueHTTPTests' started
+</span><span class='line'>✓  NSOperationQueueHTTPTests testDefaultHTTPQueue (0.000 seconds)</span></code></pre></td></tr></table></div></figure>
+
+
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Travis CIがXcode 5に対応してからのあれこれ]]></title>
@@ -1208,217 +1306,6 @@ TMCacheとISMemoryCache/ISDiskCacheの違いは説明するが大変なので、
 
 
 
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[OCMockでも[[foo shouldEventually] receive:@selector(bar)]がしたい]]></title>
-    <link href="http://blog.ishkawa.org/blog/2013/06/26/ocmock-async/"/>
-    <updated>2013-06-26T00:35:00+09:00</updated>
-    <id>http://blog.ishkawa.org/blog/2013/06/26/ocmock-async</id>
-    <content type="html"><![CDATA[<p>そう思って、雑に実装をしてみました。</p>
-
-<p><code>[[foo shouldEventually] receive:@selector(bar)]</code>はKiwiの構文で、<br/>
-一定時間以内に<code>bar</code>というメソッドが呼ばれないとテスト失敗とするものです。</p>
-
-<p>具体的には以下のようなプログラムで<code>foo</code>の<code>bar</code>が呼ばれるか確認するテストに使えます。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">someMethod:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">foo</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="n">dispatch_queue_t</span> <span class="n">queue</span> <span class="o">=</span> <span class="n">dispatch_get_global_queue</span><span class="p">(</span><span class="n">DISPATCH_QUEUE_PRIORITY_DEFAULT</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
-</span><span class='line'>    <span class="n">dispatch_async</span><span class="p">(</span><span class="n">queue</span><span class="p">,</span> <span class="o">^</span><span class="p">{</span>
-</span><span class='line'>        <span class="p">...</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="p">[</span><span class="n">foo</span> <span class="n">bar</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">});</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Kiwiの<code>shouldEventually</code>は<code>KWProbePoller</code>が0.1秒ごとに<code>NSRunLoop</code>を回し、<br/>
-<code>KWAsyncMatcherProbe</code>の  <code>isSatisfied</code>が<code>YES</code>になるまで回し続けるという実装をしています。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="c1">// KWProbePoller</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nf">check:</span><span class="p">(</span><span class="kt">id</span><span class="o">&lt;</span><span class="n">KWProbe</span><span class="o">&gt;</span><span class="p">)</span><span class="nv">probe</span><span class="p">;</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>  <span class="n">KWTimeout</span> <span class="o">*</span><span class="n">timeout</span> <span class="o">=</span> <span class="p">[[</span><span class="n">KWTimeout</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithTimeout:</span><span class="n">timeoutInterval</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="k">while</span> <span class="p">(</span><span class="o">!</span><span class="p">[</span><span class="n">probe</span> <span class="n">isSatisfied</span><span class="p">])</span> <span class="p">{</span>
-</span><span class='line'>    <span class="k">if</span> <span class="p">([</span><span class="n">timeout</span> <span class="n">hasTimedOut</span><span class="p">])</span> <span class="p">{</span>
-</span><span class='line'>      <span class="p">[</span><span class="n">timeout</span> <span class="n">release</span><span class="p">];</span>
-</span><span class='line'>      <span class="k">return</span> <span class="n">NO</span><span class="p">;</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>    <span class="p">[[</span><span class="n">NSRunLoop</span> <span class="n">currentRunLoop</span><span class="p">]</span> <span class="nl">runUntilDate:</span><span class="p">[</span><span class="n">NSDate</span> <span class="nl">dateWithTimeIntervalSinceNow:</span><span class="n">delayInterval</span><span class="p">]];</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">probe</span> <span class="n">sample</span><span class="p">];</span>
-</span><span class='line'>  <span class="p">}</span>
-</span><span class='line'>  <span class="p">[</span><span class="n">timeout</span> <span class="n">release</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="k">return</span> <span class="n">YES</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p><code>OCMock</code>で<code>receive:</code>に相当するものは<code>expect</code>/<code>verify</code>なので、これらを使って同じことをします。</p>
-
-<p><code>OCMockObject</code>は<code>expectations</code>という<code>NSArray</code>があり、<code>expect</code>すると<code>OCMockRecorder</code>を追加し、<br/>
-メソッドが呼ばれると<code>OCMockRecorder</code>を<code>expectations</code>から外すという処理をします。<br/>
-そして、<code>verify</code>時に<code>expectations</code>が残っているとテストを失敗させる仕組みになっています。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="c1">// OCMockObject</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">verify</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>  <span class="k">if</span><span class="p">([</span><span class="n">expectations</span> <span class="n">count</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span>
-</span><span class='line'>  <span class="p">{</span>
-</span><span class='line'>      <span class="p">[</span><span class="n">NSException</span> <span class="nl">raise:</span><span class="n">NSInternalInconsistencyException</span> <span class="nl">format:</span><span class="s">@&quot;%@: expected method was not invoked: %@&quot;</span><span class="p">,</span>
-</span><span class='line'>          <span class="p">[</span><span class="n">self</span> <span class="n">description</span><span class="p">],</span> <span class="p">[[</span><span class="n">expectations</span> <span class="nl">objectAtIndex:</span><span class="mi">0</span><span class="p">]</span> <span class="n">description</span><span class="p">]];</span>
-</span><span class='line'>  <span class="p">}</span>
-</span><span class='line'>  <span class="k">if</span><span class="p">([</span><span class="n">expectations</span> <span class="n">count</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
-</span><span class='line'>  <span class="p">{</span>
-</span><span class='line'>      <span class="p">[</span><span class="n">NSException</span> <span class="nl">raise:</span><span class="n">NSInternalInconsistencyException</span> <span class="nl">format:</span><span class="s">@&quot;%@ : %ld expected methods were not invoked: %@&quot;</span><span class="p">,</span>
-</span><span class='line'>          <span class="p">[</span><span class="n">self</span> <span class="n">description</span><span class="p">],</span> <span class="p">[</span><span class="n">expectations</span> <span class="n">count</span><span class="p">],</span> <span class="p">[</span><span class="n">self</span> <span class="nl">_recorderDescriptions:</span><span class="n">YES</span><span class="p">]];</span>
-</span><span class='line'>  <span class="p">}</span>
-</span><span class='line'>  <span class="k">if</span><span class="p">([</span><span class="n">exceptions</span> <span class="n">count</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
-</span><span class='line'>  <span class="p">{</span>
-</span><span class='line'>      <span class="p">[[</span><span class="n">exceptions</span> <span class="nl">objectAtIndex:</span><span class="mi">0</span><span class="p">]</span> <span class="n">raise</span><span class="p">];</span>
-</span><span class='line'>  <span class="p">}</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>なので、<code>expectations</code>が変わるまで<code>NSRunLoop</code>を回すという<code>verify</code>の代替メソッドを用意すれば、<br/>
-<code>OCMock</code>らしく<code>[[foo shouldEventually] receive:@selector(bar)]</code>に相当するものが実装できます。</p>
-
-<p>以下がその実装です。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">@implementation</span> <span class="nc">OCMockObject</span> <span class="nl">(Lazy)</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">verifyLazily</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">self</span> <span class="nl">verifyLazilyWithTimeout:</span><span class="mf">1.0</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">verifyLazilyWithTimeout:</span><span class="p">(</span><span class="n">NSTimeInterval</span><span class="p">)</span><span class="nv">timeout</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="n">NSTimeInterval</span> <span class="n">interval</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">;</span>
-</span><span class='line'>    <span class="n">NSDate</span> <span class="o">*</span><span class="n">startedDate</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSDate</span> <span class="n">date</span><span class="p">];</span>
-</span><span class='line'>    <span class="kt">BOOL</span> <span class="n">shouldContinue</span> <span class="o">=</span> <span class="n">YES</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">while</span> <span class="p">(</span><span class="n">shouldContinue</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="err">@</span><span class="n">autoreleasepool</span> <span class="p">{</span>
-</span><span class='line'>            <span class="n">shouldContinue</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSDate</span> <span class="n">date</span><span class="p">]</span> <span class="nl">timeIntervalSinceDate:</span><span class="n">startedDate</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">timeout</span><span class="p">;</span>
-</span><span class='line'>            <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">shouldContinue</span> <span class="o">||</span> <span class="p">[</span><span class="n">self</span><span class="o">-&gt;</span><span class="n">expectations</span> <span class="n">count</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>                <span class="p">[</span><span class="n">self</span> <span class="n">verify</span><span class="p">];</span>
-</span><span class='line'>            <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>            <span class="n">NSDate</span> <span class="o">*</span><span class="n">date</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSDate</span> <span class="nl">dateWithTimeIntervalSinceNow:</span><span class="n">interval</span><span class="p">];</span>
-</span><span class='line'>            <span class="p">[[</span><span class="n">NSRunLoop</span> <span class="n">currentRunLoop</span><span class="p">]</span> <span class="nl">runUntilDate:</span><span class="n">date</span><span class="p">];</span>
-</span><span class='line'>        <span class="p">}</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>これを利用したテストケースは以下のように書くことができます。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">testFooInvokesBarOnSomeMethod</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="kt">id</span> <span class="n">fooMock</span> <span class="o">=</span> <span class="p">[</span><span class="n">OCMockObject</span> <span class="nl">mockForClass:</span><span class="p">[</span><span class="n">Foo</span> <span class="n">class</span><span class="p">]];</span>
-</span><span class='line'>    <span class="p">[[</span><span class="n">fooMock</span> <span class="n">expect</span><span class="p">]</span> <span class="n">bar</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="p">[</span><span class="n">testObject</span> <span class="nl">someMethod:</span><span class="n">fooMock</span><span class="p">];</span>
-</span><span class='line'>    <span class="n">STAssertNoThrow</span><span class="p">([</span><span class="n">fooMock</span> <span class="n">verifyLazily</span><span class="p">],</span> <span class="s">@&quot;foo did not invoke bar.&quot;</span><span class="p">);</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>&mdash;</p>
-
-<p>勢い余ってやってみたという感じなのですが、もっと良い方法があれば知りたいです。</p>
 ]]></content>
   </entry>
   

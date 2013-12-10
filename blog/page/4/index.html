@@ -7,8 +7,7 @@
 	<meta name="author" content="ishkawa">
 
 	
-	<meta name="description" content="HHK無刻印モデルを3週間使った感想 最近HHK Pro 2の無刻印モデルを使い始めました。
-斜に構えおじさんに中2とか言われてバカにされたりしました。 無刻印 メリット 何&mdash; soh335 (@soh335) August 25, 2013 　 &hellip;">
+	<meta name="description" content="Xcode 5でテストを分割実行する command + option + control + U で実行できます。 テストコードのファイルを開いているときに、テストケース内にカーソルを置いているとそのテストケースのみ実行され、 &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -53,6 +52,58 @@
 
 </header>
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2013/09/19/xcode-5-test/">
+		
+			Xcode 5でテストを分割実行する</a>
+	</h2>
+	<div class="entry-content">
+		<p>command + option + control + U で実行できます。</p>
+
+<p>テストコードのファイルを開いているときに、テストケース内にカーソルを置いているとそのテストケースのみ実行され、
+テストケース外にカーソルを置いているとそのファイルのテストがすべて実行されます。</p>
+
+<p>SenTestingKit, XCTestのみで動作を確認しました。
+いまのところのKiwiはまだこの機能に対応していなくて、個別の単位(<code>describe</code>, <code>context</code>, <code>it</code>など)での実行はできません。
+未確認ですが、GHUnitは仕組みから考えると全く対応していないと思います。</p>
+
+<p>分割実行できるようになると気軽にテストを走らせるようになって、テストが捗ります。<br/>
+SenTestingKitベースになったKIFも分割実行できるので、UIテストも捗りますね。</p>
+
+<h3>追記 (2013/9/20)</h3>
+
+<p>今日リリースされたKiwi 2.2.2でファイル単位の個別の実行ができるようになったみたいです。</p>
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-09-19T11:40:00+09:00" pubdate data-updated="true">Sep 19<span>th</span>, 2013</time></div>
+	
+</div>
+
+    <br/>
+    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/09/19/xcode-5-test/" data-text="Xcode 5でテストを分割実行する" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/09/19/xcode-5-test/" >Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+    </article>
 
 
     <article class="post">
@@ -178,119 +229,6 @@
 
     <br/>
     <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/08/31/kif-next/" data-text="次世代のKIF(2.0.0)が良さそう" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/08/31/kif-next/" >Tweet</a>
-    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
-    </article>
-
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2013/08/31/unit-test/">
-		
-			iOS開発でのユニットテストを身につけるには</a>
-	</h2>
-	<div class="entry-content">
-		<p>テストがないコードはクソとか、このテストツールこそ至高みたいな話が世に溢れているわけですが、
-そういう状況になってくると、どうやって始めたらいいのかわからなかったりすると思います。
-そういう人のために、何を読んで勉強し、何を使って何を書くと始めやすいかという抽象的な解説をしようと思います。</p>
-
-<h3>テストフレームワークの選択</h3>
-
-<p>テスト初心者の最初の壁はフレームワークの選択です。
-iOSのテストについて調べると、SenTestingKitはクソとかGHUnit最高とかKiwiこそ至高とか言っている人がいると思います。
-ですが、入門に最も適しているのはSenTestingKitです。
-セットアップが他と比べて簡単だということと、機能が十分に小さくて機能に溺れることがないということが理由です。</p>
-
-<h3>SenTestingKitの使い方を学ぶ</h3>
-
-<p>いきなり突き放すようなんですが、Appleの公式のドキュメントを読むのがいいと思います。
-プロジェクトのセットアップ方法が詳細に説明されているので、途方に暮れることもないと思います。
-おそらく、初めて読んだ時点ではロジックテストとアプリケーションテストの違いがよくわからないと思いますが、
-ひとまずアプリに対するテストはアプリケーションテストとしてセットアップするのが良いと思います。
-理由はUIApplicationやNSBundleの扱い方がプロダクトコードと揃うからです。</p>
-
-<p><a href="https://developer.apple.com/jp/devcenter/ios/library/documentation/UnitTesting.pdf">Xcode ユニットテスト ガイド (公式ドキュメント)</a></p>
-
-<h3>テストの対象を決める</h3>
-
-<p>iOSアプリのテストは書きづらいと言われることがありますが、ほとんどのコードに対するテストを書くことは可能です。
-ですが、テストを書くコストに見合った分だけの利益がないと、テストを書き続けるモチベーションは下がると思いますので、
-初めは恩恵を受けやすいモデルのテストのみを書くことを勧めます。
-UIViewControllerのテストを書くことも出来ますが、
-初めは完璧を目指すよりも無理のない範囲で安定した粒度のテストを書くことの方が大切です。</p>
-
-<h3>サンプルコードを動かす</h3>
-
-<p>続いてすべきことは、Appleが提供しているサンプルコードを動かすことだと思います。
-このサンプルコードから学ぶべきことは、モデルに対するテストケースの書き方です。
-<code>CalculatorLogicTests.m</code>を読むとモデルに対してどのようにテストを書けばいいか分かるはずです。
-(<code>iOS_CalcTests.m</code>にはUIViewControllerに対するテストが書かれているのですが、前節でやらないことにしたので省きます。)</p>
-
-<p><a href="https://developer.apple.com/library/mac/samplecode/UnitTests/Introduction/Intro.html">Unit Testing Apps and Frameworks (サンプルコード)</a></p>
-
-<p>実行するにはXcodeのスキームを以下のようにして、command+Uを押します。</p>
-
-<p><img src="/images/2013-08-31/scheme.png"></p>
-
-<p>ここまで実行すれば、テストをセットアップして、テストコードを書き、テストを実行する方法がわかると思います。
-あとは自分のプロジェクトでこれらの手順を実行すれば、iOSテストに入門できたといえると思います。</p>
-
-<h3>他のテストツールについて</h3>
-
-<p>ひと通り実行してみると、SenTestingKitについて以下の点に気がつくと思います。</p>
-
-<ul>
-<li>非同期の処理が完了する前にテストケースが終わってしまう</li>
-<li>このメソッドを呼んだらこのメソッドが呼ばれるというテストができない</li>
-<li>テストしたい条件を作ることが難しい</li>
-</ul>
-
-
-<p>1番目の非同期の問題はNSRunLoopを回して待つことで解決可能ですが、
-Kiwiなどのフレームワークレベルで解決しているものを利用するという手もあります。
-そもそもモデルの層で非同期の処理が入っているコードはテストしづらいコードだという説もあります。</p>
-
-<p>2,3番目の問題はモック/スタブを提供するライブラリを導入することで解決できます。
-OCMockなどのモック/スタブ単品のライブラリもあれば、Kiwiのようにフレームワークの一部として提供しているものもあります。</p>
-
-<p>必要に応じてこういった外部のライブラリを導入するとテストが楽になるので、
-なんかテストが書きづらいなあと思ったときは、それを上手く解決しているライブラリを探すといいと思います。</p>
-
-<h3>SenTestingKitに対するよくある誤解</h3>
-
-<p>SenTestingKitは誤解されやすいので、SenTestingKitに対するよくある誤解を並べておきます。</p>
-
-<ul>
-<li>非同期処理を含むテストを実行できない &ndash;> NSRunLoopを回して完了を待つことはできる</li>
-<li>実機上でテストを実行できない &ndash;> アプリケーションテストは実機でも実行できる</li>
-<li>ターミナルからテストを実行できない &ndash;> xcodebuildコマンドで実行可能</li>
-</ul>
-
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-08-31T01:39:00+09:00" pubdate data-updated="true">Aug 31<span>st</span>, 2013</time></div>
-	
-</div>
-
-    <br/>
-    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/08/31/unit-test/" data-text="iOS開発でのユニットテストを身につけるには" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/08/31/unit-test/" >Tweet</a>
     <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
     </article>
 

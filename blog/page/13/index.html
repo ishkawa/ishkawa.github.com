@@ -7,8 +7,9 @@
 	<meta name="author" content="ishkawa">
 
 	
-	<meta name="description" content="XcodeのSolarizedを入れ替えた VimやiTermのカラースキームにはSolarized Darkを使っていて大変気に入っているのですが、
-XcodeのSolarizedはなんだかきつい色の組み合わせが頻出すると思ったのでちょっと変えました。 ちなみにオリジナルは以下です。 &hellip;">
+	<meta name="description" content="OCUnitのLogic Testsではできないこと [UIApplication sharedApplication]が絡むテスト
+[NSBundle mainBundle]が絡むテスト
+ドキュメントディレクトリへのアクセスが絡むテスト いずれもApplication Testsでは可能です &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -53,6 +54,55 @@ XcodeのSolarizedはなんだかきつい色の組み合わせが頻出すると
 
 </header>
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2013/03/13/bundle-in-logic-tests/">
+		
+			OCUnitのLogic Testsではできないこと</a>
+	</h2>
+	<div class="entry-content">
+		<ul>
+<li><code>[UIApplication sharedApplication]</code>が絡むテスト</li>
+<li><code>[NSBundle mainBundle]</code>が絡むテスト</li>
+<li>ドキュメントディレクトリへのアクセスが絡むテスト</li>
+</ul>
+
+
+<p>いずれもApplication Testsでは可能です。</p>
+
+<p>Logic Testsはアプリとは独立して実行されるから不可能で、
+Application Testsはアプリの中で実行されるから可能というのは当然なのですが、
+それがわからずにモヤモヤしたこともありました。</p>
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-03-13T23:46:00+09:00" pubdate data-updated="true">Mar 13<span>th</span>, 2013</time></div>
+	
+</div>
+
+    <br/>
+    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/03/13/bundle-in-logic-tests/" data-text="OCUnitのLogic Testsではできないこと" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/03/13/bundle-in-logic-tests/" >Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+    </article>
 
 
     <article class="post">
@@ -251,107 +301,6 @@ SenTestingKitが意外と使えたということを書きたくて書いてい�
 
     <br/>
     <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/03/07/sentestingkit/" data-text="GHUnitをやめてSenTestingKitを使う理由" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/03/07/sentestingkit/" >Tweet</a>
-    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
-    </article>
-
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2013/03/06/test-dealloc/">
-		
-			ARC環境でdeallocされるかテストする</a>
-	</h2>
-	<div class="entry-content">
-		<p>ARCを導入するとメモリ管理がいい加減になりがちですが、<br/>
-Blocksの循環参照など、メモリ管理の落とし穴は依然として多いです。<br/>
-なので、テストを書く方法を考えました。</p>
-
-<h3>書き方</h3>
-
-<ul>
-<li><code>dealloc</code>されるか確認したいオブジェクトと同じ型の<code>__weak</code>な変数を宣言する。</li>
-<li><code>@autoreleasepool</code>をつくり、その中で確認したいオブジェクトを作る。</li>
-<li>つくったオブジェクトを<code>__weak</code>な変数に入れる。</li>
-<li><code>@autoreleasepool</code>を閉じたあと、<code>__weak</code>な変数に対して<code>STAssertNil</code>する。</li>
-</ul>
-
-
-<p>確認したいオブジェクトの暗黙的な<code>__strong</code>は<code>@autoreleasepool</code>に収まるので、<br/>
-<code>@autoreleasepool</code>外ではそのオブジェクトは<code>dealloc</code>されているはず、というわけです。</p>
-
-<h3>例</h3>
-
-<p>最近、<code>NSURLConnection</code>をラップする<code>NSOperation</code>を改めて書いているので、それを例にします。<br/>
-非同期のテストの書き方は<a href="http://d.hatena.ne.jp/glass-_-onion/20120702/1341241666">@grassonion1 さんの方法</a>に準じるものにしています。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">testDeallocOnCancelBeforeStart</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="n">__weak</span> <span class="n">ISHTTPOperation</span> <span class="o">*</span><span class="n">woperation</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="err">@</span><span class="n">autoreleasepool</span> <span class="p">{</span>
-</span><span class='line'>        <span class="n">NSURL</span> <span class="o">*</span><span class="n">URL</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSURL</span> <span class="nl">URLWithString:</span><span class="n">ISTestURL</span><span class="p">];</span>
-</span><span class='line'>        <span class="n">NSURLRequest</span> <span class="o">*</span><span class="n">request</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSURLRequest</span> <span class="nl">requestWithURL:</span><span class="n">URL</span><span class="p">];</span>
-</span><span class='line'>        <span class="n">ISHTTPOperation</span> <span class="o">*</span><span class="n">operation</span> <span class="o">=</span> <span class="p">[[</span><span class="n">ISHTTPOperation</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithRequest:</span><span class="n">request</span> <span class="nl">handler:</span><span class="nb">nil</span><span class="p">];</span>
-</span><span class='line'>        <span class="n">woperation</span> <span class="o">=</span> <span class="n">operation</span><span class="p">;</span>
-</span><span class='line'>        <span class="p">[</span><span class="n">operation</span> <span class="n">cancel</span><span class="p">];</span>
-</span><span class='line'>        <span class="p">[</span><span class="n">NSThread</span> <span class="nl">sleepForTimeInterval:</span><span class="mf">.1</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">STAssertNil</span><span class="p">(</span><span class="n">woperation</span><span class="p">,</span> <span class="nb">nil</span><span class="p">);</span>
-</span><span class='line'>    <span class="n">self</span><span class="p">.</span><span class="n">isFinished</span> <span class="o">=</span> <span class="n">YES</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>これで、<code>cancel</code>された<code>NSOperation</code>がちゃんと<code>dealloc</code>されるか確認できます。<br/>
-(もちろん、<code>testDeallocOnCancelAfterStart</code>も書いてあります。)</p>
-
-<p>　</p>
-
-<p>リポジトリはこちらです。<br/>
-<a href="https://github.com/ishkawa/ISHTTPOperation">ISHTTPOperation</a></p>
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-03-06T02:37:00+09:00" pubdate data-updated="true">Mar 6<span>th</span>, 2013</time></div>
-	
-</div>
-
-    <br/>
-    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/03/06/test-dealloc/" data-text="ARC環境でdeallocされるかテストする" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/03/06/test-dealloc/" >Tweet</a>
     <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
     </article>
 
