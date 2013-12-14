@@ -43,7 +43,7 @@ $pre-border: $color-gray03;
 
 article{
 	code, pre{
-		background: $pre-bg;
+		background: #fff;
 		border: 1px solid $pre-border;
 		font-family: $font-mono;
 	}
@@ -71,6 +71,7 @@ article{
 }
 
 figure.code{
+    color: #999;
     background: $base03;
 	border: 1px solid $pre-border;
 	margin-top: 10px;

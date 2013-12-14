@@ -15,22 +15,10 @@
 	.prev{
 		padding-left: 30px;
 		left: 0;
-		&:before{
-			content: "\f060";
-			font: 1.3em $font-icon;
-			position: absolute;
-			left: 0;
-		}
 	}
 	.next{
 		padding-right: 30px;
 		right: 0;
-		&:before{
-			content: "\f061";
-			font: 1.3em $font-icon;
-			position: absolute;
-			right: 0;
-		}
 	}
 	.center{
 		text-align: center;
