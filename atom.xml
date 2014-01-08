@@ -4,7 +4,7 @@
   <title><![CDATA[blog.ishkawa.org]]></title>
   <link href="http://blog.ishkawa.org/atom.xml" rel="self"/>
   <link href="http://blog.ishkawa.org/"/>
-  <updated>2013-12-15T11:17:02+09:00</updated>
+  <updated>2014-01-09T01:20:49+09:00</updated>
   <id>http://blog.ishkawa.org/</id>
   <author>
     <name><![CDATA[ishkawa]]></name>
@@ -12,6 +12,53 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[デバッグ中にJSONをサッと出力する]]></title>
+    <link href="http://blog.ishkawa.org/blog/2014/01/09/lldb-json/"/>
+    <updated>2014-01-09T00:44:00+09:00</updated>
+    <id>http://blog.ishkawa.org/blog/2014/01/09/lldb-json</id>
+    <content type="html"><![CDATA[<p>NSDictionaryやNSArrayのdescriptionはそれとなく見やすいフォーマットで出力されますが、JSONで欲しくなる場合があります。
+しかも、デバッグ中に欲しくなったりします。
+XcodeのLLDBは<code>~/.lldbinit-Xcode</code>に独自のコマンドを定義することができるので、
+pretty printedなJSONを吐くコマンドを定義してカジュアルにJSONを得られるようにしてみました。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>command regex pj 's/^(.+)$/po [[NSString alloc] initWithData:[NSJSONSerialization dataWithJSONObject:%1 options:1 error:nil] encoding:4]/'</span></code></pre></td></tr></table></div></figure>
+
+
+<p>ここで定義した<code>pj</code>コマンドを使うと以下のようなNSDictionaryから</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="n">NSDictionary</span> <span class="o">*</span><span class="n">dictionary</span> <span class="o">=</span> <span class="err">@</span><span class="p">{</span><span class="s">@&quot;date&quot;</span><span class="o">:</span> <span class="s">@&quot;01-08-2014&quot;</span><span class="p">,</span>
+</span><span class='line'>                             <span class="s">@&quot;time&quot;</span><span class="o">:</span> <span class="s">@&quot;03:55:15&quot;</span><span class="p">,</span>
+</span><span class='line'>                             <span class="s">@&quot;epoch&quot;</span><span class="o">:</span> <span class="err">@</span><span class="mi">1389196515937</span><span class="p">};</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>以下のようなJSONを得られます</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="s">&quot;time&quot;</span> <span class="o">:</span> <span class="s">&quot;03:55:15&quot;</span><span class="p">,</span>
+</span><span class='line'>  <span class="s">&quot;epoch&quot;</span> <span class="o">:</span> <span class="mi">1389196515937</span><span class="p">,</span>
+</span><span class='line'>  <span class="s">&quot;date&quot;</span> <span class="o">:</span> <span class="s">&quot;01-08-2014&quot;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>元ネタは<a href="https://twitter.com/dealforest/status/420943227294736384">@dealforest</a>さんの以下の記事です。<br/>
+UIViewのrecursiveDescriptionを出力するコマンドなどの便利な例も紹介されています。</p>
+
+<p><a href="http://qiita.com/dealforest/items/e3a5284badd17733ccc1">続・Debugger の Tips &ndash; Qiita [キータ]</a></p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[xcodebuildのログをxcprettyで整える]]></title>
@@ -1240,72 +1287,6 @@ OCMConstraintがNSCopyingに適合していないので当然のことですが�
 計測してその結果を活用して開発をしてみると&#8221;無意味な変更でパーセンテージが変化する場合があるから目安&#8221;なのかなと思いました。
 で、結局目安と言いながらも明らかにカバーできていない箇所を発見できたりして開発にとても役立つので、
 本業のiOS開発の方でも頑張ってやってみようと思いました。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[ISDiskCacheというのを書いた]]></title>
-    <link href="http://blog.ishkawa.org/blog/2013/07/01/isdiskcache/"/>
-    <updated>2013-07-01T03:41:00+09:00</updated>
-    <id>http://blog.ishkawa.org/blog/2013/07/01/isdiskcache</id>
-    <content type="html"><![CDATA[<p>2ヶ月ほど前に<a href="http://blog.ishkawa.org/blog/2013/04/24/ismemorycache/">ISMemoryCacheというのを書いた</a>のですが、
-実はこれと並行してISDiskCacheというのもつくっていました。
-しかし、良いアイディアが浮かばなくて完成度が十分に上がらず、リリースできないまま放置していました。
-先週末にちょうど<a href="https://objectivechackathon.appspot.com">Put Objective-C Back On the Map</a>というWeb上のイベントがあったので、
-それに参加することをモチベーションにISDiskCacheの実装に再挑戦しました。</p>
-
-<p><a href="https://github.com/ishkawa/ISDiskCache">ISDiskCache</a></p>
-
-<h3>特徴</h3>
-
-<ul>
-<li>合計のファイルサイズの上限を持ち、上限を超えたら古いファイルを自動的に削除(LRU)。</li>
-<li>NSCodingに適合するオブジェクトをキー/値に設定できる。</li>
-<li>NSDateを指定してアクセス日時が古いファイルを削除できる。</li>
-</ul>
-
-
-<p>類似のライブラリにはtumblrがつくっている<a href="https://github.com/tumblr/TMCache">TMCache</a>があります。
-TMCacheとISMemoryCache/ISDiskCacheの違いは説明するが大変なので、お互いにないものを挙げていきます。</p>
-
-<ul>
-<li>実績がある: TMCache</li>
-<li>メモリキャッシュ/ディスクキャッシュを意識せずに使える: TMCache</li>
-<li>参照がある限りキャッシュをクリアしない: ISMemoryCache/ISDiskCache</li>
-<li>NSString以外をキーにできる: ISMemoryCache/ISDiskCache</li>
-</ul>
-
-
-<p>メモリキャッシュ/ディスクキャッシュを意識させないつくりが必要かどうかは少し疑問に思いました。
-確かに同じAPIで利用できるのは手軽で便利なのですが、メモリキャッシュはメインスレッドでも同期的に扱うことができるのに、
-メモリキャッシュかディスクキャッシュかわからなくなってしまうと非同期的に処理するしかなくなってしまいます。</p>
-
-<p>自分は同期的にかける箇所は同期的に書きたかったので、メモリキャッシュとディスクキャッシュを分けることにしました。
-キャッシュを分けると利用側のコードが増えてしまうのですが、ディスクキャッシュへのアクセスとサーバーとの通信を1つのNSOperationにまとめてしまえば、
-以下のように同期的な処理と非同期的な処理の2通りを書けば済んでしまいます。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="n">UIImage</span> <span class="o">*</span><span class="n">cachedImage</span> <span class="o">=</span> <span class="p">[[</span><span class="n">ISMemoryCache</span> <span class="n">sharedCache</span><span class="p">]</span> <span class="nl">objectForKey:</span><span class="n">URL</span><span class="p">];</span>
-</span><span class='line'><span class="k">if</span> <span class="p">(</span><span class="n">cachedImage</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>    <span class="n">imageView</span><span class="p">.</span><span class="n">image</span> <span class="o">=</span> <span class="n">cachedImage</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-</span><span class='line'>    <span class="n">imageView</span><span class="p">.</span><span class="n">image</span> <span class="o">=</span> <span class="p">[</span><span class="n">UIImage</span> <span class="nl">imageNamed:</span><span class="s">@&quot;placeholder&quot;</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">ISImageLoaderOperation</span> <span class="nl">loadURL:</span><span class="n">URL</span> <span class="nl">handler:</span><span class="o">^</span><span class="p">(</span><span class="n">UIImage</span> <span class="o">*</span><span class="n">image</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="n">imageView</span><span class="p">.</span><span class="n">image</span> <span class="o">=</span> <span class="n">image</span><span class="p">;</span>
-</span><span class='line'>    <span class="p">}];</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
 ]]></content>
   </entry>
   

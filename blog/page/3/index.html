@@ -7,8 +7,8 @@
 	<meta name="author" content="ishkawa">
 
 	
-	<meta name="description" content="複数のiOSバージョンでのテストを自動的に実行する Xcode 5になってxcodebuildコマンドも進化したらしいのですが、あまり変更を追えていませんでした。
-今日、ぼんやりとman xcodebuildを眺めていたら-destinationというオプションをみつけました。 &hellip;">
+	<meta name="description" content="#potatotips で隅々までタップできるUINavigationBarの話をしました potatotipsというのはクックパッドさんが開催しているiOS/Android開発者のtips共有会です。
+普段は社内のメンバーで定期的に行っているそうなんですが、今回は社外の開発者も含めて開催でした &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -53,6 +53,86 @@
 
 </header>
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2013/11/15/potatotips-1/">
+		
+			#potatotips で隅々までタップできるUINavigationBarの話をしました</a>
+	</h2>
+	<div class="entry-content">
+		<p>potatotipsというのはクックパッドさんが開催しているiOS/Android開発者のtips共有会です。
+普段は社内のメンバーで定期的に行っているそうなんですが、今回は社外の開発者も含めて開催でした。
+持ち時間は1人あたり5分と短かったので、すぐに活用できそうなtipsが多かったように思います。</p>
+
+<h3>話したこと</h3>
+
+<p>iOS 7になってからUINavigationBarのcustomViewが中央寄りになってしまい、
+バーの両サイドに配置されたカスタムボタンが押しにくいという問題が起きました。
+これだけを理由にUINavigationBarを使うのを辞めるのはもったいないので、
+customViewのフレームに影響されずに隅々までタップできるUINavigationBarを実現する方法を考えました。</p>
+
+<p>実装のアイディアは結構単純で、customViewのフレーム外であってもタッチイベントの位置にsubviewがあれば、
+タッチイベントを貫通させるというものです。イメージがつきにくい話だとは思うのですが、
+たぶん同じような問題に直面した人には通じる話だと思います。</p>
+
+<p>　</p>
+
+<script async class="speakerdeck-embed" data-id="9d882ad02e7e0131dc8166d07d2effc2" data-ratio="1.33333333333333" src="//speakerdeck.com/assets/embed.js"></script>
+
+
+<p>一応このtipsをライブラリにまとめたので、何を言ってるのかサッパリわからなかった人も、
+以下のライブラリを入れればとにかくUINavigationBarが隅々までタップできるようになります。</p>
+
+<p><a href="https://github.com/ishkawa/ISInteractiveEdgesNavigationBar">ISInteractiveEdgesNavigationBar</a></p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="n">Class</span> <span class="n">navigationBarClass</span> <span class="o">=</span> <span class="p">[</span><span class="n">ISInteractiveEdgesNavigationBar</span> <span class="n">class</span><span class="p">];</span>
+</span><span class='line'><span class="n">Class</span> <span class="n">toolbarClass</span> <span class="o">=</span> <span class="p">[</span><span class="n">UIToolbar</span> <span class="n">class</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">UINavigationController</span> <span class="o">*</span><span class="n">navigationController</span> <span class="o">=</span>
+</span><span class='line'><span class="p">[[</span><span class="n">UINavigationController</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithNavigationBarClass:</span><span class="n">navigationBarClass</span>
+</span><span class='line'>                                              <span class="nl">toolbarClass:</span><span class="n">toolbarClass</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>感想</h3>
+
+<p>tips共有会は小規模なら簡単に開催できるし有益なので、周りを適当に誘ってみよう思いました。</p>
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-11-15T01:22:00+09:00" pubdate data-updated="true">Nov 15<span>th</span>, 2013</time></div>
+	
+</div>
+
+    <br/>
+    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/11/15/potatotips-1/" data-text="#potatotips で隅々までタップできるUINavigationBarの話をしました" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/11/15/potatotips-1/" >Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+    </article>
 
 
     <article class="post">
@@ -284,51 +364,6 @@ CoreDataを利用するUIViewControllerにはNSManagedObjectContextのproperty�
     <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
     </article>
 
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2013/09/22/yapc/">
-		
-			YAPC::Asia 2013に参加してきました</a>
-	</h2>
-	<div class="entry-content">
-		<p>Perlの人じゃなくても楽しいと聞いて参加してきました。</p>
-
-<p>Perlの世界で活躍する人たちの長めのトークを聞けるだけでもありがたいことですが、
-その後は個人的に話を聞きに行ったりできる雰囲気になっていてすごく良いなと思いました。
-会場の広場やバーでは似たような関心を持った人たちが議論していてうらやましかったのですが、
-こういうのは数日間開催されているからこそできることなんだなと思いました。</p>
-
-<p>iOS界隈でもこういうのがあったらいいですね。</p>
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-09-22T17:15:00+09:00" pubdate data-updated="true">Sep 22<span>nd</span>, 2013</time></div>
-	
-</div>
-
-    <br/>
-    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/09/22/yapc/" data-text="YAPC::Asia 2013に参加してきました" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/09/22/yapc/" >Tweet</a>
-    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
-    </article>
-
 <nav id="pagenavi">
     
         <a href="/blog/page/2/" class="prev">Prev</a>
@@ -339,7 +374,7 @@ CoreDataを利用するUIViewControllerにはNSManagedObjectContextのproperty�
     <div class="center"><a href="/blog/archives">Blog Archives</a></div>
 </nav>
 </div>
-	<footer id="footer" class="inner">Copyright &copy; 2013
+	<footer id="footer" class="inner">Copyright &copy; 2014
 
     ishkawa
 

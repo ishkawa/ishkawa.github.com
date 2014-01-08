@@ -7,8 +7,8 @@
 	<meta name="author" content="ishkawa">
 
 	
-	<meta name="description" content="ISPersistentStackというCoreDataのヘルパーを書いた 最近iOS 4を相手にする機会がなくなったので、いつも使うCoreDataのヘルパーを共通化しようと思い、ついでに公開することにしました。
-あまり他人が使うことを想定したつくりになっていないので、 &hellip;">
+	<meta name="description" content="単体テストの実行時に非同期処理を待つ SenTestingKit/XCTestは非同期処理を待たずにテストケースを終了してしまうので、
+直接SenTestingKit/XCTestを利用する場合には自分でNSRunLoopを回して処理の完了を待つ必要があります。 &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -53,6 +53,125 @@
 
 </header>
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2013/11/22/wait-async-task/">
+		
+			単体テストの実行時に非同期処理を待つ</a>
+	</h2>
+	<div class="entry-content">
+		<p>SenTestingKit/XCTestは非同期処理を待たずにテストケースを終了してしまうので、
+直接SenTestingKit/XCTestを利用する場合には自分でNSRunLoopを回して処理の完了を待つ必要があります。
+これまでSenTestCaseにfinishedフラグが追加されたサブクラスを使ったりしていたのですが、
+どうしてもテストコードが明示的にならなくて悩んでいました。</p>
+
+<p>いままで書いていたテストコードは以下のような感じです。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">testExample</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="c1">// step 1</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">dispatch_queue_t</span> <span class="n">queue</span> <span class="o">=</span> <span class="n">dispatch_get_global_queue</span><span class="p">(</span><span class="n">DISPATCH_QUEUE_PRIORITY_DEFAULT</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+</span><span class='line'>    <span class="n">dispatch_async</span><span class="p">(</span><span class="n">queue</span><span class="p">,</span> <span class="o">^</span><span class="p">(</span><span class="kt">void</span><span class="p">){</span>
+</span><span class='line'>        <span class="c1">// step 3</span>
+</span><span class='line'>        <span class="p">[</span><span class="n">self</span> <span class="n">stopWaiting</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">});</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// step 2</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">self</span> <span class="n">startWaiting</span><span class="p">];</span>
+</span><span class='line'>    <span class="c1">// step 4</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>これではどのようにして待っているのかあまり想像がつきませんし、順序をひと目で理解することも難しいです。
+そこで、昨日新しい方法を考えました。
+以下のように書くと、実行順序も上から順番通りになりますし、何をしているのか明示的になったと思います。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">testPerformBlockAndWait</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="c1">// step 1</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="p">[[</span><span class="n">NSRunLoop</span> <span class="n">currentRunLoop</span><span class="p">]</span> <span class="nl">performBlockAndWait:</span><span class="o">^</span><span class="p">(</span><span class="kt">BOOL</span> <span class="o">*</span><span class="n">finish</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">dispatch_queue_t</span> <span class="n">queue</span> <span class="o">=</span> <span class="n">dispatch_get_global_queue</span><span class="p">(</span><span class="n">DISPATCH_QUEUE_PRIORITY_DEFAULT</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+</span><span class='line'>        <span class="n">dispatch_async</span><span class="p">(</span><span class="n">queue</span><span class="p">,</span> <span class="o">^</span><span class="p">(</span><span class="kt">void</span><span class="p">){</span>
+</span><span class='line'>            <span class="c1">// step 2</span>
+</span><span class='line'>            <span class="o">*</span><span class="n">finish</span> <span class="o">=</span> <span class="n">YES</span><span class="p">;</span>
+</span><span class='line'>        <span class="p">});</span>
+</span><span class='line'>    <span class="p">}];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// step 3</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>NSRunLoopのperformBlockAndWait:は新しく拡張したメソッドで、名前からわかる通りNSManagedObjectContextの
+performBlockAndWait:を使っているときに思いつきました。
+BOOL *を渡すアイディアはNSArrayのenumerateObjectsUsingBlock:を真似しました。</p>
+
+<p>このコードを使えるようにするためのNSRunLoopのカテゴリはまとめて以下のリポジトリに置いてあります。
+興味がある人は是非使ってみてください。
+もっといいアイディアがあるという人は是非教えて下さい。</p>
+
+<p><a href="https://github.com/ishkawa/NSRunLoop-PerformBlock">NSRunLoop-PerformBlock</a></p>
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-11-22T00:23:00+09:00" pubdate data-updated="true">Nov 22<span>nd</span>, 2013</time></div>
+	
+</div>
+
+    <br/>
+    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/11/22/wait-async-task/" data-text="単体テストの実行時に非同期処理を待つ" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/11/22/wait-async-task/" >Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+    </article>
 
 
     <article class="post">
@@ -270,86 +389,6 @@ NSNullはそもそもsingletonなのでisEqual:やisKindOfClass:で比較する�
     <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
     </article>
 
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2013/11/15/potatotips-1/">
-		
-			#potatotips で隅々までタップできるUINavigationBarの話をしました</a>
-	</h2>
-	<div class="entry-content">
-		<p>potatotipsというのはクックパッドさんが開催しているiOS/Android開発者のtips共有会です。
-普段は社内のメンバーで定期的に行っているそうなんですが、今回は社外の開発者も含めて開催でした。
-持ち時間は1人あたり5分と短かったので、すぐに活用できそうなtipsが多かったように思います。</p>
-
-<h3>話したこと</h3>
-
-<p>iOS 7になってからUINavigationBarのcustomViewが中央寄りになってしまい、
-バーの両サイドに配置されたカスタムボタンが押しにくいという問題が起きました。
-これだけを理由にUINavigationBarを使うのを辞めるのはもったいないので、
-customViewのフレームに影響されずに隅々までタップできるUINavigationBarを実現する方法を考えました。</p>
-
-<p>実装のアイディアは結構単純で、customViewのフレーム外であってもタッチイベントの位置にsubviewがあれば、
-タッチイベントを貫通させるというものです。イメージがつきにくい話だとは思うのですが、
-たぶん同じような問題に直面した人には通じる話だと思います。</p>
-
-<p>　</p>
-
-<script async class="speakerdeck-embed" data-id="9d882ad02e7e0131dc8166d07d2effc2" data-ratio="1.33333333333333" src="//speakerdeck.com/assets/embed.js"></script>
-
-
-<p>一応このtipsをライブラリにまとめたので、何を言ってるのかサッパリわからなかった人も、
-以下のライブラリを入れればとにかくUINavigationBarが隅々までタップできるようになります。</p>
-
-<p><a href="https://github.com/ishkawa/ISInteractiveEdgesNavigationBar">ISInteractiveEdgesNavigationBar</a></p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="n">Class</span> <span class="n">navigationBarClass</span> <span class="o">=</span> <span class="p">[</span><span class="n">ISInteractiveEdgesNavigationBar</span> <span class="n">class</span><span class="p">];</span>
-</span><span class='line'><span class="n">Class</span> <span class="n">toolbarClass</span> <span class="o">=</span> <span class="p">[</span><span class="n">UIToolbar</span> <span class="n">class</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">UINavigationController</span> <span class="o">*</span><span class="n">navigationController</span> <span class="o">=</span>
-</span><span class='line'><span class="p">[[</span><span class="n">UINavigationController</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithNavigationBarClass:</span><span class="n">navigationBarClass</span>
-</span><span class='line'>                                              <span class="nl">toolbarClass:</span><span class="n">toolbarClass</span><span class="p">];</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>感想</h3>
-
-<p>tips共有会は小規模なら簡単に開催できるし有益なので、周りを適当に誘ってみよう思いました。</p>
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-11-15T01:22:00+09:00" pubdate data-updated="true">Nov 15<span>th</span>, 2013</time></div>
-	
-</div>
-
-    <br/>
-    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/11/15/potatotips-1/" data-text="#potatotips で隅々までタップできるUINavigationBarの話をしました" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/11/15/potatotips-1/" >Tweet</a>
-    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
-    </article>
-
 <nav id="pagenavi">
     
         <a href="/" class="prev">Prev</a>
@@ -360,7 +399,7 @@ customViewのフレームに影響されずに隅々までタップできるUINa
     <div class="center"><a href="/blog/archives">Blog Archives</a></div>
 </nav>
 </div>
-	<footer id="footer" class="inner">Copyright &copy; 2013
+	<footer id="footer" class="inner">Copyright &copy; 2014
 
     ishkawa
 

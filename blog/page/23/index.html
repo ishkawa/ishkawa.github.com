@@ -3,11 +3,11 @@
 <html>
 <head>
 	<meta charset="utf-8">
-	<title>右スワイプでUINavigationControllerのpopを呼ぶ</title>
+	<title></title>
 	<meta name="author" content="ishkawa">
 
 	
-	<meta name="description" content="右スワイプでUINavigationControllerのpopを呼ぶ 最近流行ってる気がするので、書きました。右スワイプを認識してpopViewControllerを呼んでいるだけですが、カテゴリにしておくと結構カジュアルに使える気がします。self. &hellip;">
+	<meta name="description" content="iOS5の非同期通信が楽になっていた。 iOS5になってからNSURLConnectionまわりの様子が変わったなあと思っていたら、sendAsynchronousRequest:queue:completionHandler:という便利なメソッドが追加されていました。というわけで、 &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -51,11 +51,23 @@
 </nav>
 
 </header>
-	<div id="content" class="inner"><article class="post">
-	<h2 class="title">右スワイプでUINavigationControllerのpopを呼ぶ</h2>
-	<div class="entry-content"><div class='post'>
-最近流行ってる気がするので、書きました。<br /><br />右スワイプを認識してpopViewControllerを呼んでいるだけですが、<br />カテゴリにしておくと結構カジュアルに使える気がします。<br /><br /><script src="https://gist.github.com/3069164.js?file=UIViewController+SwipePop.m"></script><br />self.navigationControllerの深さを見たいので、viewWillAppearで<br />setupSwipePopRecognizerを呼ぶことにしています。</div>
-</div>
+	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2012/03/05/ios5/">
+		
+			iOS5の非同期通信が楽になっていた。</a>
+	</h2>
+	<div class="entry-content">
+		<div class='post'>
+iOS5になってからNSURLConnectionまわりの様子が変わったなあと思っていたら、<br />sendAsynchronousRequest:queue:completionHandler:<br />という便利なメソッドが追加されていました。<br /><br />というわけで、TwitterのSearch APIを叩くサンプルを書きました。<br /><script src="https://gist.github.com/1973714.js?file=AsyncOS5"></script><br />ちなみにですが、Search APIはOAuth認証不要です。<br /><a href="https://dev.twitter.com/docs/api/1/get/search" target="_blank">https://dev.twitter.com/docs/api/1/get/search</a></div>
+
+		
+		
+	</div>
 
 
 <div class="meta">
@@ -71,15 +83,22 @@
   
 
 
-<time datetime="2012-07-08T00:00:00+09:00" pubdate data-updated="true">Jul 8<span>th</span>, 2012</time></div>
+<time datetime="2012-03-05T00:00:00+09:00" pubdate data-updated="true">Mar 5<span>th</span>, 2012</time></div>
 	
 </div>
 
     <br/>
-    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2012/07/08/uinavigationcontrollerpop/" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2012/07/08/uinavigationcontrollerpop/" >Tweet</a>
+    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2012/03/05/ios5/" data-text="iOS5の非同期通信が楽になっていた。" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2012/03/05/ios5/" >Tweet</a>
     <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
-</article>
+    </article>
 
+<nav id="pagenavi">
+    
+        <a href="/blog/page/22/" class="prev">Prev</a>
+    
+    
+    <div class="center"><a href="/blog/archives">Blog Archives</a></div>
+</nav>
 </div>
 	<footer id="footer" class="inner">Copyright &copy; 2014
 

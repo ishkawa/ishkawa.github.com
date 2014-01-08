@@ -7,9 +7,9 @@
 	<meta name="author" content="ishkawa">
 
 	
-	<meta name="description" content="iOS開発でのユニットテストを身につけるには テストがないコードはクソとか、このテストツールこそ至高みたいな話が世に溢れているわけですが、
-そういう状況になってくると、どうやって始めたらいいのかわからなかったりすると思います。
-そういう人のために、何を読んで勉強し、 &hellip;">
+	<meta name="description" content="次世代のKIF(2.0.0)が良さそう KIFはSquare製のIntegration Testsのためのフレームワークです。
+この半年くらいでKIFは大幅なアップデートに取り組んでいるらしく、現在はプレリリース版の2.0.0pre5が公開されています。
+まだ正式版はリリースされていないのですが &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -54,6 +54,76 @@
 
 </header>
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2013/08/31/kif-next/">
+		
+			次世代のKIF(2.0.0)が良さそう</a>
+	</h2>
+	<div class="entry-content">
+		<p>KIFはSquare製のIntegration Testsのためのフレームワークです。
+この半年くらいでKIFは大幅なアップデートに取り組んでいるらしく、現在はプレリリース版の2.0.0pre5が公開されています。
+まだ正式版はリリースされていないのですが、ひとまずプレリリース版を動かしてみました。</p>
+
+<p><a href="https://github.com/kif-framework/KIF/tree/kif-next">KIF(kif-next)</a></p>
+
+<p>　</p>
+
+<p>KIFは元々GHUnitのようにアプリのビルドターゲットを複製し、エントリーポイントを少し変更することで複製したアプリ上でテストを走らせるというものでした。
+新しいバージョンではSenTestingKitを利用することでXcodeに統合されたテストとして実行できるようになりました。
+具体的には以下のようなメリットがあります。</p>
+
+<ul>
+<li>command+Uで実行できる</li>
+<li>エラーが出た箇所を追跡しやすい</li>
+<li>部分実行ができる</li>
+<li>xUnit/xSpec形式でテストを書ける</li>
+</ul>
+
+
+<p>SenTestingKitを利用している他のフレームワーク(Spectaとか)も利用できるようです。</p>
+
+<p>以下は実機上で動かしている様子です。</p>
+
+<iframe class="embed-preview" src="//gifboom.com/x/a8a13526/embed_content" width="600" height="600" frameborder="0" scrolling="no"></iframe>
+
+
+<script async src="//medias.gifboom.com/static/embed.1.js" charset="utf-8"></script>
+
+
+<p>一応、サンプルコードをGitHubに置いておきます。</p>
+
+<p><a href="https://github.com/ishkawa/KIFNextExample">KIFNextExample</a></p>
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-08-31T19:51:00+09:00" pubdate data-updated="true">Aug 31<span>st</span>, 2013</time></div>
+	
+</div>
+
+    <br/>
+    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/08/31/kif-next/" data-text="次世代のKIF(2.0.0)が良さそう" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/08/31/kif-next/" >Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+    </article>
 
 
     <article class="post">
@@ -269,84 +339,6 @@ NSRunLoopを回しながらverifyを反復して実行するというアレ気�
     <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
     </article>
 
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2013/08/27/ghfeed/">
-		
-			モバイル版のGitHubにフィードがなかったので、補うiOSアプリをつくってリリースした</a>
-	</h2>
-	<div class="entry-content">
-		<p>プッシュ通知などもついていて、なかなか便利なものになりました。</p>
-
-<p><a href="https://itunes.apple.com/jp/app/ghfeed/id683793545">アプリをダウンロード</a></p>
-
-<p>　</p>
-
-<p><img src="/images/2013-08-27/feed.png">　<img src="/images/2013-08-27/page.png"></p>
-
-<p>　</p>
-
-<p>GitHubのモバイル版(Web)はかなり良くできていて流石だなあと思っていたのですが、
-肝心のフィードがなかったりして、モバイル版の役割を十分にカバーできていないと思いました。
-それを補うのがGHFeedです。具体的には以下の2つの機能を提供しています。</p>
-
-<ul>
-<li>フィードの表示</li>
-<li>ハイライトされるイベントをプッシュ通知</li>
-</ul>
-
-
-<p>前者はpull型の利用で、時間があるときにフィードを見て面白そうなリポジトリがあればスターをつけたりしておく、というような利用を想定しています。
-後者はpush型で、自分が関わるリポジトリにイベントがあった時に早く気づけるようにするという利用を想定しています。
-自分はこの2つの利用パターンが可能になって、はじめてモバイル版のGitHubが成り立つんじゃないかなあと思い、開発にいたりました。
-振り返ってみると、こういった用途はネイティブアプリの方が向いているので、ちょうど良かったのかもしれません。</p>
-
-<p>アプリは無料で広告もありませんが、設定画面にビールボタンがあるので、
-アプリを応援してくださる方は是非このボタンを押してみてください。よろしくお願いいたします。</p>
-
-<p>　</p>
-
-<p><img src="/images/2013-08-27/beer.png"></p>
-
-<p>　</p>
-
-<p>デザインは<a href="https://twitter.com/more_more_for">@more_more_for</a>くんに担当してもらいました。
-彼は前職の同期で、優秀で多忙な人なのですが、仕事の合間を縫って手伝ってもらいました。
-前職の時には一緒に仕事をする機会がなかったのですが、今回一緒にアプリをつくることができてうれしかったです。</p>
-
-<p>　</p>
-
-<p><a href="https://itunes.apple.com/jp/app/ghfeed/id683793545">アプリをダウンロード</a></p>
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-08-27T00:30:00+09:00" pubdate data-updated="true">Aug 27<span>th</span>, 2013</time></div>
-	
-</div>
-
-    <br/>
-    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/08/27/ghfeed/" data-text="モバイル版のGitHubにフィードがなかったので、補うiOSアプリをつくってリリースした" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/08/27/ghfeed/" >Tweet</a>
-    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
-    </article>
-
 <nav id="pagenavi">
     
         <a href="/blog/page/4/" class="prev">Prev</a>
@@ -357,7 +349,7 @@ NSRunLoopを回しながらverifyを反復して実行するというアレ気�
     <div class="center"><a href="/blog/archives">Blog Archives</a></div>
 </nav>
 </div>
-	<footer id="footer" class="inner">Copyright &copy; 2013
+	<footer id="footer" class="inner">Copyright &copy; 2014
 
     ishkawa
 

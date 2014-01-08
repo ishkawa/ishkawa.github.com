@@ -7,8 +7,7 @@
 	<meta name="author" content="ishkawa">
 
 	
-	<meta name="description" content="2013年の@synthesize Xcode 4.4でApple LLVM Compiler 4.0が採用されてから、いわゆるModern Objective-Cの一環として
-@synthesizeを書かなくても@synthesize foo = _foo; &hellip;">
+	<meta name="description" content="モバイル版のGitHubにフィードがなかったので、補うiOSアプリをつくってリリースした プッシュ通知などもついていて、なかなか便利なものになりました。 アプリをダウンロード 　 　 　 GitHubのモバイル版(Web)はかなり良くできていて流石だなあと思っていたのですが、 &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -53,6 +52,84 @@
 
 </header>
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2013/08/27/ghfeed/">
+		
+			モバイル版のGitHubにフィードがなかったので、補うiOSアプリをつくってリリースした</a>
+	</h2>
+	<div class="entry-content">
+		<p>プッシュ通知などもついていて、なかなか便利なものになりました。</p>
+
+<p><a href="https://itunes.apple.com/jp/app/ghfeed/id683793545">アプリをダウンロード</a></p>
+
+<p>　</p>
+
+<p><img src="/images/2013-08-27/feed.png">　<img src="/images/2013-08-27/page.png"></p>
+
+<p>　</p>
+
+<p>GitHubのモバイル版(Web)はかなり良くできていて流石だなあと思っていたのですが、
+肝心のフィードがなかったりして、モバイル版の役割を十分にカバーできていないと思いました。
+それを補うのがGHFeedです。具体的には以下の2つの機能を提供しています。</p>
+
+<ul>
+<li>フィードの表示</li>
+<li>ハイライトされるイベントをプッシュ通知</li>
+</ul>
+
+
+<p>前者はpull型の利用で、時間があるときにフィードを見て面白そうなリポジトリがあればスターをつけたりしておく、というような利用を想定しています。
+後者はpush型で、自分が関わるリポジトリにイベントがあった時に早く気づけるようにするという利用を想定しています。
+自分はこの2つの利用パターンが可能になって、はじめてモバイル版のGitHubが成り立つんじゃないかなあと思い、開発にいたりました。
+振り返ってみると、こういった用途はネイティブアプリの方が向いているので、ちょうど良かったのかもしれません。</p>
+
+<p>アプリは無料で広告もありませんが、設定画面にビールボタンがあるので、
+アプリを応援してくださる方は是非このボタンを押してみてください。よろしくお願いいたします。</p>
+
+<p>　</p>
+
+<p><img src="/images/2013-08-27/beer.png"></p>
+
+<p>　</p>
+
+<p>デザインは<a href="https://twitter.com/more_more_for">@more_more_for</a>くんに担当してもらいました。
+彼は前職の同期で、優秀で多忙な人なのですが、仕事の合間を縫って手伝ってもらいました。
+前職の時には一緒に仕事をする機会がなかったのですが、今回一緒にアプリをつくることができてうれしかったです。</p>
+
+<p>　</p>
+
+<p><a href="https://itunes.apple.com/jp/app/ghfeed/id683793545">アプリをダウンロード</a></p>
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-08-27T00:30:00+09:00" pubdate data-updated="true">Aug 27<span>th</span>, 2013</time></div>
+	
+</div>
+
+    <br/>
+    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/08/27/ghfeed/" data-text="モバイル版のGitHubにフィードがなかったので、補うiOSアプリをつくってリリースした" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/08/27/ghfeed/" >Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+    </article>
 
 
     <article class="post">
@@ -304,98 +381,6 @@ getterの実装を独自に行なっているのでインスタンス変数<code
     <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
     </article>
 
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2013/07/15/ocmarg-block/">
-		
-			OCMArgをBlocksとして渡すときに困ること</a>
-	</h2>
-	<div class="entry-content">
-		<p>iOSの標準フレームワークでは至るところにBlocksが登場します。
-引数として渡されるBlocks自体に制限を設けたテストを書くことはあまりないので
-<code>[OCMArg any]</code>を指定しようと考えるのですが、Blocksは内部的にcopyして扱われることが多いらしく、
-以下のようなテストを書くとOCMConstraintをcopyしようとしたところで例外が発生します。
-OCMConstraintがNSCopyingに適合していないので当然のことですが、ちょっと困ります。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">testSomeMethod</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="kt">id</span> <span class="n">mock</span> <span class="o">=</span> <span class="p">[</span><span class="n">OCMockObject</span> <span class="nl">partialMockForObject:</span><span class="n">viewController</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">[[</span><span class="n">mock</span> <span class="n">expect</span><span class="p">]</span> <span class="nl">dismissViewControllerAnimated:</span><span class="n">NO</span> <span class="nl">completion:</span><span class="p">[</span><span class="n">OCMArg</span> <span class="n">any</span><span class="p">]];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 何かする</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">STAssertNoThrow</span><span class="p">([</span><span class="n">mock</span> <span class="n">verify</span><span class="p">],</span> <span class="s">@&quot;did not dismiss.&quot;</span><span class="p">);</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>めんどくさいので自分は以下のようなコードをOCMConstraintのカテゴリに書いて問題を回避しました。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nf">copyWithZone:</span><span class="p">(</span><span class="n">NSZone</span> <span class="o">*</span><span class="p">)</span><span class="nv">zone</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">return</span> <span class="n">self</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>テストコードとは言えどもこういった雑なことばっかりしてるといつか痛い目に遭いそうだと思ったので、
-より良い方法があれば聞きたいところです。</p>
-
-<h3>追記</h3>
-
-<p>OCMock 2.2では同様の実装がされていると、<a href="https://twitter.com/azu_re/">@azu_re</a>さんに教えていただきました。<br/>
-2.2以降を利用すれば上記のメソッドを実装しなくてもcopyの問題は起こりません。</p>
-
-<blockquote class="twitter-tweet"><p><a href="https://twitter.com/_ishkawa">@_ishkawa</a> OCMock 2.2だとcopyWithZone: 実装されてるように見えるけど、これとは別? <a href="https://t.co/lDzgB5tMSb">https://t.co/lDzgB5tMSb</a> <a href="https://t.co/w11Yr14Um9">https://t.co/w11Yr14Um9</a></p>&mdash; azu (@azu_re) <a href="https://twitter.com/azu_re/statuses/356620135156551681">July 15, 2013</a></blockquote>
-
-
-<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
-
-
-
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-07-15T01:42:00+09:00" pubdate data-updated="true">Jul 15<span>th</span>, 2013</time></div>
-	
-</div>
-
-    <br/>
-    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/07/15/ocmarg-block/" data-text="OCMArgをBlocksとして渡すときに困ること" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/07/15/ocmarg-block/" >Tweet</a>
-    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
-    </article>
-
 <nav id="pagenavi">
     
         <a href="/blog/page/5/" class="prev">Prev</a>
@@ -406,7 +391,7 @@ OCMConstraintがNSCopyingに適合していないので当然のことですが�
     <div class="center"><a href="/blog/archives">Blog Archives</a></div>
 </nav>
 </div>
-	<footer id="footer" class="inner">Copyright &copy; 2013
+	<footer id="footer" class="inner">Copyright &copy; 2014
 
     ishkawa
 

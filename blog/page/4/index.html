@@ -7,7 +7,8 @@
 	<meta name="author" content="ishkawa">
 
 	
-	<meta name="description" content="Xcode 5でテストを分割実行する command + option + control + U で実行できます。 テストコードのファイルを開いているときに、テストケース内にカーソルを置いているとそのテストケースのみ実行され、 &hellip;">
+	<meta name="description" content="YAPC::Asia 2013に参加してきました Perlの人じゃなくても楽しいと聞いて参加してきました。 Perlの世界で活躍する人たちの長めのトークを聞けるだけでもありがたいことですが、
+その後は個人的に話を聞きに行ったりできる雰囲気になっていてすごく良いなと思いました。 &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -52,6 +53,51 @@
 
 </header>
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2013/09/22/yapc/">
+		
+			YAPC::Asia 2013に参加してきました</a>
+	</h2>
+	<div class="entry-content">
+		<p>Perlの人じゃなくても楽しいと聞いて参加してきました。</p>
+
+<p>Perlの世界で活躍する人たちの長めのトークを聞けるだけでもありがたいことですが、
+その後は個人的に話を聞きに行ったりできる雰囲気になっていてすごく良いなと思いました。
+会場の広場やバーでは似たような関心を持った人たちが議論していてうらやましかったのですが、
+こういうのは数日間開催されているからこそできることなんだなと思いました。</p>
+
+<p>iOS界隈でもこういうのがあったらいいですね。</p>
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-09-22T17:15:00+09:00" pubdate data-updated="true">Sep 22<span>nd</span>, 2013</time></div>
+	
+</div>
+
+    <br/>
+    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/09/22/yapc/" data-text="YAPC::Asia 2013に参加してきました" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/09/22/yapc/" >Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+    </article>
 
 
     <article class="post">
@@ -162,76 +208,6 @@ SenTestingKitベースになったKIFも分割実行できるので、UIテス�
     <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
     </article>
 
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2013/08/31/kif-next/">
-		
-			次世代のKIF(2.0.0)が良さそう</a>
-	</h2>
-	<div class="entry-content">
-		<p>KIFはSquare製のIntegration Testsのためのフレームワークです。
-この半年くらいでKIFは大幅なアップデートに取り組んでいるらしく、現在はプレリリース版の2.0.0pre5が公開されています。
-まだ正式版はリリースされていないのですが、ひとまずプレリリース版を動かしてみました。</p>
-
-<p><a href="https://github.com/kif-framework/KIF/tree/kif-next">KIF(kif-next)</a></p>
-
-<p>　</p>
-
-<p>KIFは元々GHUnitのようにアプリのビルドターゲットを複製し、エントリーポイントを少し変更することで複製したアプリ上でテストを走らせるというものでした。
-新しいバージョンではSenTestingKitを利用することでXcodeに統合されたテストとして実行できるようになりました。
-具体的には以下のようなメリットがあります。</p>
-
-<ul>
-<li>command+Uで実行できる</li>
-<li>エラーが出た箇所を追跡しやすい</li>
-<li>部分実行ができる</li>
-<li>xUnit/xSpec形式でテストを書ける</li>
-</ul>
-
-
-<p>SenTestingKitを利用している他のフレームワーク(Spectaとか)も利用できるようです。</p>
-
-<p>以下は実機上で動かしている様子です。</p>
-
-<iframe class="embed-preview" src="//gifboom.com/x/a8a13526/embed_content" width="600" height="600" frameborder="0" scrolling="no"></iframe>
-
-
-<script async src="//medias.gifboom.com/static/embed.1.js" charset="utf-8"></script>
-
-
-<p>一応、サンプルコードをGitHubに置いておきます。</p>
-
-<p><a href="https://github.com/ishkawa/KIFNextExample">KIFNextExample</a></p>
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-08-31T19:51:00+09:00" pubdate data-updated="true">Aug 31<span>st</span>, 2013</time></div>
-	
-</div>
-
-    <br/>
-    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/08/31/kif-next/" data-text="次世代のKIF(2.0.0)が良さそう" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/08/31/kif-next/" >Tweet</a>
-    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
-    </article>
-
 <nav id="pagenavi">
     
         <a href="/blog/page/3/" class="prev">Prev</a>
@@ -242,7 +218,7 @@ SenTestingKitベースになったKIFも分割実行できるので、UIテス�
     <div class="center"><a href="/blog/archives">Blog Archives</a></div>
 </nav>
 </div>
-	<footer id="footer" class="inner">Copyright &copy; 2013
+	<footer id="footer" class="inner">Copyright &copy; 2014
 
     ishkawa
 

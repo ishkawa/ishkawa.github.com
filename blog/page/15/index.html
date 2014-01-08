@@ -7,8 +7,8 @@
 	<meta name="author" content="ishkawa">
 
 	
-	<meta name="description" content="ミニマルなPomodoroタイマーを書きました 仕事に集中する方法は色々あると思いますが、その1つにPomodoroがあります。 25分仕事をして5分休憩するというのを4セットやって、30分休むというものです。
-作業を何セットでできるか見積もってやるらしいのですが、 &hellip;">
+	<meta name="description" content="1行で導入するback gestureの話とUINavigationBarを拡張した話 一昨日、conferenceWithDevelopersのLTで、1行で導入するback gestureの話をしてきました。
+LTの内容と、やろうとして間に合わなかったことの紹介を書きます。 &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -53,6 +53,296 @@
 
 </header>
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2013/02/24/backgesture-in-confwd/">
+		
+			1行で導入するback gestureの話とUINavigationBarを拡張した話</a>
+	</h2>
+	<div class="entry-content">
+		<p>一昨日、conferenceWithDevelopersのLTで、1行で導入するback gestureの話をしてきました。<br/>
+LTの内容と、やろうとして間に合わなかったことの紹介を書きます。</p>
+
+<h3>1行で導入するback gesture</h3>
+
+<p>iPhone 5が発売されて、<code>UINavigationBar</code>の<code>backButtonItem</code>に指が届きにくくなったので、
+スワイプして戻るという動作を実装するアプリが増えてきたように思います。</p>
+
+<p>これを実装するには<code>UIGestureRecognizer</code>を使ってあれこれするのですが、
+毎回これを書くのはだるいので、<code>UIViewController</code>を拡張して
+1行で導入できるようにしたライブラリを書きました。<br/>
+<a href="https://github.com/ishkawa/ISBackGesture">ISBackGesture</a></p>
+
+<h4>使い方</h4>
+
+<p><code>UIViewController</code>に<code>backGestureEnabled</code>というプロパティが追加されているので、
+これの値を<code>YES</code>にするだけです。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">UIViewController</span> <span class="o">*</span><span class="n">viewController</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UIViewController</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'><span class="n">viewController</span><span class="p">.</span><span class="n">backGestureEnabled</span> <span class="o">=</span> <span class="n">YES</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>progressも取得出来ます。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="kt">float</span> <span class="n">progress</span> <span class="o">=</span> <span class="n">viewController</span><span class="p">.</span><span class="n">backProgress</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h4>実装の話</h4>
+
+<p><code>UIViewController</code>の拡張はカテゴリで実現していて、ヘッダーは以下のようになっています。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &lt;UIKit/UIKit.h&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@interface</span> <span class="nc">UIViewController</span> <span class="nl">(BackGesture)</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">)</span> <span class="kt">BOOL</span> <span class="n">backGestureEnabled</span><span class="p">;</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">,</span> <span class="n">readonly</span><span class="p">)</span> <span class="kt">float</span> <span class="n">backProgress</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><code>viewDidLoad</code>の実装を書き換えて、<code>backGestureEnabled</code>が<code>YES</code>だったら
+<code>self.view</code>に<code>UIPanGestureRecognizer</code>を追加するという感じになっています。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">startRecognizing</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">self</span><span class="p">.</span><span class="n">isViewLoaded</span> <span class="o">||</span> <span class="o">!</span><span class="n">self</span><span class="p">.</span><span class="n">backGestureEnabled</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">return</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">self</span><span class="p">.</span><span class="n">backGestureRecognizer</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UIPanGestureRecognizer</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithTarget:</span><span class="n">self</span> <span class="nl">action:</span><span class="k">@selector</span><span class="p">(</span><span class="nl">handleGesture:</span><span class="p">)];</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">view</span> <span class="nl">addGestureRecognizer:</span><span class="n">self</span><span class="p">.</span><span class="n">backGestureRecognizer</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h4>スライド</h4>
+
+<p>&ldquo;ハゲ&#8221;ってところにSteve Jobsが写ってますが、気にしないでください。</p>
+
+<script async class="speakerdeck-embed" data-id="5b6384c0609e0130d93422000a1e9114" data-ratio="1.33333333333333" src="//speakerdeck.com/assets/embed.js"></script>
+
+
+<p></p>
+
+<p>　</p>
+
+<h3>UINavigationBarを拡張した話</h3>
+
+<p>このライブラリの目指すところは、元々webtronさんが提案していた
+&ldquo;Interaction Concept of Swiping to Go Back&#8221;を1行で導入できるようにすることでした。<br/>
+<a href="http://blog.webtron.jp/archives/2012/11/000092.html">Interaction Concept of Swiping to Go Back</a></p>
+
+<p><code>ISBackGesture</code>を拡張して実現できたのですが、1行で導入することに固執したせいで、
+プライベートクラスを使った骨の折れる作業が必要だったので、それを紹介します。<br/>
+(※ 以下に書くことはwebtronさんのコンセプト自体とは無関係です)<br/>
+(※ 先に紹介したバージョンの<code>ISBackGesture</code>ではプライベートクラスは利用していません。 )</p>
+
+<h4>UINavigationItemButtonViewのクラスの差し替え</h4>
+
+<p><code>UINavigationBar</code>のViewヒエラルキーの中のボタンにあたる部分は、
+<code>UINavigationItemButtonView</code>というプライベートなクラスで実装されています。
+デフォルトで表示される<code>backButtonItem</code>に戻りゲージをつけるために、
+このオブジェクトのクラスを差し替えました。
+クラスを差し替えるにはObjective-C Runtime APIにある、object_setClass()を使います。</p>
+
+<p>差し替えるタイミングには色々と候補がありますが、<code>UIView</code>の<code>didMoveToSuperview</code>を選びました。
+具体的には、<code>didMoveToSuperview</code>の実装を以下のものに差し替えます。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">_didMoveToSuperview</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">Class</span> <span class="n">class</span> <span class="o">=</span> <span class="n">NSClassFromString</span><span class="p">(</span><span class="s">@&quot;UINavigationItemButtonView&quot;</span><span class="p">);</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">([</span><span class="n">self</span> <span class="nl">isKindOfClass:</span><span class="n">class</span><span class="p">])</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">object_setClass</span><span class="p">(</span><span class="n">self</span><span class="p">,</span> <span class="p">[</span><span class="n">ISNavigationItemProgressButtonView</span> <span class="n">class</span><span class="p">]);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h4>ゲージを描画するUINavigationItemButtonViewの実装</h4>
+
+<p><code>UINavigationItemButtonView</code>のサブクラスを普通に作ることはできないので、
+一旦<code>UIView</code>のサブクラスを作成し、<code>load</code>の中でスーパークラスを差し替えます。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">+</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">load</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="err">@</span><span class="n">autoreleasepool</span> <span class="p">{</span>
+</span><span class='line'><span class="cp">#pragma clang diagnostic push</span>
+</span><span class='line'><span class="cp">#pragma clang diagnostic ignored &quot;-Wdeprecated-declarations&quot;</span>
+</span><span class='line'>        <span class="n">Class</span> <span class="n">class</span> <span class="o">=</span> <span class="n">NSClassFromString</span><span class="p">(</span><span class="s">@&quot;UINavigationItemButtonView&quot;</span><span class="p">);</span>
+</span><span class='line'>        <span class="n">class_setSuperclass</span><span class="p">([</span><span class="n">self</span> <span class="n">class</span><span class="p">],</span> <span class="n">class</span><span class="p">);</span>
+</span><span class='line'><span class="cp">#pragma clang diagnostic pop</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>progressの値に応じて、ゲージを描画します。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">setProgress:</span><span class="p">(</span><span class="kt">float</span><span class="p">)</span><span class="nv">progress</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">UIView</span> <span class="o">*</span><span class="n">progressView</span> <span class="o">=</span> <span class="n">objc_getAssociatedObject</span><span class="p">(</span><span class="n">self</span><span class="p">,</span> <span class="n">ISProgressViewKey</span><span class="p">);</span>
+</span><span class='line'>    <span class="n">CGRect</span> <span class="n">frame</span> <span class="o">=</span> <span class="n">progressView</span><span class="p">.</span><span class="n">frame</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">frame</span><span class="p">.</span><span class="n">origin</span><span class="p">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">self</span><span class="p">.</span><span class="n">frame</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">width</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.f</span> <span class="o">-</span> <span class="n">progress</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">progressView</span><span class="p">.</span><span class="n">frame</span> <span class="o">=</span> <span class="n">frame</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">progressView</span><span class="p">.</span><span class="n">alpha</span> <span class="o">=</span> <span class="n">pow</span><span class="p">(</span><span class="n">progress</span><span class="p">,</span> <span class="mf">1.2</span><span class="p">)</span> <span class="o">*</span> <span class="mf">.25f</span> <span class="o">+</span> <span class="mf">.1f</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><code>UINavigationItemButtonView</code>は<code>drawText:inRect:barStyle:</code>というメソッドの中で
+タイトルの描画をしているのですが、そのまま描画されてしまうとゲージの奥に隠れてしまうので、
+このメソッドでの文字列の描画をキャンセルし、代わりに<code>UILabel</code>をゲージの上に配置します。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">drawText:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">text</span> <span class="nf">inRect:</span><span class="p">(</span><span class="n">CGRect</span><span class="p">)</span><span class="nv">rect</span> <span class="nf">barStyle:</span><span class="p">(</span><span class="n">UIBarStyle</span><span class="p">)</span><span class="nv">style</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">UILabel</span> <span class="o">*</span><span class="n">label</span> <span class="o">=</span> <span class="n">objc_getAssociatedObject</span><span class="p">(</span><span class="n">self</span><span class="p">,</span> <span class="n">ISLabelKey</span><span class="p">);</span>
+</span><span class='line'>    <span class="n">label</span><span class="p">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">text</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h4>progressの受け渡し</h4>
+
+<p>UIViewControllerのgestureを受け取る箇所で<code>UINavigationItemButtonView</code>にprogressを渡します。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">for</span> <span class="p">(</span><span class="n">UIView</span> <span class="o">*</span><span class="n">subview</span> <span class="k">in</span> <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">navigationController</span><span class="p">.</span><span class="n">navigationBar</span> <span class="n">subviews</span><span class="p">])</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">([</span><span class="n">subview</span> <span class="nl">isKindOfClass:</span><span class="p">[</span><span class="n">ISNavigationItemProgressButtonView</span> <span class="n">class</span><span class="p">]])</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">ISNavigationItemProgressButtonView</span> <span class="o">*</span><span class="n">progressButtonView</span> <span class="o">=</span> <span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="n">subview</span><span class="p">;</span>
+</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="n">gestureRecognizer</span><span class="p">.</span><span class="n">state</span> <span class="o">==</span> <span class="n">UIGestureRecognizerStateChanged</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>            <span class="n">progressButtonView</span><span class="p">.</span><span class="n">progress</span> <span class="o">=</span> <span class="n">self</span><span class="p">.</span><span class="n">backProgress</span><span class="p">;</span>
+</span><span class='line'>        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>            <span class="p">[</span><span class="n">UIView</span> <span class="nl">animateWithDuration:</span><span class="mf">.3</span>
+</span><span class='line'>                             <span class="nl">animations:</span><span class="o">^</span><span class="p">{</span>
+</span><span class='line'>                                 <span class="n">progressButtonView</span><span class="p">.</span><span class="n">progress</span> <span class="o">=</span> <span class="mf">0.f</span><span class="p">;</span>
+</span><span class='line'>                             <span class="p">}];</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><code>else</code>では、gestureをやめたときに徐々にゲージが戻るようにしています。</p>
+
+<p>　</p>
+
+<p>以上のような感じで、以下のようなUIが1行で導入できるようになりました。</p>
+
+<iframe src="http://player.vimeo.com/video/60376912?title=0&amp;byline=0&amp;portrait=0" width="500" height="281" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>
+
+
+<p>こちらのバージョンのコードは別のブランチに置いてあります。<br/>
+<a href="https://github.com/ishkawa/ISBackGesture/tree/extended">ISBackGesture(extended)</a></p>
+
+<p>CocoaPodsを使う場合には、以下を指定してください。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>pod <span class="s1">&#39;ISBackGesture&#39;</span>, :git <span class="o">=</span>&gt; <span class="s1">&#39;git@github.com:ishkawa/ISBackGesture.git&#39;</span>, :commit <span class="o">=</span>&gt; <span class="s1">&#39;50fe279672256791e61fbb302676bfb6bafec6e0&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>　</p>
+
+<p>2つ目に紹介したバージョンではプライベートなクラスに触れてる箇所もあり、<br/>
+リジェクトされる可能性が高いので、プロダクトへの導入は自己責任でお願いします。</p>
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-02-24T13:33:00+09:00" pubdate data-updated="true">Feb 24<span>th</span>, 2013</time></div>
+	
+</div>
+
+    <br/>
+    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/02/24/backgesture-in-confwd/" data-text="1行で導入するback gestureの話とUINavigationBarを拡張した話" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/02/24/backgesture-in-confwd/" >Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+    </article>
 
 
     <article class="post">
@@ -180,102 +470,6 @@ Mountain Lion以降で動作します。</p>
     <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
     </article>
 
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2013/02/05/qiita-hackathon/">
-		
-			Qiita Hackathonに参加しました</a>
-	</h2>
-	<div class="entry-content">
-		<p>テーマはGitHub APIを利用してプログラマーの問題を解決するというものでした。<br/>
-<a href="http://qiitahackathon03.peatix.com">http://qiitahackathon03.peatix.com</a></p>
-
-<p>　</p>
-
-<h3>つくったもの</h3>
-
-<p>Gitのコミット毎に親コミットとのdiffから<code>TODO:</code>や<code>FIXME:</code>というコメントを探し出し、
-それを元に自動的にissueのオープン/クローズを行うツールをつくりました。
-このツールを使うと、<code>TODO:</code>コメントの挿入/削除 = issueのオープン/クローズとなります。
-あまりウケないかなと思っていたのですが、思いの外受け入れてくれた方がいて嬉しかったです。</p>
-
-<h3>スライド</h3>
-
-<p>GitHubのゲストの方向けに資料は英語で書かれていますが、発表は日本語でした。</p>
-
-<script async class="speakerdeck-embed" data-id="928eba30511601308fcd1231381d555c" data-ratio="1.33333333333333" src="//speakerdeck.com/assets/embed.js"></script>
-
-
-<p></p>
-
-<p>　</p>
-
-<h3>デモビデオ</h3>
-
-<p>発表のときはその場で実演しました。<br/>
-かなり緊張しました。</p>
-
-<iframe src="http://player.vimeo.com/video/58906330?title=0&amp;byline=0&amp;portrait=0" width="500" height="281" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>
-
-
-<p>(音声はありません。)</p>
-
-<p>　</p>
-
-<h3>実装方法</h3>
-
-<p>いつも通り、Objective-Cで書きました。<br/>
-前後のコミットの取得やdiffの取得にはlibgit2を利用しました。</p>
-
-<h3>結果</h3>
-
-<p>最優秀賞をいただきました。<br/>
-GitHubのScott Chacon氏にも&#8221;Great Idea&#8221;と褒めていただき、票も入れてくれたそうです。</p>
-
-<h3>今後</h3>
-
-<p>大変ありがたいことに、もし公開することになったら連絡をくださいと言ってくださった方が数名いました。
-が、現在のコードでは一部の実装が甘かったり、実行環境を整えるのに手間がかかったりするので、
-もう少し磨いてからソースを公開しようと思います。</p>
-
-<p>連絡先をいただいた方には、公開時にあらためて連絡いたします。</p>
-
-<p>&mdash;</p>
-
-<p>2日目は疲れてしまってほとんどコードが書けませんでしたが、
-なんとか動かせるところまで持って行けてよかったです。
-酔っ払いながら書いた部分が汚くて今の悩みの種となってしまいましたが、
-ハッカソンの夜はとても楽しかったです。</p>
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-02-05T00:45:00+09:00" pubdate data-updated="true">Feb 5<span>th</span>, 2013</time></div>
-	
-</div>
-
-    <br/>
-    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/02/05/qiita-hackathon/" data-text="Qiita Hackathonに参加しました" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/02/05/qiita-hackathon/" >Tweet</a>
-    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
-    </article>
-
 <nav id="pagenavi">
     
         <a href="/blog/page/14/" class="prev">Prev</a>
@@ -286,7 +480,7 @@ GitHubのScott Chacon氏にも&#8221;Great Idea&#8221;と褒めていただき�
     <div class="center"><a href="/blog/archives">Blog Archives</a></div>
 </nav>
 </div>
-	<footer id="footer" class="inner">Copyright &copy; 2013
+	<footer id="footer" class="inner">Copyright &copy; 2014
 
     ishkawa
 

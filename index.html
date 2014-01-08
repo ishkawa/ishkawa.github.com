@@ -7,8 +7,9 @@
 	<meta name="author" content="ishkawa">
 
 	
-	<meta name="description" content="Xcodebuildのログをxcprettyで整える Xcode 5になってからxcodebuildも進化していて、Xcode 4までネックになっていたApplication Testsの実行も簡単になりました。
-そういうわけで自分にとってのxctoolの必要性は薄まり、 &hellip;">
+	<meta name="description" content="デバッグ中にJSONをサッと出力する NSDictionaryやNSArrayのdescriptionはそれとなく見やすいフォーマットで出力されますが、JSONで欲しくなる場合があります。
+しかも、デバッグ中に欲しくなったりします。
+XcodeのLLDBは~/.lldbinit- &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -53,6 +54,82 @@
 
 </header>
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2014/01/09/lldb-json/">
+		
+			デバッグ中にJSONをサッと出力する</a>
+	</h2>
+	<div class="entry-content">
+		<p>NSDictionaryやNSArrayのdescriptionはそれとなく見やすいフォーマットで出力されますが、JSONで欲しくなる場合があります。
+しかも、デバッグ中に欲しくなったりします。
+XcodeのLLDBは<code>~/.lldbinit-Xcode</code>に独自のコマンドを定義することができるので、
+pretty printedなJSONを吐くコマンドを定義してカジュアルにJSONを得られるようにしてみました。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>command regex pj 's/^(.+)$/po [[NSString alloc] initWithData:[NSJSONSerialization dataWithJSONObject:%1 options:1 error:nil] encoding:4]/'</span></code></pre></td></tr></table></div></figure>
+
+
+<p>ここで定義した<code>pj</code>コマンドを使うと以下のようなNSDictionaryから</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="n">NSDictionary</span> <span class="o">*</span><span class="n">dictionary</span> <span class="o">=</span> <span class="err">@</span><span class="p">{</span><span class="s">@&quot;date&quot;</span><span class="o">:</span> <span class="s">@&quot;01-08-2014&quot;</span><span class="p">,</span>
+</span><span class='line'>                             <span class="s">@&quot;time&quot;</span><span class="o">:</span> <span class="s">@&quot;03:55:15&quot;</span><span class="p">,</span>
+</span><span class='line'>                             <span class="s">@&quot;epoch&quot;</span><span class="o">:</span> <span class="err">@</span><span class="mi">1389196515937</span><span class="p">};</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>以下のようなJSONを得られます</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="s">&quot;time&quot;</span> <span class="o">:</span> <span class="s">&quot;03:55:15&quot;</span><span class="p">,</span>
+</span><span class='line'>  <span class="s">&quot;epoch&quot;</span> <span class="o">:</span> <span class="mi">1389196515937</span><span class="p">,</span>
+</span><span class='line'>  <span class="s">&quot;date&quot;</span> <span class="o">:</span> <span class="s">&quot;01-08-2014&quot;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>元ネタは<a href="https://twitter.com/dealforest/status/420943227294736384">@dealforest</a>さんの以下の記事です。<br/>
+UIViewのrecursiveDescriptionを出力するコマンドなどの便利な例も紹介されています。</p>
+
+<p><a href="http://qiita.com/dealforest/items/e3a5284badd17733ccc1">続・Debugger の Tips &ndash; Qiita [キータ]</a></p>
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-01-09T00:44:00+09:00" pubdate data-updated="true">Jan 9<span>th</span>, 2014</time></div>
+	
+</div>
+
+    <br/>
+    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2014/01/09/lldb-json/" data-text="デバッグ中にJSONをサッと出力する" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2014/01/09/lldb-json/" >Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+    </article>
 
 
     <article class="post">
@@ -274,125 +351,6 @@ Xcode 5では<code>*.gcda</code>が出力されなくなってしまったらし
     <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
     </article>
 
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2013/11/22/wait-async-task/">
-		
-			単体テストの実行時に非同期処理を待つ</a>
-	</h2>
-	<div class="entry-content">
-		<p>SenTestingKit/XCTestは非同期処理を待たずにテストケースを終了してしまうので、
-直接SenTestingKit/XCTestを利用する場合には自分でNSRunLoopを回して処理の完了を待つ必要があります。
-これまでSenTestCaseにfinishedフラグが追加されたサブクラスを使ったりしていたのですが、
-どうしてもテストコードが明示的にならなくて悩んでいました。</p>
-
-<p>いままで書いていたテストコードは以下のような感じです。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">testExample</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="c1">// step 1</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">dispatch_queue_t</span> <span class="n">queue</span> <span class="o">=</span> <span class="n">dispatch_get_global_queue</span><span class="p">(</span><span class="n">DISPATCH_QUEUE_PRIORITY_DEFAULT</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
-</span><span class='line'>    <span class="n">dispatch_async</span><span class="p">(</span><span class="n">queue</span><span class="p">,</span> <span class="o">^</span><span class="p">(</span><span class="kt">void</span><span class="p">){</span>
-</span><span class='line'>        <span class="c1">// step 3</span>
-</span><span class='line'>        <span class="p">[</span><span class="n">self</span> <span class="n">stopWaiting</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">});</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// step 2</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">self</span> <span class="n">startWaiting</span><span class="p">];</span>
-</span><span class='line'>    <span class="c1">// step 4</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>これではどのようにして待っているのかあまり想像がつきませんし、順序をひと目で理解することも難しいです。
-そこで、昨日新しい方法を考えました。
-以下のように書くと、実行順序も上から順番通りになりますし、何をしているのか明示的になったと思います。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">testPerformBlockAndWait</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="c1">// step 1</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="p">[[</span><span class="n">NSRunLoop</span> <span class="n">currentRunLoop</span><span class="p">]</span> <span class="nl">performBlockAndWait:</span><span class="o">^</span><span class="p">(</span><span class="kt">BOOL</span> <span class="o">*</span><span class="n">finish</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="n">dispatch_queue_t</span> <span class="n">queue</span> <span class="o">=</span> <span class="n">dispatch_get_global_queue</span><span class="p">(</span><span class="n">DISPATCH_QUEUE_PRIORITY_DEFAULT</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
-</span><span class='line'>        <span class="n">dispatch_async</span><span class="p">(</span><span class="n">queue</span><span class="p">,</span> <span class="o">^</span><span class="p">(</span><span class="kt">void</span><span class="p">){</span>
-</span><span class='line'>            <span class="c1">// step 2</span>
-</span><span class='line'>            <span class="o">*</span><span class="n">finish</span> <span class="o">=</span> <span class="n">YES</span><span class="p">;</span>
-</span><span class='line'>        <span class="p">});</span>
-</span><span class='line'>    <span class="p">}];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// step 3</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>NSRunLoopのperformBlockAndWait:は新しく拡張したメソッドで、名前からわかる通りNSManagedObjectContextの
-performBlockAndWait:を使っているときに思いつきました。
-BOOL *を渡すアイディアはNSArrayのenumerateObjectsUsingBlock:を真似しました。</p>
-
-<p>このコードを使えるようにするためのNSRunLoopのカテゴリはまとめて以下のリポジトリに置いてあります。
-興味がある人は是非使ってみてください。
-もっといいアイディアがあるという人は是非教えて下さい。</p>
-
-<p><a href="https://github.com/ishkawa/NSRunLoop-PerformBlock">NSRunLoop-PerformBlock</a></p>
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-11-22T00:23:00+09:00" pubdate data-updated="true">Nov 22<span>nd</span>, 2013</time></div>
-	
-</div>
-
-    <br/>
-    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/11/22/wait-async-task/" data-text="単体テストの実行時に非同期処理を待つ" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/11/22/wait-async-task/" >Tweet</a>
-    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
-    </article>
-
 <nav id="pagenavi">
     
     
@@ -401,7 +359,7 @@ BOOL *を渡すアイディアはNSArrayのenumerateObjectsUsingBlock:を真似�
     <div class="center"><a href="/blog/archives">Blog Archives</a></div>
 </nav>
 </div>
-	<footer id="footer" class="inner">Copyright &copy; 2013
+	<footer id="footer" class="inner">Copyright &copy; 2014
 
     ishkawa
 

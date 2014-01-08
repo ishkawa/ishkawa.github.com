@@ -7,9 +7,8 @@
 	<meta name="author" content="ishkawa">
 
 	
-	<meta name="description" content="ISRefreshControl 1.4.0をリリースしました 内容 iOS 4に対応
-drawRect:で描画する方式からCAShapeLayerに移行
-UIActivityIndicatorViewの表示/非表示を切り替えるときに回転させる 　 理由 iOS &hellip;">
+	<meta name="description" content="頑張ってOCLintを使ってみた結果 意識が高まり、OCLintを使ってみました。 手順 OCLintの公式のドキュメントを頑張って読んでも使い方はわかるのですが、
+以下のリンク&#8221;Give a try&#8221;という項目に従うと手っ取り早く試せます。 Integrating &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -54,6 +53,180 @@ UIActivityIndicatorViewの表示/非表示を切り替えるときに回転さ�
 
 </header>
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2013/06/09/oclint/">
+		
+			頑張ってOCLintを使ってみた結果</a>
+	</h2>
+	<div class="entry-content">
+		<p>意識が高まり、OCLintを使ってみました。</p>
+
+<h3>手順</h3>
+
+<p>OCLintの公式のドキュメントを頑張って読んでも使い方はわかるのですが、<br/>
+以下のリンク&#8221;Give a try&#8221;という項目に従うと手っ取り早く試せます。</p>
+
+<p><a href="http://gavrix.wordpress.com/2013/02/28/integrating-oclint-in-xcode/">Integrating OCLint in Xcode</a></p>
+
+<h3>結果</h3>
+
+<p><a href="https://github.com/ishkawa/ISRefreshControl">ISRefreshControl</a>で試しました。
+ご覧の通り、たくさん怒られています。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Pods/ISMethodSwizzling/ISMethodSwizzling/ISMethodSwizzling.m:9:1: long line P3 Line with 138 characters exceeds limit of 100
+</span><span class='line'>Pods/ISMethodSwizzling/ISMethodSwizzling/ISMethodSwizzling.m:10:1: long line P3 Line with 138 characters exceeds limit of 100
+</span><span class='line'>Pods/ISMethodSwizzling/ISMethodSwizzling/ISMethodSwizzling.m:23:1: long line P3 Line with 138 characters exceeds limit of 100
+</span><span class='line'>Pods/ISMethodSwizzling/ISMethodSwizzling/ISMethodSwizzling.m:24:1: long line P3 Line with 138 characters exceeds limit of 100
+</span><span class='line'>Pods/ISMethodSwizzling/ISMethodSwizzling/ISMethodSwizzling.m:18:5: parameter reassignment P3
+</span><span class='line'>ISRefreshControl/ISGumView.m:59:1: long line P3 Line with 124 characters exceeds limit of 100
+</span><span class='line'>ISRefreshControl/ISGumView.m:132:1: long line P3 Line with 105 characters exceeds limit of 100
+</span><span class='line'>ISRefreshControl/ISGumView.m:133:1: long line P3 Line with 102 characters exceeds limit of 100
+</span><span class='line'>ISRefreshControl/ISGumView.m:141:1: long line P3 Line with 111 characters exceeds limit of 100
+</span><span class='line'>ISRefreshControl/ISGumView.m:162:1: long line P3 Line with 103 characters exceeds limit of 100
+</span><span class='line'>ISRefreshControl/ISGumView.m:167:1: long line P3 Line with 103 characters exceeds limit of 100
+</span><span class='line'>ISRefreshControl/ISGumView.m:189:1: long line P3 Line with 101 characters exceeds limit of 100
+</span><span class='line'>ISRefreshControl/ISGumView.m:197:1: long line P3 Line with 101 characters exceeds limit of 100
+</span><span class='line'>ISRefreshControl/ISGumView.m:205:1: long line P3 Line with 105 characters exceeds limit of 100
+</span><span class='line'>ISRefreshControl/ISGumView.m:146:1: long method P3 Method with 64 lines exceeds limit of 50
+</span><span class='line'>ISRefreshControl/ISGumView.m:146:1: high ncss method P2 Method of 50 non-commenting source statements exceeds limit of 30
+</span><span class='line'>ISRefreshControl/ISRefreshControl.m:154:5: collapsible if statements P3
+</span><span class='line'>ISRefreshControl/ISRefreshControl.m:166:1: high cyclomatic complexity P2 Cyclomatic Complexity Number 16 exceeds limit of 10
+</span><span class='line'>ISRefreshControl/ISRefreshControl.m:34:13: inverted logic P3
+</span><span class='line'>ISRefreshControl/ISRefreshControl.m:35:1: long line P3 Line with 108 characters exceeds limit of 100
+</span><span class='line'>ISRefreshControl/ISRefreshControl.m:143:1: long line P3 Line with 102 characters exceeds limit of 100
+</span><span class='line'>ISRefreshControl/ISRefreshControl.m:152:1: long line P3 Line with 124 characters exceeds limit of 100
+</span><span class='line'>ISRefreshControl/ISRefreshControl.m:175:1: long line P3 Line with 106 characters exceeds limit of 100
+</span><span class='line'>ISRefreshControl/ISRefreshControl.m:179:1: long line P3 Line with 104 characters exceeds limit of 100
+</span><span class='line'>ISRefreshControl/ISRefreshControl.m:275:1: long line P3 Line with 115 characters exceeds limit of 100
+</span><span class='line'>ISRefreshControl/ISRefreshControl.m:187:5: missing break in switch statement P3
+</span><span class='line'>ISRefreshControl/ISRefreshControl.m:187:5: switch statements should have default P3
+</span><span class='line'>ISRefreshControl/UITableViewController+ISRefreshControl.m:14:1: long line P3 Line with 109 characters exceeds limit of 100
+</span><span class='line'>ISRefreshControl/UITableViewController+ISRefreshControl.m:15:1: long line P3 Line with 113 characters exceeds limit of 100
+</span><span class='line'>ISRefreshControl/UITableViewController+ISRefreshControl.m:16:1: long line P3 Line with 106 characters exceeds limit of 100
+</span><span class='line'>ISRefreshControl/UITableViewController+ISRefreshControl.m:45:1: long line P3 Line with 109 characters exceeds limit of 100
+</span><span class='line'>ISRefreshControl/UITableViewController+ISRefreshControl.m:50:1: long line P3 Line with 108 characters exceeds limit of 100
+</span><span class='line'>ISRefreshControl/UITableView+ISRefreshControl.m:12:1: long line P3 Line with 105 characters exceeds limit of 100
+</span><span class='line'>ISRefreshControl/ISScalingActivityIndicatorView.m:51:1: long line P3 Line with 107 characters exceeds limit of 100
+</span><span class='line'>ISRefreshControl/ISScalingActivityIndicatorView.m:56:1: long line P3 Line with 107 characters exceeds limit of 100
+</span><span class='line'>ISRefreshControl/ISScalingActivityIndicatorView.m:61:1: long line P3 Line with 104 characters exceeds limit of 100
+</span><span class='line'>ISRefreshControl/ISScalingActivityIndicatorView.m:65:1: long line P3 Line with 110 characters exceeds limit of 100
+</span><span class='line'>ISRefreshControl/ISScalingActivityIndicatorView.m:78:1: long line P3 Line with 101 characters exceeds limit of 100
+</span><span class='line'>ISRefreshControl/ISScalingActivityIndicatorView.m:87:1: long line P3 Line with 101 characters exceeds limit of 100
+</span><span class='line'>ISRefreshControl/ISScalingActivityIndicatorView.m:95:1: long line P3 Line with 104 characters exceeds limit of 100
+</span><span class='line'>ISRefreshControl/ISScalingActivityIndicatorView.m:99:1: long line P3 Line with 110 characters exceeds limit of 100</span></code></pre></td></tr></table></div></figure>
+
+
+<p>レポートの出力時に<code>-o=report.html -html</code>をつけるとHTMLのレポートも出してくれます。</p>
+
+<p>&mdash;</p>
+
+<h3>感想</h3>
+
+<p>OCLintの警告にはそれぞれの1〜3のPriorityがつけられていて、値が小さいほどやばいものです。<br/>
+今回の結果ではP2, P3の警告が出ていたので、それらについて感想を書きます。</p>
+
+<h3>P3</h3>
+
+<ul>
+<li>long line (行が100文字以上)</li>
+<li>long method (メソッドが50行以上)</li>
+<li>parameter reassignment (変数が使い回されている)</li>
+<li>collapsible if statements (分解できる(?)if文がある)</li>
+<li>switch statements should have default (defaultがないswitch文がある)</li>
+</ul>
+
+
+<p>全体的に正しいのですが、改めて指摘されると舌打ちしたくなるというのがP3の感想です。</p>
+
+<p>defaultがないswitch文は、typedefしてXcodeにcase漏れをチェックさせるようにしていたので、<br/>
+そちらの方を優先しようかなあと思いました。(defaultを書くとcase漏れを見つけにくいので。)</p>
+
+<h3>P2</h3>
+
+<ul>
+<li>high ncss method (30行以上コメントがないメソッドがある)</li>
+<li>high cyclomatic complexity (<a href="http://en.wikipedia.org/wiki/Cyclomatic_complexity">cyclomatic complexity</a>が10以上(とにかくなんか複雑らしい))</li>
+</ul>
+
+
+<p>P3と比べると謝る気が起きる内容でした。</p>
+
+<p>&mdash;</p>
+
+<p>この記事を書いている間に意識が下がってしまったので、OCLintは一旦見送ることにしました。<br/>
+これから使い始める人はP1, P2あたりから気にすると良いのではないでしょうか。</p>
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-06-09T18:41:00+09:00" pubdate data-updated="true">Jun 9<span>th</span>, 2013</time></div>
+	
+</div>
+
+    <br/>
+    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/06/09/oclint/" data-text="頑張ってOCLintを使ってみた結果" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/06/09/oclint/" >Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+    </article>
 
 
     <article class="post">
@@ -296,97 +469,6 @@ UIActivityIndicatorViewの表示/非表示を切り替えるときに回転さ�
     <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
     </article>
 
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2013/06/01/alternative-refresh-control/">
-		
-			カスタマイズ可能なUIRefreshControlのインターフェースについて考えた</a>
-	</h2>
-	<div class="entry-content">
-		<p>インターフェースというのはプログラム上のものを指します。</p>
-
-<p>iphone_dev_jpの勉強会で、独自の<code>UIRefreshControl</code>を実装するにはどうすればよいか、<br/>
-という質問をいただきましたので、しばらく考えていました。</p>
-
-<p><code>UIRefreshControl</code>のメソッド群はよく隠蔽化されていて、カスタマイズすることは難しいです。<br/>
-なので、独自のものをつくるには<code>UIControl</code>からスタートすることになると思います。<br/>
-どんなインターフェースがあれば<code>UIRefershControl</code>はカスタマイズ可能だったのかと考えつつ、<br/>
-独自の<code>UIRefreshControl</code>を実装するための抽象的なクラスを実装しました。</p>
-
-<p><a href="https://github.com/ishkawa/ISAlternativeRefreshControl">ISAlternativeRefreshControl</a></p>
-
-<p>&mdash;</p>
-
-<h3>抽象クラスが持つ値</h3>
-
-<ul>
-<li><code>progress</code>: <code>UIControlEventValueChanged</code>を発火させるまでの引っ張り具合(0.0〜1.0)</li>
-<li><code>refreshingState</code>: 更新前/更新中/更新後の状態</li>
-<li><code>firesOnRelease</code>: 閾値を超えたらすぐ発火するか、閾値を超えた状態で指を離してから発火するか</li>
-</ul>
-
-
-<h3><code>progress</code>の変更を通知するメソッド</h3>
-
-<ul>
-<li><code>willChangeProgress:</code></li>
-<li><code>didChangeProgress</code></li>
-</ul>
-
-
-<p>これらのタイミングで、<code>progress</code>に応じて<code>UIRefreshControl</code>を変形させます。<br/>
-公式の<code>UIRefreshControl</code>であれば<code>progress</code>に応じて伸び具合を変え、<br/>
-従来型の矢印の&#8221;引っぱって更新&#8221;であれば<code>progress</code>に応じて角度を変えます。</p>
-
-<h3><code>refreshingState</code>の変更を通知するメソッド</h3>
-
-<ul>
-<li><code>willChangeProgress:</code></li>
-<li><code>didChangeProgress</code></li>
-</ul>
-
-
-<p>これらのタイミングで、状態に応じたアニメーションを開始したりします。<br/>
-公式の<code>UIRefreshControl</code>であればガムを収縮させて<code>UIActivityIndicator</code>を拡大させ、<br/>
-従来型の矢印の&#8221;引っぱって更新&#8221;であれば矢印を消して<code>UIActivityIndicator</code>を表示します。</p>
-
-<p>&mdash;</p>
-
-<p>このようなインターフェースがあれば、上記のメソッドをオーバーライドすることで、<br/>
-独自の動きを表現する実装が可能となるはずです。<br/>
-実際、従来型の&#8221;引っぱって更新&#8221;や公式の<code>UIRefreshControl</code>はこれらの枠組みで再現できました。</p>
-
-<p>興味が有る方はリポジトリにデモアプリが入っているので見てみてください。</p>
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-06-01T01:14:00+09:00" pubdate data-updated="true">Jun 1<span>st</span>, 2013</time></div>
-	
-</div>
-
-    <br/>
-    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/06/01/alternative-refresh-control/" data-text="カスタマイズ可能なUIRefreshControlのインターフェースについて考えた" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/06/01/alternative-refresh-control/" >Tweet</a>
-    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
-    </article>
-
 <nav id="pagenavi">
     
         <a href="/blog/page/8/" class="prev">Prev</a>
@@ -397,7 +479,7 @@ UIActivityIndicatorViewの表示/非表示を切り替えるときに回転さ�
     <div class="center"><a href="/blog/archives">Blog Archives</a></div>
 </nav>
 </div>
-	<footer id="footer" class="inner">Copyright &copy; 2013
+	<footer id="footer" class="inner">Copyright &copy; 2014
 
     ishkawa
 

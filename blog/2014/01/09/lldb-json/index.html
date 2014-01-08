@@ -1,0 +1,154 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>デバッグ中にJSONをサッと出力する</title>
+	<meta name="author" content="ishkawa">
+
+	
+	<meta name="description" content="デバッグ中にJSONをサッと出力する NSDictionaryやNSArrayのdescriptionはそれとなく見やすいフォーマットで出力されますが、JSONで欲しくなる場合があります。
+しかも、デバッグ中に欲しくなったりします。
+XcodeのLLDBは~/.lldbinit- &hellip;">
+	
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="blog.ishkawa.org" type="application/atom+xml">
+	<link rel="canonical" href="">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<script async="true" src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	
+</head>
+
+
+<body>
+	<header id="header" class="inner"><h1><a href="/">blog.ishkawa.org</a></h1>
+<nav id="main-nav"><ul class="main">
+  <li><a href="https://twitter.com/_ishkawa">Twitter</a></li>
+  <li><a href="https://github.com/ishkawa">GitHub</a></li>
+</ul>
+
+</nav>
+<nav id="mobile-nav">
+	<div class="alignleft menu">
+		<a class="button">Menu</a>
+		<div class="container"><ul class="main">
+  <li><a href="https://twitter.com/_ishkawa">Twitter</a></li>
+  <li><a href="https://github.com/ishkawa">GitHub</a></li>
+</ul>
+
+</div>
+	</div>
+	<div class="alignright search">
+		<a class="button"></a>
+		<div class="container">
+			<form action="http://google.com/search" method="get">
+				<input type="text" name="q" results="0">
+				<input type="hidden" name="q" value="site:blog.ishkawa.org">
+			</form>
+		</div>
+	</div>
+</nav>
+
+</header>
+	<div id="content" class="inner"><article class="post">
+	<h2 class="title">デバッグ中にJSONをサッと出力する</h2>
+	<div class="entry-content"><p>NSDictionaryやNSArrayのdescriptionはそれとなく見やすいフォーマットで出力されますが、JSONで欲しくなる場合があります。
+しかも、デバッグ中に欲しくなったりします。
+XcodeのLLDBは<code>~/.lldbinit-Xcode</code>に独自のコマンドを定義することができるので、
+pretty printedなJSONを吐くコマンドを定義してカジュアルにJSONを得られるようにしてみました。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>command regex pj 's/^(.+)$/po [[NSString alloc] initWithData:[NSJSONSerialization dataWithJSONObject:%1 options:1 error:nil] encoding:4]/'</span></code></pre></td></tr></table></div></figure>
+
+
+<p>ここで定義した<code>pj</code>コマンドを使うと以下のようなNSDictionaryから</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="n">NSDictionary</span> <span class="o">*</span><span class="n">dictionary</span> <span class="o">=</span> <span class="err">@</span><span class="p">{</span><span class="s">@&quot;date&quot;</span><span class="o">:</span> <span class="s">@&quot;01-08-2014&quot;</span><span class="p">,</span>
+</span><span class='line'>                             <span class="s">@&quot;time&quot;</span><span class="o">:</span> <span class="s">@&quot;03:55:15&quot;</span><span class="p">,</span>
+</span><span class='line'>                             <span class="s">@&quot;epoch&quot;</span><span class="o">:</span> <span class="err">@</span><span class="mi">1389196515937</span><span class="p">};</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>以下のようなJSONを得られます</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="s">&quot;time&quot;</span> <span class="o">:</span> <span class="s">&quot;03:55:15&quot;</span><span class="p">,</span>
+</span><span class='line'>  <span class="s">&quot;epoch&quot;</span> <span class="o">:</span> <span class="mi">1389196515937</span><span class="p">,</span>
+</span><span class='line'>  <span class="s">&quot;date&quot;</span> <span class="o">:</span> <span class="s">&quot;01-08-2014&quot;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>元ネタは<a href="https://twitter.com/dealforest/status/420943227294736384">@dealforest</a>さんの以下の記事です。<br/>
+UIViewのrecursiveDescriptionを出力するコマンドなどの便利な例も紹介されています。</p>
+
+<p><a href="http://qiita.com/dealforest/items/e3a5284badd17733ccc1">続・Debugger の Tips &ndash; Qiita [キータ]</a></p>
+</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-01-09T00:44:00+09:00" pubdate data-updated="true">Jan 9<span>th</span>, 2014</time></div>
+	
+</div>
+
+    <br/>
+    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2014/01/09/lldb-json/" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2014/01/09/lldb-json/" >Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+</article>
+
+</div>
+	<footer id="footer" class="inner">Copyright &copy; 2014
+
+    ishkawa
+
+</footer>
+	<script src="/javascripts/slash.js"></script>
+<script src="/javascripts/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+	$('.fancybox').fancybox();
+})(jQuery);
+</script> <!-- Delete or comment this line to disable Fancybox -->
+
+
+
+
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-35917440-1']);
+		_gaq.push(['_trackPageview']);
+
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
+
+
+
+</body>
+</html>
