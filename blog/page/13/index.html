@@ -7,9 +7,8 @@
 	<meta name="author" content="ishkawa">
 
 	
-	<meta name="description" content="iOS6(ARC)でのGCDのメモリ管理 Deployment TargetがiOS6.0以上の場合、GCDのオブジェクトもARCの管轄下になるらしいです。　　
-以下のStack Overflowによると&lt;os/object.h&gt;というヘッダに書かれているそうです。
-Why is &hellip;">
+	<meta name="description" content="通信用のNSOperationをモック化する 最近書いているアプリでは、ISHTTPOperationという通信用のNSOperationを採用しています。
+使い方はNSURLConnectionのsendAsynchronousRequest:queue:completionHandler: &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -54,6 +53,322 @@ Why is &hellip;">
 
 </header>
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2013/03/23/mock-connection/">
+		
+			通信用のNSOperationをモック化する</a>
+	</h2>
+	<div class="entry-content">
+		<p>最近書いているアプリでは、<code>ISHTTPOperation</code>という通信用の<code>NSOperation</code>を採用しています。<br/>
+使い方は<code>NSURLConnection</code>の<code>sendAsynchronousRequest:queue:completionHandler:</code>と大体同じです。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="n">NSURL</span> <span class="o">*</span><span class="n">URL</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSURL</span> <span class="nl">URLWithString:</span><span class="s">@&quot;http://date.jsontest.com&quot;</span><span class="p">];</span>
+</span><span class='line'><span class="n">NSURLRequest</span> <span class="o">*</span><span class="n">request</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSURLRequest</span> <span class="nl">requestWithURL:</span><span class="n">URL</span><span class="p">];</span>
+</span><span class='line'><span class="p">[</span><span class="n">ISHTTPOperation</span> <span class="nl">sendRequest:</span><span class="n">request</span> <span class="nl">handler:</span><span class="o">^</span><span class="p">(</span><span class="n">NSHTTPURLResponse</span> <span class="o">*</span><span class="n">response</span><span class="p">,</span> <span class="kt">id</span> <span class="n">object</span><span class="p">,</span> <span class="n">NSError</span> <span class="o">*</span><span class="n">error</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">error</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">return</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="c1">// completion</span>
+</span><span class='line'><span class="p">}];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>で、通信を含む処理のテストを書くとき、完了ハンドラの引数に任意の値を入れたかったりします。<br/>
+なので、<code>ISHTTPOperation</code>をモック化する<code>ISHTTPOperationMockifier</code>というのをつくりました。</p>
+
+<p><a href="https://github.com/ishkawa/ISHTTPOperation">ISHTTPOperation</a><br/>
+<a href="https://github.com/ishkawa/ISHTTPOperationMockifier">ISHTTPOperationMockifier</a></p>
+
+<h3>使い方</h3>
+
+<ul>
+<li><code>ISHTTPOperationMockifier</code>をつくる</li>
+<li>完了ハンドラに入れたい値を<code>mockifier</code>にセットする</li>
+<li><code>[mockifier mockify]</code></li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">testSuccessCase</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">NSDictionary</span> <span class="o">*</span><span class="n">dictionary</span> <span class="o">=</span>  <span class="err">@</span><span class="p">{</span><span class="s">@&quot;hogeKey&quot;</span><span class="o">:</span> <span class="s">@&quot;hogeValue&quot;</span><span class="p">};</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">ISHTTPOperationMockifier</span> <span class="o">*</span><span class="n">mockifier</span> <span class="o">=</span> <span class="p">[[</span><span class="n">ISHTTPOperationMockifier</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">mockifier</span><span class="p">.</span><span class="n">statusCode</span> <span class="o">=</span> <span class="mi">200</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">mockifier</span><span class="p">.</span><span class="n">object</span> <span class="o">=</span> <span class="n">dictionary</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">mockifier</span><span class="p">.</span><span class="n">error</span> <span class="o">=</span> <span class="nb">nil</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">mockifier</span> <span class="n">mockify</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="p">[</span><span class="n">ISHTTPOperation</span> <span class="nl">sendRequest:</span><span class="n">_request</span> <span class="nl">handler:</span><span class="o">^</span><span class="p">(</span><span class="n">NSHTTPURLResponse</span> <span class="o">*</span><span class="n">response</span><span class="p">,</span> <span class="kt">id</span> <span class="n">object</span><span class="p">,</span> <span class="n">NSError</span> <span class="o">*</span><span class="n">error</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">STAssertEqualObjects</span><span class="p">([</span><span class="n">object</span> <span class="nl">objectForKey:</span><span class="s">@&quot;hogeKey&quot;</span><span class="p">],</span> <span class="p">[</span><span class="n">dictionary</span> <span class="nl">objectForKey:</span><span class="s">@&quot;hogeKey&quot;</span><span class="p">],</span> <span class="nb">nil</span><span class="p">);</span>
+</span><span class='line'>        <span class="p">[</span><span class="n">self</span> <span class="n">endWaiting</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">}];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="p">[</span><span class="n">self</span> <span class="n">beginWaiting</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>仕組み</h3>
+
+<p><code>mockify</code>の中身は以下のようになっていて、</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">mockify</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">self</span><span class="p">.</span><span class="n">isMockified</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">return</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">Class</span> <span class="n">class</span> <span class="o">=</span> <span class="p">[</span><span class="n">ISHTTPOperation</span> <span class="n">class</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">objc_setAssociatedObject</span><span class="p">(</span><span class="n">class</span><span class="p">,</span> <span class="n">ISHTTPOperationMockStatusCodeKey</span><span class="p">,</span> <span class="err">@</span><span class="p">(</span><span class="n">self</span><span class="p">.</span><span class="n">statusCode</span><span class="p">),</span> <span class="n">OBJC_ASSOCIATION_RETAIN</span><span class="p">);</span>
+</span><span class='line'>    <span class="n">objc_setAssociatedObject</span><span class="p">(</span><span class="n">class</span><span class="p">,</span> <span class="n">ISHTTPOperationMockObjectKey</span><span class="p">,</span> <span class="n">self</span><span class="p">.</span><span class="n">object</span><span class="p">,</span> <span class="n">OBJC_ASSOCIATION_RETAIN</span><span class="p">);</span>
+</span><span class='line'>    <span class="n">objc_setAssociatedObject</span><span class="p">(</span><span class="n">class</span><span class="p">,</span> <span class="n">ISHTTPOperationMockErrorKey</span><span class="p">,</span> <span class="n">self</span><span class="p">.</span><span class="n">error</span><span class="p">,</span> <span class="n">OBJC_ASSOCIATION_RETAIN</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">ISSwizzleInstanceMethod</span><span class="p">(</span><span class="n">class</span><span class="p">,</span> <span class="k">@selector</span><span class="p">(</span><span class="n">main</span><span class="p">),</span> <span class="k">@selector</span><span class="p">(</span><span class="n">_main</span><span class="p">));</span>
+</span><span class='line'>    <span class="n">self</span><span class="p">.</span><span class="n">mockified</span> <span class="o">=</span> <span class="n">YES</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><code>ISHTTPOperation</code>の<code>main</code>が以下のものに差し替えられます。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">_main</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">dispatch_async</span><span class="p">(</span><span class="n">dispatch_get_main_queue</span><span class="p">(),</span> <span class="o">^</span><span class="p">{</span>
+</span><span class='line'>        <span class="n">Class</span> <span class="n">class</span> <span class="o">=</span> <span class="p">[</span><span class="n">ISHTTPOperation</span> <span class="n">class</span><span class="p">];</span>
+</span><span class='line'>        <span class="n">NSInteger</span> <span class="n">statusCode</span> <span class="o">=</span> <span class="p">[</span><span class="n">objc_getAssociatedObject</span><span class="p">(</span><span class="n">class</span><span class="p">,</span> <span class="n">ISHTTPOperationMockStatusCodeKey</span><span class="p">)</span> <span class="n">integerValue</span><span class="p">];</span>
+</span><span class='line'>        <span class="kt">id</span> <span class="n">object</span> <span class="o">=</span> <span class="n">objc_getAssociatedObject</span><span class="p">(</span><span class="n">class</span><span class="p">,</span> <span class="n">ISHTTPOperationMockObjectKey</span><span class="p">);</span>
+</span><span class='line'>        <span class="n">NSError</span> <span class="o">*</span><span class="n">error</span> <span class="o">=</span> <span class="n">objc_getAssociatedObject</span><span class="p">(</span><span class="n">class</span><span class="p">,</span> <span class="n">ISHTTPOperationMockErrorKey</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="n">NSHTTPURLResponse</span> <span class="o">*</span><span class="n">response</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSHTTPURLResponse</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithURL:</span><span class="n">self</span><span class="p">.</span><span class="n">request</span><span class="p">.</span><span class="n">URL</span>
+</span><span class='line'>                                                                  <span class="nl">statusCode:</span><span class="n">statusCode</span>
+</span><span class='line'>                                                                 <span class="nl">HTTPVersion:</span><span class="s">@&quot;1.1&quot;</span>
+</span><span class='line'>                                                                <span class="nl">headerFields:</span><span class="nb">nil</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="n">self</span><span class="p">.</span><span class="n">handler</span><span class="p">(</span><span class="n">response</span><span class="p">,</span> <span class="n">object</span><span class="p">,</span> <span class="n">error</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">});</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="p">[</span><span class="n">self</span> <span class="n">completeOperation</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>通信をする部分を、予めセットした値を引数とするハンドラの実行にすり替えたわけです。<br/>
+このすり替えは、<code>ISHTTPOperationMockifier</code>が生存している間のみ有効です。</p>
+
+<h3>実際の例</h3>
+
+<p>ViewControllerに以下のような処理があったとします。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">refresh</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">NSURL</span> <span class="o">*</span><span class="n">URL</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSURL</span> <span class="nl">URLWithString:</span><span class="s">@&quot;http://date.jsontest.com&quot;</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">NSURLRequest</span> <span class="o">*</span><span class="n">request</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSURLRequest</span> <span class="nl">requestWithURL:</span><span class="n">URL</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">ISHTTPOperation</span> <span class="nl">sendRequest:</span><span class="n">request</span> <span class="nl">handler:</span><span class="o">^</span><span class="p">(</span><span class="n">NSHTTPURLResponse</span> <span class="o">*</span><span class="n">response</span><span class="p">,</span> <span class="kt">id</span> <span class="n">object</span><span class="p">,</span> <span class="n">NSError</span> <span class="o">*</span><span class="n">error</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="n">error</span> <span class="o">||</span> <span class="n">response</span><span class="p">.</span><span class="n">statusCode</span> <span class="o">!=</span> <span class="mi">200</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>            <span class="k">return</span><span class="p">;</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="p">[</span><span class="n">self</span> <span class="nl">insertObjectsWithData:</span><span class="n">object</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">}];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">insertObjectsWithData:</span><span class="p">(</span><span class="n">NSData</span> <span class="o">*</span><span class="p">)</span><span class="nv">data</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="c1">// NSManagedObjectをつくったりする</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>これに対して以下のようなテストを書くことができます。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">testUpdateData</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">NSData</span> <span class="o">*</span><span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="s">@&quot;hoge&quot;</span> <span class="nl">dataUsingEncoding:</span><span class="n">NSUTF8StringEncoding</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">ISHTTPOperationMockifier</span> <span class="o">*</span><span class="n">mockifier</span> <span class="o">=</span> <span class="p">[[</span><span class="n">ISHTTPOperationMockifier</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">mockifier</span><span class="p">.</span><span class="n">statusCode</span> <span class="o">=</span> <span class="mi">200</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">mockifier</span><span class="p">.</span><span class="n">object</span> <span class="o">=</span> <span class="n">data</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">mockifier</span><span class="p">.</span><span class="n">error</span> <span class="o">=</span> <span class="nb">nil</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">mockifier</span> <span class="n">mockify</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kt">id</span> <span class="n">mock</span> <span class="o">=</span> <span class="p">[</span><span class="n">OCMockObject</span> <span class="nl">partialmockiforObject:</span><span class="n">_viewController</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[[</span><span class="n">mock</span> <span class="n">expect</span><span class="p">]</span> <span class="nl">insertObjectsWithData:</span><span class="p">[</span><span class="n">OCMArg</span> <span class="n">any</span><span class="p">]];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="p">[</span><span class="n">_viewController</span> <span class="n">refresh</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[[</span><span class="n">NSRunLoop</span> <span class="n">currentRunLoop</span><span class="p">]</span> <span class="nl">runUntilDate:</span><span class="p">[</span><span class="n">NSDate</span> <span class="nl">dateWithTimeIntervalSinceNow:</span><span class="mf">.1</span><span class="p">]];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">STAssertNoThrow</span><span class="p">([</span><span class="n">mock</span> <span class="n">verify</span><span class="p">],</span> <span class="nb">nil</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">testFailUpdatingData</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">NSError</span> <span class="o">*</span><span class="n">mockError</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSError</span> <span class="nl">errorWithDomain:</span><span class="s">@&quot;ISHTTPOperationDomain&quot;</span>
+</span><span class='line'>                                             <span class="nl">code:</span><span class="o">-</span><span class="mi">1234</span>
+</span><span class='line'>                                         <span class="nl">userInfo:</span><span class="nb">nil</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">ISHTTPOperationMockifier</span> <span class="o">*</span><span class="n">mockifier</span> <span class="o">=</span> <span class="p">[[</span><span class="n">ISHTTPOperationMockifier</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">mockifier</span><span class="p">.</span><span class="n">statusCode</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">mockifier</span><span class="p">.</span><span class="n">object</span> <span class="o">=</span> <span class="nb">nil</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">mockifier</span><span class="p">.</span><span class="n">error</span> <span class="o">=</span> <span class="n">mockError</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">mockifier</span> <span class="n">mockify</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kt">id</span> <span class="n">mock</span> <span class="o">=</span> <span class="p">[</span><span class="n">OCMockObject</span> <span class="nl">partialmockiforObject:</span><span class="n">_viewController</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[[</span><span class="n">mock</span> <span class="n">expect</span><span class="p">]</span> <span class="nl">insertObjectsWithData:</span><span class="p">[</span><span class="n">OCMArg</span> <span class="n">any</span><span class="p">]];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="p">[</span><span class="n">_viewController</span> <span class="n">refresh</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[[</span><span class="n">NSRunLoop</span> <span class="n">currentRunLoop</span><span class="p">]</span> <span class="nl">runUntilDate:</span><span class="p">[</span><span class="n">NSDate</span> <span class="nl">dateWithTimeIntervalSinceNow:</span><span class="mf">.1</span><span class="p">]];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">STAssertThrows</span><span class="p">([</span><span class="n">mock</span> <span class="n">verify</span><span class="p">],</span> <span class="nb">nil</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>1個目は通信成功時に<code>insertObjectsWithData:</code>が呼ばれるテストで、<br/>
+2個めは通信失敗時に<code>insertObjectsWithData:</code>が呼ばれないテストです。</p>
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-03-23T18:37:00+09:00" pubdate data-updated="true">Mar 23<span>rd</span>, 2013</time></div>
+	
+</div>
+
+    <br/>
+    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/03/23/mock-connection/" data-text="通信用のNSOperationをモック化する" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/03/23/mock-connection/" >Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+    </article>
 
 
     <article class="post">
@@ -314,65 +629,6 @@ Application Testsはアプリの中で実行されるから可能というのは
 
     <br/>
     <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/03/13/bundle-in-logic-tests/" data-text="OCUnitのLogic Testsではできないこと" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/03/13/bundle-in-logic-tests/" >Tweet</a>
-    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
-    </article>
-
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2013/03/12/xcode-solarized/">
-		
-			XcodeのSolarizedを入れ替えた</a>
-	</h2>
-	<div class="entry-content">
-		<p>VimやiTermのカラースキームにはSolarized Darkを使っていて大変気に入っているのですが、<br/>
-XcodeのSolarizedはなんだかきつい色の組み合わせが頻出すると思ったのでちょっと変えました。</p>
-
-<p>ちなみにオリジナルは以下です。<br/>
-<a href="https://github.com/brianmichel/solarized/tree/master/apple-xcode4-solarized">brianmichel / solarized</a></p>
-
-<h4>Before</h4>
-
-<p><img src="/images/2013-03-12/before.png"></p>
-
-<h4>After</h4>
-
-<p><img src="/images/2013-03-12/after.png"></p>
-
-<p>　</p>
-
-<p>本当はコンパイラディレクティブとその他のキーワードも分けたかったのですが、<br/>
-そのような分別がなさそうだったのであきらめました。</p>
-
-<p>ソースはこちらです。<br/>
-Menlo 11pt祭になってますが気にしないでください。<br/>
-<a href="https://gist.github.com/ishkawa/5140559">ishkawa / Solarized &ndash; Dark 2.dvtcolortheme</a></p>
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-03-12T21:32:00+09:00" pubdate data-updated="true">Mar 12<span>th</span>, 2013</time></div>
-	
-</div>
-
-    <br/>
-    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/03/12/xcode-solarized/" data-text="XcodeのSolarizedを入れ替えた" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/03/12/xcode-solarized/" >Tweet</a>
     <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
     </article>
 

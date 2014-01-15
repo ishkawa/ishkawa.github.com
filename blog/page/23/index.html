@@ -7,7 +7,7 @@
 	<meta name="author" content="ishkawa">
 
 	
-	<meta name="description" content="iOS5の非同期通信が楽になっていた。 iOS5になってからNSURLConnectionまわりの様子が変わったなあと思っていたら、sendAsynchronousRequest:queue:completionHandler:という便利なメソッドが追加されていました。というわけで、 &hellip;">
+	<meta name="description" content="Facebook iOS SDKを使わずにアクセストークンを取得する。 Facebook iOS SDKのコードを軽く読んでみて、あまり使う気がしなかったので、SDKを使わずにAPIを叩こうかなと思いました。まずはアクセストークンを取得するコードを書きました。defineしている諸々には、 &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -52,6 +52,45 @@
 
 </header>
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2012/03/11/facebook-ios-sdk/">
+		
+			Facebook iOS SDKを使わずにアクセストークンを取得する。</a>
+	</h2>
+	<div class="entry-content">
+		<div class='post'>
+Facebook iOS SDKのコードを軽く読んでみて、あまり使う気がしなかったので、<br />SDKを使わずにAPIを叩こうかなと思いました。<br /><br />まずはアクセストークンを取得するコードを書きました。<br />defineしている諸々には、予め設定したものを使います。<br /><script src="https://gist.github.com/2011808.js?file=ViewController.m"></script><br /><br />ここではUIWebViewを使いましたが、アプリにURLスキームを設定して<br />Safariからコールバックを受け取るのがいいと思います。<br /><br />もしSDKを使うべき理由がありましたら、教えていただけると幸いです。<br /><br />参考：<a href="http://developers.facebook.com/docs/authentication/" target="_blank">http://developers.facebook.com/docs/authentication/</a></div>
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-03-11T00:00:00+09:00" pubdate data-updated="true">Mar 11<span>th</span>, 2012</time></div>
+	
+</div>
+
+    <br/>
+    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2012/03/11/facebook-ios-sdk/" data-text="Facebook iOS SDKを使わずにアクセストークンを取得する。" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2012/03/11/facebook-ios-sdk/" >Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+    </article>
 
 
     <article class="post">

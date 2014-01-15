@@ -4,7 +4,7 @@
   <title><![CDATA[blog.ishkawa.org]]></title>
   <link href="http://blog.ishkawa.org/atom.xml" rel="self"/>
   <link href="http://blog.ishkawa.org/"/>
-  <updated>2014-01-09T01:20:49+09:00</updated>
+  <updated>2014-01-15T23:45:46+09:00</updated>
   <id>http://blog.ishkawa.org/</id>
   <author>
     <name><![CDATA[ishkawa]]></name>
@@ -12,6 +12,42 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[XCTest + iOS 7でCoverallsを利用する]]></title>
+    <link href="http://blog.ishkawa.org/blog/2014/01/15/ios7-xctest-coveralls/"/>
+    <updated>2014-01-15T23:14:00+09:00</updated>
+    <id>http://blog.ishkawa.org/blog/2014/01/15/ios7-xctest-coveralls</id>
+    <content type="html"><![CDATA[<p>XCTest + iOS7でテストを実行しても上手くコードカバレッジが取得できずに困っていたのですが、
+最近<a href="https://twitter.com/tokorom">@tokorom</a>さんが取得できる方法を紹介していたので、
+そちらを参考にして対応してみました。資料は以下のものです。</p>
+
+<p><a href="https://speakerdeck.com/tokorom/my-unit-test-environment-for-objective-c">My unit test environment for Objective-C</a></p>
+
+<p>Coverallsに対応したライブラリは以下のものです。</p>
+
+<ul>
+<li><a href="http://github.com/ishkawa/ISHTTPOperation">ISHTTPOperation</a></li>
+<li><a href="http://github.com/ishkawa/ISDiskCache">ISDiskCache</a></li>
+<li><a href="http://github.com/ishkawa/ISMemoryCache">ISMemoryCache</a></li>
+<li><a href="http://github.com/ishkawa/NSRunLoop-PerformBlock">NSRunLoop+PerformBlock</a></li>
+</ul>
+
+
+<p>対応の肝となるのは<a href="http://github.com/ishkawa/ISGcovFlusher">ISGcovFlusher</a>をテストターゲットに追加しておくことです。
+これを追加することでテスト終了時に<code>__gcov_flush()</code>を自動的に呼んでくれて<code>*.gcda</code>が出力されるようになります。
+なお、<code>__gcov_flush()</code>を呼び出すにはBuild Settingsの&#8221;Instrument Program Flow&#8221;と&#8221;Generate Test Coverage Files&#8221;をYESにする必要があるようです。</p>
+
+<p>その他の詳しいことは各リポジトリの以下のファイルを参照してください。</p>
+
+<ul>
+<li>Podfile</li>
+<li>Makefile</li>
+<li>.travis.yml</li>
+</ul>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[デバッグ中にJSONをサッと出力する]]></title>
@@ -1258,35 +1294,6 @@ OCMConstraintがNSCopyingに適合していないので当然のことですが�
 
 
 
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[コードカバレッジを計測してみた感想]]></title>
-    <link href="http://blog.ishkawa.org/blog/2013/07/08/code-coverage/"/>
-    <updated>2013-07-08T20:52:00+09:00</updated>
-    <id>http://blog.ishkawa.org/blog/2013/07/08/code-coverage</id>
-    <content type="html"><![CDATA[<p>先週末、およそ3ヶ月ぶりにNode.jsのコードを書きました。</p>
-
-<p>いつの間にかテストをそれほど苦労せずに書けるようになっていて、
-たくさんテストを書いて意識が高まり、コードカバレッジを計測しようと思いました。
-コードカバレッジを計測するのは今回が生まれて初めてでした。
-何処かで&#8221;コードカバレッジは目安に過ぎない&#8221;みたいな話を聞いて、
-コードカバレッジの効果に対しては半信半疑なところがありましたが、
-とにかくそのときは意識が高まっていたので頑張って計測できるようにしました。
-参考にしたのは以下のブログ記事です。
-あまり深いことはわからないのですが、jscoverageが実行回数を測定できるプロダクトコードのコピーを生成し、
-テストコードからそれを実行することでコードカバレッジを計測できるという感じの仕組みのようです。</p>
-
-<p><a href="http://www.seejohncode.com/2012/03/13/setting-up-mocha-jscoverage/">http://www.seejohncode.com/2012/03/13/setting-up-mocha-jscoverage/</a></p>
-
-<h4>感想</h4>
-
-<p>&ldquo;コードカバレッジは目安に過ぎない&#8221;というのは、コードカバレッジを計測した経験がある人とない人とでは捉え方が変わると思いました。
-コードカバレッジを計測してみる前は&#8221;目安に過ぎないから計測してもしなくても大差ない&#8221;というような気がしていたのですが、
-計測してその結果を活用して開発をしてみると&#8221;無意味な変更でパーセンテージが変化する場合があるから目安&#8221;なのかなと思いました。
-で、結局目安と言いながらも明らかにカバーできていない箇所を発見できたりして開発にとても役立つので、
-本業のiOS開発の方でも頑張ってやってみようと思いました。</p>
 ]]></content>
   </entry>
   

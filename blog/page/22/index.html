@@ -7,7 +7,7 @@
 	<meta name="author" content="ishkawa">
 
 	
-	<meta name="description" content="iOS向けフレームワークを作成するテンプレート XcodeにはMac向けフレームワークのテンプレートが用意されているのですが、iOSには静的ライブラリのプロジェクトテンプレートしか用意されていません。フレームワークを自力で作成するのはちょっとつらそうだなあと思っていたら、 &hellip;">
+	<meta name="description" content="ミニマルな通信モジュールを書きました ネットワーク通信を書くのは面倒なものです。かと言って毎回マッチョなライブラリに頼るのも気が引けるので、ネットワーク通信をするためのミニマルなモジュールを書きました。https://github.com/ishkawa/ &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -52,6 +52,45 @@
 
 </header>
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2012/05/27/blog-post/">
+		
+			ミニマルな通信モジュールを書きました</a>
+	</h2>
+	<div class="entry-content">
+		<div class='post'>
+ネットワーク通信を書くのは面倒なものです。<br />かと言って毎回マッチョなライブラリに頼るのも気が引けるので、<br />ネットワーク通信をするためのミニマルなモジュールを書きました。<br /><a href="https://github.com/ishkawa/ISNetwork" target="_blank">https://github.com/ishkawa/ISNetwork</a><br /><br />基本的な使い方は以下のとおりです。<br /><br /><script src="https://gist.github.com/2802460.js?file=gistfile1.txt"></script><br /><div style="margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px;">やってくれることは大体以下の3つです。<br />・NSURLConnectionDataDelegateのあれこれ<br />・NSOperationQueueを使った通信と通信インジケーターの管理<br />・終了ハンドラーの実行<br /><br />UIImageの作成やJSONパースは結構パフォーマンスに影響するので、</div>ISNetworkOperationのサブクラスではデータ加工まで別スレッドで実行し、<br />終了後のハンドラーをメインスレッドで実行するようにしています。<br /><br />通信を一括してキャンセルする場合は以下のコードを実行します。<br /><script src="https://gist.github.com/2802457.js?file=gistfile1.txt"></script><br />アプリでよく使う通信がある場合、ISNetworkOperationのサブクラスをつくると<br />通信周りのコードをかなり減らせると思います。<br /><br />例：OAuthCoreを使ってTwitterとやりとりするサブクラス<br /><br /><script src="https://gist.github.com/2802535.js?file=ISTwitterOperation.h"></script><br /><script src="https://gist.github.com/2802535.js?file=ISTwitterOperation.m"></script><br />※NSDictionaryからパラメーターを作るカテゴリも使ってます。<br /><a href="https://github.com/ishkawa/NSDictionary-URLQuery" target="_blank">https://github.com/ishkawa/NSDictionary-URLQuery</a><br /><br />このサブクラスを使うと以下のコードでTwitterとやりとりできるようになります。<br /><br /><script src="https://gist.github.com/2802535.js?file=gistfile1.m"></script><br />データの加工を変えたい場合にはprocessData:をオーバーライドしてください。<br />好きなJSONパーサを使ったりXMLをパースしたり、ご自由にどうぞ。</div>
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-05-27T00:00:00+09:00" pubdate data-updated="true">May 27<span>th</span>, 2012</time></div>
+	
+</div>
+
+    <br/>
+    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2012/05/27/blog-post/" data-text="ミニマルな通信モジュールを書きました" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2012/05/27/blog-post/" >Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+    </article>
 
 
     <article class="post">
@@ -128,45 +167,6 @@ Xcodeのテンプレートは何かと世話を焼きすぎる感があります
 
     <br/>
     <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2012/04/11/xcode-43/" data-text="Xcode 4.3のテンプレートを変更する" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2012/04/11/xcode-43/" >Tweet</a>
-    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
-    </article>
-
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2012/03/11/facebook-ios-sdk/">
-		
-			Facebook iOS SDKを使わずにアクセストークンを取得する。</a>
-	</h2>
-	<div class="entry-content">
-		<div class='post'>
-Facebook iOS SDKのコードを軽く読んでみて、あまり使う気がしなかったので、<br />SDKを使わずにAPIを叩こうかなと思いました。<br /><br />まずはアクセストークンを取得するコードを書きました。<br />defineしている諸々には、予め設定したものを使います。<br /><script src="https://gist.github.com/2011808.js?file=ViewController.m"></script><br /><br />ここではUIWebViewを使いましたが、アプリにURLスキームを設定して<br />Safariからコールバックを受け取るのがいいと思います。<br /><br />もしSDKを使うべき理由がありましたら、教えていただけると幸いです。<br /><br />参考：<a href="http://developers.facebook.com/docs/authentication/" target="_blank">http://developers.facebook.com/docs/authentication/</a></div>
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-03-11T00:00:00+09:00" pubdate data-updated="true">Mar 11<span>th</span>, 2012</time></div>
-	
-</div>
-
-    <br/>
-    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2012/03/11/facebook-ios-sdk/" data-text="Facebook iOS SDKを使わずにアクセストークンを取得する。" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2012/03/11/facebook-ios-sdk/" >Tweet</a>
     <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
     </article>
 

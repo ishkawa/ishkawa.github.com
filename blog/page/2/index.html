@@ -7,8 +7,8 @@
 	<meta name="author" content="ishkawa">
 
 	
-	<meta name="description" content="単体テストの実行時に非同期処理を待つ SenTestingKit/XCTestは非同期処理を待たずにテストケースを終了してしまうので、
-直接SenTestingKit/XCTestを利用する場合には自分でNSRunLoopを回して処理の完了を待つ必要があります。 &hellip;">
+	<meta name="description" content="Travis CIがXcode 5に対応してからのあれこれ Xcode 5のxcodebuildでテストを実行するにはxcodebuild testを使うといいみたいです。
+man xcodebuildのbuildactionの説明に以下のように書かれているので-scheme &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -53,6 +53,99 @@
 
 </header>
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2013/11/28/xcode-5-xcodebuild/">
+		
+			Travis CIがXcode 5に対応してからのあれこれ</a>
+	</h2>
+	<div class="entry-content">
+		<p>Xcode 5のxcodebuildでテストを実行するには<code>xcodebuild test</code>を使うといいみたいです。
+<code>man xcodebuild</code>のbuildactionの説明に以下のように書かれているので<code>-scheme SchemeName</code>が必要となります。
+Travis CIなどの手元以外の環境でbuild schemeを利用する場合には、他の環境でも同じbuild schemeを使えるようにする必要があるので、
+あらかじめXcodeのManage SchemeというメニューのShareというチェックボックスを有効しておく必要があります。</p>
+
+<blockquote><p>This requires specifying a scheme and optionally a destination.</p></blockquote>
+
+<p>Xcode 4のときにはMakefileを以下のように書いていましたが</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>test:
+</span><span class='line'>    xcodebuild \
+</span><span class='line'>        -sdk iphonesimulator \
+</span><span class='line'>        -target ISFooTests \
+</span><span class='line'>        -configuration Debug \
+</span><span class='line'>        clean build \
+</span><span class='line'>        TEST_AFTER_BUILD=YES</span></code></pre></td></tr></table></div></figure>
+
+
+<p><code>xcodebuild test</code>を使う形式に書き換えると</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>test:
+</span><span class='line'>    xcodebuild \
+</span><span class='line'>        -sdk iphonesimulator \
+</span><span class='line'>        -scheme ISFoo \
+</span><span class='line'>        -configuration Debug \
+</span><span class='line'>        clean build test</span></code></pre></td></tr></table></div></figure>
+
+
+<p>という感じになります。</p>
+
+<p>Xcode 4では普通にテストを書いて適切にcpp-coverallsを実行すればコードカバレッジまで取得できたのですが、
+Xcode 5では<code>*.gcda</code>が出力されなくなってしまったらしくてそのままではコードカバレッジを測れないようです。</p>
+
+<blockquote class="twitter-tweet" lang="ja"><p><a href="https://twitter.com/_ishkawa">@_ishkawa</a> iOS7だと.gcdaが出てこない問題?&#10;<a href="http://t.co/PCPIVz2BDU">http://t.co/PCPIVz2BDU</a>&#10;<a href="https://t.co/4ESNcybO8W">https://t.co/4ESNcybO8W</a></p>&mdash; azu (@azu_re) <a href="https://twitter.com/azu_re/statuses/405963463421218816">2013, 11月 28</a></blockquote>
+
+
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+
+<p>詳しい話は<a href="https://twitter.com/azu_re">@azu_re</a>さんのツイートのリンク先に書いてあって、
+テスト完了後に<code>__gcov_flush()</code>というものを実行すると解決できるようなのですが、まだ試していません。</p>
+
+<p>上手くいっている例があったら覗きに行きます。</p>
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-11-28T20:34:00+09:00" pubdate data-updated="true">Nov 28<span>th</span>, 2013</time></div>
+	
+</div>
+
+    <br/>
+    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/11/28/xcode-5-xcodebuild/" data-text="Travis CIがXcode 5に対応してからのあれこれ" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/11/28/xcode-5-xcodebuild/" >Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+    </article>
 
 
     <article class="post">
@@ -257,135 +350,6 @@ BOOL *を渡すアイディアはNSArrayのenumerateObjectsUsingBlock:を真似�
 
     <br/>
     <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/11/18/persistent-stack/" data-text="ISPersistentStackというCoreDataのヘルパーを書いた" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/11/18/persistent-stack/" >Tweet</a>
-    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
-    </article>
-
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2013/11/16/nsnull/">
-		
-			JSONにNSNullが入ってきたとき</a>
-	</h2>
-	<div class="entry-content">
-		<p>多くのiOSアプリはサーバーとの通信が必要で、やりとりされるデータのフォーマットにはJSONが採用されることが多いと思います。
-iOS 5からは標準ライブラリにNSJSONSerializationが導入され、特に理由がなければJSONのエンコード/デコードにはこれを利用します。
-NSJSONSerializationが扱うオブジェクトは以下の5種類のオブジェクトです。</p>
-
-<ul>
-<li>NSString</li>
-<li>NSNumber</li>
-<li>NSArray</li>
-<li>NSDictionary</li>
-<li>NSNull</li>
-</ul>
-
-
-<p>そこで心配になるのが、予期しないところにNSNullが入ってきて&#8221;unrecognized selector sent to instance.&ldquo;となってしまうことです。
-NSNullではなくてnilが入っていてほしいと考える人は多いようですが、そもそもNSArrayやNSDictonaryはnilを含むことはできず、
-そのような状況でnull値を表すためにNSNullが存在するのです。NSNullのドキュメントにもまさにその通りのことが書いてあります。</p>
-
-<blockquote><p>The NSNull class defines a singleton object used to represent null values in collection objects (which don’t allow nil values).</p></blockquote>
-
-<p>しかし、実際NSNullが原因となってクラッシュすることもあるので、それを回避する方法と、
-それらの方法を利用するときに気をつけるべきことを書きます。</p>
-
-<h3>NSNullをnilとして振る舞わせる方法</h3>
-
-<p>NSNullのforwardInvocation:とmethodSignatureForSelector:を上手く書き換えると、
-NSNullは実装されていないメソッドの呼び出しは無視するようになり、&#8221;unrecognized selector sent to instance.&ldquo;を回避できるようになります。
-このテクニックは以前からよく知られていたもので、自分は<a href="https://twitter.com/k_katsumi">@k_katsumi</a>さんの
-<a href="http://d.hatena.ne.jp/KishikawaKatsumi/20110505/1304598102">ブログ</a>で見たのが最初でした。
-ライブラリとしてまとまっているものにはnicklockwood氏の<a href="https://github.com/nicklockwood/nullsafe">NullSafe</a>などがあります。</p>
-
-<p>このテクニックの良いところはNSNullがオブジェクトであることを半分忘れてしまって、まるでnilのように扱えることです。
-一度アプリの何処かでこれを実装してしまえば、二度とNSNullが&#8221;unrecognized selector sent to instance.&ldquo;をあげることがなくなります。</p>
-
-<p>逆に良くないところもあって、その1つはNSNullは完全にnilになるわけではないということです。
-例えば以下のコードで<code>[dictionary objectForKey:@"foo"]</code>がNSNullを返す場合、条件式はYESとなります。
-つまり、NSNullは依然としてnilではなく、単に&#8221;unrecognized selector sent to instance&#8221;をあげなくなっただけということを頭に入れなければなりません。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">if</span> <span class="p">([</span><span class="n">dictionary</span> <span class="nl">objectForKey:</span><span class="s">@&quot;foo&quot;</span><span class="p">])</span> <span class="p">{</span>
-</span><span class='line'>    <span class="c1">// do something ...</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>また、アプリ全体に影響を与えてしまうということもあまり良いことではないのかもしれません。
-このテクニックはNSNullの本来の役割である&#8221;null値を表すsingleton&#8221;という性質を壊すことなく実装されているのですが、
-CocoaPodsが十分に普及してきた昨今、グローバルなものの振る舞いを変えることは十分に検討した方が良さそうです。
-それと、&#8221;処理上に明示されてない何かによって本来とは違う挙動になる&#8221;ということも忘れてはいけません。</p>
-
-<h3>NSNullを一括で削除してしまう方法</h3>
-
-<p>前の方法が高度なテクニックを利用したhackだったのに対して、こちらは愚直な方法です。
-NSArrayやNSDictionaryのvalueを探索してNSNullを削除してしまえば、[NSArray objectAtIndex:]や
-[NSDictionary objectForKey:]でNSNullが返ってくることはありません。
-NSDictionaryに関して言えば、元々NSNullが入っていたkeyに対してobjectForKey:は本物のnilを返すので、
-前のテクニックよりも望ましい状態になると言えます。</p>
-
-<p>当然のことなんですが、NSNullが削除されてしまうと[NSArray count]や[[NSDictionary allValues] count]は変わってしまうので、
-countが重要なケースではNSNullが削除されていることを頭に入れておく必要はあります。</p>
-
-<p>NSNullの一括削除を実装するのは地味に面倒な上にミスをしやすいので、
-自分はいつも<a href="https://github.com/ishkawa/ISRemoveNull">ISRemoveNull</a>を利用しています。
-以下のようなコードでNSNullがすべて削除されたNSDictionaryを得ることができます。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="n">NSDictionary</span> <span class="o">*</span><span class="n">strippedDictionary</span> <span class="o">=</span> <span class="p">[</span><span class="n">dictionary</span> <span class="n">dictionaryByRemovingNull</span><span class="p">];</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>ISRemoveNullはデフォルトで再帰的にNSArrayやNSDictionaryを探索するつくりになっているので、
-深いネストがあるJSONのNSNullもすべて取り除くことができます。</p>
-
-<h3>おまけ: NSNullを判別する条件式</h3>
-
-<p>NSNullを判別する条件式は以下のものが妥当なようです。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">if</span> <span class="p">(</span><span class="n">object</span> <span class="o">==</span> <span class="p">[</span><span class="n">NSNull</span> <span class="n">null</span><span class="p">])</span> <span class="p">{</span>
-</span><span class='line'>    <span class="c1">// object is null</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>もちろん、<code>[object isEqual:[NSNull null]]</code>や<code>[object isKindOfClass:[NSNull class]]</code>でも判別できるのですが、
-NSNullはそもそもsingletonなのでisEqual:やisKindOfClass:で比較する必要はないのです。
-(必要はないというだけで、isEqual:やisKindOfClass:が間違いというわけではありません。)</p>
-
-<p>ちなみに、Appleのサンプルコードでも<code>object == [NSNull null]</code>が利用されていました。</p>
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-11-16T20:55:00+09:00" pubdate data-updated="true">Nov 16<span>th</span>, 2013</time></div>
-	
-</div>
-
-    <br/>
-    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/11/16/nsnull/" data-text="JSONにNSNullが入ってきたとき" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/11/16/nsnull/" >Tweet</a>
     <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
     </article>
 

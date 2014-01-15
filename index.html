@@ -7,9 +7,9 @@
 	<meta name="author" content="ishkawa">
 
 	
-	<meta name="description" content="デバッグ中にJSONをサッと出力する NSDictionaryやNSArrayのdescriptionはそれとなく見やすいフォーマットで出力されますが、JSONで欲しくなる場合があります。
-しかも、デバッグ中に欲しくなったりします。
-XcodeのLLDBは~/.lldbinit- &hellip;">
+	<meta name="description" content="XCTest + iOS 7でCoverallsを利用する XCTest + iOS7でテストを実行しても上手くコードカバレッジが取得できずに困っていたのですが、
+最近@tokoromさんが取得できる方法を紹介していたので、
+そちらを参考にして対応してみました。資料は以下のものです。 My &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -54,6 +54,71 @@ XcodeのLLDBは~/.lldbinit- &hellip;">
 
 </header>
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2014/01/15/ios7-xctest-coveralls/">
+		
+			XCTest + iOS 7でCoverallsを利用する</a>
+	</h2>
+	<div class="entry-content">
+		<p>XCTest + iOS7でテストを実行しても上手くコードカバレッジが取得できずに困っていたのですが、
+最近<a href="https://twitter.com/tokorom">@tokorom</a>さんが取得できる方法を紹介していたので、
+そちらを参考にして対応してみました。資料は以下のものです。</p>
+
+<p><a href="https://speakerdeck.com/tokorom/my-unit-test-environment-for-objective-c">My unit test environment for Objective-C</a></p>
+
+<p>Coverallsに対応したライブラリは以下のものです。</p>
+
+<ul>
+<li><a href="http://github.com/ishkawa/ISHTTPOperation">ISHTTPOperation</a></li>
+<li><a href="http://github.com/ishkawa/ISDiskCache">ISDiskCache</a></li>
+<li><a href="http://github.com/ishkawa/ISMemoryCache">ISMemoryCache</a></li>
+<li><a href="http://github.com/ishkawa/NSRunLoop-PerformBlock">NSRunLoop+PerformBlock</a></li>
+</ul>
+
+
+<p>対応の肝となるのは<a href="http://github.com/ishkawa/ISGcovFlusher">ISGcovFlusher</a>をテストターゲットに追加しておくことです。
+これを追加することでテスト終了時に<code>__gcov_flush()</code>を自動的に呼んでくれて<code>*.gcda</code>が出力されるようになります。
+なお、<code>__gcov_flush()</code>を呼び出すにはBuild Settingsの&#8221;Instrument Program Flow&#8221;と&#8221;Generate Test Coverage Files&#8221;をYESにする必要があるようです。</p>
+
+<p>その他の詳しいことは各リポジトリの以下のファイルを参照してください。</p>
+
+<ul>
+<li>Podfile</li>
+<li>Makefile</li>
+<li>.travis.yml</li>
+</ul>
+
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-01-15T23:14:00+09:00" pubdate data-updated="true">Jan 15<span>th</span>, 2014</time></div>
+	
+</div>
+
+    <br/>
+    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2014/01/15/ios7-xctest-coveralls/" data-text="XCTest + iOS 7でCoverallsを利用する" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2014/01/15/ios7-xctest-coveralls/" >Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+    </article>
 
 
     <article class="post">
@@ -255,99 +320,6 @@ UIViewのrecursiveDescriptionを出力するコマンドなどの便利な例も
 
     <br/>
     <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/12/11/xcpretty/" data-text="xcodebuildのログをxcprettyで整える" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/12/11/xcpretty/" >Tweet</a>
-    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
-    </article>
-
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2013/11/28/xcode-5-xcodebuild/">
-		
-			Travis CIがXcode 5に対応してからのあれこれ</a>
-	</h2>
-	<div class="entry-content">
-		<p>Xcode 5のxcodebuildでテストを実行するには<code>xcodebuild test</code>を使うといいみたいです。
-<code>man xcodebuild</code>のbuildactionの説明に以下のように書かれているので<code>-scheme SchemeName</code>が必要となります。
-Travis CIなどの手元以外の環境でbuild schemeを利用する場合には、他の環境でも同じbuild schemeを使えるようにする必要があるので、
-あらかじめXcodeのManage SchemeというメニューのShareというチェックボックスを有効しておく必要があります。</p>
-
-<blockquote><p>This requires specifying a scheme and optionally a destination.</p></blockquote>
-
-<p>Xcode 4のときにはMakefileを以下のように書いていましたが</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>test:
-</span><span class='line'>    xcodebuild \
-</span><span class='line'>        -sdk iphonesimulator \
-</span><span class='line'>        -target ISFooTests \
-</span><span class='line'>        -configuration Debug \
-</span><span class='line'>        clean build \
-</span><span class='line'>        TEST_AFTER_BUILD=YES</span></code></pre></td></tr></table></div></figure>
-
-
-<p><code>xcodebuild test</code>を使う形式に書き換えると</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>test:
-</span><span class='line'>    xcodebuild \
-</span><span class='line'>        -sdk iphonesimulator \
-</span><span class='line'>        -scheme ISFoo \
-</span><span class='line'>        -configuration Debug \
-</span><span class='line'>        clean build test</span></code></pre></td></tr></table></div></figure>
-
-
-<p>という感じになります。</p>
-
-<p>Xcode 4では普通にテストを書いて適切にcpp-coverallsを実行すればコードカバレッジまで取得できたのですが、
-Xcode 5では<code>*.gcda</code>が出力されなくなってしまったらしくてそのままではコードカバレッジを測れないようです。</p>
-
-<blockquote class="twitter-tweet" lang="ja"><p><a href="https://twitter.com/_ishkawa">@_ishkawa</a> iOS7だと.gcdaが出てこない問題?&#10;<a href="http://t.co/PCPIVz2BDU">http://t.co/PCPIVz2BDU</a>&#10;<a href="https://t.co/4ESNcybO8W">https://t.co/4ESNcybO8W</a></p>&mdash; azu (@azu_re) <a href="https://twitter.com/azu_re/statuses/405963463421218816">2013, 11月 28</a></blockquote>
-
-
-<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
-
-
-<p>詳しい話は<a href="https://twitter.com/azu_re">@azu_re</a>さんのツイートのリンク先に書いてあって、
-テスト完了後に<code>__gcov_flush()</code>というものを実行すると解決できるようなのですが、まだ試していません。</p>
-
-<p>上手くいっている例があったら覗きに行きます。</p>
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-11-28T20:34:00+09:00" pubdate data-updated="true">Nov 28<span>th</span>, 2013</time></div>
-	
-</div>
-
-    <br/>
-    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/11/28/xcode-5-xcodebuild/" data-text="Travis CIがXcode 5に対応してからのあれこれ" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/11/28/xcode-5-xcodebuild/" >Tweet</a>
     <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
     </article>
 

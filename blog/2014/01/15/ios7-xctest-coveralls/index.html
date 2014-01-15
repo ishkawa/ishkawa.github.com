@@ -1,0 +1,143 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>XCTest + iOS 7でCoverallsを利用する</title>
+	<meta name="author" content="ishkawa">
+
+	
+	<meta name="description" content="XCTest + iOS 7でCoverallsを利用する XCTest + iOS7でテストを実行しても上手くコードカバレッジが取得できずに困っていたのですが、
+最近@tokoromさんが取得できる方法を紹介していたので、
+そちらを参考にして対応してみました。資料は以下のものです。 My &hellip;">
+	
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="blog.ishkawa.org" type="application/atom+xml">
+	<link rel="canonical" href="">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<script async="true" src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	
+</head>
+
+
+<body>
+	<header id="header" class="inner"><h1><a href="/">blog.ishkawa.org</a></h1>
+<nav id="main-nav"><ul class="main">
+  <li><a href="https://twitter.com/_ishkawa">Twitter</a></li>
+  <li><a href="https://github.com/ishkawa">GitHub</a></li>
+</ul>
+
+</nav>
+<nav id="mobile-nav">
+	<div class="alignleft menu">
+		<a class="button">Menu</a>
+		<div class="container"><ul class="main">
+  <li><a href="https://twitter.com/_ishkawa">Twitter</a></li>
+  <li><a href="https://github.com/ishkawa">GitHub</a></li>
+</ul>
+
+</div>
+	</div>
+	<div class="alignright search">
+		<a class="button"></a>
+		<div class="container">
+			<form action="http://google.com/search" method="get">
+				<input type="text" name="q" results="0">
+				<input type="hidden" name="q" value="site:blog.ishkawa.org">
+			</form>
+		</div>
+	</div>
+</nav>
+
+</header>
+	<div id="content" class="inner"><article class="post">
+	<h2 class="title">XCTest + iOS 7でCoverallsを利用する</h2>
+	<div class="entry-content"><p>XCTest + iOS7でテストを実行しても上手くコードカバレッジが取得できずに困っていたのですが、
+最近<a href="https://twitter.com/tokorom">@tokorom</a>さんが取得できる方法を紹介していたので、
+そちらを参考にして対応してみました。資料は以下のものです。</p>
+
+<p><a href="https://speakerdeck.com/tokorom/my-unit-test-environment-for-objective-c">My unit test environment for Objective-C</a></p>
+
+<p>Coverallsに対応したライブラリは以下のものです。</p>
+
+<ul>
+<li><a href="http://github.com/ishkawa/ISHTTPOperation">ISHTTPOperation</a></li>
+<li><a href="http://github.com/ishkawa/ISDiskCache">ISDiskCache</a></li>
+<li><a href="http://github.com/ishkawa/ISMemoryCache">ISMemoryCache</a></li>
+<li><a href="http://github.com/ishkawa/NSRunLoop-PerformBlock">NSRunLoop+PerformBlock</a></li>
+</ul>
+
+
+<p>対応の肝となるのは<a href="http://github.com/ishkawa/ISGcovFlusher">ISGcovFlusher</a>をテストターゲットに追加しておくことです。
+これを追加することでテスト終了時に<code>__gcov_flush()</code>を自動的に呼んでくれて<code>*.gcda</code>が出力されるようになります。
+なお、<code>__gcov_flush()</code>を呼び出すにはBuild Settingsの&#8221;Instrument Program Flow&#8221;と&#8221;Generate Test Coverage Files&#8221;をYESにする必要があるようです。</p>
+
+<p>その他の詳しいことは各リポジトリの以下のファイルを参照してください。</p>
+
+<ul>
+<li>Podfile</li>
+<li>Makefile</li>
+<li>.travis.yml</li>
+</ul>
+
+</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-01-15T23:14:00+09:00" pubdate data-updated="true">Jan 15<span>th</span>, 2014</time></div>
+	
+</div>
+
+    <br/>
+    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2014/01/15/ios7-xctest-coveralls/" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2014/01/15/ios7-xctest-coveralls/" >Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+</article>
+
+</div>
+	<footer id="footer" class="inner">Copyright &copy; 2014
+
+    ishkawa
+
+</footer>
+	<script src="/javascripts/slash.js"></script>
+<script src="/javascripts/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+	$('.fancybox').fancybox();
+})(jQuery);
+</script> <!-- Delete or comment this line to disable Fancybox -->
+
+
+
+
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-35917440-1']);
+		_gaq.push(['_trackPageview']);
+
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
+
+
+
+</body>
+</html>
