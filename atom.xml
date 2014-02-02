@@ -4,7 +4,7 @@
   <title><![CDATA[blog.ishkawa.org]]></title>
   <link href="http://blog.ishkawa.org/atom.xml" rel="self"/>
   <link href="http://blog.ishkawa.org/"/>
-  <updated>2014-01-15T23:45:46+09:00</updated>
+  <updated>2014-02-02T17:08:01+09:00</updated>
   <id>http://blog.ishkawa.org/</id>
   <author>
     <name><![CDATA[ishkawa]]></name>
@@ -12,6 +12,50 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[#confwd でOSSでのObjective-Cの書き方について話してきた]]></title>
+    <link href="http://blog.ishkawa.org/blog/2014/02/02/programming-guide-for-oss-in-confwd2/"/>
+    <updated>2014-02-02T16:11:00+09:00</updated>
+    <id>http://blog.ishkawa.org/blog/2014/02/02/programming-guide-for-oss-in-confwd2</id>
+    <content type="html"><![CDATA[<p><a href="http://confwd2.peatix.com">Conference With Developers 2 | Peatix</a></p>
+
+<p>自分はiOSデベロッパーとして大した経験や実績があるわけではないのですが、
+公開しているライブラリの数はかなり多い方のなので、そこで得られた知識を話そうと思いました。
+トーク中は聴いている人のリアクションを気にする余裕もなかったのですが、
+あとからTwitterのタイムラインを読んでみると、良い反応をしてくれている方もいたようで嬉しかったです。
+今回の発表ではどのトピックも詳細に立ち入ることが難しかったので、いつか文章でしっかりとまとめられるといいなと思いました。</p>
+
+<h3>トークの準備</h3>
+
+<p>大勢の前で45分も話し続けるのは初めてだったので、どうやって準備したらいいものか悩みました。
+スライドをつくりながらトークの内容を練るのは難しそうだったので、はじめはmarkdownで適当な文章を書いて、
+そこからの大事な単語や文を拾ってきたり、概念図を描き起こしたりしました。
+元のmarkdownは以下のものです。人に読まれることを想定して書いたわけではないので読みづらいかもしれません。</p>
+
+<p><a href="https://gist.github.com/ishkawa/82fb589f447394f37546">gist:82fb589f447394f37546</a></p>
+
+<h3>資料</h3>
+
+<p>　</p>
+
+<script async class="speakerdeck-embed" data-id="be0674406d3f0131488e0ea0271811b0" data-ratio="1.33333333333333" src="http://blog.ishkawa.org//speakerdeck.com/assets/embed.js"></script>
+
+
+<h3>ビデオ</h3>
+
+<iframe width="720" height="437" src="http://www.ustream.tv/embed/recorded/43319245/highlight/461451?v=3&amp;wmode=direct" scrolling="no" frameborder="0" style="border: 0px none transparent;">    </iframe>
+
+
+<br /><a href="http://www.ustream.tv/" style="padding: 2px 0px 4px; width: 400px; background: #ffffff; display: block; color: #000000; font-weight: normal; font-size: 10px; text-decoration: underline; text-align: center;" target="_blank">Video streaming by Ustream</a>
+
+
+<p>　</p>
+
+<p>トークやLTはどれも面白く、他の開発者との交流でき、とても充実したイベントでした。
+登壇を提案していただいた矢口さん、開催スタッフのみなさんに感謝しています。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[XCTest + iOS 7でCoverallsを利用する]]></title>
@@ -1228,69 +1272,6 @@ getterの実装を独自に行なっているのでインスタンス変数<code
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="p">[[</span><span class="n">ISHTTPOperationQueue</span> <span class="n">defaultQueue</span><span class="p">]</span> <span class="nl">cancelOperationsWithHTTPMethod:</span><span class="s">@&quot;GET&quot;</span><span class="p">];</span>
 </span></code></pre></td></tr></table></div></figure>
-
-
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[OCMArgをBlocksとして渡すときに困ること]]></title>
-    <link href="http://blog.ishkawa.org/blog/2013/07/15/ocmarg-block/"/>
-    <updated>2013-07-15T01:42:00+09:00</updated>
-    <id>http://blog.ishkawa.org/blog/2013/07/15/ocmarg-block</id>
-    <content type="html"><![CDATA[<p>iOSの標準フレームワークでは至るところにBlocksが登場します。
-引数として渡されるBlocks自体に制限を設けたテストを書くことはあまりないので
-<code>[OCMArg any]</code>を指定しようと考えるのですが、Blocksは内部的にcopyして扱われることが多いらしく、
-以下のようなテストを書くとOCMConstraintをcopyしようとしたところで例外が発生します。
-OCMConstraintがNSCopyingに適合していないので当然のことですが、ちょっと困ります。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">testSomeMethod</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="kt">id</span> <span class="n">mock</span> <span class="o">=</span> <span class="p">[</span><span class="n">OCMockObject</span> <span class="nl">partialMockForObject:</span><span class="n">viewController</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">[[</span><span class="n">mock</span> <span class="n">expect</span><span class="p">]</span> <span class="nl">dismissViewControllerAnimated:</span><span class="n">NO</span> <span class="nl">completion:</span><span class="p">[</span><span class="n">OCMArg</span> <span class="n">any</span><span class="p">]];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 何かする</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">STAssertNoThrow</span><span class="p">([</span><span class="n">mock</span> <span class="n">verify</span><span class="p">],</span> <span class="s">@&quot;did not dismiss.&quot;</span><span class="p">);</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>めんどくさいので自分は以下のようなコードをOCMConstraintのカテゴリに書いて問題を回避しました。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nf">copyWithZone:</span><span class="p">(</span><span class="n">NSZone</span> <span class="o">*</span><span class="p">)</span><span class="nv">zone</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">return</span> <span class="n">self</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>テストコードとは言えどもこういった雑なことばっかりしてるといつか痛い目に遭いそうだと思ったので、
-より良い方法があれば聞きたいところです。</p>
-
-<h3>追記</h3>
-
-<p>OCMock 2.2では同様の実装がされていると、<a href="https://twitter.com/azu_re/">@azu_re</a>さんに教えていただきました。<br/>
-2.2以降を利用すれば上記のメソッドを実装しなくてもcopyの問題は起こりません。</p>
-
-<blockquote class="twitter-tweet"><p><a href="https://twitter.com/_ishkawa">@_ishkawa</a> OCMock 2.2だとcopyWithZone: 実装されてるように見えるけど、これとは別? <a href="https://t.co/lDzgB5tMSb">https://t.co/lDzgB5tMSb</a> <a href="https://t.co/w11Yr14Um9">https://t.co/w11Yr14Um9</a></p>&mdash; azu (@azu_re) <a href="https://twitter.com/azu_re/statuses/356620135156551681">July 15, 2013</a></blockquote>
-
-
-<script async src="http://blog.ishkawa.org//platform.twitter.com/widgets.js" charset="utf-8"></script>
 
 
 

@@ -7,9 +7,8 @@
 	<meta name="author" content="ishkawa">
 
 	
-	<meta name="description" content="ISDiskCacheというのを書いた 2ヶ月ほど前にISMemoryCacheというのを書いたのですが、
-実はこれと並行してISDiskCacheというのもつくっていました。
-しかし、良いアイディアが浮かばなくて完成度が十分に上がらず、リリースできないまま放置していました。 &hellip;">
+	<meta name="description" content="コードカバレッジを計測してみた感想 先週末、およそ3ヶ月ぶりにNode.jsのコードを書きました。 いつの間にかテストをそれほど苦労せずに書けるようになっていて、
+たくさんテストを書いて意識が高まり、コードカバレッジを計測しようと思いました。 &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -54,6 +53,64 @@
 
 </header>
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2013/07/08/code-coverage/">
+		
+			コードカバレッジを計測してみた感想</a>
+	</h2>
+	<div class="entry-content">
+		<p>先週末、およそ3ヶ月ぶりにNode.jsのコードを書きました。</p>
+
+<p>いつの間にかテストをそれほど苦労せずに書けるようになっていて、
+たくさんテストを書いて意識が高まり、コードカバレッジを計測しようと思いました。
+コードカバレッジを計測するのは今回が生まれて初めてでした。
+何処かで&#8221;コードカバレッジは目安に過ぎない&#8221;みたいな話を聞いて、
+コードカバレッジの効果に対しては半信半疑なところがありましたが、
+とにかくそのときは意識が高まっていたので頑張って計測できるようにしました。
+参考にしたのは以下のブログ記事です。
+あまり深いことはわからないのですが、jscoverageが実行回数を測定できるプロダクトコードのコピーを生成し、
+テストコードからそれを実行することでコードカバレッジを計測できるという感じの仕組みのようです。</p>
+
+<p><a href="http://www.seejohncode.com/2012/03/13/setting-up-mocha-jscoverage/">http://www.seejohncode.com/2012/03/13/setting-up-mocha-jscoverage/</a></p>
+
+<h4>感想</h4>
+
+<p>&ldquo;コードカバレッジは目安に過ぎない&#8221;というのは、コードカバレッジを計測した経験がある人とない人とでは捉え方が変わると思いました。
+コードカバレッジを計測してみる前は&#8221;目安に過ぎないから計測してもしなくても大差ない&#8221;というような気がしていたのですが、
+計測してその結果を活用して開発をしてみると&#8221;無意味な変更でパーセンテージが変化する場合があるから目安&#8221;なのかなと思いました。
+で、結局目安と言いながらも明らかにカバーできていない箇所を発見できたりして開発にとても役立つので、
+本業のiOS開発の方でも頑張ってやってみようと思いました。</p>
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-07-08T20:52:00+09:00" pubdate data-updated="true">Jul 8<span>th</span>, 2013</time></div>
+	
+</div>
+
+    <br/>
+    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/07/08/code-coverage/" data-text="コードカバレッジを計測してみた感想" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/07/08/code-coverage/" >Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+    </article>
 
 
     <article class="post">
@@ -387,177 +444,6 @@ TMCacheとISMemoryCache/ISDiskCacheの違いは説明するが大変なので、
 
     <br/>
     <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/06/26/ocmock-async/" data-text="OCMockでも[[foo shouldEventually] receive:@selector(bar)]がしたい" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/06/26/ocmock-async/" >Tweet</a>
-    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
-    </article>
-
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2013/06/25/storyboard-and-xib/">
-		
-			Xib/storyboardとの付き合い方について</a>
-	</h2>
-	<div class="entry-content">
-		<p>アプリが大きくなるとstoryboardの小回りの利かなさに泣きたくなることがあると思います。<br/>
-そうした反動からすべてのUIをコードで実装しているiOS開発者も少なくないと思います。</p>
-
-<p>自分は全部storyboardにして痛い目にあってから、全部コードにしてまた痛い目に遭い、<br/>
-結局コードとxibとstoryboardを上手く使い分けるのが良いという結論に達しました。<br/>
-最近、やり方が定まってきてストレスを感じなくなってきたので方法をまとめます。</p>
-
-<p>これから書くことは個人の見解ですが、自分のやり方を決める上では無駄にならないと思います。</p>
-
-<p>　</p>
-
-<h3>使い分け方と理由</h3>
-
-<p>基本方針: 以下に挙げる条件にマッチする場合除いて、コードで実装を行います。</p>
-
-<h3>xibを使う条件</h3>
-
-<p>viewの複雑度が高い場合(subviewが2,3個以上の場合)にはxibを使います。<br/>
-xibを利用する理由は以下のような退屈なコードをたくさん書くのがつらいからです。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="n">UILabel</span> <span class="o">*</span><span class="n">label</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UILabel</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithFrame:</span><span class="n">CGRectZero</span><span class="p">];</span>
-</span><span class='line'><span class="n">label</span><span class="p">.</span><span class="n">backgroundColor</span> <span class="o">=</span> <span class="p">[</span><span class="n">UIColor</span> <span class="n">clearColor</span><span class="p">];</span>
-</span><span class='line'><span class="n">label</span><span class="p">.</span><span class="n">textColor</span> <span class="o">=</span> <span class="p">[</span><span class="n">UIColor</span> <span class="n">darkGrayColor</span><span class="p">];</span>
-</span><span class='line'><span class="n">label</span><span class="p">.</span><span class="n">textAlignment</span> <span class="o">=</span> <span class="n">UITextAlignmentCenter</span><span class="p">;</span>
-</span><span class='line'><span class="n">label</span><span class="p">.</span><span class="n">baselineAdjustment</span> <span class="o">=</span> <span class="n">UIBaselineAdjustmentAlignCenters</span><span class="p">;</span>
-</span><span class='line'><span class="n">label</span><span class="p">.</span><span class="n">shadowOffset</span> <span class="o">=</span> <span class="n">CGSizeMake</span><span class="p">(</span><span class="mf">0.f</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.f</span><span class="p">);</span>
-</span><span class='line'><span class="n">label</span><span class="p">.</span><span class="n">numberOfLines</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-</span><span class='line'><span class="n">label</span><span class="p">.</span><span class="n">frame</span> <span class="o">=</span> <span class="n">CGRectMake</span><span class="p">(</span><span class="mf">10.f</span><span class="p">,</span> <span class="mf">10.f</span><span class="p">,</span> <span class="mf">100.f</span><span class="p">,</span> <span class="mf">100.f</span><span class="p">);</span>
-</span><span class='line'><span class="n">label</span><span class="p">.</span><span class="n">autoresizingMask</span> <span class="o">=</span> <span class="n">UIViewAutoresizingFlexibleWidth</span><span class="p">;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>これはstoryboardを使う理由にもなるのですが、この条件のみの場合にはxibを使います。<br/>
-storyboardの利用に対して消極的な理由は後半の方に書きます。</p>
-
-<p>逆に、<code>UIWebView</code>だけが単品で乗っているような、<code>UIViewController</code>の<code>loadView</code>を<br/>
-オーバーライドすれば済んでしまう場合にはxibを利用せずにコードのみで実装を行います。<br/>
-配置に関するコードは大体以下のようなもので済むと思います。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">loadView</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="n">self</span><span class="p">.</span><span class="n">view</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UIWebView</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>storyboardを使う条件</h3>
-
-<p>xibを利用する条件に加えて以下の3つを満たす場合にはstoryboardを部分的に利用します。<br/>
-この条件にマッチしやすいのはチュートリアルや設定画面などのViewControllerです。</p>
-
-<ul>
-<li>十分に小さい単位で他の部分から切り出すことができる</li>
-<li>viewの再利用性が低い (特にUITableViewのStatic Cellsが適切な場合)</li>
-<li>segueなどのidentifierを設定する機会が少ない</li>
-</ul>
-
-
-<p>十分小さい単位でアプリの他の部分から切り出せることを条件にしている理由は以下の3つです。</p>
-
-<ul>
-<li>storyboardが大きいとどこで何が定義されているのか把握し切れなくなる</li>
-<li>storyboardが大きいとコードに対応した箇所を探すのに時間がかかる</li>
-<li>storyboardが大きいと分業するの妨げとなる</li>
-</ul>
-
-
-<p>再利用性の低さを条件にしている理由は以下の2つです。<br/>
-後者はViewの配置を決めている箇所を特定するまでに掛かる時間に影響するので、特に重要です。</p>
-
-<ul>
-<li>ViewControllerの再利用性が高い場合にはstoryboard自体が複雑になり、編集しづらくなる。</li>
-<li><code>UITableViewCell</code>などのパーツは再利用できず、xibかコードを利用することになる。</li>
-</ul>
-
-
-<p>segueなどのidentifierを設定する機会の少なさを条件にしている理由は以下の3つです。</p>
-
-<ul>
-<li>プログラムを書くのにいちいちstoryboardを見てidentifierを確認するのが面倒</li>
-<li>identifierをコードに手打ちするのが面倒な上に間違えやすい</li>
-<li>コード上でidentifierを見つけたとき、storyboardを確認しなければ正確な遷移がわからない。</li>
-</ul>
-
-
-<p>以上の条件をクリアしていると、とても気持ち良くstoryboardを利用できると思います。<br/>
-実際、設定画面で利用してstoryboard固有のストレスを感じる機会は少なかったです。</p>
-
-<p>　</p>
-
-<h3>いままでに挑戦したやり方と感想</h3>
-
-<h4>全部コードで実装する</h4>
-
-<ul>
-<li>Viewの配置の退屈なコードが増えて、プログラミングがタイピングスポーツになった。</li>
-</ul>
-
-
-<h4>xibが利用できる箇所は全部xibで実装する</h4>
-
-<ul>
-<li>特に大きな問題はないが無駄なxibがいくらかあって邪魔だった。</li>
-<li>設定画面がswitch祭りになった。</li>
-</ul>
-
-
-<h4>storyboardが利用できる箇所は全部storyboardで実装する</h4>
-
-<ul>
-<li>再利用性があるパーツにはxibを使い出したりして、結局どこに何があるかわからなくなった。</li>
-<li>長い期間を置いてから再度プロジェクトを開いたらidentifierを探すのが面倒くさかった。</li>
-</ul>
-
-
-<p>アプリの規模が十分に小さい場合には全部storyboardを利用した実装にしても問題なさそうです。<br/>
-これと関連して、プロトタイプにのみ利用するという人もいるようです。</p>
-
-<p>&mdash;</p>
-
-<p>おそらく違う考え方をする人もたくさんいると思うので、そういう人の意見も聞きたいところです。</p>
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-06-25T02:12:00+09:00" pubdate data-updated="true">Jun 25<span>th</span>, 2013</time></div>
-	
-</div>
-
-    <br/>
-    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/06/25/storyboard-and-xib/" data-text="xib/storyboardとの付き合い方について" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/06/25/storyboard-and-xib/" >Tweet</a>
     <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
     </article>
 
