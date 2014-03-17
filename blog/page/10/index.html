@@ -7,9 +7,8 @@
 	<meta name="author" content="ishkawa">
 
 	
-	<meta name="description" content="ISRefreshControl 1.4.0をリリースしました 内容 iOS 4に対応
-drawRect:で描画する方式からCAShapeLayerに移行
-UIActivityIndicatorViewの表示/非表示を切り替えるときに回転させる 　 理由 iOS &hellip;">
+	<meta name="description" content="MantleのようなノリでJSON>NSManagedObjectを楽にしたかった MantleのREADMEを読んでスゲーって思い、ヘッダーを読んでメンドクセーって思いました。
+CoreDataを使っていてもスゲーってところだけうまく取り込めないかと思って、考えました。 &mdash; &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -54,6 +53,528 @@ UIActivityIndicatorViewの表示/非表示を切り替えるときに回転さ�
 
 </header>
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2013/06/24/keymap-and-valuetransformer/">
+		
+			MantleのようなノリでJSON>NSManagedObjectを楽にしたかった</a>
+	</h2>
+	<div class="entry-content">
+		<p>MantleのREADMEを読んでスゲーって思い、ヘッダーを読んでメンドクセーって思いました。<br/>
+CoreDataを使っていてもスゲーってところだけうまく取り込めないかと思って、考えました。</p>
+
+<p>&mdash;</p>
+
+<h3>Mantle</h3>
+
+<p>Mantleはいくらか前にGitHubがリリースしたモデルフレームワークです。<br/>
+MantleはJSONなどのkey-valueなものに対して、</p>
+
+<ul>
+<li>モデルのキーに対応するJSONのキーを定義する。</li>
+<li>各キーに対応した<code>NSValueTransformer</code>を定義する。</li>
+</ul>
+
+
+<p>というやり方で、JSONなどからモデルオブジェクトを作成します。<br/>
+具体的には、普通は以下のように書くコードを</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nf">initWithDictionary:</span><span class="p">(</span><span class="n">NSDictionary</span> <span class="o">*</span><span class="p">)</span><span class="nv">dictionary</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">self</span> <span class="o">=</span> <span class="p">[</span><span class="n">super</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">self</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">self</span><span class="p">.</span><span class="n">hogeString</span> <span class="o">=</span> <span class="p">[</span><span class="n">dictionary</span> <span class="nl">objectForKey:</span><span class="s">@&quot;hoge&quot;</span><span class="p">];</span>
+</span><span class='line'>        <span class="n">self</span><span class="p">.</span><span class="n">fugaNumber</span> <span class="o">=</span> <span class="p">[</span><span class="n">dictionary</span> <span class="nl">objectForKey:</span><span class="s">@&quot;fuga&quot;</span><span class="p">];</span>
+</span><span class='line'>        <span class="n">self</span><span class="p">.</span><span class="n">piyoURL</span>    <span class="o">=</span> <span class="p">[</span><span class="n">NSURL</span> <span class="nl">URLWithString:</span><span class="p">[</span><span class="n">dictionary</span> <span class="nl">objectForKey:</span><span class="s">@&quot;piyo&quot;</span><span class="p">]];</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">self</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>以下のように書くことで同等の処理ができるようになります。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">NSDictionary</span> <span class="o">*</span><span class="p">)</span><span class="nf">JSONKeyPathsByPropertyKey</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="err">@</span><span class="p">{</span>
+</span><span class='line'>        <span class="s">@&quot;hogeString&quot;</span><span class="o">:</span> <span class="s">@&quot;hoge&quot;</span><span class="p">,</span>
+</span><span class='line'>        <span class="s">@&quot;fugaNumber&quot;</span><span class="o">:</span> <span class="s">@&quot;fuga&quot;</span><span class="p">,</span>
+</span><span class='line'>        <span class="s">@&quot;piyoURL&quot;</span><span class="o">:</span>    <span class="s">@&quot;piyo&quot;</span><span class="p">,</span>
+</span><span class='line'>    <span class="p">};</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">NSValueTransformer</span> <span class="o">*</span><span class="p">)</span><span class="nf">piyoURLJSONTransformer</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="p">[</span><span class="n">NSValueTransformer</span> <span class="nl">valueTransformerForName:</span><span class="n">MTLURLValueTransformerName</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>キーの対応と<code>NSValueTransformer</code>さえ提供すれば、同様にして<code>NSCoding</code>や<code>NSCopying</code>などの<br/>
+プロトコルにも適合できるというのもMantleの優れているところです。　</p>
+
+<p>上記のコードのように値の操作がかなり隠蔽されてしまうため、デバッグしづらくなるのが<br/>
+個人的には少し気になりますが、そこは許すことにするという前提で話を進めます。</p>
+
+<p>&mdash;</p>
+
+<h3>自分の場合</h3>
+
+<p>既にCoreDataを使って書いたコードがたくさんあったのと、MantleのCoreDataが絡む部分を
+よく把握できていなかったことを考えて、Mantle自体の採用は見送りました。</p>
+
+<ul>
+<li>モデルのキーに対応するJSONのキーを定義する。</li>
+<li>各キーに対応した<code>NSValueTransformer</code>を定義する。</li>
+</ul>
+
+
+<p>というアイディアのみを採用してMantleを真似したインターフェースを作り、<br/>
+<code>NSManagedObject</code>でもMantleの<code>MTLModel</code>と大体同じようなことができるようにしました。</p>
+
+<h4>実装方法</h4>
+
+<p>Mantle方式の値のセットが出来る<code>NSManagedObject</code>の抽象的なサブクラスをつくります。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">@interface</span> <span class="nc">ISKeymapManagedObject</span> : <span class="nc">NSManagedObject</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">NSDictionary</span> <span class="o">*</span><span class="p">)</span><span class="nf">JSONKeymap</span><span class="p">;</span>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">NSDictionary</span> <span class="o">*</span><span class="p">)</span><span class="nf">JSONValueTransformerNames</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nf">initWithDictionary:</span><span class="p">(</span><span class="n">NSDictionary</span> <span class="o">*</span><span class="p">)</span><span class="nv">dictionary</span>
+</span><span class='line'>                  <span class="nf">entity:</span><span class="p">(</span><span class="n">NSEntityDescription</span> <span class="o">*</span><span class="p">)</span><span class="nv">entity</span>
+</span><span class='line'>    <span class="nf">managedObjectContext:</span><span class="p">(</span><span class="n">NSManagedObjectContext</span> <span class="o">*</span><span class="p">)</span><span class="nv">context</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><code>NSManagedObject</code>のキーとJSONのキーの対応を<code>JSONKeymap</code>というメソッドで定義し、
+<code>NSManagedObject</code>のキーと<code>NSValueTransformer</code>の対応を<code>JSONValueTransformerNames</code>というメソッドで定義します。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">NSDictionary</span> <span class="o">*</span><span class="p">)</span><span class="nf">JSONKeymap</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="err">@</span><span class="p">{};</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">NSDictionary</span> <span class="o">*</span><span class="p">)</span><span class="nf">JSONValueTransformerNames</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="err">@</span><span class="p">{};</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>そして、<code>NSDictionary</code>を引数に取るイニシャライザを定義して、これらの対応を行います。
+<code>NSManagedObject</code>はKVCに準拠しているので、以下のようにして<code>setValue:forKey</code>で値をセット出来ます。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nf">initWithDictionary:</span><span class="p">(</span><span class="n">NSDictionary</span> <span class="o">*</span><span class="p">)</span><span class="nv">dictionary</span>
+</span><span class='line'>                  <span class="nf">entity:</span><span class="p">(</span><span class="n">NSEntityDescription</span> <span class="o">*</span><span class="p">)</span><span class="nv">entity</span>
+</span><span class='line'>    <span class="nf">managedObjectContext:</span><span class="p">(</span><span class="n">NSManagedObjectContext</span> <span class="o">*</span><span class="p">)</span><span class="nv">context</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">self</span> <span class="o">=</span> <span class="p">[</span><span class="n">super</span> <span class="nl">initWithEntity:</span><span class="n">entity</span> <span class="nl">insertIntoManagedObjectContext:</span><span class="n">context</span><span class="p">];</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">self</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">NSDictionary</span> <span class="o">*</span><span class="n">keymap</span> <span class="o">=</span> <span class="p">[[</span><span class="n">self</span> <span class="n">class</span><span class="p">]</span> <span class="n">JSONKeymap</span><span class="p">];</span>
+</span><span class='line'>        <span class="n">NSDictionary</span> <span class="o">*</span><span class="n">valueTransformerNames</span> <span class="o">=</span> <span class="p">[[</span><span class="n">self</span> <span class="n">class</span><span class="p">]</span> <span class="n">JSONValueTransformerNames</span><span class="p">];</span>
+</span><span class='line'>        <span class="k">for</span> <span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="n">objectKey</span> <span class="k">in</span> <span class="p">[</span><span class="n">keymap</span> <span class="n">allKeys</span><span class="p">])</span> <span class="p">{</span>
+</span><span class='line'>            <span class="kt">id</span> <span class="n">dictionaryKey</span> <span class="o">=</span> <span class="p">[</span><span class="n">keymap</span> <span class="nl">objectForKey:</span><span class="n">objectKey</span><span class="p">];</span>
+</span><span class='line'>            <span class="kt">id</span> <span class="n">value</span> <span class="o">=</span> <span class="p">[</span><span class="n">dictionary</span> <span class="nl">objectForKey:</span><span class="n">dictionaryKey</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>            <span class="n">NSString</span> <span class="o">*</span><span class="n">transformerName</span> <span class="o">=</span> <span class="p">[</span><span class="n">valueTransformerNames</span> <span class="nl">objectForKey:</span><span class="n">objectKey</span><span class="p">];</span>
+</span><span class='line'>            <span class="k">if</span> <span class="p">(</span><span class="n">transformerName</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>                <span class="n">NSValueTransformer</span> <span class="o">*</span><span class="n">transformer</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSValueTransformer</span> <span class="nl">valueTransformerForName:</span><span class="n">transformerName</span><span class="p">];</span>
+</span><span class='line'>                <span class="n">value</span> <span class="o">=</span> <span class="p">[</span><span class="n">transformer</span> <span class="nl">transformedValue:</span><span class="n">value</span><span class="p">];</span>
+</span><span class='line'>            <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>            <span class="p">[</span><span class="n">self</span> <span class="nl">setValue:</span><span class="n">value</span> <span class="nl">forKey:</span><span class="n">objectKey</span><span class="p">];</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">self</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>以上で利用する準備は完了です。</p>
+
+<p>結果、以下のようにして<code>NSDictionary</code>の値がセットされた<code>NSManagedObject</code>を
+作成することができるようになります。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="n">NSDictionary</span> <span class="o">*</span><span class="n">dictionary</span><span class="p">;</span>
+</span><span class='line'><span class="n">NSEntityDescription</span> <span class="o">*</span><span class="n">entity</span><span class="p">;</span>
+</span><span class='line'><span class="n">NSManagedObjectContext</span> <span class="o">*</span><span class="n">context</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">ISKeymapManagedObject</span> <span class="o">*</span><span class="n">object</span> <span class="o">=</span>
+</span><span class='line'><span class="p">[[</span><span class="n">ISKeymapManagedObject</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithDictionary:</span><span class="n">dictionary</span>
+</span><span class='line'>                                           <span class="nl">entity:</span><span class="n">entity</span>
+</span><span class='line'>                             <span class="nl">managedObjectContext:</span><span class="n">context</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h4>サブクラスの例</h4>
+
+<p>具体的なサブクラスは以下のように定義します。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">@interface</span> <span class="nc">ISItem</span> : <span class="nc">ISKeymapManagedObject</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">,</span> <span class="n">readonly</span><span class="p">)</span> <span class="n">NSString</span> <span class="o">*</span><span class="n">identifier</span><span class="p">;</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">,</span> <span class="n">readonly</span><span class="p">)</span> <span class="n">NSString</span> <span class="o">*</span><span class="n">title</span><span class="p">;</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">,</span> <span class="n">readonly</span><span class="p">)</span> <span class="n">NSString</span> <span class="o">*</span><span class="n">authorName</span><span class="p">;</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">,</span> <span class="n">readonly</span><span class="p">)</span> <span class="n">NSURL</span>    <span class="o">*</span><span class="n">imageURL</span><span class="p">;</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">,</span> <span class="n">readonly</span><span class="p">)</span> <span class="n">NSDate</span>   <span class="o">*</span><span class="n">createdDate</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">@implementation</span> <span class="nc">ISItem</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@dynamic</span> <span class="n">identifier</span><span class="p">;</span>
+</span><span class='line'><span class="k">@dynamic</span> <span class="n">title</span><span class="p">;</span>
+</span><span class='line'><span class="k">@dynamic</span> <span class="n">authorName</span><span class="p">;</span>
+</span><span class='line'><span class="k">@dynamic</span> <span class="n">imageURL</span><span class="p">;</span>
+</span><span class='line'><span class="k">@dynamic</span> <span class="n">createdDate</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">NSDictionary</span> <span class="o">*</span><span class="p">)</span><span class="nf">JSONKeymap</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="err">@</span><span class="p">{</span><span class="s">@&quot;identifier&quot;</span><span class="o">:</span>  <span class="s">@&quot;id&quot;</span><span class="p">,</span>
+</span><span class='line'>             <span class="s">@&quot;title&quot;</span><span class="o">:</span>       <span class="s">@&quot;title&quot;</span><span class="p">,</span>
+</span><span class='line'>             <span class="s">@&quot;authorName&quot;</span><span class="o">:</span>  <span class="s">@&quot;author&quot;</span><span class="p">,</span>
+</span><span class='line'>             <span class="s">@&quot;imageURL&quot;</span><span class="o">:</span>    <span class="s">@&quot;image&quot;</span><span class="p">,</span>
+</span><span class='line'>             <span class="s">@&quot;createdDate&quot;</span><span class="o">:</span> <span class="s">@&quot;created_at&quot;</span><span class="p">,</span>  <span class="p">};</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">NSDictionary</span> <span class="o">*</span><span class="p">)</span><span class="nf">JSONValueTransformerNames</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="err">@</span><span class="p">{</span><span class="s">@&quot;imageURL&quot;</span><span class="o">:</span>    <span class="n">ISStringURLTransformerName</span><span class="p">,</span>
+</span><span class='line'>             <span class="s">@&quot;createdDate&quot;</span><span class="o">:</span> <span class="n">ISStringDateTransformerName</span><span class="p">,</span> <span class="p">};</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>※<code>NSValueTransformer</code>はあらかじめ登録されているものとしています。</p>
+
+<p>&mdash;</p>
+
+<h3>感想</h3>
+
+<p>これが良い方式なのかというとちょっと微妙だと思っていますが、<br/>
+面白そうなので趣味のアプリはしばらくこれでやってみようかと思いました。</p>
+
+<p>Mantleはモデルが軽量な場合に良さそうなので、良い機会があれば積極的に使いたいと思いました。<br/>
+CoreDataとMantleを合わせて使うのは、もう少し自分に技術がついたら試そうかなと思いました。</p>
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-06-24T21:00:00+09:00" pubdate data-updated="true">Jun 24<span>th</span>, 2013</time></div>
+	
+</div>
+
+    <br/>
+    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/06/24/keymap-and-valuetransformer/" data-text="MantleのようなノリでJSON&gt;NSManagedObjectを楽にしたかった" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/06/24/keymap-and-valuetransformer/" >Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+    </article>
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2013/06/09/oclint/">
+		
+			頑張ってOCLintを使ってみた結果</a>
+	</h2>
+	<div class="entry-content">
+		<p>意識が高まり、OCLintを使ってみました。</p>
+
+<h3>手順</h3>
+
+<p>OCLintの公式のドキュメントを頑張って読んでも使い方はわかるのですが、<br/>
+以下のリンク&#8221;Give a try&#8221;という項目に従うと手っ取り早く試せます。</p>
+
+<p><a href="http://gavrix.wordpress.com/2013/02/28/integrating-oclint-in-xcode/">Integrating OCLint in Xcode</a></p>
+
+<h3>結果</h3>
+
+<p><a href="https://github.com/ishkawa/ISRefreshControl">ISRefreshControl</a>で試しました。
+ご覧の通り、たくさん怒られています。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Pods/ISMethodSwizzling/ISMethodSwizzling/ISMethodSwizzling.m:9:1: long line P3 Line with 138 characters exceeds limit of 100
+</span><span class='line'>Pods/ISMethodSwizzling/ISMethodSwizzling/ISMethodSwizzling.m:10:1: long line P3 Line with 138 characters exceeds limit of 100
+</span><span class='line'>Pods/ISMethodSwizzling/ISMethodSwizzling/ISMethodSwizzling.m:23:1: long line P3 Line with 138 characters exceeds limit of 100
+</span><span class='line'>Pods/ISMethodSwizzling/ISMethodSwizzling/ISMethodSwizzling.m:24:1: long line P3 Line with 138 characters exceeds limit of 100
+</span><span class='line'>Pods/ISMethodSwizzling/ISMethodSwizzling/ISMethodSwizzling.m:18:5: parameter reassignment P3
+</span><span class='line'>ISRefreshControl/ISGumView.m:59:1: long line P3 Line with 124 characters exceeds limit of 100
+</span><span class='line'>ISRefreshControl/ISGumView.m:132:1: long line P3 Line with 105 characters exceeds limit of 100
+</span><span class='line'>ISRefreshControl/ISGumView.m:133:1: long line P3 Line with 102 characters exceeds limit of 100
+</span><span class='line'>ISRefreshControl/ISGumView.m:141:1: long line P3 Line with 111 characters exceeds limit of 100
+</span><span class='line'>ISRefreshControl/ISGumView.m:162:1: long line P3 Line with 103 characters exceeds limit of 100
+</span><span class='line'>ISRefreshControl/ISGumView.m:167:1: long line P3 Line with 103 characters exceeds limit of 100
+</span><span class='line'>ISRefreshControl/ISGumView.m:189:1: long line P3 Line with 101 characters exceeds limit of 100
+</span><span class='line'>ISRefreshControl/ISGumView.m:197:1: long line P3 Line with 101 characters exceeds limit of 100
+</span><span class='line'>ISRefreshControl/ISGumView.m:205:1: long line P3 Line with 105 characters exceeds limit of 100
+</span><span class='line'>ISRefreshControl/ISGumView.m:146:1: long method P3 Method with 64 lines exceeds limit of 50
+</span><span class='line'>ISRefreshControl/ISGumView.m:146:1: high ncss method P2 Method of 50 non-commenting source statements exceeds limit of 30
+</span><span class='line'>ISRefreshControl/ISRefreshControl.m:154:5: collapsible if statements P3
+</span><span class='line'>ISRefreshControl/ISRefreshControl.m:166:1: high cyclomatic complexity P2 Cyclomatic Complexity Number 16 exceeds limit of 10
+</span><span class='line'>ISRefreshControl/ISRefreshControl.m:34:13: inverted logic P3
+</span><span class='line'>ISRefreshControl/ISRefreshControl.m:35:1: long line P3 Line with 108 characters exceeds limit of 100
+</span><span class='line'>ISRefreshControl/ISRefreshControl.m:143:1: long line P3 Line with 102 characters exceeds limit of 100
+</span><span class='line'>ISRefreshControl/ISRefreshControl.m:152:1: long line P3 Line with 124 characters exceeds limit of 100
+</span><span class='line'>ISRefreshControl/ISRefreshControl.m:175:1: long line P3 Line with 106 characters exceeds limit of 100
+</span><span class='line'>ISRefreshControl/ISRefreshControl.m:179:1: long line P3 Line with 104 characters exceeds limit of 100
+</span><span class='line'>ISRefreshControl/ISRefreshControl.m:275:1: long line P3 Line with 115 characters exceeds limit of 100
+</span><span class='line'>ISRefreshControl/ISRefreshControl.m:187:5: missing break in switch statement P3
+</span><span class='line'>ISRefreshControl/ISRefreshControl.m:187:5: switch statements should have default P3
+</span><span class='line'>ISRefreshControl/UITableViewController+ISRefreshControl.m:14:1: long line P3 Line with 109 characters exceeds limit of 100
+</span><span class='line'>ISRefreshControl/UITableViewController+ISRefreshControl.m:15:1: long line P3 Line with 113 characters exceeds limit of 100
+</span><span class='line'>ISRefreshControl/UITableViewController+ISRefreshControl.m:16:1: long line P3 Line with 106 characters exceeds limit of 100
+</span><span class='line'>ISRefreshControl/UITableViewController+ISRefreshControl.m:45:1: long line P3 Line with 109 characters exceeds limit of 100
+</span><span class='line'>ISRefreshControl/UITableViewController+ISRefreshControl.m:50:1: long line P3 Line with 108 characters exceeds limit of 100
+</span><span class='line'>ISRefreshControl/UITableView+ISRefreshControl.m:12:1: long line P3 Line with 105 characters exceeds limit of 100
+</span><span class='line'>ISRefreshControl/ISScalingActivityIndicatorView.m:51:1: long line P3 Line with 107 characters exceeds limit of 100
+</span><span class='line'>ISRefreshControl/ISScalingActivityIndicatorView.m:56:1: long line P3 Line with 107 characters exceeds limit of 100
+</span><span class='line'>ISRefreshControl/ISScalingActivityIndicatorView.m:61:1: long line P3 Line with 104 characters exceeds limit of 100
+</span><span class='line'>ISRefreshControl/ISScalingActivityIndicatorView.m:65:1: long line P3 Line with 110 characters exceeds limit of 100
+</span><span class='line'>ISRefreshControl/ISScalingActivityIndicatorView.m:78:1: long line P3 Line with 101 characters exceeds limit of 100
+</span><span class='line'>ISRefreshControl/ISScalingActivityIndicatorView.m:87:1: long line P3 Line with 101 characters exceeds limit of 100
+</span><span class='line'>ISRefreshControl/ISScalingActivityIndicatorView.m:95:1: long line P3 Line with 104 characters exceeds limit of 100
+</span><span class='line'>ISRefreshControl/ISScalingActivityIndicatorView.m:99:1: long line P3 Line with 110 characters exceeds limit of 100</span></code></pre></td></tr></table></div></figure>
+
+
+<p>レポートの出力時に<code>-o=report.html -html</code>をつけるとHTMLのレポートも出してくれます。</p>
+
+<p>&mdash;</p>
+
+<h3>感想</h3>
+
+<p>OCLintの警告にはそれぞれの1〜3のPriorityがつけられていて、値が小さいほどやばいものです。<br/>
+今回の結果ではP2, P3の警告が出ていたので、それらについて感想を書きます。</p>
+
+<h3>P3</h3>
+
+<ul>
+<li>long line (行が100文字以上)</li>
+<li>long method (メソッドが50行以上)</li>
+<li>parameter reassignment (変数が使い回されている)</li>
+<li>collapsible if statements (分解できる(?)if文がある)</li>
+<li>switch statements should have default (defaultがないswitch文がある)</li>
+</ul>
+
+
+<p>全体的に正しいのですが、改めて指摘されると舌打ちしたくなるというのがP3の感想です。</p>
+
+<p>defaultがないswitch文は、typedefしてXcodeにcase漏れをチェックさせるようにしていたので、<br/>
+そちらの方を優先しようかなあと思いました。(defaultを書くとcase漏れを見つけにくいので。)</p>
+
+<h3>P2</h3>
+
+<ul>
+<li>high ncss method (30行以上コメントがないメソッドがある)</li>
+<li>high cyclomatic complexity (<a href="http://en.wikipedia.org/wiki/Cyclomatic_complexity">cyclomatic complexity</a>が10以上(とにかくなんか複雑らしい))</li>
+</ul>
+
+
+<p>P3と比べると謝る気が起きる内容でした。</p>
+
+<p>&mdash;</p>
+
+<p>この記事を書いている間に意識が下がってしまったので、OCLintは一旦見送ることにしました。<br/>
+これから使い始める人はP1, P2あたりから気にすると良いのではないでしょうか。</p>
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-06-09T18:41:00+09:00" pubdate data-updated="true">Jun 9<span>th</span>, 2013</time></div>
+	
+</div>
+
+    <br/>
+    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/06/09/oclint/" data-text="頑張ってOCLintを使ってみた結果" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/06/09/oclint/" >Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+    </article>
 
 
     <article class="post">
@@ -109,281 +630,6 @@ UIActivityIndicatorViewの表示/非表示を切り替えるときに回転さ�
 
     <br/>
     <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/06/09/update-isrefreshcontrol/" data-text="ISRefreshControl 1.4.0をリリースしました" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/06/09/update-isrefreshcontrol/" >Tweet</a>
-    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
-    </article>
-
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2013/06/07/ignore-nil-of-literal-nsdictionary/">
-		
-			NSDictionaryのリテラルのnilを無視する</a>
-	</h2>
-	<div class="entry-content">
-		<p>はじめに断っておきますが、今回のコードはプロダクトに入れるべきではありません。<br/>
-プログラムとして好ましくない上に、Appleの審査でリジェクトされる可能性もあります。</p>
-
-<p>興味本位でやってみたら動いたので書いていますが、取り扱い注意です。</p>
-
-<p>&mdash;</p>
-
-<p><code>NSDictionary</code>のリテラルを以下のように書くと、例外が投げられます。<br/>
-理由は<code>piyo</code>が<code>nil</code>だからです。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="n">NSString</span> <span class="o">*</span><span class="n">hoge</span> <span class="o">=</span> <span class="s">@&quot;hoge&quot;</span><span class="p">;</span>
-</span><span class='line'><span class="n">NSString</span> <span class="o">*</span><span class="n">fuga</span> <span class="o">=</span> <span class="s">@&quot;fuga&quot;</span><span class="p">;</span>
-</span><span class='line'><span class="n">NSString</span> <span class="o">*</span><span class="n">piyo</span> <span class="o">=</span> <span class="nb">nil</span><span class="p">;</span>
-</span><span class='line'><span class="n">NSDictionary</span> <span class="o">*</span><span class="n">dictionary</span> <span class="o">=</span> <span class="err">@</span><span class="p">{</span><span class="s">@&quot;hoge&quot;</span><span class="o">:</span> <span class="n">hoge</span><span class="p">,</span>
-</span><span class='line'>                             <span class="s">@&quot;fuga&quot;</span><span class="o">:</span> <span class="n">fuga</span><span class="p">,</span>
-</span><span class='line'>                             <span class="s">@&quot;piyo&quot;</span><span class="o">:</span> <span class="n">piyo</span><span class="p">,</span> <span class="p">};</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>この例外は至極まっとうなもので適切にフォローすべきものなのですが、<br/>
-意識が低くなってくると自動的に以下のように変換されて欲しいと思ってしまうことがあります。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="n">NSString</span> <span class="o">*</span><span class="n">hoge</span> <span class="o">=</span> <span class="s">@&quot;hoge&quot;</span><span class="p">;</span>
-</span><span class='line'><span class="n">NSString</span> <span class="o">*</span><span class="n">fuga</span> <span class="o">=</span> <span class="s">@&quot;fuga&quot;</span><span class="p">;</span>
-</span><span class='line'><span class="n">NSDictionary</span> <span class="o">*</span><span class="n">dictionary</span> <span class="o">=</span> <span class="err">@</span><span class="p">{</span><span class="s">@&quot;hoge&quot;</span><span class="o">:</span> <span class="n">hoge</span><span class="p">,</span>
-</span><span class='line'>                             <span class="s">@&quot;fuga&quot;</span><span class="o">:</span> <span class="n">fuga</span><span class="p">,</span> <span class="p">};</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>これは以下のような<code>NSDictionary</code>のカテゴリを書くことで実現出来ます。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-<span class='line-number'>47</span>
-</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="cp">#import &quot;NSDictionary+IgnoreNil.h&quot;</span>
-</span><span class='line'><span class="cp">#import &lt;objc/runtime.h&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@implementation</span> <span class="nc">NSDictionary</span> <span class="nl">(IgnoreNil)</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">load</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="err">@</span><span class="n">autoreleasepool</span> <span class="p">{</span>
-</span><span class='line'>        <span class="n">Class</span> <span class="n">class</span> <span class="o">=</span> <span class="n">NSClassFromString</span><span class="p">(</span><span class="s">@&quot;__NSPlaceholderDictionary&quot;</span><span class="p">);</span>
-</span><span class='line'>        <span class="n">Method</span> <span class="n">originalMethod</span> <span class="o">=</span> <span class="n">class_getInstanceMethod</span><span class="p">(</span><span class="n">class</span><span class="p">,</span> <span class="k">@selector</span><span class="p">(</span><span class="nl">initWithObjects:forKeys:count:</span><span class="p">));</span>
-</span><span class='line'>        <span class="n">Method</span> <span class="n">alternativeMethod</span> <span class="o">=</span> <span class="n">class_getInstanceMethod</span><span class="p">(</span><span class="n">class</span><span class="p">,</span> <span class="k">@selector</span><span class="p">(</span><span class="nl">_initWithObjects:forKeys:count:</span><span class="p">));</span>
-</span><span class='line'>        <span class="n">method_exchangeImplementations</span><span class="p">(</span><span class="n">originalMethod</span><span class="p">,</span> <span class="n">alternativeMethod</span><span class="p">);</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nf">_initWithObjects:</span><span class="p">(</span><span class="k">const</span> <span class="kt">id</span> <span class="p">[])</span><span class="nv">objects</span> <span class="nf">forKeys:</span><span class="p">(</span><span class="k">const</span> <span class="kt">id</span><span class="o">&lt;</span><span class="n">NSCopying</span><span class="o">&gt;</span> <span class="p">[])</span><span class="nv">keys</span> <span class="nf">count:</span><span class="p">(</span><span class="n">NSUInteger</span><span class="p">)</span><span class="nv">count</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="n">NSMutableArray</span> <span class="o">*</span><span class="n">validObjectArray</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSMutableArray</span> <span class="n">array</span><span class="p">];</span>
-</span><span class='line'>    <span class="n">NSMutableArray</span> <span class="o">*</span><span class="n">validKeyArray</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSMutableArray</span> <span class="n">array</span><span class="p">];</span>
-</span><span class='line'>    <span class="n">NSInteger</span> <span class="n">validCount</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">for</span> <span class="p">(</span><span class="n">NSInteger</span> <span class="n">index</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">index</span> <span class="o">&lt;</span> <span class="n">count</span><span class="p">;</span> <span class="n">index</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="kt">id</span> <span class="n">object</span> <span class="o">=</span> <span class="n">objects</span><span class="p">[</span><span class="n">index</span><span class="p">];</span>
-</span><span class='line'>        <span class="kt">id</span> <span class="n">key</span> <span class="o">=</span> <span class="n">keys</span><span class="p">[</span><span class="n">index</span><span class="p">];</span>
-</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="n">object</span> <span class="o">&amp;&amp;</span> <span class="n">key</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>            <span class="p">[</span><span class="n">validObjectArray</span> <span class="nl">addObject:</span><span class="n">object</span><span class="p">];</span>
-</span><span class='line'>            <span class="p">[</span><span class="n">validKeyArray</span> <span class="nl">addObject:</span><span class="n">key</span><span class="p">];</span>
-</span><span class='line'>            <span class="n">validCount</span><span class="o">++</span><span class="p">;</span>
-</span><span class='line'>        <span class="p">}</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="kt">id</span> <span class="o">*</span><span class="n">validObjects</span> <span class="o">=</span> <span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span> <span class="o">*</span> <span class="n">validCount</span><span class="p">);</span>
-</span><span class='line'>    <span class="kt">id</span> <span class="o">*</span><span class="n">validKeys</span> <span class="o">=</span> <span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span> <span class="o">*</span> <span class="n">validCount</span><span class="p">);</span>
-</span><span class='line'>    <span class="k">for</span> <span class="p">(</span><span class="n">NSInteger</span> <span class="n">index</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">index</span> <span class="o">&lt;</span> <span class="n">validCount</span><span class="p">;</span> <span class="n">index</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="n">validObjects</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">validObjectArray</span> <span class="nl">objectAtIndex:</span><span class="n">index</span><span class="p">];</span>
-</span><span class='line'>        <span class="n">validKeys</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">validKeyArray</span> <span class="nl">objectAtIndex:</span><span class="n">index</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">self</span> <span class="o">=</span> <span class="p">[</span><span class="n">self</span> <span class="nl">_initWithObjects:</span><span class="n">validObjects</span> <span class="nl">forKeys:</span><span class="n">validKeys</span> <span class="nl">count:</span><span class="n">validCount</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">free</span><span class="p">(</span><span class="n">validObjects</span><span class="p">);</span>
-</span><span class='line'>    <span class="n">free</span><span class="p">(</span><span class="n">validKeys</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">return</span> <span class="n">self</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>やっていることは単純です。</p>
-
-<p><code>NSDictionary</code>のリテラルは<code>__NSPlaceholderDictionary</code>(<code>NSDictionary</code>クラスクラスタの一部)の<br/>
-<code>initWithObjects:keys:count:</code>を呼ぶので、それをswizzleしてnilでないもののみを元の実装に渡しています。</p>
-
-<p>&mdash;</p>
-
-<p>このコードをプロダクトに入れると同僚に殴られ、アプリもリジェクトされると思います。<br/>
-たぶん、<code>NSArray</code>のリテラルでやっても同じ事が起きます。</p>
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-06-07T02:07:00+09:00" pubdate data-updated="true">Jun 7<span>th</span>, 2013</time></div>
-	
-</div>
-
-    <br/>
-    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/06/07/ignore-nil-of-literal-nsdictionary/" data-text="NSDictionaryのリテラルのnilを無視する" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/06/07/ignore-nil-of-literal-nsdictionary/" >Tweet</a>
-    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
-    </article>
-
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2013/06/01/alternative-refresh-control/">
-		
-			カスタマイズ可能なUIRefreshControlのインターフェースについて考えた</a>
-	</h2>
-	<div class="entry-content">
-		<p>インターフェースというのはプログラム上のものを指します。</p>
-
-<p>iphone_dev_jpの勉強会で、独自の<code>UIRefreshControl</code>を実装するにはどうすればよいか、<br/>
-という質問をいただきましたので、しばらく考えていました。</p>
-
-<p><code>UIRefreshControl</code>のメソッド群はよく隠蔽化されていて、カスタマイズすることは難しいです。<br/>
-なので、独自のものをつくるには<code>UIControl</code>からスタートすることになると思います。<br/>
-どんなインターフェースがあれば<code>UIRefershControl</code>はカスタマイズ可能だったのかと考えつつ、<br/>
-独自の<code>UIRefreshControl</code>を実装するための抽象的なクラスを実装しました。</p>
-
-<p><a href="https://github.com/ishkawa/ISAlternativeRefreshControl">ISAlternativeRefreshControl</a></p>
-
-<p>&mdash;</p>
-
-<h3>抽象クラスが持つ値</h3>
-
-<ul>
-<li><code>progress</code>: <code>UIControlEventValueChanged</code>を発火させるまでの引っ張り具合(0.0〜1.0)</li>
-<li><code>refreshingState</code>: 更新前/更新中/更新後の状態</li>
-<li><code>firesOnRelease</code>: 閾値を超えたらすぐ発火するか、閾値を超えた状態で指を離してから発火するか</li>
-</ul>
-
-
-<h3><code>progress</code>の変更を通知するメソッド</h3>
-
-<ul>
-<li><code>willChangeProgress:</code></li>
-<li><code>didChangeProgress</code></li>
-</ul>
-
-
-<p>これらのタイミングで、<code>progress</code>に応じて<code>UIRefreshControl</code>を変形させます。<br/>
-公式の<code>UIRefreshControl</code>であれば<code>progress</code>に応じて伸び具合を変え、<br/>
-従来型の矢印の&#8221;引っぱって更新&#8221;であれば<code>progress</code>に応じて角度を変えます。</p>
-
-<h3><code>refreshingState</code>の変更を通知するメソッド</h3>
-
-<ul>
-<li><code>willChangeProgress:</code></li>
-<li><code>didChangeProgress</code></li>
-</ul>
-
-
-<p>これらのタイミングで、状態に応じたアニメーションを開始したりします。<br/>
-公式の<code>UIRefreshControl</code>であればガムを収縮させて<code>UIActivityIndicator</code>を拡大させ、<br/>
-従来型の矢印の&#8221;引っぱって更新&#8221;であれば矢印を消して<code>UIActivityIndicator</code>を表示します。</p>
-
-<p>&mdash;</p>
-
-<p>このようなインターフェースがあれば、上記のメソッドをオーバーライドすることで、<br/>
-独自の動きを表現する実装が可能となるはずです。<br/>
-実際、従来型の&#8221;引っぱって更新&#8221;や公式の<code>UIRefreshControl</code>はこれらの枠組みで再現できました。</p>
-
-<p>興味が有る方はリポジトリにデモアプリが入っているので見てみてください。</p>
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-06-01T01:14:00+09:00" pubdate data-updated="true">Jun 1<span>st</span>, 2013</time></div>
-	
-</div>
-
-    <br/>
-    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/06/01/alternative-refresh-control/" data-text="カスタマイズ可能なUIRefreshControlのインターフェースについて考えた" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/06/01/alternative-refresh-control/" >Tweet</a>
     <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
     </article>
 

@@ -3,7 +3,7 @@
 <html>
 <head>
 	<meta charset="utf-8">
-	<title></title>
+	<title>NSManagedObjectのプリミティブ型プロパティ</title>
 	<meta name="author" content="ishkawa">
 
 	
@@ -52,18 +52,9 @@
 </nav>
 
 </header>
-	<div id="content" class="inner">
-
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2014/03/17/managed-object-scalar-property/">
-		
-			NSManagedObjectのプリミティブ型プロパティ</a>
-	</h2>
-	<div class="entry-content">
-		<p>iOS 4までのNSManagedObjectはプリミティブ型のアクセサを自動生成できなかったので、数値はNSNumberとして持つ必要がありました。
+	<div id="content" class="inner"><article class="post">
+	<h2 class="title">NSManagedObjectのプリミティブ型プロパティ</h2>
+	<div class="entry-content"><p>iOS 4までのNSManagedObjectはプリミティブ型のアクセサを自動生成できなかったので、数値はNSNumberとして持つ必要がありました。
 つまり、以下のようなプロパティを提供する場合には、アクセサを自分で実装する必要があったのです。</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
@@ -163,10 +154,7 @@ XcodeでNSManagedObjectを作成する際に&#8221;Use scalar properties for pri
 <p>サンプルコードは以下に置いてあります。</p>
 
 <p><a href="https://github.com/ishkawa/sandbox/tree/master/CoreDataScalarAttribute">https://github.com/ishkawa/sandbox/tree/master/CoreDataScalarAttribute</a></p>
-
-		
-		
-	</div>
+</div>
 
 
 <div class="meta">
@@ -187,139 +175,10 @@ XcodeでNSManagedObjectを作成する際に&#8221;Use scalar properties for pri
 </div>
 
     <br/>
-    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2014/03/17/managed-object-scalar-property/" data-text="NSManagedObjectのプリミティブ型プロパティ" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2014/03/17/managed-object-scalar-property/" >Tweet</a>
+    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2014/03/17/managed-object-scalar-property/" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2014/03/17/managed-object-scalar-property/" >Tweet</a>
     <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
-    </article>
+</article>
 
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2014/02/04/ja-font/">
-		
-			iOSシミュレータの日本語フォントが変になるのを防ぐ</a>
-	</h2>
-	<div class="entry-content">
-		<p><a href="http://frnk.hatenablog.jp/entry/2014/02/04/120053">iOSシミュレータの日本語フォントが変になっちゃったときの対処法 &ndash; らっこのじゆうちょう</a></p>
-
-<p>こちらの記事にある通り、日本語よりも中国語が優先されていると日本語のフォントがおかしくなってしまうのですが、設定画面から日本語に設定し直すのはちょっとだけ面倒です。
-Arguments Passes On Launchに以下の値を設定しておくと、必ず日本語に設定された状態でアプリが立ち上がるので、付き合いが長いプロジェクトでは設定しておくと楽かもしれません。</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>-AppleLanguages (ja)</span></code></pre></td></tr></table></div></figure>
-
-
-<p><img src="/images/2014-02-04/ss.png"></p>
-
-<p>参考: <a href="http://qiita.com/jarinosuke@github/items/f83e846ffb866ca5b7b7">iOS &ndash; Launch Arguments を使った一つ上の NSLocalizedString &ndash; Qiita</a></p>
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-02-04T14:03:00+09:00" pubdate data-updated="true">Feb 4<span>th</span>, 2014</time></div>
-	
-</div>
-
-    <br/>
-    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2014/02/04/ja-font/" data-text="iOSシミュレータの日本語フォントが変になるのを防ぐ" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2014/02/04/ja-font/" >Tweet</a>
-    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
-    </article>
-
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2014/02/02/programming-guide-for-oss-in-confwd2/">
-		
-			#confwd でOSSでのObjective-Cの書き方について話してきた</a>
-	</h2>
-	<div class="entry-content">
-		<p><a href="http://confwd2.peatix.com">Conference With Developers 2 | Peatix</a></p>
-
-<p>自分はiOSデベロッパーとして大した経験や実績があるわけではないのですが、
-公開しているライブラリの数はかなり多い方のなので、そこで得られた知識を話そうと思いました。
-トーク中は聴いている人のリアクションを気にする余裕もなかったのですが、
-あとからTwitterのタイムラインを読んでみると、良い反応をしてくれている方もいたようで嬉しかったです。
-今回の発表ではどのトピックも詳細に立ち入ることが難しかったので、いつか文章でしっかりとまとめられるといいなと思いました。</p>
-
-<h3>トークの準備</h3>
-
-<p>大勢の前で45分も話し続けるのは初めてだったので、どうやって準備したらいいものか悩みました。
-スライドをつくりながらトークの内容を練るのは難しそうだったので、はじめはmarkdownで適当な文章を書いて、
-そこからの大事な単語や文を拾ってきたり、概念図を描き起こしたりしました。
-元のmarkdownは以下のものです。人に読まれることを想定して書いたわけではないので読みづらいかもしれません。</p>
-
-<p><a href="https://gist.github.com/ishkawa/82fb589f447394f37546">gist:82fb589f447394f37546</a></p>
-
-<h3>資料</h3>
-
-<p>　</p>
-
-<script async class="speakerdeck-embed" data-id="be0674406d3f0131488e0ea0271811b0" data-ratio="1.33333333333333" src="//speakerdeck.com/assets/embed.js"></script>
-
-
-<h3>ビデオ</h3>
-
-<iframe width="720" height="437" src="http://www.ustream.tv/embed/recorded/43319245/highlight/461451?v=3&amp;wmode=direct" scrolling="no" frameborder="0" style="border: 0px none transparent;">    </iframe>
-
-
-<br /><a href="http://www.ustream.tv/" style="padding: 2px 0px 4px; width: 400px; background: #ffffff; display: block; color: #000000; font-weight: normal; font-size: 10px; text-decoration: underline; text-align: center;" target="_blank">Video streaming by Ustream</a>
-
-
-<p>　</p>
-
-<p>トークやLTはどれも面白く、他の開発者との交流でき、とても充実したイベントでした。
-登壇を提案していただいた矢口さん、開催スタッフのみなさんに感謝しています。</p>
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-02-02T16:11:00+09:00" pubdate data-updated="true">Feb 2<span>nd</span>, 2014</time></div>
-	
-</div>
-
-    <br/>
-    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2014/02/02/programming-guide-for-oss-in-confwd2/" data-text="#confwd でOSSでのObjective-Cの書き方について話してきた" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2014/02/02/programming-guide-for-oss-in-confwd2/" >Tweet</a>
-    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
-    </article>
-
-<nav id="pagenavi">
-    
-    
-        <a href="/blog/page/2/" class="next">Next</a>
-    
-    <div class="center"><a href="/blog/archives">Blog Archives</a></div>
-</nav>
 </div>
 	<footer id="footer" class="inner">Copyright &copy; 2014
 
