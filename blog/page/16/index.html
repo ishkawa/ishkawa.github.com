@@ -7,10 +7,8 @@
 	<meta name="author" content="ishkawa">
 
 	
-	<meta name="description" content=".ipaをサッとつくる iOSアプリの.ipaを配布して他の人にテストしてもらうとき、 Xocdeを起動
-メニューのProduct &ndash;> Archiveを選択。
-OrganizerからArchiveを選んでのDistribute。
-Save for Enterprise or Ad- &hellip;">
+	<meta name="description" content="XcodeのSolarizedを入れ替えた VimやiTermのカラースキームにはSolarized Darkを使っていて大変気に入っているのですが、
+XcodeのSolarizedはなんだかきつい色の組み合わせが頻出すると思ったのでちょっと変えました。 ちなみにオリジナルは以下です。 &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -27,6 +25,7 @@ Save for Enterprise or Ad- &hellip;">
 <body>
 	<header id="header" class="inner"><h1><a href="/">blog.ishkawa.org</a></h1>
 <nav id="main-nav"><ul class="main">
+  <li><a href="/blog/archives">Archives</a></li>
   <li><a href="https://twitter.com/_ishkawa">Twitter</a></li>
   <li><a href="https://github.com/ishkawa">GitHub</a></li>
 </ul>
@@ -36,6 +35,7 @@ Save for Enterprise or Ad- &hellip;">
 	<div class="alignleft menu">
 		<a class="button">Menu</a>
 		<div class="container"><ul class="main">
+  <li><a href="/blog/archives">Archives</a></li>
   <li><a href="https://twitter.com/_ishkawa">Twitter</a></li>
   <li><a href="https://github.com/ishkawa">GitHub</a></li>
 </ul>
@@ -60,88 +60,33 @@ Save for Enterprise or Ad- &hellip;">
     <article class="post">
 	<h2 class="title">
 		
-		<a href="/blog/2013/02/27/make-ipa/">
+		<a href="/blog/2013/03/12/xcode-solarized/">
 		
-			.ipaをサッとつくる</a>
+			XcodeのSolarizedを入れ替えた</a>
 	</h2>
 	<div class="entry-content">
-		<p>iOSアプリの.ipaを配布して他の人にテストしてもらうとき、</p>
+		<p>VimやiTermのカラースキームにはSolarized Darkを使っていて大変気に入っているのですが、<br/>
+XcodeのSolarizedはなんだかきつい色の組み合わせが頻出すると思ったのでちょっと変えました。</p>
 
-<ol>
-<li>Xocdeを起動</li>
-<li>メニューのProduct &ndash;> Archiveを選択。</li>
-<li>OrganizerからArchiveを選んでのDistribute。</li>
-<li>Save for Enterprise or Ad-Hoc Deploymentを選択。</li>
-<li>Code Sign Identityを選択</li>
-<li>保存先を指定</li>
-<li>保存したipaをサーバーにアップロードする。</li>
-</ol>
+<p>ちなみにオリジナルは以下です。<br/>
+<a href="https://github.com/brianmichel/solarized/tree/master/apple-xcode4-solarized">brianmichel / solarized</a></p>
 
+<h4>Before</h4>
 
-<p>という面倒な手順を踏んでいる人も多いと思います。<br/>
-実はこれらはコマンドでも実行できるので<code>make</code>でサッとできます。</p>
+<p><img src="/images/2013-03-12/before.png"></p>
 
-<h3>Makefile</h3>
+<h4>After</h4>
 
-<p><code>.xcodeproj</code>などと同じ階層に<code>Makefile</code>を作成します。<br/>
-<code>***</code>ってなってるところは適宜読み替えてください。</p>
-
-<h4>.xcodeprojを使っている場合</h4>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class='sh'><span class='line'>default:
-</span><span class='line'>  xcodebuild -sdk iphoneos -target *** -configuration Release build
-</span><span class='line'>
-</span><span class='line'>adhoc:
-</span><span class='line'>    <span class="k">if</span> <span class="o">[</span> -a build<span class="o">]</span>; <span class="k">then </span>rm -R build; <span class="k">fi</span>;
-</span><span class='line'>    xcodebuild -sdk iphoneos -target *** -configuration Release clean build <span class="nv">PROVISIONING_PROFILE</span><span class="o">=</span>****-****-****-****-**********
-</span><span class='line'>    xcrun -sdk iphoneos PackageApplication build/Release-iphoneos/***.app -o <span class="k">$(</span>PWD<span class="k">)</span>/build/***.ipa --embed ****.mobileprovision
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h4>.xcworkspaceを使っている場合</h4>
-
-<p>CocoaPodsとか使っている場合ですね。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class='sh'><span class='line'>default:
-</span><span class='line'>  xcodebuild -workspace ***.xcworkspace -scheme *** -configuration Release -sdk iphoneos clean build
-</span><span class='line'>
-</span><span class='line'>adhoc:
-</span><span class='line'>  <span class="k">if</span> <span class="o">[</span> -a build<span class="o">]</span>; <span class="k">then </span>rm -R build; <span class="k">fi</span>;
-</span><span class='line'>  xcodebuild -sdk iphoneos -workspace ***.xcworkspace -scheme *** -configuration Release clean build <span class="nv">CONFIGURATION_BUILD_DIR</span><span class="o">=</span><span class="k">$(</span>PWD<span class="k">)</span>/build <span class="nv">PROVISIONING_PROFILE</span><span class="o">=</span>****-****-****-****-**********
-</span><span class='line'>  xcrun -sdk iphoneos PackageApplication build/***.app -o <span class="k">$(</span>PWD<span class="k">)</span>/build/***.ipa --embed ***.mobileprovision
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>使い方</h3>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='sh'><span class='line'>make adhoc
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>を実行すると、<code>build/</code>以下に.ipaが作成されます。Xcodeでやるより簡単ですね。<br/>
-dSYMなどを手元に貯めて行きたい場合にはもうひと頑張りしてください。</p>
-
-<p>TestFlightなどのように.ipaを保持するサーバーにAPIがあるなら、<br/>
-<code>adhoc:</code>の末尾に<code>curl</code>を追加して自動的にアップロードすると更に楽になります。</p>
+<p><img src="/images/2013-03-12/after.png"></p>
 
 <p>　</p>
 
-<p>なんでJenkins使ってる時に気づかなかったんだろうな〜。</p>
+<p>本当はコンパイラディレクティブとその他のキーワードも分けたかったのですが、<br/>
+そのような分別がなさそうだったのであきらめました。</p>
+
+<p>ソースはこちらです。<br/>
+Menlo 11pt祭になってますが気にしないでください。<br/>
+<a href="https://gist.github.com/ishkawa/5140559">ishkawa / Solarized &ndash; Dark 2.dvtcolortheme</a></p>
 
 		
 		
@@ -161,12 +106,12 @@ dSYMなどを手元に貯めて行きたい場合にはもうひと頑張りし�
   
 
 
-<time datetime="2013-02-27T19:21:00+09:00" pubdate data-updated="true">Feb 27<span>th</span>, 2013</time></div>
+<time datetime="2013-03-12T21:32:00+09:00" pubdate data-updated="true">Mar 12<span>th</span>, 2013</time></div>
 	
 </div>
 
     <br/>
-    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/02/27/make-ipa/" data-text=".ipaをサッとつくる" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/02/27/make-ipa/" >Tweet</a>
+    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/03/12/xcode-solarized/" data-text="XcodeのSolarizedを入れ替えた" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/03/12/xcode-solarized/" >Tweet</a>
     <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
     </article>
 
@@ -174,211 +119,45 @@ dSYMなどを手元に貯めて行きたい場合にはもうひと頑張りし�
     <article class="post">
 	<h2 class="title">
 		
-		<a href="/blog/2013/02/24/backgesture-in-confwd/">
+		<a href="/blog/2013/03/07/sentestingkit/">
 		
-			1行で導入するback gestureの話とUINavigationBarを拡張した話</a>
+			GHUnitをやめてSenTestingKitを使う理由</a>
 	</h2>
 	<div class="entry-content">
-		<p>一昨日、conferenceWithDevelopersのLTで、1行で導入するback gestureの話をしてきました。<br/>
-LTの内容と、やろうとして間に合わなかったことの紹介を書きます。</p>
+		<p>※ はじめにことわっておきますが、GHUnitを批判したくて書いているわけではなく、<br/>
+SenTestingKitが意外と使えたということを書きたくて書いています。</p>
 
-<h3>1行で導入するback gesture</h3>
+<p>&mdash;</p>
 
-<p>iPhone 5が発売されて、<code>UINavigationBar</code>の<code>backButtonItem</code>に指が届きにくくなったので、
-スワイプして戻るという動作を実装するアプリが増えてきたように思います。</p>
-
-<p>これを実装するには<code>UIGestureRecognizer</code>を使ってあれこれするのですが、
-毎回これを書くのはだるいので、<code>UIViewController</code>を拡張して
-1行で導入できるようにしたライブラリを書きました。<br/>
-<a href="https://github.com/ishkawa/ISBackGesture">ISBackGesture</a></p>
-
-<h4>使い方</h4>
-
-<p><code>UIViewController</code>に<code>backGestureEnabled</code>というプロパティが追加されているので、
-これの値を<code>YES</code>にするだけです。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">UIViewController</span> <span class="o">*</span><span class="n">viewController</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UIViewController</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
-</span><span class='line'><span class="n">viewController</span><span class="p">.</span><span class="n">backGestureEnabled</span> <span class="o">=</span> <span class="n">YES</span><span class="p">;</span>
-</span></code></pre></td></tr></table></div></figure>
+<ul>
+<li>特定のテストがターミナルから実行できないという問題に遭遇した。</li>
+<li>GHUnitは新しいXcodeやiOS SDKが出たときに対応されるまでにラグがある。</li>
+<li>やっぱりcommand+Uでマメにテストを実行したい。</li>
+<li>SenTestingKitではできないと思い込んでいたことが実はできた。</li>
+</ul>
 
 
-<p>progressも取得出来ます。</p>
+<p>以下、誤解していたことについて書きます。</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="kt">float</span> <span class="n">progress</span> <span class="o">=</span> <span class="n">viewController</span><span class="p">.</span><span class="n">backProgress</span><span class="p">;</span>
-</span></code></pre></td></tr></table></div></figure>
+<h3>SenTestingKitへの誤解</h3>
 
-
-<h4>実装の話</h4>
-
-<p><code>UIViewController</code>の拡張はカテゴリで実現していて、ヘッダーは以下のようになっています。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &lt;UIKit/UIKit.h&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@interface</span> <span class="nc">UIViewController</span> <span class="nl">(BackGesture)</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">)</span> <span class="kt">BOOL</span> <span class="n">backGestureEnabled</span><span class="p">;</span>
-</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">,</span> <span class="n">readonly</span><span class="p">)</span> <span class="kt">float</span> <span class="n">backProgress</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@end</span>
-</span></code></pre></td></tr></table></div></figure>
+<ul>
+<li>実機ではテストを実行できない。</li>
+<li>UIKitが絡むテストは書けない。</li>
+<li>非同期のテストが書きづらい。</li>
+</ul>
 
 
-<p><code>viewDidLoad</code>の実装を書き換えて、<code>backGestureEnabled</code>が<code>YES</code>だったら
-<code>self.view</code>に<code>UIPanGestureRecognizer</code>を追加するという感じになっています。</p>
+<h4>実機での実行</h4>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">startRecognizing</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">self</span><span class="p">.</span><span class="n">isViewLoaded</span> <span class="o">||</span> <span class="o">!</span><span class="n">self</span><span class="p">.</span><span class="n">backGestureEnabled</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="k">return</span><span class="p">;</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">self</span><span class="p">.</span><span class="n">backGestureRecognizer</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UIPanGestureRecognizer</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithTarget:</span><span class="n">self</span> <span class="nl">action:</span><span class="k">@selector</span><span class="p">(</span><span class="nl">handleGesture:</span><span class="p">)];</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">view</span> <span class="nl">addGestureRecognizer:</span><span class="n">self</span><span class="p">.</span><span class="n">backGestureRecognizer</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
+<p>SenTestingKitで実行できるテストにはLogic Unit TestsとApplication Unit Testsがあります。<br/>
+前者は実機での実行はできないのですが、後者はできます。<br/>
+具体的なセットアップ手順は<a href="https://developer.apple.com/library/ios/#documentation/DeveloperTools/Conceptual/UnitTesting/02-Setting_Up_Unit_Tests_in_a_Project/setting_up.html#//apple_ref/doc/uid/TP40002143-CH3-SW1">Xcode Unit Testing Guide</a>を参照してください。</p>
 
+<h4>非同期のテスト</h4>
 
-<h4>スライド</h4>
-
-<p>&ldquo;ハゲ&#8221;ってところにSteve Jobsが写ってますが、気にしないでください。</p>
-
-<script async class="speakerdeck-embed" data-id="5b6384c0609e0130d93422000a1e9114" data-ratio="1.33333333333333" src="//speakerdeck.com/assets/embed.js"></script>
-
-
-<p></p>
-
-<p>　</p>
-
-<h3>UINavigationBarを拡張した話</h3>
-
-<p>このライブラリの目指すところは、元々webtronさんが提案していた
-&ldquo;Interaction Concept of Swiping to Go Back&#8221;を1行で導入できるようにすることでした。<br/>
-<a href="http://blog.webtron.jp/archives/2012/11/000092.html">Interaction Concept of Swiping to Go Back</a></p>
-
-<p><code>ISBackGesture</code>を拡張して実現できたのですが、1行で導入することに固執したせいで、
-プライベートクラスを使った骨の折れる作業が必要だったので、それを紹介します。<br/>
-(※ 以下に書くことはwebtronさんのコンセプト自体とは無関係です)<br/>
-(※ 先に紹介したバージョンの<code>ISBackGesture</code>ではプライベートクラスは利用していません。 )</p>
-
-<h4>UINavigationItemButtonViewのクラスの差し替え</h4>
-
-<p><code>UINavigationBar</code>のViewヒエラルキーの中のボタンにあたる部分は、
-<code>UINavigationItemButtonView</code>というプライベートなクラスで実装されています。
-デフォルトで表示される<code>backButtonItem</code>に戻りゲージをつけるために、
-このオブジェクトのクラスを差し替えました。
-クラスを差し替えるにはObjective-C Runtime APIにある、object_setClass()を使います。</p>
-
-<p>差し替えるタイミングには色々と候補がありますが、<code>UIView</code>の<code>didMoveToSuperview</code>を選びました。
-具体的には、<code>didMoveToSuperview</code>の実装を以下のものに差し替えます。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">_didMoveToSuperview</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="n">Class</span> <span class="n">class</span> <span class="o">=</span> <span class="n">NSClassFromString</span><span class="p">(</span><span class="s">@&quot;UINavigationItemButtonView&quot;</span><span class="p">);</span>
-</span><span class='line'>    <span class="k">if</span> <span class="p">([</span><span class="n">self</span> <span class="nl">isKindOfClass:</span><span class="n">class</span><span class="p">])</span> <span class="p">{</span>
-</span><span class='line'>        <span class="n">object_setClass</span><span class="p">(</span><span class="n">self</span><span class="p">,</span> <span class="p">[</span><span class="n">ISNavigationItemProgressButtonView</span> <span class="n">class</span><span class="p">]);</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h4>ゲージを描画するUINavigationItemButtonViewの実装</h4>
-
-<p><code>UINavigationItemButtonView</code>のサブクラスを普通に作ることはできないので、
-一旦<code>UIView</code>のサブクラスを作成し、<code>load</code>の中でスーパークラスを差し替えます。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">+</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">load</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="err">@</span><span class="n">autoreleasepool</span> <span class="p">{</span>
-</span><span class='line'><span class="cp">#pragma clang diagnostic push</span>
-</span><span class='line'><span class="cp">#pragma clang diagnostic ignored &quot;-Wdeprecated-declarations&quot;</span>
-</span><span class='line'>        <span class="n">Class</span> <span class="n">class</span> <span class="o">=</span> <span class="n">NSClassFromString</span><span class="p">(</span><span class="s">@&quot;UINavigationItemButtonView&quot;</span><span class="p">);</span>
-</span><span class='line'>        <span class="n">class_setSuperclass</span><span class="p">([</span><span class="n">self</span> <span class="n">class</span><span class="p">],</span> <span class="n">class</span><span class="p">);</span>
-</span><span class='line'><span class="cp">#pragma clang diagnostic pop</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>progressの値に応じて、ゲージを描画します。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">setProgress:</span><span class="p">(</span><span class="kt">float</span><span class="p">)</span><span class="nv">progress</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="n">UIView</span> <span class="o">*</span><span class="n">progressView</span> <span class="o">=</span> <span class="n">objc_getAssociatedObject</span><span class="p">(</span><span class="n">self</span><span class="p">,</span> <span class="n">ISProgressViewKey</span><span class="p">);</span>
-</span><span class='line'>    <span class="n">CGRect</span> <span class="n">frame</span> <span class="o">=</span> <span class="n">progressView</span><span class="p">.</span><span class="n">frame</span><span class="p">;</span>
-</span><span class='line'>    <span class="n">frame</span><span class="p">.</span><span class="n">origin</span><span class="p">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">self</span><span class="p">.</span><span class="n">frame</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">width</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.f</span> <span class="o">-</span> <span class="n">progress</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">progressView</span><span class="p">.</span><span class="n">frame</span> <span class="o">=</span> <span class="n">frame</span><span class="p">;</span>
-</span><span class='line'>    <span class="n">progressView</span><span class="p">.</span><span class="n">alpha</span> <span class="o">=</span> <span class="n">pow</span><span class="p">(</span><span class="n">progress</span><span class="p">,</span> <span class="mf">1.2</span><span class="p">)</span> <span class="o">*</span> <span class="mf">.25f</span> <span class="o">+</span> <span class="mf">.1f</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p><code>UINavigationItemButtonView</code>は<code>drawText:inRect:barStyle:</code>というメソッドの中で
-タイトルの描画をしているのですが、そのまま描画されてしまうとゲージの奥に隠れてしまうので、
-このメソッドでの文字列の描画をキャンセルし、代わりに<code>UILabel</code>をゲージの上に配置します。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">drawText:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">text</span> <span class="nf">inRect:</span><span class="p">(</span><span class="n">CGRect</span><span class="p">)</span><span class="nv">rect</span> <span class="nf">barStyle:</span><span class="p">(</span><span class="n">UIBarStyle</span><span class="p">)</span><span class="nv">style</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="n">UILabel</span> <span class="o">*</span><span class="n">label</span> <span class="o">=</span> <span class="n">objc_getAssociatedObject</span><span class="p">(</span><span class="n">self</span><span class="p">,</span> <span class="n">ISLabelKey</span><span class="p">);</span>
-</span><span class='line'>    <span class="n">label</span><span class="p">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">text</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h4>progressの受け渡し</h4>
-
-<p>UIViewControllerのgestureを受け取る箇所で<code>UINavigationItemButtonView</code>にprogressを渡します。</p>
+<p><a href="http://d.hatena.ne.jp/glass-_-onion/20120702/1341241666">@glassonion1 さんの方法</a>で書くことができます。<br/>
+自分は<code>tearDown</code>で<code>NSRunLoop</code>を回す前に<code>dispatch_after</code>でタイムアウトを設定しています。</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -393,45 +172,62 @@ LTの内容と、やろうとして間に合わなかったことの紹介を書
 <span class='line-number'>11</span>
 <span class='line-number'>12</span>
 <span class='line-number'>13</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">for</span> <span class="p">(</span><span class="n">UIView</span> <span class="o">*</span><span class="n">subview</span> <span class="k">in</span> <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">navigationController</span><span class="p">.</span><span class="n">navigationBar</span> <span class="n">subviews</span><span class="p">])</span> <span class="p">{</span>
-</span><span class='line'>    <span class="k">if</span> <span class="p">([</span><span class="n">subview</span> <span class="nl">isKindOfClass:</span><span class="p">[</span><span class="n">ISNavigationItemProgressButtonView</span> <span class="n">class</span><span class="p">]])</span> <span class="p">{</span>
-</span><span class='line'>        <span class="n">ISNavigationItemProgressButtonView</span> <span class="o">*</span><span class="n">progressButtonView</span> <span class="o">=</span> <span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="n">subview</span><span class="p">;</span>
-</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="n">gestureRecognizer</span><span class="p">.</span><span class="n">state</span> <span class="o">==</span> <span class="n">UIGestureRecognizerStateChanged</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>            <span class="n">progressButtonView</span><span class="p">.</span><span class="n">progress</span> <span class="o">=</span> <span class="n">self</span><span class="p">.</span><span class="n">backProgress</span><span class="p">;</span>
-</span><span class='line'>        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-</span><span class='line'>            <span class="p">[</span><span class="n">UIView</span> <span class="nl">animateWithDuration:</span><span class="mf">.3</span>
-</span><span class='line'>                             <span class="nl">animations:</span><span class="o">^</span><span class="p">{</span>
-</span><span class='line'>                                 <span class="n">progressButtonView</span><span class="p">.</span><span class="n">progress</span> <span class="o">=</span> <span class="mf">0.f</span><span class="p">;</span>
-</span><span class='line'>                             <span class="p">}];</span>
-</span><span class='line'>        <span class="p">}</span>
-</span><span class='line'>    <span class="p">}</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">tearDown</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="kt">double</span> <span class="n">delayInSeconds</span> <span class="o">=</span> <span class="n">self</span><span class="p">.</span><span class="n">timeoutInterval</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">dispatch_time_t</span> <span class="n">popTime</span> <span class="o">=</span> <span class="n">dispatch_time</span><span class="p">(</span><span class="n">DISPATCH_TIME_NOW</span><span class="p">,</span> <span class="p">(</span><span class="n">int64_t</span><span class="p">)(</span><span class="n">delayInSeconds</span> <span class="o">*</span> <span class="n">NSEC_PER_SEC</span><span class="p">));</span>
+</span><span class='line'>    <span class="n">dispatch_after</span><span class="p">(</span><span class="n">popTime</span><span class="p">,</span> <span class="n">dispatch_get_main_queue</span><span class="p">(),</span> <span class="o">^</span><span class="p">(</span><span class="kt">void</span><span class="p">){</span>
+</span><span class='line'>        <span class="n">STFail</span><span class="p">(</span><span class="s">@&quot;timed out.&quot;</span><span class="p">);</span>
+</span><span class='line'>        <span class="n">self</span><span class="p">.</span><span class="n">finished</span> <span class="o">=</span> <span class="n">YES</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">});</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">do</span> <span class="p">{</span>
+</span><span class='line'>        <span class="p">[[</span><span class="n">NSRunLoop</span> <span class="n">currentRunLoop</span><span class="p">]</span> <span class="nl">runUntilDate:</span><span class="p">[</span><span class="n">NSDate</span> <span class="nl">dateWithTimeIntervalSinceNow:</span><span class="mf">.1</span><span class="p">]];</span>
+</span><span class='line'>    <span class="p">}</span> <span class="k">while</span> <span class="p">(</span><span class="o">!</span><span class="n">self</span><span class="p">.</span><span class="n">isFinished</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="p">[</span><span class="n">super</span> <span class="n">tearDown</span><span class="p">];</span>
 </span><span class='line'><span class="p">}</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p><code>else</code>では、gestureをやめたときに徐々にゲージが戻るようにしています。</p>
-
-<p>　</p>
-
-<p>以上のような感じで、以下のようなUIが1行で導入できるようになりました。</p>
-
-<iframe src="http://player.vimeo.com/video/60376912?title=0&amp;byline=0&amp;portrait=0" width="500" height="281" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>
-
-
-<p>こちらのバージョンのコードは別のブランチに置いてあります。<br/>
-<a href="https://github.com/ishkawa/ISBackGesture/tree/extended">ISBackGesture(extended)</a></p>
-
-<p>CocoaPodsを使う場合には、以下を指定してください。</p>
+<p>非同期の処理ををまとめて<code>SenAsyncTestCase</code>というクラスにしておけば、<br/>
+追加で必要なことはテストケースの終了時に<code>self.finished = YES</code>を書くことだけです。</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='sh'><span class='line'>pod <span class="s1">&#39;ISBackGesture&#39;</span>, :git <span class="o">=</span>&gt; <span class="s1">&#39;git@github.com:ishkawa/ISBackGesture.git&#39;</span>, :commit <span class="o">=</span>&gt; <span class="s1">&#39;50fe279672256791e61fbb302676bfb6bafec6e0&#39;</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">testHoge</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">NSURL</span> <span class="o">*</span><span class="n">URL</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSURL</span> <span class="nl">URLWithString:</span><span class="s">@&quot;http://www.apple.com&quot;</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">NSURLRequest</span> <span class="o">*</span><span class="n">reqeust</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSURLRequest</span> <span class="nl">requestWithURL:</span><span class="n">URL</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">NSURLConnection</span> <span class="nl">sendAsynchronousRequest:</span><span class="n">reqeust</span>
+</span><span class='line'>                                       <span class="nl">queue:</span><span class="p">[</span><span class="n">NSOperationQueue</span> <span class="n">mainQueue</span><span class="p">]</span>
+</span><span class='line'>                           <span class="nl">completionHandler:</span><span class="o">^</span><span class="p">(</span><span class="n">NSURLResponse</span> <span class="o">*</span><span class="n">response</span><span class="p">,</span> <span class="n">NSData</span> <span class="o">*</span><span class="n">data</span><span class="p">,</span> <span class="n">NSError</span> <span class="o">*</span><span class="n">error</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>                               <span class="n">NSInteger</span> <span class="n">statusCode</span> <span class="o">=</span> <span class="p">[(</span><span class="n">NSHTTPURLResponse</span> <span class="o">*</span><span class="p">)</span><span class="n">response</span> <span class="n">statusCode</span><span class="p">];</span>
+</span><span class='line'>                               <span class="n">STAssertEquals</span><span class="p">(</span><span class="n">statusCode</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="nb">nil</span><span class="p">);</span>
+</span><span class='line'>                               <span class="n">STAssertNil</span><span class="p">(</span><span class="n">error</span><span class="p">,</span> <span class="nb">nil</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>                               <span class="n">self</span><span class="p">.</span><span class="n">finished</span> <span class="o">=</span> <span class="n">YES</span><span class="p">;</span>
+</span><span class='line'>                           <span class="p">}];</span>
+</span><span class='line'><span class="p">}</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>　</p>
-
-<p>2つ目に紹介したバージョンではプライベートなクラスに触れてる箇所もあり、<br/>
-リジェクトされる可能性が高いので、プロダクトへの導入は自己責任でお願いします。</p>
+<p><code>SenAsyncTestCase</code>の例は以下にアップしてあります。<br/>
+<a href="https://github.com/ishkawa/SenAsyncTestCase">SenAsyncTestCase</a></p>
 
 		
 		
@@ -451,12 +247,12 @@ LTの内容と、やろうとして間に合わなかったことの紹介を書
   
 
 
-<time datetime="2013-02-24T13:33:00+09:00" pubdate data-updated="true">Feb 24<span>th</span>, 2013</time></div>
+<time datetime="2013-03-07T21:38:00+09:00" pubdate data-updated="true">Mar 7<span>th</span>, 2013</time></div>
 	
 </div>
 
     <br/>
-    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/02/24/backgesture-in-confwd/" data-text="1行で導入するback gestureの話とUINavigationBarを拡張した話" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/02/24/backgesture-in-confwd/" >Tweet</a>
+    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/03/07/sentestingkit/" data-text="GHUnitをやめてSenTestingKitを使う理由" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/03/07/sentestingkit/" >Tweet</a>
     <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
     </article>
 
@@ -464,41 +260,75 @@ LTの内容と、やろうとして間に合わなかったことの紹介を書
     <article class="post">
 	<h2 class="title">
 		
-		<a href="/blog/2013/02/19/menubar-pomodoro/">
+		<a href="/blog/2013/03/06/test-dealloc/">
 		
-			ミニマルなPomodoroタイマーを書きました</a>
+			ARC環境でdeallocされるかテストする</a>
 	</h2>
 	<div class="entry-content">
-		<p>仕事に集中する方法は色々あると思いますが、その1つにPomodoroがあります。</p>
+		<p>ARCを導入するとメモリ管理がいい加減になりがちですが、<br/>
+Blocksの循環参照など、メモリ管理の落とし穴は依然として多いです。<br/>
+なので、テストを書く方法を考えました。</p>
 
-<p>25分仕事をして5分休憩するというのを4セットやって、30分休むというものです。<br/>
-作業を何セットでできるか見積もってやるらしいのですが、方法自体に縛られたくなかったので、<br/>
-単純に集中とダラダラを区切る目的でやってみました。</p>
+<h3>書き方</h3>
 
-<p>始めるために210円でタイマーアプリを買ったのですが、自分に合わなかったのでつくりました。<br/>
-Mountain Lion以降で動作します。</p>
+<ul>
+<li><code>dealloc</code>されるか確認したいオブジェクトと同じ型の<code>__weak</code>な変数を宣言する。</li>
+<li><code>@autoreleasepool</code>をつくり、その中で確認したいオブジェクトを作る。</li>
+<li>つくったオブジェクトを<code>__weak</code>な変数に入れる。</li>
+<li><code>@autoreleasepool</code>を閉じたあと、<code>__weak</code>な変数に対して<code>STAssertNil</code>する。</li>
+</ul>
 
-<p><a href="/images/2013-02-19/PMDR.dmg">PMDR.dmg</a></p>
+
+<p>確認したいオブジェクトの暗黙的な<code>__strong</code>は<code>@autoreleasepool</code>に収まるので、<br/>
+<code>@autoreleasepool</code>外ではそのオブジェクトは<code>dealloc</code>されているはず、というわけです。</p>
+
+<h3>例</h3>
+
+<p>最近、<code>NSURLConnection</code>をラップする<code>NSOperation</code>を改めて書いているので、それを例にします。<br/>
+非同期のテストの書き方は<a href="http://d.hatena.ne.jp/glass-_-onion/20120702/1341241666">@grassonion1 さんの方法</a>に準じるものにしています。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">testDeallocOnCancelBeforeStart</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">__weak</span> <span class="n">ISHTTPOperation</span> <span class="o">*</span><span class="n">woperation</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="err">@</span><span class="n">autoreleasepool</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">NSURL</span> <span class="o">*</span><span class="n">URL</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSURL</span> <span class="nl">URLWithString:</span><span class="n">ISTestURL</span><span class="p">];</span>
+</span><span class='line'>        <span class="n">NSURLRequest</span> <span class="o">*</span><span class="n">request</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSURLRequest</span> <span class="nl">requestWithURL:</span><span class="n">URL</span><span class="p">];</span>
+</span><span class='line'>        <span class="n">ISHTTPOperation</span> <span class="o">*</span><span class="n">operation</span> <span class="o">=</span> <span class="p">[[</span><span class="n">ISHTTPOperation</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithRequest:</span><span class="n">request</span> <span class="nl">handler:</span><span class="nb">nil</span><span class="p">];</span>
+</span><span class='line'>        <span class="n">woperation</span> <span class="o">=</span> <span class="n">operation</span><span class="p">;</span>
+</span><span class='line'>        <span class="p">[</span><span class="n">operation</span> <span class="n">cancel</span><span class="p">];</span>
+</span><span class='line'>        <span class="p">[</span><span class="n">NSThread</span> <span class="nl">sleepForTimeInterval:</span><span class="mf">.1</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">STAssertNil</span><span class="p">(</span><span class="n">woperation</span><span class="p">,</span> <span class="nb">nil</span><span class="p">);</span>
+</span><span class='line'>    <span class="n">self</span><span class="p">.</span><span class="n">isFinished</span> <span class="o">=</span> <span class="n">YES</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>これで、<code>cancel</code>された<code>NSOperation</code>がちゃんと<code>dealloc</code>されるか確認できます。<br/>
+(もちろん、<code>testDeallocOnCancelAfterStart</code>も書いてあります。)</p>
 
 <p>　</p>
 
-<h3>機能</h3>
-
-<p>以下のスクリーンショットの通り、Start, Stop, Quitしかありません。</p>
-
-<p><img src="/images/2013-02-19/menu.png"></p>
-
-<p>25分経つと以下のように通知センターに通知してくれます。</p>
-
-<p><img src="/images/2013-02-19/notification.png"></p>
-
-<p>その後5分経つとまた通知してくれ、また25分数え始めます。<br/>
-これがずっと続きます。</p>
-
-<p>&mdash;</p>
-
-<p>ソースはこちらにおいてあります。<br/>
-<a href="https://github.com/ishkawa/PMDR">https://github.com/ishkawa/PMDR</a></p>
+<p>リポジトリはこちらです。<br/>
+<a href="https://github.com/ishkawa/ISHTTPOperation">ISHTTPOperation</a></p>
 
 		
 		
@@ -518,12 +348,12 @@ Mountain Lion以降で動作します。</p>
   
 
 
-<time datetime="2013-02-19T22:48:00+09:00" pubdate data-updated="true">Feb 19<span>th</span>, 2013</time></div>
+<time datetime="2013-03-06T02:37:00+09:00" pubdate data-updated="true">Mar 6<span>th</span>, 2013</time></div>
 	
 </div>
 
     <br/>
-    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/02/19/menubar-pomodoro/" data-text="ミニマルなPomodoroタイマーを書きました" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/02/19/menubar-pomodoro/" >Tweet</a>
+    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/03/06/test-dealloc/" data-text="ARC環境でdeallocされるかテストする" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/03/06/test-dealloc/" >Tweet</a>
     <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
     </article>
 

@@ -1,0 +1,138 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>ISMemoryCache 0.1.0</title>
+	<meta name="author" content="ishkawa">
+
+	
+	<meta name="description" content="ISMemoryCache 0.1.0 世の中にはたくさんキャッシュの実装があり、
+自前の実装は捨てろなんて言われたりするのですが、
+それでも自分の思い通りのキャッシュ機構を作りたくなるものだと思います。
+自分はlimitに達したときにすべてのオブジェクトを削除するようなメモリキャッシュではなく &hellip;">
+	
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="blog.ishkawa.org" type="application/atom+xml">
+	<link rel="canonical" href="">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<script async="true" src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	
+</head>
+
+
+<body>
+	<header id="header" class="inner"><h1><a href="/">blog.ishkawa.org</a></h1>
+<nav id="main-nav"><ul class="main">
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="https://twitter.com/_ishkawa">Twitter</a></li>
+  <li><a href="https://github.com/ishkawa">GitHub</a></li>
+</ul>
+
+</nav>
+<nav id="mobile-nav">
+	<div class="alignleft menu">
+		<a class="button">Menu</a>
+		<div class="container"><ul class="main">
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="https://twitter.com/_ishkawa">Twitter</a></li>
+  <li><a href="https://github.com/ishkawa">GitHub</a></li>
+</ul>
+
+</div>
+	</div>
+	<div class="alignright search">
+		<a class="button"></a>
+		<div class="container">
+			<form action="http://google.com/search" method="get">
+				<input type="text" name="q" results="0">
+				<input type="hidden" name="q" value="site:blog.ishkawa.org">
+			</form>
+		</div>
+	</div>
+</nav>
+
+</header>
+	<div id="content" class="inner"><article class="post">
+	<h2 class="title">ISMemoryCache 0.1.0</h2>
+	<div class="entry-content"><p><a href="http://cocoapods.org/?q=cache">世の中にはたくさんキャッシュの実装があり</a>、
+<a href="https://speakerdeck.com/ninjinkun/sdwebimagewo1nian-ban-shi-tutemita">自前の実装は捨てろ</a>なんて言われたりするのですが、
+それでも自分の思い通りのキャッシュ機構を作りたくなるものだと思います。
+自分はlimitに達したときにすべてのオブジェクトを削除するようなメモリキャッシュではなく、
+他からの参照がないオブジェクトを選択して削除するようなメモリキャッシュが欲しかったのでISMemoryCacheを実装しました。
+最近、ISMemoryCacheを更新して0.1.0を出したので、その機能を紹介します。</p>
+
+<ul>
+<li>アプリがバックグラウンドに入ったときに他からの参照がないオブジェクトを削除</li>
+<li>メモリ警告が出たときにすべてのオブジェクトを削除</li>
+</ul>
+
+
+<p>ディスクキャッシュについてはISDiskCacheというのもあるので、そちらをどうぞ。</p>
+
+<ul>
+<li><a href="https://github.com/ishkawa/ISMemoryCache">ISMemoryCache</a></li>
+<li><a href="https://github.com/ishkawa/ISDiskCache">ISDiskCache</a></li>
+</ul>
+
+</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-04-13T20:56:00+09:00" pubdate data-updated="true">Apr 13<span>th</span>, 2014</time></div>
+	
+</div>
+
+    <br/>
+    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2014/04/13/ismemorycache-0-dot-1-0/" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2014/04/13/ismemorycache-0-dot-1-0/" >Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+</article>
+
+</div>
+	<footer id="footer" class="inner">Copyright &copy; 2014
+
+    ishkawa
+
+</footer>
+	<script src="/javascripts/slash.js"></script>
+<script src="/javascripts/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+	$('.fancybox').fancybox();
+})(jQuery);
+</script> <!-- Delete or comment this line to disable Fancybox -->
+
+
+
+
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-35917440-1']);
+		_gaq.push(['_trackPageview']);
+
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
+
+
+
+</body>
+</html>

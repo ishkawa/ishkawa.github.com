@@ -7,8 +7,8 @@
 	<meta name="author" content="ishkawa">
 
 	
-	<meta name="description" content="GHFeedで利用しているライブラリ一覧 先日GHFeedというGitHubのフィードを読めるiOSアプリをリリースしました。
-今日はGHFeedの開発に利用したライブラリを紹介しようと思います。 NJKWebViewProgress &hellip;">
+	<meta name="description" content="HHK無刻印モデルを3週間使った感想 最近HHK Pro 2の無刻印モデルを使い始めました。
+斜に構えおじさんに中2とか言われてバカにされたりしました。 無刻印 メリット 何&mdash; soh335 (@soh335) August 25, 2013 　 &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -25,6 +25,7 @@
 <body>
 	<header id="header" class="inner"><h1><a href="/">blog.ishkawa.org</a></h1>
 <nav id="main-nav"><ul class="main">
+  <li><a href="/blog/archives">Archives</a></li>
   <li><a href="https://twitter.com/_ishkawa">Twitter</a></li>
   <li><a href="https://github.com/ishkawa">GitHub</a></li>
 </ul>
@@ -34,6 +35,7 @@
 	<div class="alignleft menu">
 		<a class="button">Menu</a>
 		<div class="container"><ul class="main">
+  <li><a href="/blog/archives">Archives</a></li>
   <li><a href="https://twitter.com/_ishkawa">Twitter</a></li>
   <li><a href="https://github.com/ishkawa">GitHub</a></li>
 </ul>
@@ -58,154 +60,32 @@
     <article class="post">
 	<h2 class="title">
 		
-		<a href="/blog/2013/08/28/ghfeed-libraries/">
+		<a href="/blog/2013/09/15/hhk/">
 		
-			GHFeedで利用しているライブラリ一覧</a>
+			HHK無刻印モデルを3週間使った感想</a>
 	</h2>
 	<div class="entry-content">
-		<p>先日GHFeedというGitHubのフィードを読めるiOSアプリをリリースしました。<br/>
-今日はGHFeedの開発に利用したライブラリを紹介しようと思います。</p>
+		<p>最近<a href="http://www.pfu.fujitsu.com/hhkeyboard/lineup/pdkb400bn.html">HHK Pro 2の無刻印モデル</a>を使い始めました。<br/>
+<a href="http://twitter.com/soh335">斜に構えおじさん</a>に中2とか言われてバカにされたりしました。</p>
 
-<h4>NJKWebViewProgress</h4>
+<blockquote class="twitter-tweet"><p>無刻印 メリット 何</p>&mdash; soh335 (@soh335) <a href="https://twitter.com/soh335/statuses/371610150659825664">August 25, 2013</a></blockquote>
 
-<p>UIWebViewの読み込み状況を取得してくれるライブラリです。
-作者は<a href="https://twitter.com/ninjinkun">@ninjinkun</a>さんです。
-このライブラリが出してくれる値は大体0.0, 0.1, 1.0なので、
-GHFeedではこれらの値を補間するようなアニメーションを追加で実装しています。</p>
 
-<h4>KLSwitch</h4>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
 
-<p>フラットデザインなUIButtonのライブラリです。<br/>
-UIAppearanceにも対応するなど、結構細かいところまで実装が行き届いていました。</p>
-
-<h4>TUSafariActivity</h4>
-
-<p>UIActivityViewControllerにOpen in Safariを追加するライブラリです。</p>
-
-<h4>SSKeychain</h4>
-
-<p>キーチェーンのwrapperです。</p>
-
-<h4>SVProgressHUD</h4>
-
-<p>ユーザーに待ってもらいたいときに表示するUIViewです。</p>
-
-<h4>ISHTTPOperation</h4>
-
-<p>NSURLConnectionをwrapしたNSOperationです。
-実際には直接ISHTTPOperationを使うのではなく、JSONパースまで含んだサブクラスや、
-画像のディスクキャッシュへの保存/読込を追加したサブクラスを利用しています。</p>
-
-<h4>ISDiskCache</h4>
-
-<p>ディスクキャッシュです。画像と通知APIのレスポンスのキャッシュに利用しています。</p>
-
-<h4>ISMemoryCache</h4>
-
-<p>メモリキャッシュです。画像のキャッシュにのみ利用しています。</p>
-
-<h4>ISRemoveNull</h4>
-
-<p>GitHub APIのレスポンスからNSNullを外すのに利用しています。</p>
 
 <p>　</p>
 
-<h3>テストのライブラリ</h3>
-
-<p>SenTestingKitを利用しています。</p>
-
-<h4>OHHTTPStubs</h4>
-
-<p>スタブサーバーです。通信を含む処理をテストできます。</p>
-
-<h4>OCMock</h4>
-
-<p>スタブ/モックを提供してくれるライブラリです。</p>
-
-<h4>OCMockObject+Lazy</h4>
-
-<p>OCMockのverifyを非同期のAPIに対しても実行できるようにする拡張です。
-NSRunLoopを回しながらverifyを反復して実行するというアレ気味な実装になっているので、
-もう少しマシなものを考えたいものです。</p>
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-08-28T08:18:00+09:00" pubdate data-updated="true">Aug 28<span>th</span>, 2013</time></div>
-	
-</div>
-
-    <br/>
-    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/08/28/ghfeed-libraries/" data-text="GHFeedで利用しているライブラリ一覧" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/08/28/ghfeed-libraries/" >Tweet</a>
-    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
-    </article>
-
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2013/08/27/ghfeed/">
-		
-			モバイル版のGitHubにフィードがなかったので、補うiOSアプリをつくってリリースした</a>
-	</h2>
-	<div class="entry-content">
-		<p>プッシュ通知などもついていて、なかなか便利なものになりました。</p>
-
-<p><a href="https://itunes.apple.com/jp/app/ghfeed/id683793545">アプリをダウンロード</a></p>
-
-<p>　</p>
-
-<p><img src="/images/2013-08-27/feed.png">　<img src="/images/2013-08-27/page.png"></p>
-
-<p>　</p>
-
-<p>GitHubのモバイル版(Web)はかなり良くできていて流石だなあと思っていたのですが、
-肝心のフィードがなかったりして、モバイル版の役割を十分にカバーできていないと思いました。
-それを補うのがGHFeedです。具体的には以下の2つの機能を提供しています。</p>
+<p>3週間くらい使って結構慣れてきたので感想を書きます。</p>
 
 <ul>
-<li>フィードの表示</li>
-<li>ハイライトされるイベントをプッシュ通知</li>
+<li>意外とタッチタイピングができていなかったことに気づいた</li>
+<li>タッチタイピングができるようになって視線の移動がかなり減った</li>
+<li>キーを入れ替えるのに抵抗がなくなった</li>
+<li>ｯﾀｰﾝってやるの最高に気持ちいい</li>
 </ul>
 
 
-<p>前者はpull型の利用で、時間があるときにフィードを見て面白そうなリポジトリがあればスターをつけたりしておく、というような利用を想定しています。
-後者はpush型で、自分が関わるリポジトリにイベントがあった時に早く気づけるようにするという利用を想定しています。
-自分はこの2つの利用パターンが可能になって、はじめてモバイル版のGitHubが成り立つんじゃないかなあと思い、開発にいたりました。
-振り返ってみると、こういった用途はネイティブアプリの方が向いているので、ちょうど良かったのかもしれません。</p>
-
-<p>アプリは無料で広告もありませんが、設定画面にビールボタンがあるので、
-アプリを応援してくださる方は是非このボタンを押してみてください。よろしくお願いいたします。</p>
-
-<p>　</p>
-
-<p><img src="/images/2013-08-27/beer.png"></p>
-
-<p>　</p>
-
-<p>デザインは<a href="https://twitter.com/more_more_for">@more_more_for</a>くんに担当してもらいました。
-彼は前職の同期で、優秀で多忙な人なのですが、仕事の合間を縫って手伝ってもらいました。
-前職の時には一緒に仕事をする機会がなかったのですが、今回一緒にアプリをつくることができてうれしかったです。</p>
-
-<p>　</p>
-
-<p><a href="https://itunes.apple.com/jp/app/ghfeed/id683793545">アプリをダウンロード</a></p>
-
 		
 		
 	</div>
@@ -224,12 +104,12 @@ NSRunLoopを回しながらverifyを反復して実行するというアレ気�
   
 
 
-<time datetime="2013-08-27T00:30:00+09:00" pubdate data-updated="true">Aug 27<span>th</span>, 2013</time></div>
+<time datetime="2013-09-15T10:51:00+09:00" pubdate data-updated="true">Sep 15<span>th</span>, 2013</time></div>
 	
 </div>
 
     <br/>
-    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/08/27/ghfeed/" data-text="モバイル版のGitHubにフィードがなかったので、補うiOSアプリをつくってリリースした" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/08/27/ghfeed/" >Tweet</a>
+    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/09/15/hhk/" data-text="HHK無刻印モデルを3週間使った感想" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/09/15/hhk/" >Tweet</a>
     <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
     </article>
 
@@ -237,145 +117,44 @@ NSRunLoopを回しながらverifyを反復して実行するというアレ気�
     <article class="post">
 	<h2 class="title">
 		
-		<a href="/blog/2013/08/17/synthesize-in-2013/">
+		<a href="/blog/2013/08/31/kif-next/">
 		
-			2013年の@synthesize</a>
+			次世代のKIF(2.0.0)が良さそう</a>
 	</h2>
 	<div class="entry-content">
-		<p>Xcode 4.4でApple LLVM Compiler 4.0が採用されてから、いわゆるModern Objective-Cの一環として
-<code>@synthesize</code>を書かなくても<code>@synthesize foo = _foo;</code>を書いたときと同等の実装が暗黙的に行われるようになりました。
-この仕様が追加されたモダンなプロジェクトでは2度と<code>@synthesize</code>は書かれないのかというと、そうではなくて、
-以下のようなコードを書く場合に<code>@synthesize</code>を使うことがあります。</p>
+		<p>KIFはSquare製のIntegration Testsのためのフレームワークです。
+この半年くらいでKIFは大幅なアップデートに取り組んでいるらしく、現在はプレリリース版の2.0.0pre5が公開されています。
+まだ正式版はリリースされていないのですが、ひとまずプレリリース版を動かしてみました。</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">@interface</span> <span class="nc">FOOViewController</span> : <span class="nc">UITableViewController</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">,</span> <span class="n">readonly</span><span class="p">)</span> <span class="n">NSFetchedResultsController</span> <span class="o">*</span><span class="n">fetchedResultsController</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@end</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'><span class="k">@implementation</span> <span class="nc">FOOViewController</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@synthesize</span> <span class="n">fetchedResultsController</span> <span class="o">=</span> <span class="n">_fetchedResultsController</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="n">NSFetchedResultsController</span> <span class="o">*</span><span class="p">)</span><span class="nf">fetchedResultsController</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">_fetchedResultsController</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="k">return</span> <span class="n">_fetchedResultsController</span><span class="p">;</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">NSManagedObjectContext</span> <span class="o">*</span><span class="n">context</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSManagedObjectContext</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithConcurrencyType:</span><span class="n">NSMainQueueConcurrencyType</span><span class="p">];</span>
-</span><span class='line'>    <span class="n">NSFetchRequest</span> <span class="o">*</span><span class="n">reqeust</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSFetchRequest</span> <span class="nl">fetchRequestWithEntityName:</span><span class="s">@&quot;Foo&quot;</span><span class="p">];</span>
-</span><span class='line'>    <span class="n">reqeust</span><span class="p">.</span><span class="n">sortDescriptors</span> <span class="o">=</span> <span class="err">@</span><span class="p">[[</span><span class="n">NSSortDescriptor</span> <span class="nl">sortDescriptorWithKey:</span><span class="s">@&quot;bar&quot;</span> <span class="nl">ascending:</span><span class="n">YES</span><span class="p">]];</span>
-</span><span class='line'>    <span class="n">_fetchedResultsController</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSFetchedResultsController</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithFetchRequest:</span><span class="n">reqeust</span>
-</span><span class='line'>                                                                    <span class="nl">managedObjectContext:</span><span class="n">context</span>
-</span><span class='line'>                                                                      <span class="nl">sectionNameKeyPath:</span><span class="nb">nil</span>
-</span><span class='line'>                                                                               <span class="nl">cacheName:</span><span class="nb">nil</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">return</span> <span class="n">_fetchedResultsController</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@end</span>
-</span></code></pre></td></tr></table></div></figure>
+<p><a href="https://github.com/kif-framework/KIF/tree/kif-next">KIF(kif-next)</a></p>
+
+<p>　</p>
+
+<p>KIFは元々GHUnitのようにアプリのビルドターゲットを複製し、エントリーポイントを少し変更することで複製したアプリ上でテストを走らせるというものでした。
+新しいバージョンではSenTestingKitを利用することでXcodeに統合されたテストとして実行できるようになりました。
+具体的には以下のようなメリットがあります。</p>
+
+<ul>
+<li>command+Uで実行できる</li>
+<li>エラーが出た箇所を追跡しやすい</li>
+<li>部分実行ができる</li>
+<li>xUnit/xSpec形式でテストを書ける</li>
+</ul>
 
 
-<p><code>@synthesize fetchedResultsController = _fetchedResultsController;</code>が必要な理由は、
-getterの実装を独自に行なっているのでインスタンス変数<code>_fetchedResultsController</code>が宣言されないからです。
-インスタンス変数を宣言するためだけに<code>@synthesize</code>を使うのが気持ち悪い場合には以下のように書くこともでき、
-<code>@synthesize</code>とは永遠の別れを告げることができます。</p>
+<p>SenTestingKitを利用している他のフレームワーク(Spectaとか)も利用できるようです。</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">@interface</span> <span class="nc">FOOViewController</span> : <span class="nc">UITableViewController</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">,</span> <span class="n">readonly</span><span class="p">)</span> <span class="n">NSFetchedResultsController</span> <span class="o">*</span><span class="n">fetchedResultsController</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@end</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'><span class="k">@implementation</span> <span class="nc">FOOViewController</span> <span class="p">{</span>
-</span><span class='line'>    <span class="n">NSFetchedResultsController</span> <span class="o">*</span><span class="n">_fetchedResultsController</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">-</span> <span class="p">(</span><span class="n">NSFetchedResultsController</span> <span class="o">*</span><span class="p">)</span><span class="n">fetchedResultsController</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">_fetchedResultsController</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="k">return</span> <span class="n">_fetchedResultsController</span><span class="p">;</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">NSManagedObjectContext</span> <span class="o">*</span><span class="n">context</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSManagedObjectContext</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithConcurrencyType:</span><span class="n">NSMainQueueConcurrencyType</span><span class="p">];</span>
-</span><span class='line'>    <span class="n">NSFetchRequest</span> <span class="o">*</span><span class="n">reqeust</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSFetchRequest</span> <span class="nl">fetchRequestWithEntityName:</span><span class="s">@&quot;Foo&quot;</span><span class="p">];</span>
-</span><span class='line'>    <span class="n">reqeust</span><span class="p">.</span><span class="n">sortDescriptors</span> <span class="o">=</span> <span class="err">@</span><span class="p">[[</span><span class="n">NSSortDescriptor</span> <span class="nl">sortDescriptorWithKey:</span><span class="s">@&quot;bar&quot;</span> <span class="nl">ascending:</span><span class="n">YES</span><span class="p">]];</span>
-</span><span class='line'>    <span class="n">_fetchedResultsController</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSFetchedResultsController</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithFetchRequest:</span><span class="n">reqeust</span>
-</span><span class='line'>                                                                    <span class="nl">managedObjectContext:</span><span class="n">context</span>
-</span><span class='line'>                                                                      <span class="nl">sectionNameKeyPath:</span><span class="nb">nil</span>
-</span><span class='line'>                                                                               <span class="nl">cacheName:</span><span class="nb">nil</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">return</span> <span class="n">_fetchedResultsController</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@end</span>
-</span></code></pre></td></tr></table></div></figure>
+<p>以下は実機上で動かしている様子です。</p>
+
+<iframe class="embed-preview" src="//gifboom.com/x/a8a13526/embed_content" width="600" height="600" frameborder="0" scrolling="no"></iframe>
 
 
-<p>ここまで書き終えてから思い出しましたが、NSManagedObjectのentityにないプロパティをつくるときにも<code>@synthesize</code>が必要でした。
-もう書く気力がないのでそれはまた別の機会に。</p>
+<script async src="//medias.gifboom.com/static/embed.1.js" charset="utf-8"></script>
+
+
+<p>一応、サンプルコードをGitHubに置いておきます。</p>
+
+<p><a href="https://github.com/ishkawa/KIFNextExample">KIFNextExample</a></p>
 
 		
 		
@@ -395,12 +174,125 @@ getterの実装を独自に行なっているのでインスタンス変数<code
   
 
 
-<time datetime="2013-08-17T15:20:00+09:00" pubdate data-updated="true">Aug 17<span>th</span>, 2013</time></div>
+<time datetime="2013-08-31T19:51:00+09:00" pubdate data-updated="true">Aug 31<span>st</span>, 2013</time></div>
 	
 </div>
 
     <br/>
-    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/08/17/synthesize-in-2013/" data-text="2013年の@synthesize" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/08/17/synthesize-in-2013/" >Tweet</a>
+    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/08/31/kif-next/" data-text="次世代のKIF(2.0.0)が良さそう" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/08/31/kif-next/" >Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+    </article>
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2013/08/31/unit-test/">
+		
+			iOS開発でのユニットテストを身につけるには</a>
+	</h2>
+	<div class="entry-content">
+		<p>テストがないコードはクソとか、このテストツールこそ至高みたいな話が世に溢れているわけですが、
+そういう状況になってくると、どうやって始めたらいいのかわからなかったりすると思います。
+そういう人のために、何を読んで勉強し、何を使って何を書くと始めやすいかという抽象的な解説をしようと思います。</p>
+
+<h3>テストフレームワークの選択</h3>
+
+<p>テスト初心者の最初の壁はフレームワークの選択です。
+iOSのテストについて調べると、SenTestingKitはクソとかGHUnit最高とかKiwiこそ至高とか言っている人がいると思います。
+ですが、入門に最も適しているのはSenTestingKitです。
+セットアップが他と比べて簡単だということと、機能が十分に小さくて機能に溺れることがないということが理由です。</p>
+
+<h3>SenTestingKitの使い方を学ぶ</h3>
+
+<p>いきなり突き放すようなんですが、Appleの公式のドキュメントを読むのがいいと思います。
+プロジェクトのセットアップ方法が詳細に説明されているので、途方に暮れることもないと思います。
+おそらく、初めて読んだ時点ではロジックテストとアプリケーションテストの違いがよくわからないと思いますが、
+ひとまずアプリに対するテストはアプリケーションテストとしてセットアップするのが良いと思います。
+理由はUIApplicationやNSBundleの扱い方がプロダクトコードと揃うからです。</p>
+
+<p><a href="https://developer.apple.com/jp/devcenter/ios/library/documentation/UnitTesting.pdf">Xcode ユニットテスト ガイド (公式ドキュメント)</a></p>
+
+<h3>テストの対象を決める</h3>
+
+<p>iOSアプリのテストは書きづらいと言われることがありますが、ほとんどのコードに対するテストを書くことは可能です。
+ですが、テストを書くコストに見合った分だけの利益がないと、テストを書き続けるモチベーションは下がると思いますので、
+初めは恩恵を受けやすいモデルのテストのみを書くことを勧めます。
+UIViewControllerのテストを書くことも出来ますが、
+初めは完璧を目指すよりも無理のない範囲で安定した粒度のテストを書くことの方が大切です。</p>
+
+<h3>サンプルコードを動かす</h3>
+
+<p>続いてすべきことは、Appleが提供しているサンプルコードを動かすことだと思います。
+このサンプルコードから学ぶべきことは、モデルに対するテストケースの書き方です。
+<code>CalculatorLogicTests.m</code>を読むとモデルに対してどのようにテストを書けばいいか分かるはずです。
+(<code>iOS_CalcTests.m</code>にはUIViewControllerに対するテストが書かれているのですが、前節でやらないことにしたので省きます。)</p>
+
+<p><a href="https://developer.apple.com/library/mac/samplecode/UnitTests/Introduction/Intro.html">Unit Testing Apps and Frameworks (サンプルコード)</a></p>
+
+<p>実行するにはXcodeのスキームを以下のようにして、command+Uを押します。</p>
+
+<p><img src="/images/2013-08-31/scheme.png"></p>
+
+<p>ここまで実行すれば、テストをセットアップして、テストコードを書き、テストを実行する方法がわかると思います。
+あとは自分のプロジェクトでこれらの手順を実行すれば、iOSテストに入門できたといえると思います。</p>
+
+<h3>他のテストツールについて</h3>
+
+<p>ひと通り実行してみると、SenTestingKitについて以下の点に気がつくと思います。</p>
+
+<ul>
+<li>非同期の処理が完了する前にテストケースが終わってしまう</li>
+<li>このメソッドを呼んだらこのメソッドが呼ばれるというテストができない</li>
+<li>テストしたい条件を作ることが難しい</li>
+</ul>
+
+
+<p>1番目の非同期の問題はNSRunLoopを回して待つことで解決可能ですが、
+Kiwiなどのフレームワークレベルで解決しているものを利用するという手もあります。
+そもそもモデルの層で非同期の処理が入っているコードはテストしづらいコードだという説もあります。</p>
+
+<p>2,3番目の問題はモック/スタブを提供するライブラリを導入することで解決できます。
+OCMockなどのモック/スタブ単品のライブラリもあれば、Kiwiのようにフレームワークの一部として提供しているものもあります。</p>
+
+<p>必要に応じてこういった外部のライブラリを導入するとテストが楽になるので、
+なんかテストが書きづらいなあと思ったときは、それを上手く解決しているライブラリを探すといいと思います。</p>
+
+<h3>SenTestingKitに対するよくある誤解</h3>
+
+<p>SenTestingKitは誤解されやすいので、SenTestingKitに対するよくある誤解を並べておきます。</p>
+
+<ul>
+<li>非同期処理を含むテストを実行できない &ndash;> NSRunLoopを回して完了を待つことはできる</li>
+<li>実機上でテストを実行できない &ndash;> アプリケーションテストは実機でも実行できる</li>
+<li>ターミナルからテストを実行できない &ndash;> xcodebuildコマンドで実行可能</li>
+</ul>
+
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-08-31T01:39:00+09:00" pubdate data-updated="true">Aug 31<span>st</span>, 2013</time></div>
+	
+</div>
+
+    <br/>
+    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/08/31/unit-test/" data-text="iOS開発でのユニットテストを身につけるには" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/08/31/unit-test/" >Tweet</a>
     <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
     </article>
 

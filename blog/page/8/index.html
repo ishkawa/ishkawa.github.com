@@ -7,8 +7,8 @@
 	<meta name="author" content="ishkawa">
 
 	
-	<meta name="description" content="ISHTTPOperation 1.1.0をリリースした 朝6時に目が覚めたら意識が高かったので、ISHTTPOperationに欲しかった機能をつけてリリースしました。
-ISHTTPOperation 　 ISHTTPOperationは特徴のあるライブラリではなくて、 &hellip;">
+	<meta name="description" content="GHFeedで利用しているライブラリ一覧 先日GHFeedというGitHubのフィードを読めるiOSアプリをリリースしました。
+今日はGHFeedの開発に利用したライブラリを紹介しようと思います。 NJKWebViewProgress &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -25,6 +25,7 @@ ISHTTPOperation 　 ISHTTPOperationは特徴のあるライブラリではなく
 <body>
 	<header id="header" class="inner"><h1><a href="/">blog.ishkawa.org</a></h1>
 <nav id="main-nav"><ul class="main">
+  <li><a href="/blog/archives">Archives</a></li>
   <li><a href="https://twitter.com/_ishkawa">Twitter</a></li>
   <li><a href="https://github.com/ishkawa">GitHub</a></li>
 </ul>
@@ -34,6 +35,7 @@ ISHTTPOperation 　 ISHTTPOperationは特徴のあるライブラリではなく
 	<div class="alignleft menu">
 		<a class="button">Menu</a>
 		<div class="container"><ul class="main">
+  <li><a href="/blog/archives">Archives</a></li>
   <li><a href="https://twitter.com/_ishkawa">Twitter</a></li>
   <li><a href="https://github.com/ishkawa">GitHub</a></li>
 </ul>
@@ -58,53 +60,75 @@ ISHTTPOperation 　 ISHTTPOperationは特徴のあるライブラリではなく
     <article class="post">
 	<h2 class="title">
 		
-		<a href="/blog/2013/08/07/ishttpoperation/">
+		<a href="/blog/2013/08/28/ghfeed-libraries/">
 		
-			ISHTTPOperation 1.1.0をリリースした</a>
+			GHFeedで利用しているライブラリ一覧</a>
 	</h2>
 	<div class="entry-content">
-		<p>朝6時に目が覚めたら意識が高かったので、ISHTTPOperationに欲しかった機能をつけてリリースしました。<br/>
-<a href="https://github.com/ishkawa/ISHTTPOperation">ISHTTPOperation</a></p>
+		<p>先日GHFeedというGitHubのフィードを読めるiOSアプリをリリースしました。<br/>
+今日はGHFeedの開発に利用したライブラリを紹介しようと思います。</p>
+
+<h4>NJKWebViewProgress</h4>
+
+<p>UIWebViewの読み込み状況を取得してくれるライブラリです。
+作者は<a href="https://twitter.com/ninjinkun">@ninjinkun</a>さんです。
+このライブラリが出してくれる値は大体0.0, 0.1, 1.0なので、
+GHFeedではこれらの値を補間するようなアニメーションを追加で実装しています。</p>
+
+<h4>KLSwitch</h4>
+
+<p>フラットデザインなUIButtonのライブラリです。<br/>
+UIAppearanceにも対応するなど、結構細かいところまで実装が行き届いていました。</p>
+
+<h4>TUSafariActivity</h4>
+
+<p>UIActivityViewControllerにOpen in Safariを追加するライブラリです。</p>
+
+<h4>SSKeychain</h4>
+
+<p>キーチェーンのwrapperです。</p>
+
+<h4>SVProgressHUD</h4>
+
+<p>ユーザーに待ってもらいたいときに表示するUIViewです。</p>
+
+<h4>ISHTTPOperation</h4>
+
+<p>NSURLConnectionをwrapしたNSOperationです。
+実際には直接ISHTTPOperationを使うのではなく、JSONパースまで含んだサブクラスや、
+画像のディスクキャッシュへの保存/読込を追加したサブクラスを利用しています。</p>
+
+<h4>ISDiskCache</h4>
+
+<p>ディスクキャッシュです。画像と通知APIのレスポンスのキャッシュに利用しています。</p>
+
+<h4>ISMemoryCache</h4>
+
+<p>メモリキャッシュです。画像のキャッシュにのみ利用しています。</p>
+
+<h4>ISRemoveNull</h4>
+
+<p>GitHub APIのレスポンスからNSNullを外すのに利用しています。</p>
 
 <p>　</p>
 
-<p>ISHTTPOperationは特徴のあるライブラリではなくて、単純に非同期のNSURLConnectionをラップするNSOperationです。
-こういったライブラリはたくさんあって、いわゆる車輪の再発明なのですが、わざわざ自分で作っているのには理由があります。
-理由の1つは多くの通信ライブラリは機能が多すぎるため、大量の不要なコードをプロジェクトに導入することになってしまうからです。
-もう1つはNSURLConnectionをNSOperationで正しくラップするときにはミスしやすい箇所が多いので、
-シンプルなライブラリであってもキャンセルなどの目立ちにくい動作に不具合を出しやすいからです。</p>
+<h3>テストのライブラリ</h3>
 
-<h3>かわったところ</h3>
+<p>SenTestingKitを利用しています。</p>
 
-<ul>
-<li>テストにスタブサーバーを利用する</li>
-<li>Travis CIとCoverallsを利用して品質(?)を表示</li>
-<li>NSPredicateを利用してキャンセル</li>
-</ul>
+<h4>OHHTTPStubs</h4>
 
+<p>スタブサーバーです。通信を含む処理をテストできます。</p>
 
-<p>元々、3つ目のキャンセル機構をつけたかったのですが、
-最近は<a href="http://www.tokoro.me/2013/07/09/objc-travis-coveralls/">iOSのライブラリだってTravis CIとかCoverallsとか使うべき</a>という話だったので、
-その辺りにも手を入れてみたらテストがださかったのでテストも直したという感じです。
-それと、せっかくここまでやったんだからと思ってCocoaPodsにもpull requestを送っておきました。</p>
+<h4>OCMock</h4>
 
-<p>NSPredicateでキャンセルというのは以下のような感じです。</p>
+<p>スタブ/モックを提供してくれるライブラリです。</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="n">NSPredicate</span> <span class="o">*</span><span class="n">predicate</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSPredicate</span> <span class="nl">predicateWithFormat:</span><span class="s">@&quot;request.HTTPMethod MATCHES %@&quot;</span><span class="p">,</span> <span class="s">@&quot;GET&quot;</span><span class="p">];</span>
-</span><span class='line'><span class="p">[[</span><span class="n">ISHTTPOperationQueue</span> <span class="n">defaultQueue</span><span class="p">]</span> <span class="nl">cancelOperationsUsingPredicate:</span><span class="n">predicate</span><span class="p">];</span>
-</span></code></pre></td></tr></table></div></figure>
+<h4>OCMockObject+Lazy</h4>
 
-
-<p>よく使いそうなやつには以下のようなショートカットも用意しました。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="p">[[</span><span class="n">ISHTTPOperationQueue</span> <span class="n">defaultQueue</span><span class="p">]</span> <span class="nl">cancelOperationsWithHTTPMethod:</span><span class="s">@&quot;GET&quot;</span><span class="p">];</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
+<p>OCMockのverifyを非同期のAPIに対しても実行できるようにする拡張です。
+NSRunLoopを回しながらverifyを反復して実行するというアレ気味な実装になっているので、
+もう少しマシなものを考えたいものです。</p>
 
 		
 		
@@ -124,12 +148,12 @@ ISHTTPOperation 　 ISHTTPOperationは特徴のあるライブラリではなく
   
 
 
-<time datetime="2013-08-07T11:02:00+09:00" pubdate data-updated="true">Aug 7<span>th</span>, 2013</time></div>
+<time datetime="2013-08-28T08:18:00+09:00" pubdate data-updated="true">Aug 28<span>th</span>, 2013</time></div>
 	
 </div>
 
     <br/>
-    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/08/07/ishttpoperation/" data-text="ISHTTPOperation 1.1.0をリリースした" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/08/07/ishttpoperation/" >Tweet</a>
+    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/08/28/ghfeed-libraries/" data-text="GHFeedで利用しているライブラリ一覧" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/08/28/ghfeed-libraries/" >Tweet</a>
     <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
     </article>
 
@@ -137,16 +161,93 @@ ISHTTPOperation 　 ISHTTPOperationは特徴のあるライブラリではなく
     <article class="post">
 	<h2 class="title">
 		
-		<a href="/blog/2013/07/15/ocmarg-block/">
+		<a href="/blog/2013/08/27/ghfeed/">
 		
-			OCMArgをBlocksとして渡すときに困ること</a>
+			モバイル版のGitHubにフィードがなかったので、補うiOSアプリをつくってリリースした</a>
 	</h2>
 	<div class="entry-content">
-		<p>iOSの標準フレームワークでは至るところにBlocksが登場します。
-引数として渡されるBlocks自体に制限を設けたテストを書くことはあまりないので
-<code>[OCMArg any]</code>を指定しようと考えるのですが、Blocksは内部的にcopyして扱われることが多いらしく、
-以下のようなテストを書くとOCMConstraintをcopyしようとしたところで例外が発生します。
-OCMConstraintがNSCopyingに適合していないので当然のことですが、ちょっと困ります。</p>
+		<p>プッシュ通知などもついていて、なかなか便利なものになりました。</p>
+
+<p><a href="https://itunes.apple.com/jp/app/ghfeed/id683793545">アプリをダウンロード</a></p>
+
+<p>　</p>
+
+<p><img src="/images/2013-08-27/feed.png">　<img src="/images/2013-08-27/page.png"></p>
+
+<p>　</p>
+
+<p>GitHubのモバイル版(Web)はかなり良くできていて流石だなあと思っていたのですが、
+肝心のフィードがなかったりして、モバイル版の役割を十分にカバーできていないと思いました。
+それを補うのがGHFeedです。具体的には以下の2つの機能を提供しています。</p>
+
+<ul>
+<li>フィードの表示</li>
+<li>ハイライトされるイベントをプッシュ通知</li>
+</ul>
+
+
+<p>前者はpull型の利用で、時間があるときにフィードを見て面白そうなリポジトリがあればスターをつけたりしておく、というような利用を想定しています。
+後者はpush型で、自分が関わるリポジトリにイベントがあった時に早く気づけるようにするという利用を想定しています。
+自分はこの2つの利用パターンが可能になって、はじめてモバイル版のGitHubが成り立つんじゃないかなあと思い、開発にいたりました。
+振り返ってみると、こういった用途はネイティブアプリの方が向いているので、ちょうど良かったのかもしれません。</p>
+
+<p>アプリは無料で広告もありませんが、設定画面にビールボタンがあるので、
+アプリを応援してくださる方は是非このボタンを押してみてください。よろしくお願いいたします。</p>
+
+<p>　</p>
+
+<p><img src="/images/2013-08-27/beer.png"></p>
+
+<p>　</p>
+
+<p>デザインは<a href="https://twitter.com/more_more_for">@more_more_for</a>くんに担当してもらいました。
+彼は前職の同期で、優秀で多忙な人なのですが、仕事の合間を縫って手伝ってもらいました。
+前職の時には一緒に仕事をする機会がなかったのですが、今回一緒にアプリをつくることができてうれしかったです。</p>
+
+<p>　</p>
+
+<p><a href="https://itunes.apple.com/jp/app/ghfeed/id683793545">アプリをダウンロード</a></p>
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-08-27T00:30:00+09:00" pubdate data-updated="true">Aug 27<span>th</span>, 2013</time></div>
+	
+</div>
+
+    <br/>
+    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/08/27/ghfeed/" data-text="モバイル版のGitHubにフィードがなかったので、補うiOSアプリをつくってリリースした" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/08/27/ghfeed/" >Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+    </article>
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2013/08/17/synthesize-in-2013/">
+		
+			2013年の@synthesize</a>
+	</h2>
+	<div class="entry-content">
+		<p>Xcode 4.4でApple LLVM Compiler 4.0が採用されてから、いわゆるModern Objective-Cの一環として
+<code>@synthesize</code>を書かなくても<code>@synthesize foo = _foo;</code>を書いたときと同等の実装が暗黙的に行われるようになりました。
+この仕様が追加されたモダンなプロジェクトでは2度と<code>@synthesize</code>は書かれないのかというと、そうではなくて、
+以下のようなコードを書く場合に<code>@synthesize</code>を使うことがあります。</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -157,46 +258,126 @@ OCMConstraintがNSCopyingに適合していないので当然のことですが�
 <span class='line-number'>7</span>
 <span class='line-number'>8</span>
 <span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">testSomeMethod</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">@interface</span> <span class="nc">FOOViewController</span> : <span class="nc">UITableViewController</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">,</span> <span class="n">readonly</span><span class="p">)</span> <span class="n">NSFetchedResultsController</span> <span class="o">*</span><span class="n">fetchedResultsController</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="k">@implementation</span> <span class="nc">FOOViewController</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@synthesize</span> <span class="n">fetchedResultsController</span> <span class="o">=</span> <span class="n">_fetchedResultsController</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="n">NSFetchedResultsController</span> <span class="o">*</span><span class="p">)</span><span class="nf">fetchedResultsController</span>
 </span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="kt">id</span> <span class="n">mock</span> <span class="o">=</span> <span class="p">[</span><span class="n">OCMockObject</span> <span class="nl">partialMockForObject:</span><span class="n">viewController</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">[[</span><span class="n">mock</span> <span class="n">expect</span><span class="p">]</span> <span class="nl">dismissViewControllerAnimated:</span><span class="n">NO</span> <span class="nl">completion:</span><span class="p">[</span><span class="n">OCMArg</span> <span class="n">any</span><span class="p">]];</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">_fetchedResultsController</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">_fetchedResultsController</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
 </span><span class='line'>
-</span><span class='line'>    <span class="c1">// 何かする</span>
+</span><span class='line'>    <span class="n">NSManagedObjectContext</span> <span class="o">*</span><span class="n">context</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSManagedObjectContext</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithConcurrencyType:</span><span class="n">NSMainQueueConcurrencyType</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">NSFetchRequest</span> <span class="o">*</span><span class="n">reqeust</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSFetchRequest</span> <span class="nl">fetchRequestWithEntityName:</span><span class="s">@&quot;Foo&quot;</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">reqeust</span><span class="p">.</span><span class="n">sortDescriptors</span> <span class="o">=</span> <span class="err">@</span><span class="p">[[</span><span class="n">NSSortDescriptor</span> <span class="nl">sortDescriptorWithKey:</span><span class="s">@&quot;bar&quot;</span> <span class="nl">ascending:</span><span class="n">YES</span><span class="p">]];</span>
+</span><span class='line'>    <span class="n">_fetchedResultsController</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSFetchedResultsController</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithFetchRequest:</span><span class="n">reqeust</span>
+</span><span class='line'>                                                                    <span class="nl">managedObjectContext:</span><span class="n">context</span>
+</span><span class='line'>                                                                      <span class="nl">sectionNameKeyPath:</span><span class="nb">nil</span>
+</span><span class='line'>                                                                               <span class="nl">cacheName:</span><span class="nb">nil</span><span class="p">];</span>
 </span><span class='line'>
-</span><span class='line'>    <span class="n">STAssertNoThrow</span><span class="p">([</span><span class="n">mock</span> <span class="n">verify</span><span class="p">],</span> <span class="s">@&quot;did not dismiss.&quot;</span><span class="p">);</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">_fetchedResultsController</span><span class="p">;</span>
 </span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>めんどくさいので自分は以下のようなコードをOCMConstraintのカテゴリに書いて問題を回避しました。</p>
+<p><code>@synthesize fetchedResultsController = _fetchedResultsController;</code>が必要な理由は、
+getterの実装を独自に行なっているのでインスタンス変数<code>_fetchedResultsController</code>が宣言されないからです。
+インスタンス変数を宣言するためだけに<code>@synthesize</code>を使うのが気持ち悪い場合には以下のように書くこともでき、
+<code>@synthesize</code>とは永遠の別れを告げることができます。</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nf">copyWithZone:</span><span class="p">(</span><span class="n">NSZone</span> <span class="o">*</span><span class="p">)</span><span class="nv">zone</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">return</span> <span class="n">self</span><span class="p">;</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">@interface</span> <span class="nc">FOOViewController</span> : <span class="nc">UITableViewController</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">,</span> <span class="n">readonly</span><span class="p">)</span> <span class="n">NSFetchedResultsController</span> <span class="o">*</span><span class="n">fetchedResultsController</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="k">@implementation</span> <span class="nc">FOOViewController</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">NSFetchedResultsController</span> <span class="o">*</span><span class="n">_fetchedResultsController</span><span class="p">;</span>
 </span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">-</span> <span class="p">(</span><span class="n">NSFetchedResultsController</span> <span class="o">*</span><span class="p">)</span><span class="n">fetchedResultsController</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">_fetchedResultsController</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">_fetchedResultsController</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">NSManagedObjectContext</span> <span class="o">*</span><span class="n">context</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSManagedObjectContext</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithConcurrencyType:</span><span class="n">NSMainQueueConcurrencyType</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">NSFetchRequest</span> <span class="o">*</span><span class="n">reqeust</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSFetchRequest</span> <span class="nl">fetchRequestWithEntityName:</span><span class="s">@&quot;Foo&quot;</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">reqeust</span><span class="p">.</span><span class="n">sortDescriptors</span> <span class="o">=</span> <span class="err">@</span><span class="p">[[</span><span class="n">NSSortDescriptor</span> <span class="nl">sortDescriptorWithKey:</span><span class="s">@&quot;bar&quot;</span> <span class="nl">ascending:</span><span class="n">YES</span><span class="p">]];</span>
+</span><span class='line'>    <span class="n">_fetchedResultsController</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSFetchedResultsController</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithFetchRequest:</span><span class="n">reqeust</span>
+</span><span class='line'>                                                                    <span class="nl">managedObjectContext:</span><span class="n">context</span>
+</span><span class='line'>                                                                      <span class="nl">sectionNameKeyPath:</span><span class="nb">nil</span>
+</span><span class='line'>                                                                               <span class="nl">cacheName:</span><span class="nb">nil</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">return</span> <span class="n">_fetchedResultsController</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>テストコードとは言えどもこういった雑なことばっかりしてるといつか痛い目に遭いそうだと思ったので、
-より良い方法があれば聞きたいところです。</p>
-
-<h3>追記</h3>
-
-<p>OCMock 2.2では同様の実装がされていると、<a href="https://twitter.com/azu_re/">@azu_re</a>さんに教えていただきました。<br/>
-2.2以降を利用すれば上記のメソッドを実装しなくてもcopyの問題は起こりません。</p>
-
-<blockquote class="twitter-tweet"><p><a href="https://twitter.com/_ishkawa">@_ishkawa</a> OCMock 2.2だとcopyWithZone: 実装されてるように見えるけど、これとは別? <a href="https://t.co/lDzgB5tMSb">https://t.co/lDzgB5tMSb</a> <a href="https://t.co/w11Yr14Um9">https://t.co/w11Yr14Um9</a></p>&mdash; azu (@azu_re) <a href="https://twitter.com/azu_re/statuses/356620135156551681">July 15, 2013</a></blockquote>
-
-
-<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
-
-
-
+<p>ここまで書き終えてから思い出しましたが、NSManagedObjectのentityにないプロパティをつくるときにも<code>@synthesize</code>が必要でした。
+もう書く気力がないのでそれはまた別の機会に。</p>
 
 		
 		
@@ -216,70 +397,12 @@ OCMConstraintがNSCopyingに適合していないので当然のことですが�
   
 
 
-<time datetime="2013-07-15T01:42:00+09:00" pubdate data-updated="true">Jul 15<span>th</span>, 2013</time></div>
+<time datetime="2013-08-17T15:20:00+09:00" pubdate data-updated="true">Aug 17<span>th</span>, 2013</time></div>
 	
 </div>
 
     <br/>
-    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/07/15/ocmarg-block/" data-text="OCMArgをBlocksとして渡すときに困ること" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/07/15/ocmarg-block/" >Tweet</a>
-    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
-    </article>
-
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2013/07/08/code-coverage/">
-		
-			コードカバレッジを計測してみた感想</a>
-	</h2>
-	<div class="entry-content">
-		<p>先週末、およそ3ヶ月ぶりにNode.jsのコードを書きました。</p>
-
-<p>いつの間にかテストをそれほど苦労せずに書けるようになっていて、
-たくさんテストを書いて意識が高まり、コードカバレッジを計測しようと思いました。
-コードカバレッジを計測するのは今回が生まれて初めてでした。
-何処かで&#8221;コードカバレッジは目安に過ぎない&#8221;みたいな話を聞いて、
-コードカバレッジの効果に対しては半信半疑なところがありましたが、
-とにかくそのときは意識が高まっていたので頑張って計測できるようにしました。
-参考にしたのは以下のブログ記事です。
-あまり深いことはわからないのですが、jscoverageが実行回数を測定できるプロダクトコードのコピーを生成し、
-テストコードからそれを実行することでコードカバレッジを計測できるという感じの仕組みのようです。</p>
-
-<p><a href="http://www.seejohncode.com/2012/03/13/setting-up-mocha-jscoverage/">http://www.seejohncode.com/2012/03/13/setting-up-mocha-jscoverage/</a></p>
-
-<h4>感想</h4>
-
-<p>&ldquo;コードカバレッジは目安に過ぎない&#8221;というのは、コードカバレッジを計測した経験がある人とない人とでは捉え方が変わると思いました。
-コードカバレッジを計測してみる前は&#8221;目安に過ぎないから計測してもしなくても大差ない&#8221;というような気がしていたのですが、
-計測してその結果を活用して開発をしてみると&#8221;無意味な変更でパーセンテージが変化する場合があるから目安&#8221;なのかなと思いました。
-で、結局目安と言いながらも明らかにカバーできていない箇所を発見できたりして開発にとても役立つので、
-本業のiOS開発の方でも頑張ってやってみようと思いました。</p>
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-07-08T20:52:00+09:00" pubdate data-updated="true">Jul 8<span>th</span>, 2013</time></div>
-	
-</div>
-
-    <br/>
-    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/07/08/code-coverage/" data-text="コードカバレッジを計測してみた感想" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/07/08/code-coverage/" >Tweet</a>
+    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/08/17/synthesize-in-2013/" data-text="2013年の@synthesize" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/08/17/synthesize-in-2013/" >Tweet</a>
     <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
     </article>
 

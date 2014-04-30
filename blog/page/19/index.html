@@ -7,8 +7,28 @@
 	<meta name="author" content="ishkawa">
 
 	
-	<meta name="description" content="lsでVimのバックアップファイルを非表示にする 最近転職しました。 転職とは関係ないのですが、最近はObjective-C以外の開発もしていてVimを使う機会が増えました。
-で、Vimでコードを書くと*~というファイルがたくさん出ててきてつらい気持ちになってしまうので、 &hellip;">
+	<meta name="description" content="0.1秒ごとにランダムタップするUIAutomationスクリプト 書きました。 1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+var target = UIATarget.localTarget(); function sleep( &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -25,6 +45,7 @@
 <body>
 	<header id="header" class="inner"><h1><a href="/">blog.ishkawa.org</a></h1>
 <nav id="main-nav"><ul class="main">
+  <li><a href="/blog/archives">Archives</a></li>
   <li><a href="https://twitter.com/_ishkawa">Twitter</a></li>
   <li><a href="https://github.com/ishkawa">GitHub</a></li>
 </ul>
@@ -34,6 +55,7 @@
 	<div class="alignleft menu">
 		<a class="button">Menu</a>
 		<div class="container"><ul class="main">
+  <li><a href="/blog/archives">Archives</a></li>
   <li><a href="https://twitter.com/_ishkawa">Twitter</a></li>
   <li><a href="https://github.com/ishkawa">GitHub</a></li>
 </ul>
@@ -58,216 +80,12 @@
     <article class="post">
 	<h2 class="title">
 		
-		<a href="/blog/2013/01/20/ls-hide-vim-backup-file/">
+		<a href="/blog/2013/01/29/randomtap-uiautomation/">
 		
-			lsでVimのバックアップファイルを非表示にする</a>
+			0.1秒ごとにランダムタップするUIAutomationスクリプト</a>
 	</h2>
 	<div class="entry-content">
-		<p>最近転職しました。</p>
-
-<p>転職とは関係ないのですが、最近はObjective-C以外の開発もしていてVimを使う機会が増えました。
-で、Vimでコードを書くと<code>*~</code>というファイルがたくさん出ててきてつらい気持ちになってしまうので、
-<code>ls</code>コマンドの結果から取り除く方法を調べました。</p>
-
-<p>Stack Overflowで以下の様な投稿をみつけました。<br/>
-<a href="http://stackoverflow.com/a/6011437">Can I put something in in bashrc to hide text editor (~ extension) files?</a></p>
-
-<h3>設定方法</h3>
-
-<p>どうやらMacの<code>ls</code>というのはGNUの<code>ls</code>と違うらしいので、GNUの方の<code>ls</code>をインストールします。
-その他諸々のコマンドも入り、<code>g</code>プレフィックスをつけるとそちらが使えるようです。
-<code>gls</code>は<code>ls</code>とオプションがいくらか異なり、<code>-B</code>の意味が違ったり<code>--hide</code>などが追加されていたりします。</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>brew install coreutils</span></code></pre></td></tr></table></div></figure>
-
-
-<p><code>~/.zshrc</code>で以下のようなエイリアスを設定します。(bashの方は<code>~/bashrc</code>です。)</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>alias ls='/usr/local/bin/gls -B'</span></code></pre></td></tr></table></div></figure>
-
-
-<p><code>-a</code>オプションとかをつけたときにはバックアップファイルも表示したい場合、以下のようにします。</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>alias ls="/usr/local/bin/gls --hide='*~'"</span></code></pre></td></tr></table></div></figure>
-
-
-<p>以上でおしまいです。</p>
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-01-20T23:23:00+09:00" pubdate data-updated="true">Jan 20<span>th</span>, 2013</time></div>
-	
-</div>
-
-    <br/>
-    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/01/20/ls-hide-vim-backup-file/" data-text="lsでVimのバックアップファイルを非表示にする" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/01/20/ls-hide-vim-backup-file/" >Tweet</a>
-    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
-    </article>
-
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2012/12/13/ios5-refreshcontrol/">
-		
-			iOS5で動作するUIRefreshControlのライブラリをつくったときの話</a>
-	</h2>
-	<div class="entry-content">
-		<p>先日、iOS5でも動作する<code>UIRefreshControl</code>と銘打った<code>ISRefreshControl</code>というライブラリを公開しました。
-今回は<code>ISRefreshControl</code>でやっていることについて、簡単に解説したいと思います。</p>
-
-<p>詳細には踏み入らずにアイディアとコアのコードだけを書きますので、
-アプリに組み込む場合にはGitHubに上がっているものを利用することをおすすめします。</p>
-
-<p><a href="https://github.com/ishkawa/ISRefreshControl">ISRefreshControl</a></p>
-
-<p>&mdash;</p>
-
-<h3>基本方針</h3>
-
-<ul>
-<li>iOS6: 本物の<code>UIRefreshControl</code>として動作する。</li>
-<li>iOS5: <code>UIRefreshControl</code>の真似をする。</li>
-</ul>
-
-
-<h3>使い方</h3>
-
-<p><code>UIRefreshControl</code>と概ね同じ使い方ができます。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="n">UIScrollView</span> <span class="o">*</span><span class="n">scrollView</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UIScrollView</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
-</span><span class='line'><span class="n">ISRefreshControl</span> <span class="o">*</span><span class="n">refreshControl</span> <span class="o">=</span> <span class="p">[[</span><span class="n">ISRefreshControl</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
-</span><span class='line'><span class="p">[</span><span class="n">scrollView</span> <span class="nl">addSubview:</span><span class="n">refreshControl</span><span class="p">];</span>
-</span><span class='line'><span class="p">[</span><span class="n">refreshControl</span> <span class="nl">addTarget:</span><span class="n">self</span>
-</span><span class='line'>                   <span class="nl">action:</span><span class="k">@selector</span><span class="p">(</span><span class="n">refresh</span><span class="p">)</span>
-</span><span class='line'>         <span class="nl">forControlEvents:</span><span class="n">UIControlEventValueChanged</span><span class="p">];</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>または</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="n">self</span><span class="p">.</span><span class="n">refreshControl</span> <span class="o">=</span> <span class="p">(</span><span class="kt">id</span><span class="p">)[[</span><span class="n">ISRefreshControl</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
-</span><span class='line'><span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">refreshControl</span> <span class="nl">addTarget:</span><span class="n">self</span>
-</span><span class='line'>                        <span class="nl">action:</span><span class="k">@selector</span><span class="p">(</span><span class="n">refresh</span><span class="p">)</span>
-</span><span class='line'>              <span class="nl">forControlEvents:</span><span class="n">UIControlEventValueChanged</span><span class="p">];</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>実現するためにやったこと</h3>
-
-<ul>
-<li>iOS5のときだけ<code>UITableViewController</code>に<code>refreshControl</code>プロパティを生やす。</li>
-<li>superviewとなる<code>UIScrollView</code>の<code>contentOffset</code>をキー値監視して、閾値を超えたら<code>UIControlEventValueChanged</code>を送る。</li>
-<li><code>contentOffset</code>に応じてびよーんってなるやつを頑張って描画する。</li>
-</ul>
-
-
-<h2>iOS6では<code>UIRefreshControl</code>として動作させる</h2>
-
-<p><code>+ (id)alloc</code>内で<code>UIRefreshControl</code>クラスの存在を判定し、存在すれば<code>UIRefreshControl</code>のインスタンスを、
-存在しなければ<code>ISRefreshControl</code>のインスタンスを返すようにしました。</p>
-
-<p>ISRefreshControl</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">+</span> <span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nf">alloc</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">if</span> <span class="p">([</span><span class="n">UIRefreshControl</span> <span class="n">class</span><span class="p">])</span> <span class="p">{</span>
-</span><span class='line'>        <span class="k">return</span> <span class="p">(</span><span class="kt">id</span><span class="p">)[</span><span class="n">UIRefreshControl</span> <span class="n">alloc</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>    <span class="k">return</span> <span class="p">[</span><span class="n">super</span> <span class="n">alloc</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2><code>contentOffset</code>をキー値監視する</h2>
-
-<p><code>UIRefreshControl</code>は<code>UIScrollView</code>に追加されるとスクロール量に応じて<code>UIControlEventValueChanged</code>を発火させます。
-これを再現するには<code>superview</code>の<code>contentOffset</code>をキー値監視する必要があります。
-適切にキー値監視を開始/終了させるため、<code>superview</code>に追加されたときにキー値監視を開始し、
-<code>superview</code>から削除された時にキー値監視を終了させます。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">willMoveToSuperview:</span><span class="p">(</span><span class="n">UIView</span> <span class="o">*</span><span class="p">)</span><span class="nv">newSuperview</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">if</span> <span class="p">([</span><span class="n">self</span><span class="p">.</span><span class="n">superview</span> <span class="nl">isKindOfClass:</span><span class="p">[</span><span class="n">UIScrollView</span> <span class="n">class</span><span class="p">]])</span> <span class="p">{</span>
-</span><span class='line'>        <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">superview</span> <span class="nl">removeObserver:</span><span class="n">self</span> <span class="nl">forKeyPath:</span><span class="s">@&quot;contentOffset&quot;</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">didMoveToSuperview</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">if</span> <span class="p">([</span><span class="n">self</span><span class="p">.</span><span class="n">superview</span> <span class="nl">isKindOfClass:</span><span class="p">[</span><span class="n">UIScrollView</span> <span class="n">class</span><span class="p">]])</span> <span class="p">{</span>
-</span><span class='line'>        <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">superview</span> <span class="nl">addObserver:</span><span class="n">self</span> <span class="nl">forKeyPath:</span><span class="s">@&quot;contentOffset&quot;</span> <span class="nl">options:</span><span class="mi">0</span> <span class="nl">context:</span><span class="nb">NULL</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="n">self</span><span class="p">.</span><span class="n">frame</span> <span class="o">=</span> <span class="n">CGRectMake</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">50</span><span class="p">,</span> <span class="n">self</span><span class="p">.</span><span class="n">superview</span><span class="p">.</span><span class="n">frame</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">width</span><span class="p">,</span> <span class="mi">50</span><span class="p">);</span>
-</span><span class='line'>        <span class="n">self</span><span class="p">.</span><span class="n">autoresizingMask</span> <span class="o">=</span> <span class="n">UIViewAutoresizingFlexibleWidth</span><span class="p">;</span>
-</span><span class='line'>        <span class="p">[</span><span class="n">self</span> <span class="n">setNeedsLayout</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p><code>UIRefreshControl</code>を上部に配置させるため、<code>didMoveToSuperview</code>で<code>frame</code>を適当に設定しています。</p>
-
-<h2>びよーんってなるやつを描画する</h2>
-
-<p><code>ISRefreshControl</code>はびよーんってなるViewを別のクラス(<code>ISGumView</code>)で実装しています。
-<code>contentOffset</code>の変更毎にこのViewの<code>setNeedsLayout</code>を呼び、
-drawRectでスクロール量に応じたものを<code>CGPath</code>で描画します。</p>
-
-<p><code>mainRadius</code>は&#8221;びよーん&#8221;の上部の丸の半径、<code>subRadius</code>は下部の丸の半径を表しています。</p>
+		<p>書きました。</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -290,212 +108,35 @@ drawRectでスクロール量に応じたものを<code>CGPath</code>で描画�
 <span class='line-number'>19</span>
 <span class='line-number'>20</span>
 <span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">drawRect:</span><span class="p">(</span><span class="n">CGRect</span><span class="p">)</span><span class="nv">rect</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="p">...</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">var</span> <span class="nx">target</span> <span class="o">=</span> <span class="nx">UIATarget</span><span class="p">.</span><span class="nx">localTarget</span><span class="p">();</span>
 </span><span class='line'>
-</span><span class='line'>    <span class="n">CGContextRef</span> <span class="n">ctx</span> <span class="o">=</span> <span class="n">UIGraphicsGetCurrentContext</span><span class="p">();</span>
-</span><span class='line'>    <span class="n">CGMutablePathRef</span> <span class="n">path</span> <span class="o">=</span> <span class="n">CGPathCreateMutable</span><span class="p">();</span>
+</span><span class='line'><span class="kd">function</span> <span class="nx">sleep</span><span class="p">(</span><span class="nx">time</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">d1</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Date</span><span class="p">().</span><span class="nx">getTime</span><span class="p">();</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">d2</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Date</span><span class="p">().</span><span class="nx">getTime</span><span class="p">();</span>
+</span><span class='line'>    <span class="k">while</span> <span class="p">(</span><span class="nx">d2</span> <span class="o">&lt;</span> <span class="nx">d1</span> <span class="o">+</span> <span class="nx">time</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">d2</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Date</span><span class="p">().</span><span class="nx">getTime</span><span class="p">();</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="k">return</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
 </span><span class='line'>
-</span><span class='line'>    <span class="n">CGPathMoveToPoint</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="mi">25</span><span class="p">);</span>
-</span><span class='line'>    <span class="n">CGPathAddArcToPoint</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span>
-</span><span class='line'>                        <span class="n">offset</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span>
-</span><span class='line'>                        <span class="n">offset</span> <span class="o">+</span> <span class="n">self</span><span class="p">.</span><span class="n">mainRadius</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span>
-</span><span class='line'>                        <span class="n">self</span><span class="p">.</span><span class="n">mainRadius</span><span class="p">);</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">width</span> <span class="o">=</span> <span class="nx">target</span><span class="p">.</span><span class="nx">rect</span><span class="p">().</span><span class="nx">size</span><span class="p">.</span><span class="nx">width</span><span class="p">;</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">height</span> <span class="o">=</span> <span class="nx">target</span><span class="p">.</span><span class="nx">rect</span><span class="p">().</span><span class="nx">size</span><span class="p">.</span><span class="nx">height</span><span class="p">;</span>
 </span><span class='line'>
-</span><span class='line'>    <span class="n">CGPathAddArcToPoint</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span>
-</span><span class='line'>                        <span class="n">offset</span> <span class="o">+</span> <span class="n">self</span><span class="p">.</span><span class="n">mainRadius</span><span class="o">*</span><span class="mf">2.f</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span>
-</span><span class='line'>                        <span class="n">offset</span> <span class="o">+</span> <span class="n">self</span><span class="p">.</span><span class="n">mainRadius</span><span class="o">*</span><span class="mf">2.f</span><span class="p">,</span> <span class="n">self</span><span class="p">.</span><span class="n">mainRadius</span><span class="p">,</span>
-</span><span class='line'>                        <span class="n">self</span><span class="p">.</span><span class="n">mainRadius</span><span class="p">);</span>
+</span><span class='line'><span class="k">while</span> <span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">x</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">floor</span><span class="p">(</span><span class="nb">Math</span><span class="p">.</span><span class="nx">random</span><span class="p">()</span> <span class="o">*</span> <span class="nx">width</span><span class="p">);</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">y</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">floor</span><span class="p">(</span><span class="nb">Math</span><span class="p">.</span><span class="nx">random</span><span class="p">()</span> <span class="o">*</span> <span class="nx">height</span><span class="p">);</span>
+</span><span class='line'>    <span class="nx">target</span><span class="p">.</span><span class="nx">tap</span><span class="p">({</span><span class="nx">x</span><span class="o">:</span><span class="nx">x</span><span class="p">,</span> <span class="nx">y</span><span class="o">:</span><span class="nx">y</span><span class="p">});</span>
 </span><span class='line'>
-</span><span class='line'>    <span class="n">CGPathAddCurveToPoint</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span>
-</span><span class='line'>                          <span class="n">offset</span> <span class="o">+</span> <span class="n">self</span><span class="p">.</span><span class="n">mainRadius</span><span class="o">*</span><span class="mf">2.f</span><span class="p">,</span>            <span class="n">self</span><span class="p">.</span><span class="n">mainRadius</span><span class="o">*</span><span class="mf">2.f</span><span class="p">,</span>
-</span><span class='line'>                          <span class="n">offset</span> <span class="o">+</span> <span class="n">self</span><span class="p">.</span><span class="n">mainRadius</span><span class="o">+</span><span class="n">self</span><span class="p">.</span><span class="n">subRadius</span><span class="p">,</span> <span class="n">self</span><span class="p">.</span><span class="n">mainRadius</span><span class="o">*</span><span class="mf">2.f</span><span class="p">,</span>
-</span><span class='line'>                          <span class="n">offset</span> <span class="o">+</span> <span class="n">self</span><span class="p">.</span><span class="n">mainRadius</span><span class="o">+</span><span class="n">self</span><span class="p">.</span><span class="n">subRadius</span><span class="p">,</span> <span class="n">self</span><span class="p">.</span><span class="n">distance</span><span class="o">+</span><span class="n">self</span><span class="p">.</span><span class="n">mainRadius</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">CGPathAddArcToPoint</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span>
-</span><span class='line'>                        <span class="n">offset</span> <span class="o">+</span> <span class="n">self</span><span class="p">.</span><span class="n">mainRadius</span><span class="o">+</span><span class="n">self</span><span class="p">.</span><span class="n">subRadius</span><span class="p">,</span> <span class="n">self</span><span class="p">.</span><span class="n">distance</span><span class="o">+</span><span class="n">self</span><span class="p">.</span><span class="n">mainRadius</span><span class="o">+</span><span class="n">self</span><span class="p">.</span><span class="n">subRadius</span><span class="p">,</span>
-</span><span class='line'>                        <span class="n">offset</span> <span class="o">+</span> <span class="n">self</span><span class="p">.</span><span class="n">mainRadius</span><span class="p">,</span>                <span class="n">self</span><span class="p">.</span><span class="n">distance</span><span class="o">+</span><span class="n">self</span><span class="p">.</span><span class="n">mainRadius</span><span class="o">+</span><span class="n">self</span><span class="p">.</span><span class="n">subRadius</span><span class="p">,</span>
-</span><span class='line'>                        <span class="n">self</span><span class="p">.</span><span class="n">subRadius</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">CGPathAddArcToPoint</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span>
-</span><span class='line'>                        <span class="n">offset</span> <span class="o">+</span> <span class="n">self</span><span class="p">.</span><span class="n">mainRadius</span><span class="o">-</span><span class="n">self</span><span class="p">.</span><span class="n">subRadius</span><span class="p">,</span> <span class="n">self</span><span class="p">.</span><span class="n">distance</span><span class="o">+</span><span class="n">self</span><span class="p">.</span><span class="n">mainRadius</span><span class="o">+</span><span class="n">self</span><span class="p">.</span><span class="n">subRadius</span><span class="p">,</span>
-</span><span class='line'>                        <span class="n">offset</span> <span class="o">+</span> <span class="n">self</span><span class="p">.</span><span class="n">mainRadius</span><span class="o">-</span><span class="n">self</span><span class="p">.</span><span class="n">subRadius</span><span class="p">,</span> <span class="n">self</span><span class="p">.</span><span class="n">distance</span><span class="o">+</span><span class="n">self</span><span class="p">.</span><span class="n">mainRadius</span><span class="p">,</span>
-</span><span class='line'>                        <span class="n">self</span><span class="p">.</span><span class="n">subRadius</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">CGPathAddCurveToPoint</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span>
-</span><span class='line'>                          <span class="n">offset</span> <span class="o">+</span> <span class="n">self</span><span class="p">.</span><span class="n">mainRadius</span><span class="o">-</span><span class="n">self</span><span class="p">.</span><span class="n">subRadius</span><span class="p">,</span> <span class="n">self</span><span class="p">.</span><span class="n">mainRadius</span><span class="o">*</span><span class="mf">2.f</span><span class="p">,</span>
-</span><span class='line'>                          <span class="n">offset</span> <span class="o">+</span> <span class="mi">0</span><span class="p">,</span> <span class="n">self</span><span class="p">.</span><span class="n">mainRadius</span><span class="o">*</span><span class="mf">2.f</span><span class="p">,</span>
-</span><span class='line'>                          <span class="n">offset</span> <span class="o">+</span> <span class="mi">0</span><span class="p">,</span> <span class="n">self</span><span class="p">.</span><span class="n">mainRadius</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">CGPathCloseSubpath</span><span class="p">(</span><span class="n">path</span><span class="p">);</span>
-</span><span class='line'>    <span class="n">CGContextAddPath</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="n">path</span><span class="p">);</span>
-</span><span class='line'>    <span class="n">CGContextSetFillColorWithColor</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="p">[</span><span class="n">UIColor</span> <span class="n">lightGrayColor</span><span class="p">].</span><span class="n">CGColor</span><span class="p">);</span>
-</span><span class='line'>    <span class="n">CGContextFillPath</span><span class="p">(</span><span class="n">ctx</span><span class="p">);</span>
-</span><span class='line'>    <span class="n">CGPathRelease</span><span class="p">(</span><span class="n">path</span><span class="p">);</span>
+</span><span class='line'>    <span class="nx">sleep</span><span class="p">(</span><span class="mi">100</span><span class="p">);</span>
 </span><span class='line'><span class="p">}</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<h2><code>UITableViewController</code>を拡張する</h2>
+<ol type="a">
+<li>何に使うの？</li>
+<li>わかりません…</li>
+</ol>
 
-<p>iOS6の<code>UITableViewController</code>には<code>refreshControl</code>プロパティが用意されていて、
-<code>addSubview:</code>を呼ぶことなく<code>UIRefreshControl</code>を設定することが可能となっています。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">,</span><span class="n">retain</span><span class="p">)</span> <span class="n">UIRefreshControl</span> <span class="o">*</span><span class="n">refreshControl</span> <span class="n">NS_AVAILABLE_IOS</span><span class="p">(</span><span class="mi">6</span><span class="n">_0</span><span class="p">);</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>当然、iOS5にこのプロパティは存在しないので、拡張する必要があります。
-カテゴリで普通に拡張するとiOS6で衝突してしまうので、iOS5のときだけ<code>+ (void)load</code>で動的にアクセサを追加します。
-既存のクラスにインスタンス変数を追加することはできないので、Associated Objectを使って同等のものを実現しています。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">@implementation</span> <span class="nc">UITableViewController</span> <span class="nl">(RefreshControl)</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">load</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="err">@</span><span class="n">autoreleasepool</span> <span class="p">{</span>
-</span><span class='line'>        <span class="k">if</span> <span class="p">([[[</span><span class="n">UIDevice</span> <span class="n">currentDevice</span><span class="p">]</span> <span class="n">systemVersion</span><span class="p">]</span> <span class="nl">hasPrefix:</span><span class="s">@&quot;5&quot;</span><span class="p">])</span> <span class="p">{</span>
-</span><span class='line'>            <span class="n">Swizzle</span><span class="p">([</span><span class="n">self</span> <span class="n">class</span><span class="p">],</span> <span class="k">@selector</span><span class="p">(</span><span class="n">refreshControl</span><span class="p">),</span>     <span class="k">@selector</span><span class="p">(</span><span class="n">iOS5_refreshControl</span><span class="p">));</span>
-</span><span class='line'>            <span class="n">Swizzle</span><span class="p">([</span><span class="n">self</span> <span class="n">class</span><span class="p">],</span> <span class="k">@selector</span><span class="p">(</span><span class="nl">setRefreshControl:</span><span class="p">),</span> <span class="k">@selector</span><span class="p">(</span><span class="nl">iOS5_setRefreshControl:</span><span class="p">));</span>
-</span><span class='line'>            <span class="n">Swizzle</span><span class="p">([</span><span class="n">self</span> <span class="n">class</span><span class="p">],</span> <span class="k">@selector</span><span class="p">(</span><span class="n">viewDidLoad</span><span class="p">),</span>        <span class="k">@selector</span><span class="p">(</span><span class="n">iOS5_viewDidLoad</span><span class="p">));</span>
-</span><span class='line'>        <span class="p">}</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="cp">#pragma mark -</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">iOS5_viewDidLoad</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">super</span> <span class="n">viewDidLoad</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">self</span><span class="p">.</span><span class="n">refreshControl</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">view</span> <span class="nl">addSubview:</span><span class="n">self</span><span class="p">.</span><span class="n">refreshControl</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="n">ISRefreshControl</span> <span class="o">*</span><span class="p">)</span><span class="nf">iOS5_refreshControl</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">return</span> <span class="n">objc_getAssociatedObject</span><span class="p">(</span><span class="n">self</span><span class="p">,</span> <span class="s">@&quot;iOS5RefreshControl&quot;</span><span class="p">);</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">iOS5_setRefreshControl:</span><span class="p">(</span><span class="n">ISRefreshControl</span> <span class="o">*</span><span class="p">)</span><span class="nv">refreshControl</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">self</span><span class="p">.</span><span class="n">isViewLoaded</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="n">ISRefreshControl</span> <span class="o">*</span><span class="n">oldRefreshControl</span> <span class="o">=</span> <span class="n">objc_getAssociatedObject</span><span class="p">(</span><span class="n">self</span><span class="p">,</span> <span class="s">@&quot;iOS5RefreshControl&quot;</span><span class="p">);</span>
-</span><span class='line'>        <span class="p">[</span><span class="n">oldRefreshControl</span> <span class="n">removeFromSuperview</span><span class="p">];</span>
-</span><span class='line'>        <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">view</span> <span class="nl">addSubview:</span><span class="n">refreshControl</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">objc_setAssociatedObject</span><span class="p">(</span><span class="n">self</span><span class="p">,</span> <span class="s">@&quot;iOS5RefreshControl&quot;</span><span class="p">,</span> <span class="n">refreshControl</span><span class="p">,</span> <span class="n">OBJC_ASSOCIATION_RETAIN</span><span class="p">);</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>ここで使用されている<code>Swizzle</code>という関数はいわゆるMethod Swizzlingを行うもので、
-以下のように実装されています。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="kt">void</span> <span class="nf">Swizzle</span><span class="p">(</span><span class="n">Class</span> <span class="n">c</span><span class="p">,</span> <span class="kt">SEL</span> <span class="n">original</span><span class="p">,</span> <span class="kt">SEL</span> <span class="n">alternative</span><span class="p">)</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="n">Method</span> <span class="n">orgMethod</span> <span class="o">=</span> <span class="n">class_getInstanceMethod</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">original</span><span class="p">);</span>
-</span><span class='line'>    <span class="n">Method</span> <span class="n">altMethod</span> <span class="o">=</span> <span class="n">class_getInstanceMethod</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">alternative</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">if</span><span class="p">(</span><span class="n">class_addMethod</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">original</span><span class="p">,</span> <span class="n">method_getImplementation</span><span class="p">(</span><span class="n">altMethod</span><span class="p">),</span> <span class="n">method_getTypeEncoding</span><span class="p">(</span><span class="n">altMethod</span><span class="p">)))</span> <span class="p">{</span>
-</span><span class='line'>        <span class="n">class_replaceMethod</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">alternative</span><span class="p">,</span> <span class="n">method_getImplementation</span><span class="p">(</span><span class="n">orgMethod</span><span class="p">),</span> <span class="n">method_getTypeEncoding</span><span class="p">(</span><span class="n">orgMethod</span><span class="p">));</span>
-</span><span class='line'>    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-</span><span class='line'>        <span class="n">method_exchangeImplementations</span><span class="p">(</span><span class="n">orgMethod</span><span class="p">,</span> <span class="n">altMethod</span><span class="p">);</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p><code>viewDidLoad</code>にも手を加えているのは、<code>+ (id)init</code>や<code>+ (id)initWithCoder:</code>で
-既に<code>refreshControl</code>プロパティが設定されているケースを考慮するためです。</p>
-
-<h3>まとめ</h3>
-
-<p><code>ISRefreshControl</code>は以上のアイディアに沿って実装しました。
-同じようなアイディアでiPhoneに対応した<code>UIPopOverController</code>も作れたりするのではないかと思います。</p>
-
-<p><code>ISRefreshControl</code>にはアニメーションの詰めが甘い箇所があったりするので、開発に協力してくださる方は是非GitHubでpull requestをください。</p>
 
 		
 		
@@ -515,12 +156,12 @@ drawRectでスクロール量に応じたものを<code>CGPath</code>で描画�
   
 
 
-<time datetime="2012-12-13T22:26:00+09:00" pubdate data-updated="true">Dec 13<span>th</span>, 2012</time></div>
+<time datetime="2013-01-29T20:51:00+09:00" pubdate data-updated="true">Jan 29<span>th</span>, 2013</time></div>
 	
 </div>
 
     <br/>
-    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2012/12/13/ios5-refreshcontrol/" data-text="iOS5で動作するUIRefreshControlのライブラリをつくったときの話" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2012/12/13/ios5-refreshcontrol/" >Tweet</a>
+    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/01/29/randomtap-uiautomation/" data-text="0.1秒ごとにランダムタップするUIAutomationスクリプト" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/01/29/randomtap-uiautomation/" >Tweet</a>
     <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
     </article>
 
@@ -528,98 +169,74 @@ drawRectでスクロール量に応じたものを<code>CGPath</code>で描画�
     <article class="post">
 	<h2 class="title">
 		
-		<a href="/blog/2012/12/09/cocoapods/">
+		<a href="/blog/2013/01/28/universal-static-library-2013/">
 		
-			CocoaPodsを使ってみた</a>
+			Universal Static Libraryのビルド(armv7/armv7s/i386 )</a>
 	</h2>
 	<div class="entry-content">
-		<p>最近、<a href="http://www.cocoacontrols.com/posts/2012/12/03/cocoa-controls-now-supports-cocoapods">CocoaControlsがCocoaPodsに対応した</a>ようですね。</p>
+		<p>最近のUniversal Static Libraryのビルド方法を見かけなかったので、書いておきます。<br/>
+&ldquo;最近の&#8221;と言っても変更点はarmv6がなくなってarmv7sが追加されただけです。</p>
 
-<p><a href="blog/2012/10/27/xcode-git">以前の記事</a>で書いたように、いままで<code>git submodule</code>でライブラリを管理していました。
-CocoaPodsのことは聞いてはいたのですが、&#8221;<code>git submodule</code>で十分じゃん&#8221;と思って使っていませんでした。
-どうやらCocoaPodsはそれ以上の事をしてくれるようなので、試してみました。</p>
+<h3>概要</h3>
 
-<h2>導入手順</h2>
+<p>何も難しいことはありません。</p>
 
-<p><a href="http://cocoapods.org">cocoapods.org</a>に書いてある手順に従います。</p>
+<ul>
+<li>実機用にビルド(armv7, armv7s)</li>
+<li>シミュレーター用にビルド(i386)</li>
+<li><code>lipo</code>でくっつける</li>
+<li>必要なヘッダーもコピーする</li>
+</ul>
+
+
+<h3>実行例</h3>
+
+<p><a href="https://github.com/johnezang/JSONKit">JSONKit</a>のUniversal Static Libraryを作る例です。</p>
 
 <figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>gem install cocoapods
-</span><span class='line'>pod setup</span></code></pre></td></tr></table></div></figure>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>xcodebuild -sdk iphoneos -arch armv7 -arch armv7s clean build
+</span><span class='line'>xcodebuild -sdk iphonesimulator -arch i386 clean build
+</span><span class='line'>
+</span><span class='line'>rm -R Product
+</span><span class='line'>mkdir Product/
+</span><span class='line'>
+</span><span class='line'>xcrun lipo -create build/Release-iphonesimulator/libJSONKit.a build/Release-iphoneos/libJSONKit.a -output Product/libJSONKit.a
+</span><span class='line'>cp JSONKit/*.h Product/</span></code></pre></td></tr></table></div></figure>
 
 
-<p>プロジェクトのディレクトリに以下のような<code>Podfile</code>を作成します。</p>
+<p>できたものを確認します。</p>
 
 <figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>platform :ios, '5.0'
-</span><span class='line'>pod 'ISColumnsController', '~&gt; 1.0.0'</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class=''><span class='line'>xcrun -sdk iphoneos lipo -info Product/libJSONKit.a</span></code></pre></td></tr></table></div></figure>
 
 
-<p><code>Podfile</code>に書いたライブラリをインストールします。</p>
+
 
 <figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>pod install</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Architectures in the fat file: build/Release-universal/libJSONKit.a are: i386 armv7 armv7s</span></code></pre></td></tr></table></div></figure>
 
 
-<p>以上で導入は完了です。</p>
+<p>できてますね。</p>
 
-<p>元々のプロジェクト(<code>Hoge.xcodeproj</code>)とは別にワークスペースが(<code>Hoge.xcworkspace</code>)作成されるので、以降の作業ではこちらを使うようにします。
-Project Navigatorは以下のようになっているはずです。</p>
+<h3>補足</h3>
 
-<p><img src="/images/2012-12-09/pods.png"></p>
+<p><code>/usr/bin/lipo</code>はarmv7sのことを知らないらしく、<code>lipo -info ...</code>としてもarmv7sとして表示してくれません。
+Xcodeの<code>xcrun -sdk iphoneos lipo</code>ではarmv7sと表示されます。</p>
 
-<p>どうやらライブラリ群を<code>libPods.a</code>というスタティックライブラリにまとめて、リンクしているようです。</p>
-
-<h2>CocoaPodsの良いところ</h2>
-
-<p><code>git submodule</code>を直接使っている場合と比較したメリットを書きます。</p>
-
-<h3>プロジェクトへの導入の自動化</h3>
-
-<p><code>git submodule</code>はライブラリの<strong>ソースコード</strong>を管理するのであって、
-どのようにXcodeプロジェクトに導入されるかまでは管理していません。
-つまり、ライブラリを導入するには手動で以下の手順を行う必要があります。</p>
+<h3>参考</h3>
 
 <ul>
-<li>導入に必要なファイルのみをXcodeプロジェクトに追加</li>
-<li>必要に応じてフレームワークがあればリンクする。(<code>CoreData.framework</code>など)</li>
-<li>必要に応じてコンパイルオプションを設定する。(<code>-fno-objc-arc</code>など)</li>
-<li>必要に応じてリンカフラグを追加する。(<code>-ObjC</code>など)</li>
+<li><a href="http://cocoadays.blogspot.jp/2010/11/ios-static-library-4-universal-static.html">[iOS] Static Library (4) Universal Static Library</a></li>
+<li><a href="http://stackoverflow.com/questions/12549489/compile-library-for-armv7s-cputype-12-and-cpusubtype-11">Compile Library for armv7s &ndash; cputype (12) and cpusubtype (11)</a></li>
 </ul>
 
-
-<p>また、ライブラリに以下のような変更があった場合、手動でプロジェクトを変更しなければなりません。</p>
-
-<ul>
-<li>ファイル構造が変わった</li>
-<li>リンクするフレームワークに変更があった</li>
-</ul>
-
-
-<p>CocoaPodsはこういった手順を自動化してくれるようです。<br/>
-<code>Pods.xcconfig</code>を覗いてみると、その様子の一端を見ることができます。</p>
-
-<h3>導入可能か自動チェック</h3>
-
-<p>CocoaPodsは<code>Podfile</code>に書いたプロジェクトの環境とライブラリの環境を比較して、
-そのライブラリが導入可能か自動的にチェックしてくれます。
-例えば、先ほど<code>Podfile</code>に<code>platform :ios, '5.0'</code>と書きましたが、これはDeployment Targetを表していて、
-iOS 5.0に対応していないライブラリは導入の時点で弾かれるようになっています。</p>
-
-<p>Deployment Targetの他にも、ARCへの対応状況やOSXへの対応状況も考慮してくれるようです。</p>
-
-<h2>まとめ</h2>
-
-<ul>
-<li>CocoaPodsはXcodeプロジェクトの設定も含めたライブラリ管理をしてくれる。</li>
-<li>導入可能性もチェックしてくれる</li>
-</ul>
-
-
-<p>まだまだ使い込んでいないので良いことばかり書いてますが、実際的な問題もあるのかもしれません。<br/>
-ハマりどころがありそうだったら、また更新します。</p>
 
 		
 		
@@ -639,12 +256,117 @@ iOS 5.0に対応していないライブラリは導入の時点で弾かれる�
   
 
 
-<time datetime="2012-12-09T15:56:00+09:00" pubdate data-updated="true">Dec 9<span>th</span>, 2012</time></div>
+<time datetime="2013-01-28T12:31:00+09:00" pubdate data-updated="true">Jan 28<span>th</span>, 2013</time></div>
 	
 </div>
 
     <br/>
-    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2012/12/09/cocoapods/" data-text="CocoaPodsを使ってみた" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2012/12/09/cocoapods/" >Tweet</a>
+    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/01/28/universal-static-library-2013/" data-text="Universal Static Libraryのビルド(armv7/armv7s/i386 )" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/01/28/universal-static-library-2013/" >Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+    </article>
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2013/01/27/uitableview-section-in-storyboard/">
+		
+			StoryboardでUITableViewのセクションのヘッダ/フッタを設定する</a>
+	</h2>
+	<div class="entry-content">
+		<p>StackOverflowで見つけました。<br/>
+おそらく正攻法ではないのですが、面白かったので紹介します。<br/>
+<a href="http://stackoverflow.com/a/11396643">How to Implement Custom Table View Section Headers and Footers with Storyboard</a></p>
+
+<p>以下のようなStoryboardを組んで<br/>
+<img src="/images/2013-01-27/storyboard.png"></p>
+
+<p>以下のような結果を得られます。<br/>
+<img src="/images/2013-01-27/ss.png"></p>
+
+<h2>やり方</h2>
+
+<ul>
+<li>Storyboardで<code>UITableView</code>にヘッダ用とフッタ用のプロトタイプセルを追加する。<br/>
+Identifierにはそれぞれ<code>Header</code>とか<code>Footer</code>とかを設定します。</li>
+<li><code>tableView:viewForHeaderInSection:</code>で先ほど指定したIdentifierのセルをdequeueします。</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="n">UIView</span> <span class="o">*</span><span class="p">)</span><span class="nf">tableView:</span><span class="p">(</span><span class="n">UITableView</span> <span class="o">*</span><span class="p">)</span><span class="nv">tableView</span> <span class="nf">viewForHeaderInSection:</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nv">section</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">static</span> <span class="n">NSString</span> <span class="o">*</span><span class="n">identifier</span> <span class="o">=</span> <span class="s">@&quot;Header&quot;</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">UITableViewCell</span> <span class="o">*</span><span class="n">headerView</span> <span class="o">=</span> <span class="p">[</span><span class="n">tableView</span> <span class="nl">dequeueReusableCellWithIdentifier:</span><span class="n">identifier</span><span class="p">];</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">headerView</span> <span class="o">==</span> <span class="nb">nil</span><span class="p">){</span>
+</span><span class='line'>        <span class="p">[</span><span class="n">NSException</span> <span class="nl">raise:</span><span class="s">@&quot;headerView == nil..&quot;</span> <span class="nl">format:</span><span class="s">@&quot;No cells with matching CellIdentifier loaded from your storyboard&quot;</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">headerView</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>高さも指定する場合は<code>tableView:heightForHeaderInSection:</code>も実装します。</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="n">CGFloat</span><span class="p">)</span><span class="nf">tableView:</span><span class="p">(</span><span class="n">UITableView</span> <span class="o">*</span><span class="p">)</span><span class="nv">tableView</span> <span class="nf">heightForHeaderInSection:</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nv">section</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">static</span> <span class="n">NSString</span> <span class="o">*</span><span class="n">identifier</span> <span class="o">=</span> <span class="s">@&quot;Header&quot;</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">UITableViewCell</span> <span class="o">*</span><span class="n">headerView</span> <span class="o">=</span> <span class="p">[</span><span class="n">tableView</span> <span class="nl">dequeueReusableCellWithIdentifier:</span><span class="n">identifier</span><span class="p">];</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">headerView</span> <span class="o">==</span> <span class="nb">nil</span><span class="p">){</span>
+</span><span class='line'>        <span class="p">[</span><span class="n">NSException</span> <span class="nl">raise:</span><span class="s">@&quot;headerView == nil..&quot;</span> <span class="nl">format:</span><span class="s">@&quot;No cells with matching CellIdentifier loaded from your storyboard&quot;</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">headerView</span><span class="p">.</span><span class="n">frame</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">height</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>そのうち、Storyboardで公式にヘッダが設定できるようになるのかもしれませんが、<br/>
+それまでのつなぎとしては良いのかもしれません。</p>
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-01-27T03:47:00+09:00" pubdate data-updated="true">Jan 27<span>th</span>, 2013</time></div>
+	
+</div>
+
+    <br/>
+    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/01/27/uitableview-section-in-storyboard/" data-text="StoryboardでUITableViewのセクションのヘッダ/フッタを設定する" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/01/27/uitableview-section-in-storyboard/" >Tweet</a>
     <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
     </article>
 

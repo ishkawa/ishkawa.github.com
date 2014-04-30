@@ -1,0 +1,196 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>位置情報でリモコンを操作するiOSアプリをリリースしました</title>
+	<meta name="author" content="ishkawa">
+
+	
+	<meta name="description" content="位置情報でリモコンを操作するiOSアプリをリリースしました Geo IR Geo IRという名前でリリースしました。例えば、以下のような用途に利用できます。 最寄り駅についたらでエアコンをつける
+自宅に近づいたら照明を点灯させる
+自宅から離れたら様々な電子機器の電源を落とす &hellip;">
+	
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="blog.ishkawa.org" type="application/atom+xml">
+	<link rel="canonical" href="">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<script async="true" src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	
+</head>
+
+
+<body>
+	<header id="header" class="inner"><h1><a href="/">blog.ishkawa.org</a></h1>
+<nav id="main-nav"><ul class="main">
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="https://twitter.com/_ishkawa">Twitter</a></li>
+  <li><a href="https://github.com/ishkawa">GitHub</a></li>
+</ul>
+
+</nav>
+<nav id="mobile-nav">
+	<div class="alignleft menu">
+		<a class="button">Menu</a>
+		<div class="container"><ul class="main">
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="https://twitter.com/_ishkawa">Twitter</a></li>
+  <li><a href="https://github.com/ishkawa">GitHub</a></li>
+</ul>
+
+</div>
+	</div>
+	<div class="alignright search">
+		<a class="button"></a>
+		<div class="container">
+			<form action="http://google.com/search" method="get">
+				<input type="text" name="q" results="0">
+				<input type="hidden" name="q" value="site:blog.ishkawa.org">
+			</form>
+		</div>
+	</div>
+</nav>
+
+</header>
+	<div id="content" class="inner"><article class="post">
+	<h2 class="title">位置情報でリモコンを操作するiOSアプリをリリースしました</h2>
+	<div class="entry-content"><p><img src="/images/2014-04-28/icon.png"></p>
+
+<p><a href="https://itunes.apple.com/jp/app/geo-ir/id856152824">Geo IR</a></p>
+
+<p>Geo IRという名前でリリースしました。例えば、以下のような用途に利用できます。</p>
+
+<ul>
+<li>最寄り駅についたらでエアコンをつける</li>
+<li>自宅に近づいたら照明を点灯させる</li>
+<li>自宅から離れたら様々な電子機器の電源を落とす</li>
+</ul>
+
+
+<p>特に1つ目の用途は便利で、冬には家に着く頃には部屋が暖まった状態にすることができますし、夏には冷えた状態にすることが出来ます。</p>
+
+<h3>利用できる位置情報</h3>
+
+<p><img src="/images/2014-04-28/trigger.png"></p>
+
+<p>アプリを反応させるイベントには以下の2つを指定できます。</p>
+
+<ul>
+<li>ターゲットエリア: 指定地点から半径nメートル</li>
+<li>トリガー: ターゲットエリアへの進入時または退出時</li>
+</ul>
+
+
+<p>これらの情報を組み合わせて、&#8221;最寄り駅に付いた&#8221;や&#8221;自宅から離れた&#8221;といったイベントを定義します。</p>
+
+<h3>利用できるリモコン信号</h3>
+
+<p>基本的にはどのようなリモコンも利用することができます。</p>
+
+<h3>その他必要なもの</h3>
+
+<p>Geo IRの利用にはIRKitが必要です。IRKitはAmazonで購入することができます。</p>
+
+<p><a href="http://www.amazon.co.jp/dp/B00H91KK26">Amazon.co.jp: IRKit &ndash; iPhone,iPadを使って外出先からエアコン等の家電を操作できる学習リモコン</a></p>
+
+<h3>使い方</h3>
+
+<h4>1. IRKitのセットアップ</h4>
+
+<p>起動後に表示される指示に従ってください。<br/>
+セットアップが上手くいかない場合は、アプリの再起動とIRKitのリセットをして上で再度試してみてください。</p>
+
+<h4>2. リモコン信号のセットアップ</h4>
+
+<p>設定画面からリモコン信号画面に移り、+ボタンを押してください。<br/>
+以下のような画面が表示されたら、IRKitに向けてリモコン信号を送ってください。</p>
+
+<p><img src="/images/2014-04-28/signal.png"></p>
+
+<h4>3. 位置情報のセットアップ</h4>
+
+<p>ターゲットエリアとトリガーを指定してください。</p>
+
+<p><img src="/images/2014-04-28/region.png"></p>
+
+<h4>4. 移動する</h4>
+
+<p>指定したエリアに移動してみてください。リモコン信号の送信が成功すると(失敗すると)アプリに通知が届きます。</p>
+
+<p><img src="/images/2014-04-28/notification.png"></p>
+
+<h4>5. 動作を確認する</h4>
+
+<p>履歴画面から確認できます。送信に失敗してしまった場合には、再送信することも出来ます。</p>
+
+<p><img src="/images/2014-04-28/history.png"></p>
+
+<h3>その他</h3>
+
+<p>Geo IRには広告を非表示にするオプションが有るのですが、In App Purchaseのproduct登録をうっかり忘れてしまったので1.0.0では利用できません。
+このオプションの利用を希望する方は、1.0.1がリリースされるまでお待ちください。</p>
+
+<p>アプリのダウンロードは以下のリンクからどうぞ。</p>
+
+<p><a href="https://itunes.apple.com/jp/app/geo-ir/id856152824">Geo IR</a></p>
+</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-04-28T21:27:00+09:00" pubdate data-updated="true">Apr 28<span>th</span>, 2014</time></div>
+	
+</div>
+
+    <br/>
+    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2014/04/28/geo-ir/" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2014/04/28/geo-ir/" >Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+</article>
+
+</div>
+	<footer id="footer" class="inner">Copyright &copy; 2014
+
+    ishkawa
+
+</footer>
+	<script src="/javascripts/slash.js"></script>
+<script src="/javascripts/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+	$('.fancybox').fancybox();
+})(jQuery);
+</script> <!-- Delete or comment this line to disable Fancybox -->
+
+
+
+
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-35917440-1']);
+		_gaq.push(['_trackPageview']);
+
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
+
+
+
+</body>
+</html>
