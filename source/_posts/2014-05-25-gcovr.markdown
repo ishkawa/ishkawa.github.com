@@ -1,0 +1,29 @@
+---
+layout: post
+title: "gcovrでコードカバレッジを確認"
+date: 2014-05-25 21:15
+comments: true
+categories: 
+---
+
+手元ではCoverStoryを使っていたのですが、なんか使いづらかったのでgcovrを使い始めました。  
+gcovr 3.1にはhtml出力がついていて、以下のようなコマンドでレポートを出力してくれます。
+
+```
+gcovr \
+	-r . \
+	--html --html-detail \
+	-o build/coverage.html \
+	-e Pods \
+	-e UnitTests \
+	-e ".*\.h"
+```
+
+出力されるHTMLは以下のようになります。
+
+{% img /images/2014-05-25/list.png %}
+
+ファイルを選択すると各行の状況を確認できます。
+
+{% img /images/2014-05-25/detail.png %}
+
