@@ -7,8 +7,9 @@
 	<meta name="author" content="ishkawa">
 
 	
-	<meta name="description" content="Travis CIがXcode 5に対応してからのあれこれ Xcode 5のxcodebuildでテストを実行するにはxcodebuild testを使うといいみたいです。
-man xcodebuildのbuildactionの説明に以下のように書かれているので-scheme &hellip;">
+	<meta name="description" content="XCTest + iOS 7でCoverallsを利用する XCTest + iOS7でテストを実行しても上手くコードカバレッジが取得できずに困っていたのですが、
+最近@tokoromさんが取得できる方法を紹介していたので、
+そちらを参考にして対応してみました。資料は以下のものです。 My &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -60,67 +61,39 @@ man xcodebuildのbuildactionの説明に以下のように書かれているの�
     <article class="post">
 	<h2 class="title">
 		
-		<a href="/blog/2013/11/28/xcode-5-xcodebuild/">
+		<a href="/blog/2014/01/15/ios7-xctest-coveralls/">
 		
-			Travis CIがXcode 5に対応してからのあれこれ</a>
+			XCTest + iOS 7でCoverallsを利用する</a>
 	</h2>
 	<div class="entry-content">
-		<p>Xcode 5のxcodebuildでテストを実行するには<code>xcodebuild test</code>を使うといいみたいです。
-<code>man xcodebuild</code>のbuildactionの説明に以下のように書かれているので<code>-scheme SchemeName</code>が必要となります。
-Travis CIなどの手元以外の環境でbuild schemeを利用する場合には、他の環境でも同じbuild schemeを使えるようにする必要があるので、
-あらかじめXcodeのManage SchemeというメニューのShareというチェックボックスを有効しておく必要があります。</p>
+		<p>XCTest + iOS7でテストを実行しても上手くコードカバレッジが取得できずに困っていたのですが、
+最近<a href="https://twitter.com/tokorom">@tokorom</a>さんが取得できる方法を紹介していたので、
+そちらを参考にして対応してみました。資料は以下のものです。</p>
 
-<blockquote><p>This requires specifying a scheme and optionally a destination.</p></blockquote>
+<p><a href="https://speakerdeck.com/tokorom/my-unit-test-environment-for-objective-c">My unit test environment for Objective-C</a></p>
 
-<p>Xcode 4のときにはMakefileを以下のように書いていましたが</p>
+<p>Coverallsに対応したライブラリは以下のものです。</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>test:
-</span><span class='line'>    xcodebuild \
-</span><span class='line'>        -sdk iphonesimulator \
-</span><span class='line'>        -target ISFooTests \
-</span><span class='line'>        -configuration Debug \
-</span><span class='line'>        clean build \
-</span><span class='line'>        TEST_AFTER_BUILD=YES</span></code></pre></td></tr></table></div></figure>
+<ul>
+<li><a href="http://github.com/ishkawa/ISHTTPOperation">ISHTTPOperation</a></li>
+<li><a href="http://github.com/ishkawa/ISDiskCache">ISDiskCache</a></li>
+<li><a href="http://github.com/ishkawa/ISMemoryCache">ISMemoryCache</a></li>
+<li><a href="http://github.com/ishkawa/NSRunLoop-PerformBlock">NSRunLoop+PerformBlock</a></li>
+</ul>
 
 
-<p><code>xcodebuild test</code>を使う形式に書き換えると</p>
+<p>対応の肝となるのは<a href="http://github.com/ishkawa/ISGcovFlusher">ISGcovFlusher</a>をテストターゲットに追加しておくことです。
+これを追加することでテスト終了時に<code>__gcov_flush()</code>を自動的に呼んでくれて<code>*.gcda</code>が出力されるようになります。
+なお、<code>__gcov_flush()</code>を呼び出すにはBuild Settingsの&#8221;Instrument Program Flow&#8221;と&#8221;Generate Test Coverage Files&#8221;をYESにする必要があるようです。</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>test:
-</span><span class='line'>    xcodebuild \
-</span><span class='line'>        -sdk iphonesimulator \
-</span><span class='line'>        -scheme ISFoo \
-</span><span class='line'>        -configuration Debug \
-</span><span class='line'>        clean build test</span></code></pre></td></tr></table></div></figure>
+<p>その他の詳しいことは各リポジトリの以下のファイルを参照してください。</p>
 
+<ul>
+<li>Podfile</li>
+<li>Makefile</li>
+<li>.travis.yml</li>
+</ul>
 
-<p>という感じになります。</p>
-
-<p>Xcode 4では普通にテストを書いて適切にcpp-coverallsを実行すればコードカバレッジまで取得できたのですが、
-Xcode 5では<code>*.gcda</code>が出力されなくなってしまったらしくてそのままではコードカバレッジを測れないようです。</p>
-
-<blockquote class="twitter-tweet" lang="ja"><p><a href="https://twitter.com/_ishkawa">@_ishkawa</a> iOS7だと.gcdaが出てこない問題?&#10;<a href="http://t.co/PCPIVz2BDU">http://t.co/PCPIVz2BDU</a>&#10;<a href="https://t.co/4ESNcybO8W">https://t.co/4ESNcybO8W</a></p>&mdash; azu (@azu_re) <a href="https://twitter.com/azu_re/statuses/405963463421218816">2013, 11月 28</a></blockquote>
-
-
-<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
-
-
-<p>詳しい話は<a href="https://twitter.com/azu_re">@azu_re</a>さんのツイートのリンク先に書いてあって、
-テスト完了後に<code>__gcov_flush()</code>というものを実行すると解決できるようなのですが、まだ試していません。</p>
-
-<p>上手くいっている例があったら覗きに行きます。</p>
 
 		
 		
@@ -140,12 +113,12 @@ Xcode 5では<code>*.gcda</code>が出力されなくなってしまったらし
   
 
 
-<time datetime="2013-11-28T20:34:00+09:00" pubdate data-updated="true">Nov 28<span>th</span>, 2013</time></div>
+<time datetime="2014-01-15T23:14:00+09:00" pubdate data-updated="true">Jan 15<span>th</span>, 2014</time></div>
 	
 </div>
 
     <br/>
-    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/11/28/xcode-5-xcodebuild/" data-text="Travis CIがXcode 5に対応してからのあれこれ" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/11/28/xcode-5-xcodebuild/" >Tweet</a>
+    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2014/01/15/ios7-xctest-coveralls/" data-text="XCTest + iOS 7でCoverallsを利用する" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2014/01/15/ios7-xctest-coveralls/" >Tweet</a>
     <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
     </article>
 
@@ -153,19 +126,121 @@ Xcode 5では<code>*.gcda</code>が出力されなくなってしまったらし
     <article class="post">
 	<h2 class="title">
 		
-		<a href="/blog/2013/11/22/wait-async-task/">
+		<a href="/blog/2014/01/09/lldb-json/">
 		
-			単体テストの実行時に非同期処理を待つ</a>
+			デバッグ中にJSONをサッと出力する</a>
 	</h2>
 	<div class="entry-content">
-		<p>SenTestingKit/XCTestは非同期処理を待たずにテストケースを終了してしまうので、
-直接SenTestingKit/XCTestを利用する場合には自分でNSRunLoopを回して処理の完了を待つ必要があります。
-これまでSenTestCaseにfinishedフラグが追加されたサブクラスを使ったりしていたのですが、
-どうしてもテストコードが明示的にならなくて悩んでいました。</p>
+		<p>NSDictionaryやNSArrayのdescriptionはそれとなく見やすいフォーマットで出力されますが、JSONで欲しくなる場合があります。
+しかも、デバッグ中に欲しくなったりします。
+XcodeのLLDBは<code>~/.lldbinit-Xcode</code>に独自のコマンドを定義することができるので、
+pretty printedなJSONを吐くコマンドを定義してカジュアルにJSONを得られるようにしてみました。</p>
 
-<p>いままで書いていたテストコードは以下のような感じです。</p>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>command regex pj 's/^(.+)$/po [[NSString alloc] initWithData:[NSJSONSerialization dataWithJSONObject:%1 options:1 error:nil] encoding:4]/'</span></code></pre></td></tr></table></div></figure>
+
+
+<p>ここで定義した<code>pj</code>コマンドを使うと以下のようなNSDictionaryから</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="n">NSDictionary</span> <span class="o">*</span><span class="n">dictionary</span> <span class="o">=</span> <span class="err">@</span><span class="p">{</span><span class="s">@&quot;date&quot;</span><span class="o">:</span> <span class="s">@&quot;01-08-2014&quot;</span><span class="p">,</span>
+</span><span class='line'>                             <span class="s">@&quot;time&quot;</span><span class="o">:</span> <span class="s">@&quot;03:55:15&quot;</span><span class="p">,</span>
+</span><span class='line'>                             <span class="s">@&quot;epoch&quot;</span><span class="o">:</span> <span class="err">@</span><span class="mi">1389196515937</span><span class="p">};</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>以下のようなJSONを得られます</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="s">&quot;time&quot;</span> <span class="o">:</span> <span class="s">&quot;03:55:15&quot;</span><span class="p">,</span>
+</span><span class='line'>  <span class="s">&quot;epoch&quot;</span> <span class="o">:</span> <span class="mi">1389196515937</span><span class="p">,</span>
+</span><span class='line'>  <span class="s">&quot;date&quot;</span> <span class="o">:</span> <span class="s">&quot;01-08-2014&quot;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>元ネタは<a href="https://twitter.com/dealforest/status/420943227294736384">@dealforest</a>さんの以下の記事です。<br/>
+UIViewのrecursiveDescriptionを出力するコマンドなどの便利な例も紹介されています。</p>
+
+<p><a href="http://qiita.com/dealforest/items/e3a5284badd17733ccc1">続・Debugger の Tips &ndash; Qiita [キータ]</a></p>
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-01-09T00:44:00+09:00" pubdate data-updated="true">Jan 9<span>th</span>, 2014</time></div>
+	
+</div>
+
+    <br/>
+    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2014/01/09/lldb-json/" data-text="デバッグ中にJSONをサッと出力する" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2014/01/09/lldb-json/" >Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+    </article>
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2013/12/11/xcpretty/">
+		
+			Xcodebuildのログをxcprettyで整える</a>
+	</h2>
+	<div class="entry-content">
+		<p>Xcode 5になってから<code>xcodebuild</code>も進化していて、Xcode 4までネックになっていたApplication Testsの実行も簡単になりました。
+そういうわけで自分にとっての<code>xctool</code>の必要性は薄まり、あとはログさえキレイになってくれればいいのになあと思っていたのですが、そんなときに<code>xcpretty</code>が登場しました。</p>
+
+<p><a href="https://github.com/mneorr/XCPretty">mneorr/XCPretty</a></p>
+
+<h3>xctoolとの違い</h3>
+
+<p><code>xctool</code>は<code>xcodebuild</code>を置き換えることを目的としていましたが、<code>xcpretty</code>は<code>xcodebuild</code>と共存してログの整形のみを行います。
+<code>xctool</code>の場合、&#8221;<code>xcodebuild</code>では動くけど<code>xctool</code>では動かない&#8221;という状況に遭遇することがありますが、
+<code>xcpretty</code>はビルドやテストの実行自体に<code>xcodebuild</code>を利用するので、既に<code>xcodebuild</code>で進んでいるプロジェクトでは簡単に利用を始めることができます。</p>
+
+<h3>インストール方法</h3>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>gem install xcpretty</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>使い方</h3>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>xcodebuild | xcpretty -c</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>実行例</h3>
+
+<p>例として<a href="https://github.com/ishkawa/ISHTTPOperation">ISHTTPOperation</a>のユニットテストの結果を<code>xcpretty</code>で出力します。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>xcodebuild clean test -sdk iphonesimulator -scheme ISHTTPOperation -configuration Debug -destination "name=iPhone Retina (3.5-inch),OS=7.0" | xcpretty -c</span></code></pre></td></tr></table></div></figure>
+
+
+<p>結果は以下のようになります。テスト結果として必要十分な情報量だと思います。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -179,67 +254,49 @@ Xcode 5では<code>*.gcda</code>が出力されなくなってしまったらし
 <span class='line-number'>12</span>
 <span class='line-number'>13</span>
 <span class='line-number'>14</span>
-</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">testExample</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="c1">// step 1</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">dispatch_queue_t</span> <span class="n">queue</span> <span class="o">=</span> <span class="n">dispatch_get_global_queue</span><span class="p">(</span><span class="n">DISPATCH_QUEUE_PRIORITY_DEFAULT</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
-</span><span class='line'>    <span class="n">dispatch_async</span><span class="p">(</span><span class="n">queue</span><span class="p">,</span> <span class="o">^</span><span class="p">(</span><span class="kt">void</span><span class="p">){</span>
-</span><span class='line'>        <span class="c1">// step 3</span>
-</span><span class='line'>        <span class="p">[</span><span class="n">self</span> <span class="n">stopWaiting</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">});</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// step 2</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">self</span> <span class="n">startWaiting</span><span class="p">];</span>
-</span><span class='line'>    <span class="c1">// step 4</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>✓ Cleaning ISHTTPOperation/ISHTTPOperation [Debug]
+</span><span class='line'>✓ Building ISHTTPOperation/ISHTTPOperation [Debug]
+</span><span class='line'>✓ Compiling ISHTTPOperationQueue.m
+</span><span class='line'>✓ Compiling NSOperationQueue+HTTP.m
+</span><span class='line'>✓ Compiling ISHTTPOperation.m
+</span><span class='line'>✓ Building library libISHTTPOperation.a
+</span><span class='line'>✓ Building ISHTTPOperation/ISHTTPOperationTests [Debug]
+</span><span class='line'>✓ Running script 'Run Script'
+</span><span class='line'>Test Suite '/Users/ishkawa/Library/Developer/Xcode/DerivedData/ISHTTPOperation-bmnqbihsbwzsicguaxfhmfoznrvq/Build/Products/Debug-iphonesimulator/ISHTTPOperationTests.octest(Tests)' started
+</span><span class='line'>Test Suite 'ISHTTPOperationQueueTests' started
+</span><span class='line'>✓  ISHTTPOperationQueueTests testCancelOperationsWithHTTPMethod (0.016 seconds)
+</span><span class='line'>✓  ISHTTPOperationQueueTests testCancelOperationsWithHost (0.001 seconds)
+</span><span class='line'>✓  ISHTTPOperationQueueTests testCancelOperationsWithPath (0.001 seconds)
+</span><span class='line'>✓  ISHTTPOperationQueueTests testCancelOperationsWithURL (0.000 seconds)
+</span><span class='line'>✓  ISHTTPOperationQueueTests testDefaultQueue (0.002 seconds)
+</span><span class='line'>Test Suite 'ISHTTPOperationTests' started
+</span><span class='line'>✓  ISHTTPOperationTests testCancel (0.100 seconds)
+</span><span class='line'>✓  ISHTTPOperationTests testCancelAsynchronously (0.000 seconds)
+</span><span class='line'>✓  ISHTTPOperationTests testConcurrencyType (0.000 seconds)
+</span><span class='line'>✓  ISHTTPOperationTests testDeallocOnCancelAfterStart (0.100 seconds)
+</span><span class='line'>✓  ISHTTPOperationTests testDeallocOnCancelBeforeStart (0.100 seconds)
+</span><span class='line'>✓  ISHTTPOperationTests testDesignatedInitializer (0.000 seconds)
+</span><span class='line'>✓  ISHTTPOperationTests testErrorConnection (0.101 seconds)
+</span><span class='line'>✓  ISHTTPOperationTests testNormalConnection (0.202 seconds)
+</span><span class='line'>✓  ISHTTPOperationTests testQueueing (0.000 seconds)
+</span><span class='line'>Test Suite 'NSOperationQueueHTTPTests' started
+</span><span class='line'>✓  NSOperationQueueHTTPTests testDefaultHTTPQueue (0.000 seconds)</span></code></pre></td></tr></table></div></figure>
 
 
-<p>これではどのようにして待っているのかあまり想像がつきませんし、順序をひと目で理解することも難しいです。
-そこで、昨日新しい方法を考えました。
-以下のように書くと、実行順序も上から順番通りになりますし、何をしているのか明示的になったと思います。</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">testPerformBlockAndWait</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="c1">// step 1</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="p">[[</span><span class="n">NSRunLoop</span> <span class="n">currentRunLoop</span><span class="p">]</span> <span class="nl">performBlockAndWait:</span><span class="o">^</span><span class="p">(</span><span class="kt">BOOL</span> <span class="o">*</span><span class="n">finish</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="n">dispatch_queue_t</span> <span class="n">queue</span> <span class="o">=</span> <span class="n">dispatch_get_global_queue</span><span class="p">(</span><span class="n">DISPATCH_QUEUE_PRIORITY_DEFAULT</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
-</span><span class='line'>        <span class="n">dispatch_async</span><span class="p">(</span><span class="n">queue</span><span class="p">,</span> <span class="o">^</span><span class="p">(</span><span class="kt">void</span><span class="p">){</span>
-</span><span class='line'>            <span class="c1">// step 2</span>
-</span><span class='line'>            <span class="o">*</span><span class="n">finish</span> <span class="o">=</span> <span class="n">YES</span><span class="p">;</span>
-</span><span class='line'>        <span class="p">});</span>
-</span><span class='line'>    <span class="p">}];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// step 3</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>NSRunLoopのperformBlockAndWait:は新しく拡張したメソッドで、名前からわかる通りNSManagedObjectContextの
-performBlockAndWait:を使っているときに思いつきました。
-BOOL *を渡すアイディアはNSArrayのenumerateObjectsUsingBlock:を真似しました。</p>
-
-<p>このコードを使えるようにするためのNSRunLoopのカテゴリはまとめて以下のリポジトリに置いてあります。
-興味がある人は是非使ってみてください。
-もっといいアイディアがあるという人は是非教えて下さい。</p>
-
-<p><a href="https://github.com/ishkawa/NSRunLoop-PerformBlock">NSRunLoop-PerformBlock</a></p>
 
 		
 		
@@ -259,99 +316,12 @@ BOOL *を渡すアイディアはNSArrayのenumerateObjectsUsingBlock:を真似�
   
 
 
-<time datetime="2013-11-22T00:23:00+09:00" pubdate data-updated="true">Nov 22<span>nd</span>, 2013</time></div>
+<time datetime="2013-12-11T00:16:00+09:00" pubdate data-updated="true">Dec 11<span>th</span>, 2013</time></div>
 	
 </div>
 
     <br/>
-    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/11/22/wait-async-task/" data-text="単体テストの実行時に非同期処理を待つ" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/11/22/wait-async-task/" >Tweet</a>
-    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
-    </article>
-
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2013/11/18/persistent-stack/">
-		
-			ISPersistentStackというCoreDataのヘルパーを書いた</a>
-	</h2>
-	<div class="entry-content">
-		<p>最近iOS 4を相手にする機会がなくなったので、いつも使うCoreDataのヘルパーを共通化しようと思い、ついでに公開することにしました。
-あまり他人が使うことを想定したつくりになっていないので、そのまま使おうとするとちょっと苦労するかもしれません。</p>
-
-<p><a href="https://github.com/ishkawa/ISPersistentStack">ISPersistentStack</a></p>
-
-<p>いままで使っていたものをそのままコピペすればOKかと思っていたんですが、できるだけ幅広い構造に対応できるようにするには
-いくらか抽象化が必要となりました。サブクラスを作ってしまえば&#8221;一般的な&#8221;ケースには対応できると思うのですが、
-少し凝ったつくりには対応できない場合があると思います。(そういう理由もあって、CocoaPodsには送らない予定です。)</p>
-
-<h3>主な機能</h3>
-
-<ul>
-<li>メインのNSManagedObjectContextの提供</li>
-<li>永続ストアとNSManagedObjectModelの互換性のチェック</li>
-<li>永続ストアの廃棄</li>
-</ul>
-
-
-<p>Web APIのクライアントのアプリの場合、消してはいけないデータはあまりないので、自分はよく以下のようにして使います。
-このようにすると、永続ストアのモデルとバンドルされているモデルが一致しない場合にデータベースを捨ててくれます。
-捨ててはいけないデータがある場合にも<code>#ifdef DEBUG</code>を利用すればデバッグに役立つかもしれません。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="n">ISPersistentStack</span> <span class="o">*</span><span class="n">persistentStack</span> <span class="o">=</span> <span class="p">[</span><span class="n">ISPersistentStack</span> <span class="n">sharedStack</span><span class="p">];</span>
-</span><span class='line'><span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">persistentStack</span><span class="p">.</span><span class="n">isCompatibleWithCurrentStore</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">persistentStack</span> <span class="n">deleteCurrentStore</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>想定しているケース</h3>
-
-<ul>
-<li>単一のNSPersistentStore</li>
-<li>単一のNSManagedObjectModel(複数バージョンは想定内)</li>
-<li>複数のNSManagedObjectContext(ただし、main queueのcontextはISPersistentStackが提供するものを利用)</li>
-</ul>
-
-
-<p>デフォルトで使用するNSPersistentStoreはドキュメント以下の<code>Model.sqlite</code>となっていて、
-モデルはメインバンドル以下の<code>Model.momd</code>となっています。
-もしここから外れる場合にはISPersistentStackのサブクラスを作成してstoreURL, modelURL, sharedStackをオーバーライドする必要があります。
-その他にもmanagedObjectModel, persistentStoreCoordinator, managedObjectContextをオーバーライドすることもできます。</p>
-
-<h3>感想</h3>
-
-<p>CoreDataのオレオレ便利ヘルパーは他人にとっても使いやすい形にするのは難しいなあと思いました。</p>
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-11-18T01:23:00+09:00" pubdate data-updated="true">Nov 18<span>th</span>, 2013</time></div>
-	
-</div>
-
-    <br/>
-    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/11/18/persistent-stack/" data-text="ISPersistentStackというCoreDataのヘルパーを書いた" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/11/18/persistent-stack/" >Tweet</a>
+    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/12/11/xcpretty/" data-text="xcodebuildのログをxcprettyで整える" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/12/11/xcpretty/" >Tweet</a>
     <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
     </article>
 

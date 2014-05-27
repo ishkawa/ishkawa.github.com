@@ -7,9 +7,8 @@
 	<meta name="author" content="ishkawa">
 
 	
-	<meta name="description" content="ISDiskCacheというのを書いた 2ヶ月ほど前にISMemoryCacheというのを書いたのですが、
-実はこれと並行してISDiskCacheというのもつくっていました。
-しかし、良いアイディアが浮かばなくて完成度が十分に上がらず、リリースできないまま放置していました。 &hellip;">
+	<meta name="description" content="ISHTTPOperation 1.1.0をリリースした 朝6時に目が覚めたら意識が高かったので、ISHTTPOperationに欲しかった機能をつけてリリースしました。
+ISHTTPOperation 　 ISHTTPOperationは特徴のあるライブラリではなくて、 &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -61,65 +60,49 @@
     <article class="post">
 	<h2 class="title">
 		
-		<a href="/blog/2013/07/01/isdiskcache/">
+		<a href="/blog/2013/08/07/ishttpoperation/">
 		
-			ISDiskCacheというのを書いた</a>
+			ISHTTPOperation 1.1.0をリリースした</a>
 	</h2>
 	<div class="entry-content">
-		<p>2ヶ月ほど前に<a href="http://blog.ishkawa.org/blog/2013/04/24/ismemorycache/">ISMemoryCacheというのを書いた</a>のですが、
-実はこれと並行してISDiskCacheというのもつくっていました。
-しかし、良いアイディアが浮かばなくて完成度が十分に上がらず、リリースできないまま放置していました。
-先週末にちょうど<a href="https://objectivechackathon.appspot.com">Put Objective-C Back On the Map</a>というWeb上のイベントがあったので、
-それに参加することをモチベーションにISDiskCacheの実装に再挑戦しました。</p>
+		<p>朝6時に目が覚めたら意識が高かったので、ISHTTPOperationに欲しかった機能をつけてリリースしました。<br/>
+<a href="https://github.com/ishkawa/ISHTTPOperation">ISHTTPOperation</a></p>
 
-<p><a href="https://github.com/ishkawa/ISDiskCache">ISDiskCache</a></p>
+<p>　</p>
 
-<h3>特徴</h3>
+<p>ISHTTPOperationは特徴のあるライブラリではなくて、単純に非同期のNSURLConnectionをラップするNSOperationです。
+こういったライブラリはたくさんあって、いわゆる車輪の再発明なのですが、わざわざ自分で作っているのには理由があります。
+理由の1つは多くの通信ライブラリは機能が多すぎるため、大量の不要なコードをプロジェクトに導入することになってしまうからです。
+もう1つはNSURLConnectionをNSOperationで正しくラップするときにはミスしやすい箇所が多いので、
+シンプルなライブラリであってもキャンセルなどの目立ちにくい動作に不具合を出しやすいからです。</p>
+
+<h3>かわったところ</h3>
 
 <ul>
-<li>合計のファイルサイズの上限を持ち、上限を超えたら古いファイルを自動的に削除(LRU)。</li>
-<li>NSCodingに適合するオブジェクトをキー/値に設定できる。</li>
-<li>NSDateを指定してアクセス日時が古いファイルを削除できる。</li>
+<li>テストにスタブサーバーを利用する</li>
+<li>Travis CIとCoverallsを利用して品質(?)を表示</li>
+<li>NSPredicateを利用してキャンセル</li>
 </ul>
 
 
-<p>類似のライブラリにはtumblrがつくっている<a href="https://github.com/tumblr/TMCache">TMCache</a>があります。
-TMCacheとISMemoryCache/ISDiskCacheの違いは説明するが大変なので、お互いにないものを挙げていきます。</p>
+<p>元々、3つ目のキャンセル機構をつけたかったのですが、
+最近は<a href="http://www.tokoro.me/2013/07/09/objc-travis-coveralls/">iOSのライブラリだってTravis CIとかCoverallsとか使うべき</a>という話だったので、
+その辺りにも手を入れてみたらテストがださかったのでテストも直したという感じです。
+それと、せっかくここまでやったんだからと思ってCocoaPodsにもpull requestを送っておきました。</p>
 
-<ul>
-<li>実績がある: TMCache</li>
-<li>メモリキャッシュ/ディスクキャッシュを意識せずに使える: TMCache</li>
-<li>参照がある限りキャッシュをクリアしない: ISMemoryCache/ISDiskCache</li>
-<li>NSString以外をキーにできる: ISMemoryCache/ISDiskCache</li>
-</ul>
-
-
-<p>メモリキャッシュ/ディスクキャッシュを意識させないつくりが必要かどうかは少し疑問に思いました。
-確かに同じAPIで利用できるのは手軽で便利なのですが、メモリキャッシュはメインスレッドでも同期的に扱うことができるのに、
-メモリキャッシュかディスクキャッシュかわからなくなってしまうと非同期的に処理するしかなくなってしまいます。</p>
-
-<p>自分は同期的にかける箇所は同期的に書きたかったので、メモリキャッシュとディスクキャッシュを分けることにしました。
-キャッシュを分けると利用側のコードが増えてしまうのですが、ディスクキャッシュへのアクセスとサーバーとの通信を1つのNSOperationにまとめてしまえば、
-以下のように同期的な処理と非同期的な処理の2通りを書けば済んでしまいます。</p>
+<p>NSPredicateでキャンセルというのは以下のような感じです。</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="n">UIImage</span> <span class="o">*</span><span class="n">cachedImage</span> <span class="o">=</span> <span class="p">[[</span><span class="n">ISMemoryCache</span> <span class="n">sharedCache</span><span class="p">]</span> <span class="nl">objectForKey:</span><span class="n">URL</span><span class="p">];</span>
-</span><span class='line'><span class="k">if</span> <span class="p">(</span><span class="n">cachedImage</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>    <span class="n">imageView</span><span class="p">.</span><span class="n">image</span> <span class="o">=</span> <span class="n">cachedImage</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-</span><span class='line'>    <span class="n">imageView</span><span class="p">.</span><span class="n">image</span> <span class="o">=</span> <span class="p">[</span><span class="n">UIImage</span> <span class="nl">imageNamed:</span><span class="s">@&quot;placeholder&quot;</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">ISImageLoaderOperation</span> <span class="nl">loadURL:</span><span class="n">URL</span> <span class="nl">handler:</span><span class="o">^</span><span class="p">(</span><span class="n">UIImage</span> <span class="o">*</span><span class="n">image</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="n">imageView</span><span class="p">.</span><span class="n">image</span> <span class="o">=</span> <span class="n">image</span><span class="p">;</span>
-</span><span class='line'>    <span class="p">}];</span>
-</span><span class='line'><span class="p">}</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="n">NSPredicate</span> <span class="o">*</span><span class="n">predicate</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSPredicate</span> <span class="nl">predicateWithFormat:</span><span class="s">@&quot;request.HTTPMethod MATCHES %@&quot;</span><span class="p">,</span> <span class="s">@&quot;GET&quot;</span><span class="p">];</span>
+</span><span class='line'><span class="p">[[</span><span class="n">ISHTTPOperationQueue</span> <span class="n">defaultQueue</span><span class="p">]</span> <span class="nl">cancelOperationsUsingPredicate:</span><span class="n">predicate</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>よく使いそうなやつには以下のようなショートカットも用意しました。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="p">[[</span><span class="n">ISHTTPOperationQueue</span> <span class="n">defaultQueue</span><span class="p">]</span> <span class="nl">cancelOperationsWithHTTPMethod:</span><span class="s">@&quot;GET&quot;</span><span class="p">];</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
@@ -143,12 +126,12 @@ TMCacheとISMemoryCache/ISDiskCacheの違いは説明するが大変なので、
   
 
 
-<time datetime="2013-07-01T03:41:00+09:00" pubdate data-updated="true">Jul 1<span>st</span>, 2013</time></div>
+<time datetime="2013-08-07T11:02:00+09:00" pubdate data-updated="true">Aug 7<span>th</span>, 2013</time></div>
 	
 </div>
 
     <br/>
-    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/07/01/isdiskcache/" data-text="ISDiskCacheというのを書いた" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/07/01/isdiskcache/" >Tweet</a>
+    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/08/07/ishttpoperation/" data-text="ISHTTPOperation 1.1.0をリリースした" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/08/07/ishttpoperation/" >Tweet</a>
     <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
     </article>
 
@@ -156,41 +139,16 @@ TMCacheとISMemoryCache/ISDiskCacheの違いは説明するが大変なので、
     <article class="post">
 	<h2 class="title">
 		
-		<a href="/blog/2013/06/26/ocmock-async/">
+		<a href="/blog/2013/07/15/ocmarg-block/">
 		
-			OCMockでも[[foo shouldEventually] Receive:@selector(bar)]がしたい</a>
+			OCMArgをBlocksとして渡すときに困ること</a>
 	</h2>
 	<div class="entry-content">
-		<p>そう思って、雑に実装をしてみました。</p>
-
-<p><code>[[foo shouldEventually] receive:@selector(bar)]</code>はKiwiの構文で、<br/>
-一定時間以内に<code>bar</code>というメソッドが呼ばれないとテスト失敗とするものです。</p>
-
-<p>具体的には以下のようなプログラムで<code>foo</code>の<code>bar</code>が呼ばれるか確認するテストに使えます。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">someMethod:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">foo</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="n">dispatch_queue_t</span> <span class="n">queue</span> <span class="o">=</span> <span class="n">dispatch_get_global_queue</span><span class="p">(</span><span class="n">DISPATCH_QUEUE_PRIORITY_DEFAULT</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
-</span><span class='line'>    <span class="n">dispatch_async</span><span class="p">(</span><span class="n">queue</span><span class="p">,</span> <span class="o">^</span><span class="p">{</span>
-</span><span class='line'>        <span class="p">...</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="p">[</span><span class="n">foo</span> <span class="n">bar</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">});</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Kiwiの<code>shouldEventually</code>は<code>KWProbePoller</code>が0.1秒ごとに<code>NSRunLoop</code>を回し、<br/>
-<code>KWAsyncMatcherProbe</code>の  <code>isSatisfied</code>が<code>YES</code>になるまで回し続けるという実装をしています。</p>
+		<p>iOSの標準フレームワークでは至るところにBlocksが登場します。
+引数として渡されるBlocks自体に制限を設けたテストを書くことはあまりないので
+<code>[OCMArg any]</code>を指定しようと考えるのですが、Blocksは内部的にcopyして扱われることが多いらしく、
+以下のようなテストを書くとOCMConstraintをcopyしようとしたところで例外が発生します。
+OCMConstraintがNSCopyingに適合していないので当然のことですが、ちょっと困ります。</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -201,169 +159,46 @@ TMCacheとISMemoryCache/ISDiskCacheの違いは説明するが大変なので、
 <span class='line-number'>7</span>
 <span class='line-number'>8</span>
 <span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="c1">// KWProbePoller</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nf">check:</span><span class="p">(</span><span class="kt">id</span><span class="o">&lt;</span><span class="n">KWProbe</span><span class="o">&gt;</span><span class="p">)</span><span class="nv">probe</span><span class="p">;</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">testSomeMethod</span>
 </span><span class='line'><span class="p">{</span>
-</span><span class='line'>  <span class="n">KWTimeout</span> <span class="o">*</span><span class="n">timeout</span> <span class="o">=</span> <span class="p">[[</span><span class="n">KWTimeout</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithTimeout:</span><span class="n">timeoutInterval</span><span class="p">];</span>
+</span><span class='line'>    <span class="kt">id</span> <span class="n">mock</span> <span class="o">=</span> <span class="p">[</span><span class="n">OCMockObject</span> <span class="nl">partialMockForObject:</span><span class="n">viewController</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[[</span><span class="n">mock</span> <span class="n">expect</span><span class="p">]</span> <span class="nl">dismissViewControllerAnimated:</span><span class="n">NO</span> <span class="nl">completion:</span><span class="p">[</span><span class="n">OCMArg</span> <span class="n">any</span><span class="p">]];</span>
 </span><span class='line'>
-</span><span class='line'>  <span class="k">while</span> <span class="p">(</span><span class="o">!</span><span class="p">[</span><span class="n">probe</span> <span class="n">isSatisfied</span><span class="p">])</span> <span class="p">{</span>
-</span><span class='line'>    <span class="k">if</span> <span class="p">([</span><span class="n">timeout</span> <span class="n">hasTimedOut</span><span class="p">])</span> <span class="p">{</span>
-</span><span class='line'>      <span class="p">[</span><span class="n">timeout</span> <span class="n">release</span><span class="p">];</span>
-</span><span class='line'>      <span class="k">return</span> <span class="n">NO</span><span class="p">;</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>    <span class="p">[[</span><span class="n">NSRunLoop</span> <span class="n">currentRunLoop</span><span class="p">]</span> <span class="nl">runUntilDate:</span><span class="p">[</span><span class="n">NSDate</span> <span class="nl">dateWithTimeIntervalSinceNow:</span><span class="n">delayInterval</span><span class="p">]];</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">probe</span> <span class="n">sample</span><span class="p">];</span>
-</span><span class='line'>  <span class="p">}</span>
-</span><span class='line'>  <span class="p">[</span><span class="n">timeout</span> <span class="n">release</span><span class="p">];</span>
+</span><span class='line'>    <span class="c1">// 何かする</span>
 </span><span class='line'>
-</span><span class='line'>  <span class="k">return</span> <span class="n">YES</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">STAssertNoThrow</span><span class="p">([</span><span class="n">mock</span> <span class="n">verify</span><span class="p">],</span> <span class="s">@&quot;did not dismiss.&quot;</span><span class="p">);</span>
 </span><span class='line'><span class="p">}</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p><code>OCMock</code>で<code>receive:</code>に相当するものは<code>expect</code>/<code>verify</code>なので、これらを使って同じことをします。</p>
-
-<p><code>OCMockObject</code>は<code>expectations</code>という<code>NSArray</code>があり、<code>expect</code>すると<code>OCMockRecorder</code>を追加し、<br/>
-メソッドが呼ばれると<code>OCMockRecorder</code>を<code>expectations</code>から外すという処理をします。<br/>
-そして、<code>verify</code>時に<code>expectations</code>が残っているとテストを失敗させる仕組みになっています。</p>
+<p>めんどくさいので自分は以下のようなコードをOCMConstraintのカテゴリに書いて問題を回避しました。</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="c1">// OCMockObject</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">verify</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nf">copyWithZone:</span><span class="p">(</span><span class="n">NSZone</span> <span class="o">*</span><span class="p">)</span><span class="nv">zone</span>
 </span><span class='line'><span class="p">{</span>
-</span><span class='line'>  <span class="k">if</span><span class="p">([</span><span class="n">expectations</span> <span class="n">count</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span>
-</span><span class='line'>  <span class="p">{</span>
-</span><span class='line'>      <span class="p">[</span><span class="n">NSException</span> <span class="nl">raise:</span><span class="n">NSInternalInconsistencyException</span> <span class="nl">format:</span><span class="s">@&quot;%@: expected method was not invoked: %@&quot;</span><span class="p">,</span>
-</span><span class='line'>          <span class="p">[</span><span class="n">self</span> <span class="n">description</span><span class="p">],</span> <span class="p">[[</span><span class="n">expectations</span> <span class="nl">objectAtIndex:</span><span class="mi">0</span><span class="p">]</span> <span class="n">description</span><span class="p">]];</span>
-</span><span class='line'>  <span class="p">}</span>
-</span><span class='line'>  <span class="k">if</span><span class="p">([</span><span class="n">expectations</span> <span class="n">count</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
-</span><span class='line'>  <span class="p">{</span>
-</span><span class='line'>      <span class="p">[</span><span class="n">NSException</span> <span class="nl">raise:</span><span class="n">NSInternalInconsistencyException</span> <span class="nl">format:</span><span class="s">@&quot;%@ : %ld expected methods were not invoked: %@&quot;</span><span class="p">,</span>
-</span><span class='line'>          <span class="p">[</span><span class="n">self</span> <span class="n">description</span><span class="p">],</span> <span class="p">[</span><span class="n">expectations</span> <span class="n">count</span><span class="p">],</span> <span class="p">[</span><span class="n">self</span> <span class="nl">_recorderDescriptions:</span><span class="n">YES</span><span class="p">]];</span>
-</span><span class='line'>  <span class="p">}</span>
-</span><span class='line'>  <span class="k">if</span><span class="p">([</span><span class="n">exceptions</span> <span class="n">count</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
-</span><span class='line'>  <span class="p">{</span>
-</span><span class='line'>      <span class="p">[[</span><span class="n">exceptions</span> <span class="nl">objectAtIndex:</span><span class="mi">0</span><span class="p">]</span> <span class="n">raise</span><span class="p">];</span>
-</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">self</span><span class="p">;</span>
 </span><span class='line'><span class="p">}</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>なので、<code>expectations</code>が変わるまで<code>NSRunLoop</code>を回すという<code>verify</code>の代替メソッドを用意すれば、<br/>
-<code>OCMock</code>らしく<code>[[foo shouldEventually] receive:@selector(bar)]</code>に相当するものが実装できます。</p>
+<p>テストコードとは言えどもこういった雑なことばっかりしてるといつか痛い目に遭いそうだと思ったので、
+より良い方法があれば聞きたいところです。</p>
 
-<p>以下がその実装です。</p>
+<h3>追記</h3>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">@implementation</span> <span class="nc">OCMockObject</span> <span class="nl">(Lazy)</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">verifyLazily</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">self</span> <span class="nl">verifyLazilyWithTimeout:</span><span class="mf">1.0</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">verifyLazilyWithTimeout:</span><span class="p">(</span><span class="n">NSTimeInterval</span><span class="p">)</span><span class="nv">timeout</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="n">NSTimeInterval</span> <span class="n">interval</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">;</span>
-</span><span class='line'>    <span class="n">NSDate</span> <span class="o">*</span><span class="n">startedDate</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSDate</span> <span class="n">date</span><span class="p">];</span>
-</span><span class='line'>    <span class="kt">BOOL</span> <span class="n">shouldContinue</span> <span class="o">=</span> <span class="n">YES</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">while</span> <span class="p">(</span><span class="n">shouldContinue</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="err">@</span><span class="n">autoreleasepool</span> <span class="p">{</span>
-</span><span class='line'>            <span class="n">shouldContinue</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSDate</span> <span class="n">date</span><span class="p">]</span> <span class="nl">timeIntervalSinceDate:</span><span class="n">startedDate</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">timeout</span><span class="p">;</span>
-</span><span class='line'>            <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">shouldContinue</span> <span class="o">||</span> <span class="p">[</span><span class="n">self</span><span class="o">-&gt;</span><span class="n">expectations</span> <span class="n">count</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>                <span class="p">[</span><span class="n">self</span> <span class="n">verify</span><span class="p">];</span>
-</span><span class='line'>            <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>            <span class="n">NSDate</span> <span class="o">*</span><span class="n">date</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSDate</span> <span class="nl">dateWithTimeIntervalSinceNow:</span><span class="n">interval</span><span class="p">];</span>
-</span><span class='line'>            <span class="p">[[</span><span class="n">NSRunLoop</span> <span class="n">currentRunLoop</span><span class="p">]</span> <span class="nl">runUntilDate:</span><span class="n">date</span><span class="p">];</span>
-</span><span class='line'>        <span class="p">}</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@end</span>
-</span></code></pre></td></tr></table></div></figure>
+<p>OCMock 2.2では同様の実装がされていると、<a href="https://twitter.com/azu_re/">@azu_re</a>さんに教えていただきました。<br/>
+2.2以降を利用すれば上記のメソッドを実装しなくてもcopyの問題は起こりません。</p>
+
+<blockquote class="twitter-tweet"><p><a href="https://twitter.com/_ishkawa">@_ishkawa</a> OCMock 2.2だとcopyWithZone: 実装されてるように見えるけど、これとは別? <a href="https://t.co/lDzgB5tMSb">https://t.co/lDzgB5tMSb</a> <a href="https://t.co/w11Yr14Um9">https://t.co/w11Yr14Um9</a></p>&mdash; azu (@azu_re) <a href="https://twitter.com/azu_re/statuses/356620135156551681">July 15, 2013</a></blockquote>
 
 
-<p>これを利用したテストケースは以下のように書くことができます。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">testFooInvokesBarOnSomeMethod</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="kt">id</span> <span class="n">fooMock</span> <span class="o">=</span> <span class="p">[</span><span class="n">OCMockObject</span> <span class="nl">mockForClass:</span><span class="p">[</span><span class="n">Foo</span> <span class="n">class</span><span class="p">]];</span>
-</span><span class='line'>    <span class="p">[[</span><span class="n">fooMock</span> <span class="n">expect</span><span class="p">]</span> <span class="n">bar</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="p">[</span><span class="n">testObject</span> <span class="nl">someMethod:</span><span class="n">fooMock</span><span class="p">];</span>
-</span><span class='line'>    <span class="n">STAssertNoThrow</span><span class="p">([</span><span class="n">fooMock</span> <span class="n">verifyLazily</span><span class="p">],</span> <span class="s">@&quot;foo did not invoke bar.&quot;</span><span class="p">);</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
 
 
-<p>&mdash;</p>
 
-<p>勢い余ってやってみたという感じなのですが、もっと良い方法があれば知りたいです。</p>
 
 		
 		
@@ -383,12 +218,12 @@ TMCacheとISMemoryCache/ISDiskCacheの違いは説明するが大変なので、
   
 
 
-<time datetime="2013-06-26T00:35:00+09:00" pubdate data-updated="true">Jun 26<span>th</span>, 2013</time></div>
+<time datetime="2013-07-15T01:42:00+09:00" pubdate data-updated="true">Jul 15<span>th</span>, 2013</time></div>
 	
 </div>
 
     <br/>
-    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/06/26/ocmock-async/" data-text="OCMockでも[[foo shouldEventually] receive:@selector(bar)]がしたい" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/06/26/ocmock-async/" >Tweet</a>
+    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/07/15/ocmarg-block/" data-text="OCMArgをBlocksとして渡すときに困ること" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/07/15/ocmarg-block/" >Tweet</a>
     <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
     </article>
 
@@ -396,145 +231,32 @@ TMCacheとISMemoryCache/ISDiskCacheの違いは説明するが大変なので、
     <article class="post">
 	<h2 class="title">
 		
-		<a href="/blog/2013/06/25/storyboard-and-xib/">
+		<a href="/blog/2013/07/08/code-coverage/">
 		
-			Xib/storyboardとの付き合い方について</a>
+			コードカバレッジを計測してみた感想</a>
 	</h2>
 	<div class="entry-content">
-		<p>アプリが大きくなるとstoryboardの小回りの利かなさに泣きたくなることがあると思います。<br/>
-そうした反動からすべてのUIをコードで実装しているiOS開発者も少なくないと思います。</p>
+		<p>先週末、およそ3ヶ月ぶりにNode.jsのコードを書きました。</p>
 
-<p>自分は全部storyboardにして痛い目にあってから、全部コードにしてまた痛い目に遭い、<br/>
-結局コードとxibとstoryboardを上手く使い分けるのが良いという結論に達しました。<br/>
-最近、やり方が定まってきてストレスを感じなくなってきたので方法をまとめます。</p>
+<p>いつの間にかテストをそれほど苦労せずに書けるようになっていて、
+たくさんテストを書いて意識が高まり、コードカバレッジを計測しようと思いました。
+コードカバレッジを計測するのは今回が生まれて初めてでした。
+何処かで&#8221;コードカバレッジは目安に過ぎない&#8221;みたいな話を聞いて、
+コードカバレッジの効果に対しては半信半疑なところがありましたが、
+とにかくそのときは意識が高まっていたので頑張って計測できるようにしました。
+参考にしたのは以下のブログ記事です。
+あまり深いことはわからないのですが、jscoverageが実行回数を測定できるプロダクトコードのコピーを生成し、
+テストコードからそれを実行することでコードカバレッジを計測できるという感じの仕組みのようです。</p>
 
-<p>これから書くことは個人の見解ですが、自分のやり方を決める上では無駄にならないと思います。</p>
+<p><a href="http://www.seejohncode.com/2012/03/13/setting-up-mocha-jscoverage/">http://www.seejohncode.com/2012/03/13/setting-up-mocha-jscoverage/</a></p>
 
-<p>　</p>
+<h4>感想</h4>
 
-<h3>使い分け方と理由</h3>
-
-<p>基本方針: 以下に挙げる条件にマッチする場合除いて、コードで実装を行います。</p>
-
-<h3>xibを使う条件</h3>
-
-<p>viewの複雑度が高い場合(subviewが2,3個以上の場合)にはxibを使います。<br/>
-xibを利用する理由は以下のような退屈なコードをたくさん書くのがつらいからです。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="n">UILabel</span> <span class="o">*</span><span class="n">label</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UILabel</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithFrame:</span><span class="n">CGRectZero</span><span class="p">];</span>
-</span><span class='line'><span class="n">label</span><span class="p">.</span><span class="n">backgroundColor</span> <span class="o">=</span> <span class="p">[</span><span class="n">UIColor</span> <span class="n">clearColor</span><span class="p">];</span>
-</span><span class='line'><span class="n">label</span><span class="p">.</span><span class="n">textColor</span> <span class="o">=</span> <span class="p">[</span><span class="n">UIColor</span> <span class="n">darkGrayColor</span><span class="p">];</span>
-</span><span class='line'><span class="n">label</span><span class="p">.</span><span class="n">textAlignment</span> <span class="o">=</span> <span class="n">UITextAlignmentCenter</span><span class="p">;</span>
-</span><span class='line'><span class="n">label</span><span class="p">.</span><span class="n">baselineAdjustment</span> <span class="o">=</span> <span class="n">UIBaselineAdjustmentAlignCenters</span><span class="p">;</span>
-</span><span class='line'><span class="n">label</span><span class="p">.</span><span class="n">shadowOffset</span> <span class="o">=</span> <span class="n">CGSizeMake</span><span class="p">(</span><span class="mf">0.f</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.f</span><span class="p">);</span>
-</span><span class='line'><span class="n">label</span><span class="p">.</span><span class="n">numberOfLines</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-</span><span class='line'><span class="n">label</span><span class="p">.</span><span class="n">frame</span> <span class="o">=</span> <span class="n">CGRectMake</span><span class="p">(</span><span class="mf">10.f</span><span class="p">,</span> <span class="mf">10.f</span><span class="p">,</span> <span class="mf">100.f</span><span class="p">,</span> <span class="mf">100.f</span><span class="p">);</span>
-</span><span class='line'><span class="n">label</span><span class="p">.</span><span class="n">autoresizingMask</span> <span class="o">=</span> <span class="n">UIViewAutoresizingFlexibleWidth</span><span class="p">;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>これはstoryboardを使う理由にもなるのですが、この条件のみの場合にはxibを使います。<br/>
-storyboardの利用に対して消極的な理由は後半の方に書きます。</p>
-
-<p>逆に、<code>UIWebView</code>だけが単品で乗っているような、<code>UIViewController</code>の<code>loadView</code>を<br/>
-オーバーライドすれば済んでしまう場合にはxibを利用せずにコードのみで実装を行います。<br/>
-配置に関するコードは大体以下のようなもので済むと思います。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">loadView</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="n">self</span><span class="p">.</span><span class="n">view</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UIWebView</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>storyboardを使う条件</h3>
-
-<p>xibを利用する条件に加えて以下の3つを満たす場合にはstoryboardを部分的に利用します。<br/>
-この条件にマッチしやすいのはチュートリアルや設定画面などのViewControllerです。</p>
-
-<ul>
-<li>十分に小さい単位で他の部分から切り出すことができる</li>
-<li>viewの再利用性が低い (特にUITableViewのStatic Cellsが適切な場合)</li>
-<li>segueなどのidentifierを設定する機会が少ない</li>
-</ul>
-
-
-<p>十分小さい単位でアプリの他の部分から切り出せることを条件にしている理由は以下の3つです。</p>
-
-<ul>
-<li>storyboardが大きいとどこで何が定義されているのか把握し切れなくなる</li>
-<li>storyboardが大きいとコードに対応した箇所を探すのに時間がかかる</li>
-<li>storyboardが大きいと分業するの妨げとなる</li>
-</ul>
-
-
-<p>再利用性の低さを条件にしている理由は以下の2つです。<br/>
-後者はViewの配置を決めている箇所を特定するまでに掛かる時間に影響するので、特に重要です。</p>
-
-<ul>
-<li>ViewControllerの再利用性が高い場合にはstoryboard自体が複雑になり、編集しづらくなる。</li>
-<li><code>UITableViewCell</code>などのパーツは再利用できず、xibかコードを利用することになる。</li>
-</ul>
-
-
-<p>segueなどのidentifierを設定する機会の少なさを条件にしている理由は以下の3つです。</p>
-
-<ul>
-<li>プログラムを書くのにいちいちstoryboardを見てidentifierを確認するのが面倒</li>
-<li>identifierをコードに手打ちするのが面倒な上に間違えやすい</li>
-<li>コード上でidentifierを見つけたとき、storyboardを確認しなければ正確な遷移がわからない。</li>
-</ul>
-
-
-<p>以上の条件をクリアしていると、とても気持ち良くstoryboardを利用できると思います。<br/>
-実際、設定画面で利用してstoryboard固有のストレスを感じる機会は少なかったです。</p>
-
-<p>　</p>
-
-<h3>いままでに挑戦したやり方と感想</h3>
-
-<h4>全部コードで実装する</h4>
-
-<ul>
-<li>Viewの配置の退屈なコードが増えて、プログラミングがタイピングスポーツになった。</li>
-</ul>
-
-
-<h4>xibが利用できる箇所は全部xibで実装する</h4>
-
-<ul>
-<li>特に大きな問題はないが無駄なxibがいくらかあって邪魔だった。</li>
-<li>設定画面がswitch祭りになった。</li>
-</ul>
-
-
-<h4>storyboardが利用できる箇所は全部storyboardで実装する</h4>
-
-<ul>
-<li>再利用性があるパーツにはxibを使い出したりして、結局どこに何があるかわからなくなった。</li>
-<li>長い期間を置いてから再度プロジェクトを開いたらidentifierを探すのが面倒くさかった。</li>
-</ul>
-
-
-<p>アプリの規模が十分に小さい場合には全部storyboardを利用した実装にしても問題なさそうです。<br/>
-これと関連して、プロトタイプにのみ利用するという人もいるようです。</p>
-
-<p>&mdash;</p>
-
-<p>おそらく違う考え方をする人もたくさんいると思うので、そういう人の意見も聞きたいところです。</p>
+<p>&ldquo;コードカバレッジは目安に過ぎない&#8221;というのは、コードカバレッジを計測した経験がある人とない人とでは捉え方が変わると思いました。
+コードカバレッジを計測してみる前は&#8221;目安に過ぎないから計測してもしなくても大差ない&#8221;というような気がしていたのですが、
+計測してその結果を活用して開発をしてみると&#8221;無意味な変更でパーセンテージが変化する場合があるから目安&#8221;なのかなと思いました。
+で、結局目安と言いながらも明らかにカバーできていない箇所を発見できたりして開発にとても役立つので、
+本業のiOS開発の方でも頑張ってやってみようと思いました。</p>
 
 		
 		
@@ -554,12 +276,12 @@ storyboardの利用に対して消極的な理由は後半の方に書きます�
   
 
 
-<time datetime="2013-06-25T02:12:00+09:00" pubdate data-updated="true">Jun 25<span>th</span>, 2013</time></div>
+<time datetime="2013-07-08T20:52:00+09:00" pubdate data-updated="true">Jul 8<span>th</span>, 2013</time></div>
 	
 </div>
 
     <br/>
-    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/06/25/storyboard-and-xib/" data-text="xib/storyboardとの付き合い方について" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/06/25/storyboard-and-xib/" >Tweet</a>
+    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/07/08/code-coverage/" data-text="コードカバレッジを計測してみた感想" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/07/08/code-coverage/" >Tweet</a>
     <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
     </article>
 

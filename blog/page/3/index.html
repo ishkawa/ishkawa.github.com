@@ -7,9 +7,10 @@
 	<meta name="author" content="ishkawa">
 
 	
-	<meta name="description" content="XCTest + iOS 7でCoverallsを利用する XCTest + iOS7でテストを実行しても上手くコードカバレッジが取得できずに困っていたのですが、
-最近@tokoromさんが取得できる方法を紹介していたので、
-そちらを参考にして対応してみました。資料は以下のものです。 My &hellip;">
+	<meta name="description" content="ISMemoryCache 0.1.0 世の中にはたくさんキャッシュの実装があり、
+自前の実装は捨てろなんて言われたりするのですが、
+それでも自分の思い通りのキャッシュ機構を作りたくなるものだと思います。
+自分はlimitに達したときにすべてのオブジェクトを削除するようなメモリキャッシュではなく &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -61,37 +62,29 @@
     <article class="post">
 	<h2 class="title">
 		
-		<a href="/blog/2014/01/15/ios7-xctest-coveralls/">
+		<a href="/blog/2014/04/13/ismemorycache-0-dot-1-0/">
 		
-			XCTest + iOS 7でCoverallsを利用する</a>
+			ISMemoryCache 0.1.0</a>
 	</h2>
 	<div class="entry-content">
-		<p>XCTest + iOS7でテストを実行しても上手くコードカバレッジが取得できずに困っていたのですが、
-最近<a href="https://twitter.com/tokorom">@tokorom</a>さんが取得できる方法を紹介していたので、
-そちらを参考にして対応してみました。資料は以下のものです。</p>
-
-<p><a href="https://speakerdeck.com/tokorom/my-unit-test-environment-for-objective-c">My unit test environment for Objective-C</a></p>
-
-<p>Coverallsに対応したライブラリは以下のものです。</p>
+		<p><a href="http://cocoapods.org/?q=cache">世の中にはたくさんキャッシュの実装があり</a>、
+<a href="https://speakerdeck.com/ninjinkun/sdwebimagewo1nian-ban-shi-tutemita">自前の実装は捨てろ</a>なんて言われたりするのですが、
+それでも自分の思い通りのキャッシュ機構を作りたくなるものだと思います。
+自分はlimitに達したときにすべてのオブジェクトを削除するようなメモリキャッシュではなく、
+他からの参照がないオブジェクトを選択して削除するようなメモリキャッシュが欲しかったのでISMemoryCacheを実装しました。
+最近、ISMemoryCacheを更新して0.1.0を出したので、その機能を紹介します。</p>
 
 <ul>
-<li><a href="http://github.com/ishkawa/ISHTTPOperation">ISHTTPOperation</a></li>
-<li><a href="http://github.com/ishkawa/ISDiskCache">ISDiskCache</a></li>
-<li><a href="http://github.com/ishkawa/ISMemoryCache">ISMemoryCache</a></li>
-<li><a href="http://github.com/ishkawa/NSRunLoop-PerformBlock">NSRunLoop+PerformBlock</a></li>
+<li>アプリがバックグラウンドに入ったときに他からの参照がないオブジェクトを削除</li>
+<li>メモリ警告が出たときにすべてのオブジェクトを削除</li>
 </ul>
 
 
-<p>対応の肝となるのは<a href="http://github.com/ishkawa/ISGcovFlusher">ISGcovFlusher</a>をテストターゲットに追加しておくことです。
-これを追加することでテスト終了時に<code>__gcov_flush()</code>を自動的に呼んでくれて<code>*.gcda</code>が出力されるようになります。
-なお、<code>__gcov_flush()</code>を呼び出すにはBuild Settingsの&#8221;Instrument Program Flow&#8221;と&#8221;Generate Test Coverage Files&#8221;をYESにする必要があるようです。</p>
-
-<p>その他の詳しいことは各リポジトリの以下のファイルを参照してください。</p>
+<p>ディスクキャッシュについてはISDiskCacheというのもあるので、そちらをどうぞ。</p>
 
 <ul>
-<li>Podfile</li>
-<li>Makefile</li>
-<li>.travis.yml</li>
+<li><a href="https://github.com/ishkawa/ISMemoryCache">ISMemoryCache</a></li>
+<li><a href="https://github.com/ishkawa/ISDiskCache">ISDiskCache</a></li>
 </ul>
 
 
@@ -113,12 +106,12 @@
   
 
 
-<time datetime="2014-01-15T23:14:00+09:00" pubdate data-updated="true">Jan 15<span>th</span>, 2014</time></div>
+<time datetime="2014-04-13T20:56:00+09:00" pubdate data-updated="true">Apr 13<span>th</span>, 2014</time></div>
 	
 </div>
 
     <br/>
-    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2014/01/15/ios7-xctest-coveralls/" data-text="XCTest + iOS 7でCoverallsを利用する" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2014/01/15/ios7-xctest-coveralls/" >Tweet</a>
+    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2014/04/13/ismemorycache-0-dot-1-0/" data-text="ISMemoryCache 0.1.0" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2014/04/13/ismemorycache-0-dot-1-0/" >Tweet</a>
     <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
     </article>
 
@@ -126,50 +119,23 @@
     <article class="post">
 	<h2 class="title">
 		
-		<a href="/blog/2014/01/09/lldb-json/">
+		<a href="/blog/2014/02/04/ja-font/">
 		
-			デバッグ中にJSONをサッと出力する</a>
+			iOSシミュレータの日本語フォントが変になるのを防ぐ</a>
 	</h2>
 	<div class="entry-content">
-		<p>NSDictionaryやNSArrayのdescriptionはそれとなく見やすいフォーマットで出力されますが、JSONで欲しくなる場合があります。
-しかも、デバッグ中に欲しくなったりします。
-XcodeのLLDBは<code>~/.lldbinit-Xcode</code>に独自のコマンドを定義することができるので、
-pretty printedなJSONを吐くコマンドを定義してカジュアルにJSONを得られるようにしてみました。</p>
+		<p><a href="http://frnk.hatenablog.jp/entry/2014/02/04/120053">iOSシミュレータの日本語フォントが変になっちゃったときの対処法 &ndash; らっこのじゆうちょう</a></p>
+
+<p>こちらの記事にある通り、日本語よりも中国語が優先されていると日本語のフォントがおかしくなってしまうのですが、設定画面から日本語に設定し直すのはちょっとだけ面倒です。
+Arguments Passes On Launchに以下の値を設定しておくと、必ず日本語に設定された状態でアプリが立ち上がるので、付き合いが長いプロジェクトでは設定しておくと楽かもしれません。</p>
 
 <figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>command regex pj 's/^(.+)$/po [[NSString alloc] initWithData:[NSJSONSerialization dataWithJSONObject:%1 options:1 error:nil] encoding:4]/'</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class=''><span class='line'>-AppleLanguages (ja)</span></code></pre></td></tr></table></div></figure>
 
 
-<p>ここで定義した<code>pj</code>コマンドを使うと以下のようなNSDictionaryから</p>
+<p><img src="/images/2014-02-04/ss.png"></p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="n">NSDictionary</span> <span class="o">*</span><span class="n">dictionary</span> <span class="o">=</span> <span class="err">@</span><span class="p">{</span><span class="s">@&quot;date&quot;</span><span class="o">:</span> <span class="s">@&quot;01-08-2014&quot;</span><span class="p">,</span>
-</span><span class='line'>                             <span class="s">@&quot;time&quot;</span><span class="o">:</span> <span class="s">@&quot;03:55:15&quot;</span><span class="p">,</span>
-</span><span class='line'>                             <span class="s">@&quot;epoch&quot;</span><span class="o">:</span> <span class="err">@</span><span class="mi">1389196515937</span><span class="p">};</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>以下のようなJSONを得られます</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="p">{</span>
-</span><span class='line'>  <span class="s">&quot;time&quot;</span> <span class="o">:</span> <span class="s">&quot;03:55:15&quot;</span><span class="p">,</span>
-</span><span class='line'>  <span class="s">&quot;epoch&quot;</span> <span class="o">:</span> <span class="mi">1389196515937</span><span class="p">,</span>
-</span><span class='line'>  <span class="s">&quot;date&quot;</span> <span class="o">:</span> <span class="s">&quot;01-08-2014&quot;</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>元ネタは<a href="https://twitter.com/dealforest/status/420943227294736384">@dealforest</a>さんの以下の記事です。<br/>
-UIViewのrecursiveDescriptionを出力するコマンドなどの便利な例も紹介されています。</p>
-
-<p><a href="http://qiita.com/dealforest/items/e3a5284badd17733ccc1">続・Debugger の Tips &ndash; Qiita [キータ]</a></p>
+<p>参考: <a href="http://qiita.com/jarinosuke@github/items/f83e846ffb866ca5b7b7">iOS &ndash; Launch Arguments を使った一つ上の NSLocalizedString &ndash; Qiita</a></p>
 
 		
 		
@@ -189,12 +155,12 @@ UIViewのrecursiveDescriptionを出力するコマンドなどの便利な例も
   
 
 
-<time datetime="2014-01-09T00:44:00+09:00" pubdate data-updated="true">Jan 9<span>th</span>, 2014</time></div>
+<time datetime="2014-02-04T14:03:00+09:00" pubdate data-updated="true">Feb 4<span>th</span>, 2014</time></div>
 	
 </div>
 
     <br/>
-    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2014/01/09/lldb-json/" data-text="デバッグ中にJSONをサッと出力する" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2014/01/09/lldb-json/" >Tweet</a>
+    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2014/02/04/ja-font/" data-text="iOSシミュレータの日本語フォントが変になるのを防ぐ" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2014/02/04/ja-font/" >Tweet</a>
     <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
     </article>
 
@@ -202,101 +168,47 @@ UIViewのrecursiveDescriptionを出力するコマンドなどの便利な例も
     <article class="post">
 	<h2 class="title">
 		
-		<a href="/blog/2013/12/11/xcpretty/">
+		<a href="/blog/2014/02/02/programming-guide-for-oss-in-confwd2/">
 		
-			Xcodebuildのログをxcprettyで整える</a>
+			#confwd でOSSでのObjective-Cの書き方について話してきた</a>
 	</h2>
 	<div class="entry-content">
-		<p>Xcode 5になってから<code>xcodebuild</code>も進化していて、Xcode 4までネックになっていたApplication Testsの実行も簡単になりました。
-そういうわけで自分にとっての<code>xctool</code>の必要性は薄まり、あとはログさえキレイになってくれればいいのになあと思っていたのですが、そんなときに<code>xcpretty</code>が登場しました。</p>
+		<p><a href="http://confwd2.peatix.com">Conference With Developers 2 | Peatix</a></p>
 
-<p><a href="https://github.com/mneorr/XCPretty">mneorr/XCPretty</a></p>
+<p>自分はiOSデベロッパーとして大した経験や実績があるわけではないのですが、
+公開しているライブラリの数はかなり多い方のなので、そこで得られた知識を話そうと思いました。
+トーク中は聴いている人のリアクションを気にする余裕もなかったのですが、
+あとからTwitterのタイムラインを読んでみると、良い反応をしてくれている方もいたようで嬉しかったです。
+今回の発表ではどのトピックも詳細に立ち入ることが難しかったので、いつか文章でしっかりとまとめられるといいなと思いました。</p>
 
-<h3>xctoolとの違い</h3>
+<h3>トークの準備</h3>
 
-<p><code>xctool</code>は<code>xcodebuild</code>を置き換えることを目的としていましたが、<code>xcpretty</code>は<code>xcodebuild</code>と共存してログの整形のみを行います。
-<code>xctool</code>の場合、&#8221;<code>xcodebuild</code>では動くけど<code>xctool</code>では動かない&#8221;という状況に遭遇することがありますが、
-<code>xcpretty</code>はビルドやテストの実行自体に<code>xcodebuild</code>を利用するので、既に<code>xcodebuild</code>で進んでいるプロジェクトでは簡単に利用を始めることができます。</p>
+<p>大勢の前で45分も話し続けるのは初めてだったので、どうやって準備したらいいものか悩みました。
+スライドをつくりながらトークの内容を練るのは難しそうだったので、はじめはmarkdownで適当な文章を書いて、
+そこからの大事な単語や文を拾ってきたり、概念図を描き起こしたりしました。
+元のmarkdownは以下のものです。人に読まれることを想定して書いたわけではないので読みづらいかもしれません。</p>
 
-<h3>インストール方法</h3>
+<p><a href="https://gist.github.com/ishkawa/82fb589f447394f37546">gist:82fb589f447394f37546</a></p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>gem install xcpretty</span></code></pre></td></tr></table></div></figure>
+<h3>資料</h3>
 
+<p>　</p>
 
-<h3>使い方</h3>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>xcodebuild | xcpretty -c</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>実行例</h3>
-
-<p>例として<a href="https://github.com/ishkawa/ISHTTPOperation">ISHTTPOperation</a>のユニットテストの結果を<code>xcpretty</code>で出力します。</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>xcodebuild clean test -sdk iphonesimulator -scheme ISHTTPOperation -configuration Debug -destination "name=iPhone Retina (3.5-inch),OS=7.0" | xcpretty -c</span></code></pre></td></tr></table></div></figure>
+<script async class="speakerdeck-embed" data-id="be0674406d3f0131488e0ea0271811b0" data-ratio="1.33333333333333" src="//speakerdeck.com/assets/embed.js"></script>
 
 
-<p>結果は以下のようになります。テスト結果として必要十分な情報量だと思います。</p>
+<h3>ビデオ</h3>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>✓ Cleaning ISHTTPOperation/ISHTTPOperation [Debug]
-</span><span class='line'>✓ Building ISHTTPOperation/ISHTTPOperation [Debug]
-</span><span class='line'>✓ Compiling ISHTTPOperationQueue.m
-</span><span class='line'>✓ Compiling NSOperationQueue+HTTP.m
-</span><span class='line'>✓ Compiling ISHTTPOperation.m
-</span><span class='line'>✓ Building library libISHTTPOperation.a
-</span><span class='line'>✓ Building ISHTTPOperation/ISHTTPOperationTests [Debug]
-</span><span class='line'>✓ Running script 'Run Script'
-</span><span class='line'>Test Suite '/Users/ishkawa/Library/Developer/Xcode/DerivedData/ISHTTPOperation-bmnqbihsbwzsicguaxfhmfoznrvq/Build/Products/Debug-iphonesimulator/ISHTTPOperationTests.octest(Tests)' started
-</span><span class='line'>Test Suite 'ISHTTPOperationQueueTests' started
-</span><span class='line'>✓  ISHTTPOperationQueueTests testCancelOperationsWithHTTPMethod (0.016 seconds)
-</span><span class='line'>✓  ISHTTPOperationQueueTests testCancelOperationsWithHost (0.001 seconds)
-</span><span class='line'>✓  ISHTTPOperationQueueTests testCancelOperationsWithPath (0.001 seconds)
-</span><span class='line'>✓  ISHTTPOperationQueueTests testCancelOperationsWithURL (0.000 seconds)
-</span><span class='line'>✓  ISHTTPOperationQueueTests testDefaultQueue (0.002 seconds)
-</span><span class='line'>Test Suite 'ISHTTPOperationTests' started
-</span><span class='line'>✓  ISHTTPOperationTests testCancel (0.100 seconds)
-</span><span class='line'>✓  ISHTTPOperationTests testCancelAsynchronously (0.000 seconds)
-</span><span class='line'>✓  ISHTTPOperationTests testConcurrencyType (0.000 seconds)
-</span><span class='line'>✓  ISHTTPOperationTests testDeallocOnCancelAfterStart (0.100 seconds)
-</span><span class='line'>✓  ISHTTPOperationTests testDeallocOnCancelBeforeStart (0.100 seconds)
-</span><span class='line'>✓  ISHTTPOperationTests testDesignatedInitializer (0.000 seconds)
-</span><span class='line'>✓  ISHTTPOperationTests testErrorConnection (0.101 seconds)
-</span><span class='line'>✓  ISHTTPOperationTests testNormalConnection (0.202 seconds)
-</span><span class='line'>✓  ISHTTPOperationTests testQueueing (0.000 seconds)
-</span><span class='line'>Test Suite 'NSOperationQueueHTTPTests' started
-</span><span class='line'>✓  NSOperationQueueHTTPTests testDefaultHTTPQueue (0.000 seconds)</span></code></pre></td></tr></table></div></figure>
+<iframe width="720" height="437" src="http://www.ustream.tv/embed/recorded/43319245/highlight/461451?v=3&amp;wmode=direct" scrolling="no" frameborder="0" style="border: 0px none transparent;">    </iframe>
 
 
+<br /><a href="http://www.ustream.tv/" style="padding: 2px 0px 4px; width: 400px; background: #ffffff; display: block; color: #000000; font-weight: normal; font-size: 10px; text-decoration: underline; text-align: center;" target="_blank">Video streaming by Ustream</a>
 
+
+<p>　</p>
+
+<p>トークやLTはどれも面白く、他の開発者との交流でき、とても充実したイベントでした。
+登壇を提案していただいた矢口さん、開催スタッフのみなさんに感謝しています。</p>
 
 		
 		
@@ -316,12 +228,12 @@ UIViewのrecursiveDescriptionを出力するコマンドなどの便利な例も
   
 
 
-<time datetime="2013-12-11T00:16:00+09:00" pubdate data-updated="true">Dec 11<span>th</span>, 2013</time></div>
+<time datetime="2014-02-02T16:11:00+09:00" pubdate data-updated="true">Feb 2<span>nd</span>, 2014</time></div>
 	
 </div>
 
     <br/>
-    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/12/11/xcpretty/" data-text="xcodebuildのログをxcprettyで整える" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/12/11/xcpretty/" >Tweet</a>
+    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2014/02/02/programming-guide-for-oss-in-confwd2/" data-text="#confwd でOSSでのObjective-Cの書き方について話してきた" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2014/02/02/programming-guide-for-oss-in-confwd2/" >Tweet</a>
     <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
     </article>
 

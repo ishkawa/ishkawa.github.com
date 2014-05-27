@@ -7,28 +7,10 @@
 	<meta name="author" content="ishkawa">
 
 	
-	<meta name="description" content="0.1秒ごとにランダムタップするUIAutomationスクリプト 書きました。 1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-20
-21
-var target = UIATarget.localTarget(); function sleep( &hellip;">
+	<meta name="description" content="ターミナルにTwitterのUser Streamを流す また雑なプログラムを書いて公開しました。
+https://github.com/ishkawa/ttw ターミナルにTwitterのUser Streamを流せます。 1
+ttw stream ツイートの投稿もできます。 1
+ttw &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -80,64 +62,34 @@ var target = UIATarget.localTarget(); function sleep( &hellip;">
     <article class="post">
 	<h2 class="title">
 		
-		<a href="/blog/2013/01/29/randomtap-uiautomation/">
+		<a href="/blog/2013/02/06/tts/">
 		
-			0.1秒ごとにランダムタップするUIAutomationスクリプト</a>
+			ターミナルにTwitterのUser Streamを流す</a>
 	</h2>
 	<div class="entry-content">
-		<p>書きました。</p>
+		<p>また雑なプログラムを書いて公開しました。<br/>
+<a href="https://github.com/ishkawa/ttw">https://github.com/ishkawa/ttw</a></p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">var</span> <span class="nx">target</span> <span class="o">=</span> <span class="nx">UIATarget</span><span class="p">.</span><span class="nx">localTarget</span><span class="p">();</span>
-</span><span class='line'>
-</span><span class='line'><span class="kd">function</span> <span class="nx">sleep</span><span class="p">(</span><span class="nx">time</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>    <span class="kd">var</span> <span class="nx">d1</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Date</span><span class="p">().</span><span class="nx">getTime</span><span class="p">();</span>
-</span><span class='line'>    <span class="kd">var</span> <span class="nx">d2</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Date</span><span class="p">().</span><span class="nx">getTime</span><span class="p">();</span>
-</span><span class='line'>    <span class="k">while</span> <span class="p">(</span><span class="nx">d2</span> <span class="o">&lt;</span> <span class="nx">d1</span> <span class="o">+</span> <span class="nx">time</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="nx">d2</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Date</span><span class="p">().</span><span class="nx">getTime</span><span class="p">();</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>    <span class="k">return</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="kd">var</span> <span class="nx">width</span> <span class="o">=</span> <span class="nx">target</span><span class="p">.</span><span class="nx">rect</span><span class="p">().</span><span class="nx">size</span><span class="p">.</span><span class="nx">width</span><span class="p">;</span>
-</span><span class='line'><span class="kd">var</span> <span class="nx">height</span> <span class="o">=</span> <span class="nx">target</span><span class="p">.</span><span class="nx">rect</span><span class="p">().</span><span class="nx">size</span><span class="p">.</span><span class="nx">height</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">while</span> <span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>    <span class="kd">var</span> <span class="nx">x</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">floor</span><span class="p">(</span><span class="nb">Math</span><span class="p">.</span><span class="nx">random</span><span class="p">()</span> <span class="o">*</span> <span class="nx">width</span><span class="p">);</span>
-</span><span class='line'>    <span class="kd">var</span> <span class="nx">y</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">floor</span><span class="p">(</span><span class="nb">Math</span><span class="p">.</span><span class="nx">random</span><span class="p">()</span> <span class="o">*</span> <span class="nx">height</span><span class="p">);</span>
-</span><span class='line'>    <span class="nx">target</span><span class="p">.</span><span class="nx">tap</span><span class="p">({</span><span class="nx">x</span><span class="o">:</span><span class="nx">x</span><span class="p">,</span> <span class="nx">y</span><span class="o">:</span><span class="nx">y</span><span class="p">});</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="nx">sleep</span><span class="p">(</span><span class="mi">100</span><span class="p">);</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
+<p>ターミナルにTwitterのUser Streamを流せます。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>ttw stream</span></code></pre></td></tr></table></div></figure>
+
+
+<p>ツイートの投稿もできます。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>ttw post hoge</span></code></pre></td></tr></table></div></figure>
 
 
 <ol type="a">
-<li>何に使うの？</li>
-<li>わかりません…</li>
+<li>なんでつくったの？</li>
+<li>起動するアプリを減らしたかったので。</li>
 </ol>
 
 
+<p>Twitter Streaming APIを使ってみたい方には参考になるかもしれません。</p>
+
 		
 		
 	</div>
@@ -156,12 +108,12 @@ var target = UIATarget.localTarget(); function sleep( &hellip;">
   
 
 
-<time datetime="2013-01-29T20:51:00+09:00" pubdate data-updated="true">Jan 29<span>th</span>, 2013</time></div>
+<time datetime="2013-02-06T01:14:00+09:00" pubdate data-updated="true">Feb 6<span>th</span>, 2013</time></div>
 	
 </div>
 
     <br/>
-    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/01/29/randomtap-uiautomation/" data-text="0.1秒ごとにランダムタップするUIAutomationスクリプト" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/01/29/randomtap-uiautomation/" >Tweet</a>
+    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/02/06/tts/" data-text="ターミナルにTwitterのUser Streamを流す" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/02/06/tts/" >Tweet</a>
     <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
     </article>
 
@@ -169,74 +121,70 @@ var target = UIATarget.localTarget(); function sleep( &hellip;">
     <article class="post">
 	<h2 class="title">
 		
-		<a href="/blog/2013/01/28/universal-static-library-2013/">
+		<a href="/blog/2013/02/05/qiita-hackathon/">
 		
-			Universal Static Libraryのビルド(armv7/armv7s/i386 )</a>
+			Qiita Hackathonに参加しました</a>
 	</h2>
 	<div class="entry-content">
-		<p>最近のUniversal Static Libraryのビルド方法を見かけなかったので、書いておきます。<br/>
-&ldquo;最近の&#8221;と言っても変更点はarmv6がなくなってarmv7sが追加されただけです。</p>
+		<p>テーマはGitHub APIを利用してプログラマーの問題を解決するというものでした。<br/>
+<a href="http://qiitahackathon03.peatix.com">http://qiitahackathon03.peatix.com</a></p>
 
-<h3>概要</h3>
+<p>　</p>
 
-<p>何も難しいことはありません。</p>
+<h3>つくったもの</h3>
 
-<ul>
-<li>実機用にビルド(armv7, armv7s)</li>
-<li>シミュレーター用にビルド(i386)</li>
-<li><code>lipo</code>でくっつける</li>
-<li>必要なヘッダーもコピーする</li>
-</ul>
+<p>Gitのコミット毎に親コミットとのdiffから<code>TODO:</code>や<code>FIXME:</code>というコメントを探し出し、
+それを元に自動的にissueのオープン/クローズを行うツールをつくりました。
+このツールを使うと、<code>TODO:</code>コメントの挿入/削除 = issueのオープン/クローズとなります。
+あまりウケないかなと思っていたのですが、思いの外受け入れてくれた方がいて嬉しかったです。</p>
 
+<h3>スライド</h3>
 
-<h3>実行例</h3>
+<p>GitHubのゲストの方向けに資料は英語で書かれていますが、発表は日本語でした。</p>
 
-<p><a href="https://github.com/johnezang/JSONKit">JSONKit</a>のUniversal Static Libraryを作る例です。</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>xcodebuild -sdk iphoneos -arch armv7 -arch armv7s clean build
-</span><span class='line'>xcodebuild -sdk iphonesimulator -arch i386 clean build
-</span><span class='line'>
-</span><span class='line'>rm -R Product
-</span><span class='line'>mkdir Product/
-</span><span class='line'>
-</span><span class='line'>xcrun lipo -create build/Release-iphonesimulator/libJSONKit.a build/Release-iphoneos/libJSONKit.a -output Product/libJSONKit.a
-</span><span class='line'>cp JSONKit/*.h Product/</span></code></pre></td></tr></table></div></figure>
+<script async class="speakerdeck-embed" data-id="928eba30511601308fcd1231381d555c" data-ratio="1.33333333333333" src="//speakerdeck.com/assets/embed.js"></script>
 
 
-<p>できたものを確認します。</p>
+<p></p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>xcrun -sdk iphoneos lipo -info Product/libJSONKit.a</span></code></pre></td></tr></table></div></figure>
+<p>　</p>
+
+<h3>デモビデオ</h3>
+
+<p>発表のときはその場で実演しました。<br/>
+かなり緊張しました。</p>
+
+<iframe src="http://player.vimeo.com/video/58906330?title=0&amp;byline=0&amp;portrait=0" width="500" height="281" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>
 
 
+<p>(音声はありません。)</p>
 
+<p>　</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>Architectures in the fat file: build/Release-universal/libJSONKit.a are: i386 armv7 armv7s</span></code></pre></td></tr></table></div></figure>
+<h3>実装方法</h3>
 
+<p>いつも通り、Objective-Cで書きました。<br/>
+前後のコミットの取得やdiffの取得にはlibgit2を利用しました。</p>
 
-<p>できてますね。</p>
+<h3>結果</h3>
 
-<h3>補足</h3>
+<p>最優秀賞をいただきました。<br/>
+GitHubのScott Chacon氏にも&#8221;Great Idea&#8221;と褒めていただき、票も入れてくれたそうです。</p>
 
-<p><code>/usr/bin/lipo</code>はarmv7sのことを知らないらしく、<code>lipo -info ...</code>としてもarmv7sとして表示してくれません。
-Xcodeの<code>xcrun -sdk iphoneos lipo</code>ではarmv7sと表示されます。</p>
+<h3>今後</h3>
 
-<h3>参考</h3>
+<p>大変ありがたいことに、もし公開することになったら連絡をくださいと言ってくださった方が数名いました。
+が、現在のコードでは一部の実装が甘かったり、実行環境を整えるのに手間がかかったりするので、
+もう少し磨いてからソースを公開しようと思います。</p>
 
-<ul>
-<li><a href="http://cocoadays.blogspot.jp/2010/11/ios-static-library-4-universal-static.html">[iOS] Static Library (4) Universal Static Library</a></li>
-<li><a href="http://stackoverflow.com/questions/12549489/compile-library-for-armv7s-cputype-12-and-cpusubtype-11">Compile Library for armv7s &ndash; cputype (12) and cpusubtype (11)</a></li>
-</ul>
+<p>連絡先をいただいた方には、公開時にあらためて連絡いたします。</p>
 
+<p>&mdash;</p>
+
+<p>2日目は疲れてしまってほとんどコードが書けませんでしたが、
+なんとか動かせるところまで持って行けてよかったです。
+酔っ払いながら書いた部分が汚くて今の悩みの種となってしまいましたが、
+ハッカソンの夜はとても楽しかったです。</p>
 
 		
 		
@@ -256,12 +204,12 @@ Xcodeの<code>xcrun -sdk iphoneos lipo</code>ではarmv7sと表示されます�
   
 
 
-<time datetime="2013-01-28T12:31:00+09:00" pubdate data-updated="true">Jan 28<span>th</span>, 2013</time></div>
+<time datetime="2013-02-05T00:45:00+09:00" pubdate data-updated="true">Feb 5<span>th</span>, 2013</time></div>
 	
 </div>
 
     <br/>
-    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/01/28/universal-static-library-2013/" data-text="Universal Static Libraryのビルド(armv7/armv7s/i386 )" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/01/28/universal-static-library-2013/" >Tweet</a>
+    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/02/05/qiita-hackathon/" data-text="Qiita Hackathonに参加しました" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/02/05/qiita-hackathon/" >Tweet</a>
     <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
     </article>
 
@@ -269,79 +217,33 @@ Xcodeの<code>xcrun -sdk iphoneos lipo</code>ではarmv7sと表示されます�
     <article class="post">
 	<h2 class="title">
 		
-		<a href="/blog/2013/01/27/uitableview-section-in-storyboard/">
+		<a href="/blog/2013/01/31/notification-center-helper/">
 		
-			StoryboardでUITableViewのセクションのヘッダ/フッタを設定する</a>
+			ISNotificationHelperというのを書いた</a>
 	</h2>
 	<div class="entry-content">
-		<p>StackOverflowで見つけました。<br/>
-おそらく正攻法ではないのですが、面白かったので紹介します。<br/>
-<a href="http://stackoverflow.com/a/11396643">How to Implement Custom Table View Section Headers and Footers with Storyboard</a></p>
+		<p>Mountain LionからOSXにも通知センターが導入されました。</p>
 
-<p>以下のようなStoryboardを組んで<br/>
-<img src="/images/2013-01-27/storyboard.png"></p>
+<p>スクリプトの実行完了時とかに通知したいと思って使い方を調べたのですが、
+どうやらCommand Line ToolからはこのAPIを叩けないようでした。
+なので、Cocoaアプリ(ISNotificationHelper)を常駐させて、Command Line Toolから
+<code>NSDistributedNotification</code>を投げることにしました。</p>
 
-<p>以下のような結果を得られます。<br/>
-<img src="/images/2013-01-27/ss.png"></p>
+<p><a href="https://github.com/ishkawa/ISNotificationHelper">ISNotificationHelper</a></p>
 
-<h2>やり方</h2>
+<h3>使い方</h3>
 
-<ul>
-<li>Storyboardで<code>UITableView</code>にヘッダ用とフッタ用のプロトタイプセルを追加する。<br/>
-Identifierにはそれぞれ<code>Header</code>とか<code>Footer</code>とかを設定します。</li>
-<li><code>tableView:viewForHeaderInSection:</code>で先ほど指定したIdentifierのセルをdequeueします。</li>
-</ul>
+<p>ISNotificationHelper.appを起動しておいて、<code>ISNotification</code>という名前の
+<code>NSDistributedNotification</code>を投げると通知センターに表示されます。
+<code>userInfo</code>に<code>title</code>, <code>subtitle</code>, <code>informativeText</code>を入れると表示内容を設定出来ます。</p>
 
+<p><code>isnotify</code>というツールも同梱していて、以下のコマンドで<code>NSDistributedNotification</code>を投げられます。</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="n">UIView</span> <span class="o">*</span><span class="p">)</span><span class="nf">tableView:</span><span class="p">(</span><span class="n">UITableView</span> <span class="o">*</span><span class="p">)</span><span class="nv">tableView</span> <span class="nf">viewForHeaderInSection:</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nv">section</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">static</span> <span class="n">NSString</span> <span class="o">*</span><span class="n">identifier</span> <span class="o">=</span> <span class="s">@&quot;Header&quot;</span><span class="p">;</span>
-</span><span class='line'>    <span class="n">UITableViewCell</span> <span class="o">*</span><span class="n">headerView</span> <span class="o">=</span> <span class="p">[</span><span class="n">tableView</span> <span class="nl">dequeueReusableCellWithIdentifier:</span><span class="n">identifier</span><span class="p">];</span>
-</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">headerView</span> <span class="o">==</span> <span class="nb">nil</span><span class="p">){</span>
-</span><span class='line'>        <span class="p">[</span><span class="n">NSException</span> <span class="nl">raise:</span><span class="s">@&quot;headerView == nil..&quot;</span> <span class="nl">format:</span><span class="s">@&quot;No cells with matching CellIdentifier loaded from your storyboard&quot;</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>    <span class="k">return</span> <span class="n">headerView</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>isnotify -t title -s subtitle -i informativeText</span></code></pre></td></tr></table></div></figure>
 
 
-<ul>
-<li>高さも指定する場合は<code>tableView:heightForHeaderInSection:</code>も実装します。</li>
-</ul>
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="n">CGFloat</span><span class="p">)</span><span class="nf">tableView:</span><span class="p">(</span><span class="n">UITableView</span> <span class="o">*</span><span class="p">)</span><span class="nv">tableView</span> <span class="nf">heightForHeaderInSection:</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nv">section</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">static</span> <span class="n">NSString</span> <span class="o">*</span><span class="n">identifier</span> <span class="o">=</span> <span class="s">@&quot;Header&quot;</span><span class="p">;</span>
-</span><span class='line'>    <span class="n">UITableViewCell</span> <span class="o">*</span><span class="n">headerView</span> <span class="o">=</span> <span class="p">[</span><span class="n">tableView</span> <span class="nl">dequeueReusableCellWithIdentifier:</span><span class="n">identifier</span><span class="p">];</span>
-</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">headerView</span> <span class="o">==</span> <span class="nb">nil</span><span class="p">){</span>
-</span><span class='line'>        <span class="p">[</span><span class="n">NSException</span> <span class="nl">raise:</span><span class="s">@&quot;headerView == nil..&quot;</span> <span class="nl">format:</span><span class="s">@&quot;No cells with matching CellIdentifier loaded from your storyboard&quot;</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>    <span class="k">return</span> <span class="n">headerView</span><span class="p">.</span><span class="n">frame</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">height</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>そのうち、Storyboardで公式にヘッダが設定できるようになるのかもしれませんが、<br/>
-それまでのつなぎとしては良いのかもしれません。</p>
+<p>全体的に結構雑な作りになっているので、ちゃんと作ってやるぜって方は完成したらおしえてください。</p>
 
 		
 		
@@ -361,12 +263,12 @@ Identifierにはそれぞれ<code>Header</code>とか<code>Footer</code>とか�
   
 
 
-<time datetime="2013-01-27T03:47:00+09:00" pubdate data-updated="true">Jan 27<span>th</span>, 2013</time></div>
+<time datetime="2013-01-31T21:13:00+09:00" pubdate data-updated="true">Jan 31<span>st</span>, 2013</time></div>
 	
 </div>
 
     <br/>
-    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/01/27/uitableview-section-in-storyboard/" data-text="StoryboardでUITableViewのセクションのヘッダ/フッタを設定する" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/01/27/uitableview-section-in-storyboard/" >Tweet</a>
+    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/01/31/notification-center-helper/" data-text="ISNotificationHelperというのを書いた" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/01/31/notification-center-helper/" >Tweet</a>
     <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
     </article>
 

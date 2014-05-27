@@ -7,8 +7,8 @@
 	<meta name="author" content="ishkawa">
 
 	
-	<meta name="description" content="通信用のNSOperationをモック化する 最近書いているアプリでは、ISHTTPOperationという通信用のNSOperationを採用しています。
-使い方はNSURLConnectionのsendAsynchronousRequest:queue:completionHandler: &hellip;">
+	<meta name="description" content="iOSのライブラリにTravis CIを導入する 最近、Travis CIがiOSのビルドに対応したようです。
+Introducing Mac, iOS and RubyMotion Testing on Travis CI なので、早速拙作のISRefreshControlに導入してみました &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -60,15 +60,61 @@
     <article class="post">
 	<h2 class="title">
 		
-		<a href="/blog/2013/03/23/mock-connection/">
+		<a href="/blog/2013/04/14/travis-ci-ios/">
 		
-			通信用のNSOperationをモック化する</a>
+			iOSのライブラリにTravis CIを導入する</a>
 	</h2>
 	<div class="entry-content">
-		<p>最近書いているアプリでは、<code>ISHTTPOperation</code>という通信用の<code>NSOperation</code>を採用しています。<br/>
-使い方は<code>NSURLConnection</code>の<code>sendAsynchronousRequest:queue:completionHandler:</code>と大体同じです。</p>
+		<p>最近、Travis CIがiOSのビルドに対応したようです。<br/>
+<a href="http://about.travis-ci.org/blog/introducing-mac-ios-rubymotion-testing/">Introducing Mac, iOS and RubyMotion Testing on Travis CI</a></p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<p>なので、早速拙作のISRefreshControlに導入してみました。<br/>
+<a href="https://github.com/ishkawa/ISRefreshControl">ISRefreshControl</a></p>
+
+<p><a href="https://travis-ci.org/ishkawa/ISRefreshControl"><img src="https://travis-ci.org/ishkawa/ISRefreshControl.png?branch=master" alt="Build Status" /></a></p>
+
+<h2>導入手順</h2>
+
+<p>驚くほど簡単で、基本的には以下の2つだけで導入完了となります。</p>
+
+<ul>
+<li><code>.travis.yml</code>に<code>language: objective-c</code>と書く</li>
+<li>Travis CI上でリポジトリを選択する</li>
+</ul>
+
+
+<p>デフォルトのビルドスクリプトには<a href="https://github.com/jspahrsummers/objc-build-scripts">objc-build-scripts</a>が採用されているようです。<br/>
+もちろんカスタマイズも可能で、ISRefreshControlではMakefileを書いてそちらを使っています。</p>
+
+<p>依存関係はPodfileを書いておけば自動的に解決されます。<br/>
+CocoaPods以外の方法も<code>.travis.yml</code>にスクリプトを書けば利用できるようです。</p>
+
+<p>詳細は公式ドキュメントを参照してください。<br/>
+<a href="http://about.travis-ci.org/docs/user/languages/objective-c/">Travis CI: Building an Objective-C Project</a></p>
+
+<h3>Podfileを書く</h3>
+
+<p>依存がある場合は書きます。<br/>
+ISRefreshControlはISMethodSwizzlingとKiwiを利用しています。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>pod 'ISMethodSwizzling', :git =&gt; 'https://github.com/ishkawa/ISMethodSwizzling.git'
+</span><span class='line'>
+</span><span class='line'>target :ISRefreshControlTests, :exclusive =&gt; true do
+</span><span class='line'>    pod 'Kiwi', '~&gt; 2.0.6'
+</span><span class='line'>end</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Makefileを書く</h3>
+
+<p>&ldquo;<code>xcodebuild</code>でビルドしてテストを実行してね&#8221;って書きます。<br/>
+<code>GCC_PREPROCESSOR_DEFINITIONS</code>は<code>ISRefreshControl</code>固有のものです。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -76,29 +122,126 @@
 <span class='line-number'>6</span>
 <span class='line-number'>7</span>
 <span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="n">NSURL</span> <span class="o">*</span><span class="n">URL</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSURL</span> <span class="nl">URLWithString:</span><span class="s">@&quot;http://date.jsontest.com&quot;</span><span class="p">];</span>
-</span><span class='line'><span class="n">NSURLRequest</span> <span class="o">*</span><span class="n">request</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSURLRequest</span> <span class="nl">requestWithURL:</span><span class="n">URL</span><span class="p">];</span>
-</span><span class='line'><span class="p">[</span><span class="n">ISHTTPOperation</span> <span class="nl">sendRequest:</span><span class="n">request</span> <span class="nl">handler:</span><span class="o">^</span><span class="p">(</span><span class="n">NSHTTPURLResponse</span> <span class="o">*</span><span class="n">response</span><span class="p">,</span> <span class="kt">id</span> <span class="n">object</span><span class="p">,</span> <span class="n">NSError</span> <span class="o">*</span><span class="n">error</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">error</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="k">return</span><span class="p">;</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>    <span class="c1">// completion</span>
-</span><span class='line'><span class="p">}];</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>test:
+</span><span class='line'>  xcodebuild \
+</span><span class='line'>      -sdk iphonesimulator \
+</span><span class='line'>      -workspace ISRefreshControl.xcworkspace \
+</span><span class='line'>      -scheme ISRefreshControlTests \
+</span><span class='line'>      -configuration Debug \
+</span><span class='line'>      clean build \
+</span><span class='line'>      ONLY_ACTIVE_ARCH=NO \
+</span><span class='line'>      TEST_AFTER_BUILD=YES \
+</span><span class='line'>      GCC_PREPROCESSOR_DEFINITIONS="IS_TEST_FROM_COMMAND_LINE=1"</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>.travis.ymlを書く</h3>
+
+<p><code>script:</code>にmakeを利用するように書きます。<br/>
+<code>script:</code>を書かなければobjc-build-scriptsが利用されます。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>language: objective-c
+</span><span class='line'>script: make test</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>リポジトリを選択する</h3>
+
+<p>Travis CIにGitHubアカウントでログインし、リポジトリのスイッチをオンにします。<br/>
+すると、コミットフックがTravis CIに飛んでいき、自動的にビルドされるようになります。</p>
+
+<p>&mdash;</p>
+
+<p>ビルドログを見る限り、Kiwiのテストも実行されているようです。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Test Suite 'ISRefreshControlSpec' finished at 2013-04-14 07:57:09 +0000.
+</span><span class='line'>Executed 25 tests, with 0 failures (0 unexpected) in 0.318 (0.327) seconds</span></code></pre></td></tr></table></div></figure>
+
+
+<p>以下のようなStatus Imageというよくあるやつも提供されています。</p>
+
+<p><a href="https://travis-ci.org/ishkawa/ISRefreshControl"><img src="https://travis-ci.org/ishkawa/ISRefreshControl.png?branch=master" alt="Build Status" /></a></p>
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-04-14T18:37:00+09:00" pubdate data-updated="true">Apr 14<span>th</span>, 2013</time></div>
+	
+</div>
+
+    <br/>
+    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/04/14/travis-ci-ios/" data-text="iOSのライブラリにTravis CIを導入する" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/04/14/travis-ci-ios/" >Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+    </article>
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2013/03/31/supertest/">
+		
+			supertestでNode.jsのテストを始めました</a>
+	</h2>
+	<div class="entry-content">
+		<p>最近、Node.jsを始めました。</p>
+
+<p>サーバーサイドの経験はほとんどないので色々と新鮮に感じています。<br/>
+クライアントサイドと違ってテストがないとプログラムが動いているかよくわからないのですが、<br/>
+テストってどうやって書くのか全然わかんねーって感じだったのであれこれ模索しました。</p>
+
+<p>その結果、supertestを使ってリクエストとレスポンスの対応をテストすることから始めるのが<br/>
+良さそうかなと思いましたので紹介します。</p>
+
+<p>対象はExpressアプリとします。</p>
+
+<h3>supertestとMochaをインストール</h3>
+
+<p>mochaはなくても使えるのですが、あった方が楽なのでインストールします。<br/>
+mochaについては以下のページが詳しいです。<br/>
+<a href="http://d.hatena.ne.jp/hokaccha/20111202/1322840375">http://d.hatena.ne.jp/hokaccha/20111202/1322840375</a></p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>npm install supertest --save
+</span><span class='line'>npm install -g mocha</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>app.jsをエクスポート</h3>
+
+<p>テストファイルからappにアクセスできるようにエクスポートします。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">module</span><span class="p">.</span><span class="nx">exports</span> <span class="o">=</span> <span class="nx">app</span><span class="p">;</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>で、通信を含む処理のテストを書くとき、完了ハンドラの引数に任意の値を入れたかったりします。<br/>
-なので、<code>ISHTTPOperation</code>をモック化する<code>ISHTTPOperationMockifier</code>というのをつくりました。</p>
+<h3>テストを書く</h3>
 
-<p><a href="https://github.com/ishkawa/ISHTTPOperation">ISHTTPOperation</a><br/>
-<a href="https://github.com/ishkawa/ISHTTPOperationMockifier">ISHTTPOperationMockifier</a></p>
-
-<h3>使い方</h3>
+<p><code>test/</code>以下にテストを書く<code>.js</code>ファイルを作成します。<br/>
+例として以下のような緩い仕様を例にテストを書いてみます。</p>
 
 <ul>
-<li><code>ISHTTPOperationMockifier</code>をつくる</li>
-<li>完了ハンドラに入れたい値を<code>mockifier</code>にセットする</li>
-<li><code>[mockifier mockify]</code></li>
+<li>username/passwordのいずれかが空だと400</li>
+<li>username/passwordの両方があれば200</li>
 </ul>
 
 
@@ -119,29 +262,102 @@
 <span class='line-number'>15</span>
 <span class='line-number'>16</span>
 <span class='line-number'>17</span>
-</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">testSuccessCase</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="n">NSDictionary</span> <span class="o">*</span><span class="n">dictionary</span> <span class="o">=</span>  <span class="err">@</span><span class="p">{</span><span class="s">@&quot;hogeKey&quot;</span><span class="o">:</span> <span class="s">@&quot;hogeValue&quot;</span><span class="p">};</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">var</span> <span class="nx">request</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;supertest&#39;</span><span class="p">);</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">app</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;../app&#39;</span><span class="p">);</span>
 </span><span class='line'>
-</span><span class='line'>    <span class="n">ISHTTPOperationMockifier</span> <span class="o">*</span><span class="n">mockifier</span> <span class="o">=</span> <span class="p">[[</span><span class="n">ISHTTPOperationMockifier</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
-</span><span class='line'>    <span class="n">mockifier</span><span class="p">.</span><span class="n">statusCode</span> <span class="o">=</span> <span class="mi">200</span><span class="p">;</span>
-</span><span class='line'>    <span class="n">mockifier</span><span class="p">.</span><span class="n">object</span> <span class="o">=</span> <span class="n">dictionary</span><span class="p">;</span>
-</span><span class='line'>    <span class="n">mockifier</span><span class="p">.</span><span class="n">error</span> <span class="o">=</span> <span class="nb">nil</span><span class="p">;</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">mockifier</span> <span class="n">mockify</span><span class="p">];</span>
+</span><span class='line'><span class="nx">describe</span><span class="p">(</span><span class="s1">&#39;POST /signup&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">it</span><span class="p">(</span><span class="s1">&#39;returns 400 if username is empty&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">done</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">request</span><span class="p">(</span><span class="nx">app</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">.</span><span class="nx">post</span><span class="p">(</span><span class="s1">&#39;/signup&#39;</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">.</span><span class="nx">expect</span><span class="p">(</span><span class="mi">400</span><span class="p">,</span> <span class="nx">done</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">});</span>
 </span><span class='line'>
-</span><span class='line'>    <span class="p">[</span><span class="n">ISHTTPOperation</span> <span class="nl">sendRequest:</span><span class="n">_request</span> <span class="nl">handler:</span><span class="o">^</span><span class="p">(</span><span class="n">NSHTTPURLResponse</span> <span class="o">*</span><span class="n">response</span><span class="p">,</span> <span class="kt">id</span> <span class="n">object</span><span class="p">,</span> <span class="n">NSError</span> <span class="o">*</span><span class="n">error</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="n">STAssertEqualObjects</span><span class="p">([</span><span class="n">object</span> <span class="nl">objectForKey:</span><span class="s">@&quot;hogeKey&quot;</span><span class="p">],</span> <span class="p">[</span><span class="n">dictionary</span> <span class="nl">objectForKey:</span><span class="s">@&quot;hogeKey&quot;</span><span class="p">],</span> <span class="nb">nil</span><span class="p">);</span>
-</span><span class='line'>        <span class="p">[</span><span class="n">self</span> <span class="n">endWaiting</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">}];</span>
+</span><span class='line'>  <span class="nx">it</span><span class="p">(</span><span class="s1">&#39;returns 400 if password is empty&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">done</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">request</span><span class="p">(</span><span class="nx">app</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">.</span><span class="nx">post</span><span class="p">(</span><span class="s1">&#39;/signup&#39;</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">.</span><span class="nx">expect</span><span class="p">(</span><span class="mi">400</span><span class="p">,</span> <span class="nx">done</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">});</span>
 </span><span class='line'>
-</span><span class='line'>    <span class="p">[</span><span class="n">self</span> <span class="n">beginWaiting</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
+</span><span class='line'>  <span class="nx">it</span><span class="p">(</span><span class="s1">&#39;returns 200 when parameters are valid&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">done</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">request</span><span class="p">(</span><span class="nx">app</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">.</span><span class="nx">post</span><span class="p">(</span><span class="s1">&#39;/signup&#39;</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">.</span><span class="nx">send</span><span class="p">({</span><span class="nx">username</span><span class="o">:</span> <span class="s1">&#39;hoge&#39;</span><span class="p">,</span> <span class="nx">password</span><span class="o">:</span> <span class="s1">&#39;hoge&#39;</span><span class="p">})</span>
+</span><span class='line'>    <span class="p">.</span><span class="nx">expect</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="nx">done</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">});</span>
+</span><span class='line'><span class="p">});</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<h3>仕組み</h3>
+<h3>実行する</h3>
 
-<p><code>mockify</code>の中身は以下のようになっていて、</p>
+<p>mochaコマンドで実行します。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">mocha</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>すると、以下のような感じの出力が得られます。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="mi">3</span> <span class="nx">tests</span> <span class="nx">complete</span> <span class="p">(</span><span class="mi">72</span> <span class="nx">ms</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>　</p>
+
+<p>早くまともにテストを書けるようになりたいものです。</p>
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-03-31T21:54:00+09:00" pubdate data-updated="true">Mar 31<span>st</span>, 2013</time></div>
+	
+</div>
+
+    <br/>
+    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/03/31/supertest/" data-text="supertestでNode.jsのテストを始めました" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/03/31/supertest/" >Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+    </article>
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2013/03/30/mockifier-with-kiwi/">
+		
+			ISHTTPOperationMockifierをKiwiで使う</a>
+	</h2>
+	<div class="entry-content">
+		<p>最近、OCUnit+OCMockからKiwiに乗り換えました。</p>
+
+<p>Kiwiを使えばあらゆる業から逃れられます。<br/>
+つまり、解脱です。</p>
+
+<p>そんなKiwiで<code>ISHTTPOperationMockifier</code>を使ってみました。</p>
+
+<h3>ISViewController.h</h3>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -149,32 +365,16 @@
 <span class='line-number'>4</span>
 <span class='line-number'>5</span>
 <span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">mockify</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">self</span><span class="p">.</span><span class="n">isMockified</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="k">return</span><span class="p">;</span>
-</span><span class='line'>    <span class="p">}</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">@interface</span> <span class="nc">ISViewController</span> : <span class="nc">UIViewController</span>
 </span><span class='line'>
-</span><span class='line'>    <span class="n">Class</span> <span class="n">class</span> <span class="o">=</span> <span class="p">[</span><span class="n">ISHTTPOperation</span> <span class="n">class</span><span class="p">];</span>
-</span><span class='line'>    <span class="n">objc_setAssociatedObject</span><span class="p">(</span><span class="n">class</span><span class="p">,</span> <span class="n">ISHTTPOperationMockStatusCodeKey</span><span class="p">,</span> <span class="err">@</span><span class="p">(</span><span class="n">self</span><span class="p">.</span><span class="n">statusCode</span><span class="p">),</span> <span class="n">OBJC_ASSOCIATION_RETAIN</span><span class="p">);</span>
-</span><span class='line'>    <span class="n">objc_setAssociatedObject</span><span class="p">(</span><span class="n">class</span><span class="p">,</span> <span class="n">ISHTTPOperationMockObjectKey</span><span class="p">,</span> <span class="n">self</span><span class="p">.</span><span class="n">object</span><span class="p">,</span> <span class="n">OBJC_ASSOCIATION_RETAIN</span><span class="p">);</span>
-</span><span class='line'>    <span class="n">objc_setAssociatedObject</span><span class="p">(</span><span class="n">class</span><span class="p">,</span> <span class="n">ISHTTPOperationMockErrorKey</span><span class="p">,</span> <span class="n">self</span><span class="p">.</span><span class="n">error</span><span class="p">,</span> <span class="n">OBJC_ASSOCIATION_RETAIN</span><span class="p">);</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">refresh</span><span class="p">;</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">insertObjectsWithData:</span><span class="p">(</span><span class="n">NSData</span> <span class="o">*</span><span class="p">)</span><span class="nv">data</span><span class="p">;</span>
 </span><span class='line'>
-</span><span class='line'>    <span class="n">ISSwizzleInstanceMethod</span><span class="p">(</span><span class="n">class</span><span class="p">,</span> <span class="k">@selector</span><span class="p">(</span><span class="n">main</span><span class="p">),</span> <span class="k">@selector</span><span class="p">(</span><span class="n">_main</span><span class="p">));</span>
-</span><span class='line'>    <span class="n">self</span><span class="p">.</span><span class="n">mockified</span> <span class="o">=</span> <span class="n">YES</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="k">@end</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p><code>ISHTTPOperation</code>の<code>main</code>が以下のものに差し替えられます。</p>
+<h3>ISViewController.m</h3>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -194,52 +394,12 @@
 <span class='line-number'>16</span>
 <span class='line-number'>17</span>
 <span class='line-number'>18</span>
-</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">_main</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="n">dispatch_async</span><span class="p">(</span><span class="n">dispatch_get_main_queue</span><span class="p">(),</span> <span class="o">^</span><span class="p">{</span>
-</span><span class='line'>        <span class="n">Class</span> <span class="n">class</span> <span class="o">=</span> <span class="p">[</span><span class="n">ISHTTPOperation</span> <span class="n">class</span><span class="p">];</span>
-</span><span class='line'>        <span class="n">NSInteger</span> <span class="n">statusCode</span> <span class="o">=</span> <span class="p">[</span><span class="n">objc_getAssociatedObject</span><span class="p">(</span><span class="n">class</span><span class="p">,</span> <span class="n">ISHTTPOperationMockStatusCodeKey</span><span class="p">)</span> <span class="n">integerValue</span><span class="p">];</span>
-</span><span class='line'>        <span class="kt">id</span> <span class="n">object</span> <span class="o">=</span> <span class="n">objc_getAssociatedObject</span><span class="p">(</span><span class="n">class</span><span class="p">,</span> <span class="n">ISHTTPOperationMockObjectKey</span><span class="p">);</span>
-</span><span class='line'>        <span class="n">NSError</span> <span class="o">*</span><span class="n">error</span> <span class="o">=</span> <span class="n">objc_getAssociatedObject</span><span class="p">(</span><span class="n">class</span><span class="p">,</span> <span class="n">ISHTTPOperationMockErrorKey</span><span class="p">);</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">@implementation</span> <span class="nc">ISViewController</span>
 </span><span class='line'>
-</span><span class='line'>        <span class="n">NSHTTPURLResponse</span> <span class="o">*</span><span class="n">response</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSHTTPURLResponse</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithURL:</span><span class="n">self</span><span class="p">.</span><span class="n">request</span><span class="p">.</span><span class="n">URL</span>
-</span><span class='line'>                                                                  <span class="nl">statusCode:</span><span class="n">statusCode</span>
-</span><span class='line'>                                                                 <span class="nl">HTTPVersion:</span><span class="s">@&quot;1.1&quot;</span>
-</span><span class='line'>                                                                <span class="nl">headerFields:</span><span class="nb">nil</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="n">self</span><span class="p">.</span><span class="n">handler</span><span class="p">(</span><span class="n">response</span><span class="p">,</span> <span class="n">object</span><span class="p">,</span> <span class="n">error</span><span class="p">);</span>
-</span><span class='line'>    <span class="p">});</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="p">[</span><span class="n">self</span> <span class="n">completeOperation</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>通信をする部分を、予めセットした値を引数とするハンドラの実行にすり替えたわけです。<br/>
-このすり替えは、<code>ISHTTPOperationMockifier</code>が生存している間のみ有効です。</p>
-
-<h3>実際の例</h3>
-
-<p>ViewControllerに以下のような処理があったとします。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">refresh</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">refresh</span>
 </span><span class='line'><span class="p">{</span>
 </span><span class='line'>    <span class="n">NSURL</span> <span class="o">*</span><span class="n">URL</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSURL</span> <span class="nl">URLWithString:</span><span class="s">@&quot;http://date.jsontest.com&quot;</span><span class="p">];</span>
 </span><span class='line'>    <span class="n">NSURLRequest</span> <span class="o">*</span><span class="n">request</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSURLRequest</span> <span class="nl">requestWithURL:</span><span class="n">URL</span><span class="p">];</span>
@@ -256,10 +416,12 @@
 </span><span class='line'><span class="p">{</span>
 </span><span class='line'>    <span class="c1">// NSManagedObjectをつくったりする</span>
 </span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>これに対して以下のようなテストを書くことができます。</p>
+<h3>ISViewControllerSpec.m</h3>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -300,50 +462,75 @@
 <span class='line-number'>37</span>
 <span class='line-number'>38</span>
 <span class='line-number'>39</span>
-</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">testUpdateData</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="n">NSData</span> <span class="o">*</span><span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="s">@&quot;hoge&quot;</span> <span class="nl">dataUsingEncoding:</span><span class="n">NSUTF8StringEncoding</span><span class="p">];</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="cp">#import &quot;Kiwi.h&quot;</span>
+</span><span class='line'><span class="cp">#import &quot;ISViewController.h&quot;</span>
 </span><span class='line'>
-</span><span class='line'>    <span class="n">ISHTTPOperationMockifier</span> <span class="o">*</span><span class="n">mockifier</span> <span class="o">=</span> <span class="p">[[</span><span class="n">ISHTTPOperationMockifier</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
-</span><span class='line'>    <span class="n">mockifier</span><span class="p">.</span><span class="n">statusCode</span> <span class="o">=</span> <span class="mi">200</span><span class="p">;</span>
-</span><span class='line'>    <span class="n">mockifier</span><span class="p">.</span><span class="n">object</span> <span class="o">=</span> <span class="n">data</span><span class="p">;</span>
-</span><span class='line'>    <span class="n">mockifier</span><span class="p">.</span><span class="n">error</span> <span class="o">=</span> <span class="nb">nil</span><span class="p">;</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">mockifier</span> <span class="n">mockify</span><span class="p">];</span>
+</span><span class='line'><span class="n">SPEC_BEGIN</span><span class="p">(</span><span class="n">ISViewControllerSpec</span><span class="p">)</span>
 </span><span class='line'>
-</span><span class='line'>    <span class="kt">id</span> <span class="n">mock</span> <span class="o">=</span> <span class="p">[</span><span class="n">OCMockObject</span> <span class="nl">partialmockiforObject:</span><span class="n">_viewController</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">[[</span><span class="n">mock</span> <span class="n">expect</span><span class="p">]</span> <span class="nl">insertObjectsWithData:</span><span class="p">[</span><span class="n">OCMArg</span> <span class="n">any</span><span class="p">]];</span>
+</span><span class='line'><span class="n">describe</span><span class="p">(</span><span class="s">@&quot;ISViewController&quot;</span><span class="p">,</span> <span class="o">^</span><span class="p">{</span>
+</span><span class='line'>    <span class="n">__block</span> <span class="n">ISViewController</span> <span class="o">*</span><span class="n">viewController</span><span class="p">;</span>
 </span><span class='line'>
-</span><span class='line'>    <span class="p">[</span><span class="n">_viewController</span> <span class="n">refresh</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">[[</span><span class="n">NSRunLoop</span> <span class="n">currentRunLoop</span><span class="p">]</span> <span class="nl">runUntilDate:</span><span class="p">[</span><span class="n">NSDate</span> <span class="nl">dateWithTimeIntervalSinceNow:</span><span class="mf">.1</span><span class="p">]];</span>
+</span><span class='line'>    <span class="n">beforeEach</span><span class="p">(</span><span class="o">^</span><span class="p">{</span>
+</span><span class='line'>        <span class="n">viewController</span> <span class="o">=</span> <span class="p">[[</span><span class="n">ISViewController</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">});</span>
 </span><span class='line'>
-</span><span class='line'>    <span class="n">STAssertNoThrow</span><span class="p">([</span><span class="n">mock</span> <span class="n">verify</span><span class="p">],</span> <span class="nb">nil</span><span class="p">);</span>
-</span><span class='line'><span class="p">}</span>
+</span><span class='line'>    <span class="n">context</span><span class="p">(</span><span class="s">@&quot;when succeeded refreshing&quot;</span><span class="p">,</span> <span class="o">^</span><span class="p">{</span>
+</span><span class='line'>        <span class="n">ISHTTPOperationMockifier</span> <span class="o">*</span><span class="n">mockifier</span> <span class="o">=</span> <span class="p">[[</span><span class="n">ISHTTPOperationMockifier</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'>        <span class="n">mockifier</span><span class="p">.</span><span class="n">statusCode</span> <span class="o">=</span> <span class="mi">200</span><span class="p">;</span>
+</span><span class='line'>        <span class="n">mockifier</span><span class="p">.</span><span class="n">object</span> <span class="o">=</span> <span class="p">[</span><span class="s">@&quot;data&quot;</span> <span class="nl">dataUsingEncoding:</span><span class="n">NSUTF8StringEncoding</span><span class="p">];</span>
 </span><span class='line'>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">testFailUpdatingData</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="n">NSError</span> <span class="o">*</span><span class="n">mockError</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSError</span> <span class="nl">errorWithDomain:</span><span class="s">@&quot;ISHTTPOperationDomain&quot;</span>
-</span><span class='line'>                                             <span class="nl">code:</span><span class="o">-</span><span class="mi">1234</span>
-</span><span class='line'>                                         <span class="nl">userInfo:</span><span class="nb">nil</span><span class="p">];</span>
+</span><span class='line'>        <span class="n">beforeEach</span><span class="p">(</span><span class="o">^</span><span class="p">{</span>
+</span><span class='line'>            <span class="p">[</span><span class="n">mockifier</span> <span class="n">mockify</span><span class="p">];</span>
+</span><span class='line'>        <span class="p">});</span>
+</span><span class='line'>        <span class="n">afterEach</span><span class="p">(</span><span class="o">^</span><span class="p">{</span>
+</span><span class='line'>            <span class="p">[</span><span class="n">mockifier</span> <span class="n">unmockify</span><span class="p">];</span>
+</span><span class='line'>        <span class="p">});</span>
 </span><span class='line'>
-</span><span class='line'>    <span class="n">ISHTTPOperationMockifier</span> <span class="o">*</span><span class="n">mockifier</span> <span class="o">=</span> <span class="p">[[</span><span class="n">ISHTTPOperationMockifier</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
-</span><span class='line'>    <span class="n">mockifier</span><span class="p">.</span><span class="n">statusCode</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-</span><span class='line'>    <span class="n">mockifier</span><span class="p">.</span><span class="n">object</span> <span class="o">=</span> <span class="nb">nil</span><span class="p">;</span>
-</span><span class='line'>    <span class="n">mockifier</span><span class="p">.</span><span class="n">error</span> <span class="o">=</span> <span class="n">mockError</span><span class="p">;</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">mockifier</span> <span class="n">mockify</span><span class="p">];</span>
+</span><span class='line'>        <span class="n">it</span><span class="p">(</span><span class="s">@&quot;invokes insertObjectsWithData&quot;</span><span class="p">,</span> <span class="o">^</span><span class="p">{</span>
+</span><span class='line'>            <span class="p">[[</span><span class="n">viewController</span> <span class="n">shouldEventually</span><span class="p">]</span> <span class="nl">receive:</span><span class="k">@selector</span><span class="p">(</span><span class="nl">insertObjectsWithData:</span><span class="p">)];</span>
+</span><span class='line'>            <span class="p">[</span><span class="n">viewController</span> <span class="n">refresh</span><span class="p">];</span>
+</span><span class='line'>        <span class="p">});</span>
+</span><span class='line'>    <span class="p">});</span>
 </span><span class='line'>
-</span><span class='line'>    <span class="kt">id</span> <span class="n">mock</span> <span class="o">=</span> <span class="p">[</span><span class="n">OCMockObject</span> <span class="nl">partialmockiforObject:</span><span class="n">_viewController</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">[[</span><span class="n">mock</span> <span class="n">expect</span><span class="p">]</span> <span class="nl">insertObjectsWithData:</span><span class="p">[</span><span class="n">OCMArg</span> <span class="n">any</span><span class="p">]];</span>
+</span><span class='line'>    <span class="n">context</span><span class="p">(</span><span class="s">@&quot;when failed refreshing&quot;</span><span class="p">,</span> <span class="o">^</span><span class="p">{</span>
+</span><span class='line'>        <span class="n">ISHTTPOperationMockifier</span> <span class="o">*</span><span class="n">mockifier</span> <span class="o">=</span> <span class="p">[[</span><span class="n">ISHTTPOperationMockifier</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'>        <span class="n">mockifier</span><span class="p">.</span><span class="n">error</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSError</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
 </span><span class='line'>
-</span><span class='line'>    <span class="p">[</span><span class="n">_viewController</span> <span class="n">refresh</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">[[</span><span class="n">NSRunLoop</span> <span class="n">currentRunLoop</span><span class="p">]</span> <span class="nl">runUntilDate:</span><span class="p">[</span><span class="n">NSDate</span> <span class="nl">dateWithTimeIntervalSinceNow:</span><span class="mf">.1</span><span class="p">]];</span>
+</span><span class='line'>        <span class="n">beforeEach</span><span class="p">(</span><span class="o">^</span><span class="p">{</span>
+</span><span class='line'>            <span class="p">[</span><span class="n">mockifier</span> <span class="n">mockify</span><span class="p">];</span>
+</span><span class='line'>        <span class="p">});</span>
+</span><span class='line'>        <span class="n">afterEach</span><span class="p">(</span><span class="o">^</span><span class="p">{</span>
+</span><span class='line'>            <span class="p">[</span><span class="n">mockifier</span> <span class="n">unmockify</span><span class="p">];</span>
+</span><span class='line'>        <span class="p">});</span>
 </span><span class='line'>
-</span><span class='line'>    <span class="n">STAssertThrows</span><span class="p">([</span><span class="n">mock</span> <span class="n">verify</span><span class="p">],</span> <span class="nb">nil</span><span class="p">);</span>
-</span><span class='line'><span class="p">}</span>
+</span><span class='line'>        <span class="n">it</span><span class="p">(</span><span class="s">@&quot;does not invoke insertObjectsWithData&quot;</span><span class="p">,</span> <span class="o">^</span><span class="p">{</span>
+</span><span class='line'>            <span class="p">[[</span><span class="n">viewController</span> <span class="n">shouldNot</span><span class="p">]</span> <span class="nl">receive:</span><span class="k">@selector</span><span class="p">(</span><span class="nl">insertObjectsWithData:</span><span class="p">)];</span>
+</span><span class='line'>            <span class="p">[</span><span class="n">viewController</span> <span class="n">refresh</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>            <span class="c1">// wait a moment</span>
+</span><span class='line'>            <span class="p">[[</span><span class="n">NSRunLoop</span> <span class="n">currentRunLoop</span><span class="p">]</span> <span class="nl">runUntilDate:</span><span class="p">[</span><span class="n">NSDate</span> <span class="nl">dateWithTimeIntervalSinceNow:</span><span class="mf">0.1</span><span class="p">]];</span>
+</span><span class='line'>        <span class="p">});</span>
+</span><span class='line'>    <span class="p">});</span>
+</span><span class='line'><span class="p">});</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">SPEC_END</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>1個目は通信成功時に<code>insertObjectsWithData:</code>が呼ばれるテストで、<br/>
-2個めは通信失敗時に<code>insertObjectsWithData:</code>が呼ばれないテストです。</p>
+
 
 		
 		
@@ -363,274 +550,12 @@
   
 
 
-<time datetime="2013-03-23T18:37:00+09:00" pubdate data-updated="true">Mar 23<span>rd</span>, 2013</time></div>
+<time datetime="2013-03-30T12:34:00+09:00" pubdate data-updated="true">Mar 30<span>th</span>, 2013</time></div>
 	
 </div>
 
     <br/>
-    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/03/23/mock-connection/" data-text="通信用のNSOperationをモック化する" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/03/23/mock-connection/" >Tweet</a>
-    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
-    </article>
-
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2013/03/21/dispatch-release-ios6/">
-		
-			iOS6(ARC)でのGCDのメモリ管理</a>
-	</h2>
-	<div class="entry-content">
-		<p>Deployment TargetがiOS6.0以上の場合、GCDのオブジェクトもARCの管轄下になるらしいです。　　
-以下のStack Overflowによると<code>&lt;os/object.h&gt;</code>というヘッダに書かれているそうです。<br/>
-<a href="http://stackoverflow.com/questions/13702701/why-is-arc-complaining-about-dispatch-queue-create-and-dispatch-release-in-ios-6">Why is ARC complaining about dispatch_queue_create and dispatch_release in iOS 6?</a></p>
-
-<p>これが適用される場合には<code>dispatch_release</code>などに対してXcodeが警告を出してくれます。</p>
-
-<p>で、GCDのオブジェクトをプロパティとして持つ場合にどうしたらいいのか、<br/>
-ちょっと迷ったので、<code>dispatch_semaphore_t</code>を例に書いておきます。</p>
-
-<h3>Deployment Targetが6.0未満の場合</h3>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">@interface</span> <span class="nc">ISHoge</span> <span class="p">()</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">,</span> <span class="n">assign</span><span class="p">)</span> <span class="n">dispatch_semaphore_t</span> <span class="n">semaphore</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@end</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@implementation</span> <span class="nc">ISHTTPOperation</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nf">init</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="n">self</span> <span class="o">=</span> <span class="p">[</span><span class="n">super</span> <span class="n">init</span><span class="p">];</span>
-</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">self</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="n">_semaphore</span> <span class="o">=</span> <span class="n">dispatch_semaphore_create</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>    <span class="k">return</span> <span class="n">self</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">dealloc</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="n">dispatch_release</span><span class="p">(</span><span class="n">_semaphore</span><span class="p">);</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>Deployment Targetが6.0以上の場合</h3>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">@interface</span> <span class="nc">ISHoge</span> <span class="p">()</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">,</span> <span class="n">strong</span><span class="p">)</span> <span class="n">dispatch_semaphore_t</span> <span class="n">semaphore</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@end</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@implementation</span> <span class="nc">ISHoge</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nf">init</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="n">self</span> <span class="o">=</span> <span class="p">[</span><span class="n">super</span> <span class="n">init</span><span class="p">];</span>
-</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">self</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="n">_semaphore</span> <span class="o">=</span> <span class="n">dispatch_semaphore_create</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>    <span class="k">return</span> <span class="n">self</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>どっちでも大丈夫にしたい場合</h3>
-
-<p>ライブラリをつくったりする場合です。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">@interface</span> <span class="nc">ISHoge</span> <span class="p">()</span>
-</span><span class='line'>
-</span><span class='line'><span class="cp">#if OS_OBJECT_USE_OBJC</span>
-</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">,</span> <span class="n">strong</span><span class="p">)</span> <span class="n">dispatch_semaphore_t</span> <span class="n">semaphore</span><span class="p">;</span>
-</span><span class='line'><span class="cp">#else</span>
-</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">,</span> <span class="n">assign</span><span class="p">)</span> <span class="n">dispatch_semaphore_t</span> <span class="n">semaphore</span><span class="p">;</span>
-</span><span class='line'><span class="cp">#endif</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@end</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@implementation</span> <span class="nc">ISHoge</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nf">init</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="n">self</span> <span class="o">=</span> <span class="p">[</span><span class="n">super</span> <span class="n">init</span><span class="p">];</span>
-</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">self</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="n">_semaphore</span> <span class="o">=</span> <span class="n">dispatch_semaphore_create</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>    <span class="k">return</span> <span class="n">self</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">dealloc</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'><span class="cp">#if !OS_OBJECT_USE_OBJC</span>
-</span><span class='line'>    <span class="n">dispatch_release</span><span class="p">(</span><span class="n">self</span><span class="p">.</span><span class="n">semaphore</span><span class="p">);</span>
-</span><span class='line'><span class="cp">#endif</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>　</p>
-
-<p>間違ってたら教えてください。</p>
-
-<h4>追記(3/22)</h4>
-
-<p>Twitterで@nakiwo さんに<code>OS_OBJECT_USE_OBJC</code>を教えて頂きました。</p>
-
-<blockquote class="twitter-tweet" data-conversation="none" lang="ja"><p>@<a href="https://twitter.com/akisutesama">akisutesama</a> @<a href="https://twitter.com/_ishkawa">_ishkawa</a> この挙動、OS_OBJECT_USE_OBJC マクロで制御可能です</p>&mdash; Yuichi Fujishigeさん (@nakiwo) <a href="https://twitter.com/nakiwo/status/314770719257006081">2013年3月21日</a></blockquote>
-
-
-<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
-
-
-<p>こちらのほうが<code>__IPHONE_OS_VERSION_MIN_REQUIRED</code>より適切ですので、<br/>
-<code>__IPHONE_OS_VERSION_MIN_REQUIRED &lt; 60000</code>としていたところを<br/>
-<code>OS_OBJECT_USE_OBJC</code>に
-置き換えました。</p>
-
-<h4>さらに追記</h4>
-
-<p><code>#ifdef</code>ではなく<code>#if</code>に修正しました。</p>
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-03-21T20:30:00+09:00" pubdate data-updated="true">Mar 21<span>st</span>, 2013</time></div>
-	
-</div>
-
-    <br/>
-    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/03/21/dispatch-release-ios6/" data-text="iOS6(ARC)でのGCDのメモリ管理" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/03/21/dispatch-release-ios6/" >Tweet</a>
-    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
-    </article>
-
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2013/03/13/bundle-in-logic-tests/">
-		
-			OCUnitのLogic Testsではできないこと</a>
-	</h2>
-	<div class="entry-content">
-		<ul>
-<li><code>[UIApplication sharedApplication]</code>が絡むテスト</li>
-<li><code>[NSBundle mainBundle]</code>が絡むテスト</li>
-<li>ドキュメントディレクトリへのアクセスが絡むテスト</li>
-</ul>
-
-
-<p>いずれもApplication Testsでは可能です。</p>
-
-<p>Logic Testsはアプリとは独立して実行されるから不可能で、
-Application Testsはアプリの中で実行されるから可能というのは当然なのですが、
-それがわからずにモヤモヤしたこともありました。</p>
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-03-13T23:46:00+09:00" pubdate data-updated="true">Mar 13<span>th</span>, 2013</time></div>
-	
-</div>
-
-    <br/>
-    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/03/13/bundle-in-logic-tests/" data-text="OCUnitのLogic Testsではできないこと" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/03/13/bundle-in-logic-tests/" >Tweet</a>
+    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/03/30/mockifier-with-kiwi/" data-text="ISHTTPOperationMockifierをKiwiで使う" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/03/30/mockifier-with-kiwi/" >Tweet</a>
     <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
     </article>
 

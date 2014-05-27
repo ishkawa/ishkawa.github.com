@@ -7,9 +7,8 @@
 	<meta name="author" content="ishkawa">
 
 	
-	<meta name="description" content="iCloudのリマインダーを利用してみる Mac版のリマインダーがどうしても邪魔になってしまう人(自分)のために、remindコマンドをつくりました。
-閲覧はiPadが担当するので、投稿専用です。 GitHub: ishkawa/remind 1
-remind "項目名" ソース(OS X) 1 &hellip;">
+	<meta name="description" content="lsでVimのバックアップファイルを非表示にする 最近転職しました。 転職とは関係ないのですが、最近はObjective-C以外の開発もしていてVimを使う機会が増えました。
+で、Vimでコードを書くと*~というファイルがたくさん出ててきてつらい気持ちになってしまうので、 &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -61,21 +60,216 @@ remind "項目名" ソース(OS X) 1 &hellip;">
     <article class="post">
 	<h2 class="title">
 		
-		<a href="/blog/2012/11/28/ekreminder/">
+		<a href="/blog/2013/01/20/ls-hide-vim-backup-file/">
 		
-			iCloudのリマインダーを利用してみる</a>
+			lsでVimのバックアップファイルを非表示にする</a>
 	</h2>
 	<div class="entry-content">
-		<p>Mac版のリマインダーがどうしても邪魔になってしまう人(自分)のために、<code>remind</code>コマンドをつくりました。<br/>
-閲覧はiPadが担当するので、投稿専用です。</p>
+		<p>最近転職しました。</p>
 
-<p><a href="https://github.com/ishkawa/remind">GitHub: ishkawa/remind</a></p>
+<p>転職とは関係ないのですが、最近はObjective-C以外の開発もしていてVimを使う機会が増えました。
+で、Vimでコードを書くと<code>*~</code>というファイルがたくさん出ててきてつらい気持ちになってしまうので、
+<code>ls</code>コマンドの結果から取り除く方法を調べました。</p>
+
+<p>Stack Overflowで以下の様な投稿をみつけました。<br/>
+<a href="http://stackoverflow.com/a/6011437">Can I put something in in bashrc to hide text editor (~ extension) files?</a></p>
+
+<h3>設定方法</h3>
+
+<p>どうやらMacの<code>ls</code>というのはGNUの<code>ls</code>と違うらしいので、GNUの方の<code>ls</code>をインストールします。
+その他諸々のコマンドも入り、<code>g</code>プレフィックスをつけるとそちらが使えるようです。
+<code>gls</code>は<code>ls</code>とオプションがいくらか異なり、<code>-B</code>の意味が違ったり<code>--hide</code>などが追加されていたりします。</p>
 
 <figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>remind "項目名"</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class=''><span class='line'>brew install coreutils</span></code></pre></td></tr></table></div></figure>
 
 
-<h3>ソース(OS X)</h3>
+<p><code>~/.zshrc</code>で以下のようなエイリアスを設定します。(bashの方は<code>~/bashrc</code>です。)</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>alias ls='/usr/local/bin/gls -B'</span></code></pre></td></tr></table></div></figure>
+
+
+<p><code>-a</code>オプションとかをつけたときにはバックアップファイルも表示したい場合、以下のようにします。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>alias ls="/usr/local/bin/gls --hide='*~'"</span></code></pre></td></tr></table></div></figure>
+
+
+<p>以上でおしまいです。</p>
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-01-20T23:23:00+09:00" pubdate data-updated="true">Jan 20<span>th</span>, 2013</time></div>
+	
+</div>
+
+    <br/>
+    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2013/01/20/ls-hide-vim-backup-file/" data-text="lsでVimのバックアップファイルを非表示にする" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2013/01/20/ls-hide-vim-backup-file/" >Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+    </article>
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2012/12/13/ios5-refreshcontrol/">
+		
+			iOS5で動作するUIRefreshControlのライブラリをつくったときの話</a>
+	</h2>
+	<div class="entry-content">
+		<p>先日、iOS5でも動作する<code>UIRefreshControl</code>と銘打った<code>ISRefreshControl</code>というライブラリを公開しました。
+今回は<code>ISRefreshControl</code>でやっていることについて、簡単に解説したいと思います。</p>
+
+<p>詳細には踏み入らずにアイディアとコアのコードだけを書きますので、
+アプリに組み込む場合にはGitHubに上がっているものを利用することをおすすめします。</p>
+
+<p><a href="https://github.com/ishkawa/ISRefreshControl">ISRefreshControl</a></p>
+
+<p>&mdash;</p>
+
+<h3>基本方針</h3>
+
+<ul>
+<li>iOS6: 本物の<code>UIRefreshControl</code>として動作する。</li>
+<li>iOS5: <code>UIRefreshControl</code>の真似をする。</li>
+</ul>
+
+
+<h3>使い方</h3>
+
+<p><code>UIRefreshControl</code>と概ね同じ使い方ができます。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="n">UIScrollView</span> <span class="o">*</span><span class="n">scrollView</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UIScrollView</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'><span class="n">ISRefreshControl</span> <span class="o">*</span><span class="n">refreshControl</span> <span class="o">=</span> <span class="p">[[</span><span class="n">ISRefreshControl</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'><span class="p">[</span><span class="n">scrollView</span> <span class="nl">addSubview:</span><span class="n">refreshControl</span><span class="p">];</span>
+</span><span class='line'><span class="p">[</span><span class="n">refreshControl</span> <span class="nl">addTarget:</span><span class="n">self</span>
+</span><span class='line'>                   <span class="nl">action:</span><span class="k">@selector</span><span class="p">(</span><span class="n">refresh</span><span class="p">)</span>
+</span><span class='line'>         <span class="nl">forControlEvents:</span><span class="n">UIControlEventValueChanged</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>または</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="n">self</span><span class="p">.</span><span class="n">refreshControl</span> <span class="o">=</span> <span class="p">(</span><span class="kt">id</span><span class="p">)[[</span><span class="n">ISRefreshControl</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'><span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">refreshControl</span> <span class="nl">addTarget:</span><span class="n">self</span>
+</span><span class='line'>                        <span class="nl">action:</span><span class="k">@selector</span><span class="p">(</span><span class="n">refresh</span><span class="p">)</span>
+</span><span class='line'>              <span class="nl">forControlEvents:</span><span class="n">UIControlEventValueChanged</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>実現するためにやったこと</h3>
+
+<ul>
+<li>iOS5のときだけ<code>UITableViewController</code>に<code>refreshControl</code>プロパティを生やす。</li>
+<li>superviewとなる<code>UIScrollView</code>の<code>contentOffset</code>をキー値監視して、閾値を超えたら<code>UIControlEventValueChanged</code>を送る。</li>
+<li><code>contentOffset</code>に応じてびよーんってなるやつを頑張って描画する。</li>
+</ul>
+
+
+<h2>iOS6では<code>UIRefreshControl</code>として動作させる</h2>
+
+<p><code>+ (id)alloc</code>内で<code>UIRefreshControl</code>クラスの存在を判定し、存在すれば<code>UIRefreshControl</code>のインスタンスを、
+存在しなければ<code>ISRefreshControl</code>のインスタンスを返すようにしました。</p>
+
+<p>ISRefreshControl</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">+</span> <span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nf">alloc</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">([</span><span class="n">UIRefreshControl</span> <span class="n">class</span><span class="p">])</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="p">(</span><span class="kt">id</span><span class="p">)[</span><span class="n">UIRefreshControl</span> <span class="n">alloc</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="k">return</span> <span class="p">[</span><span class="n">super</span> <span class="n">alloc</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2><code>contentOffset</code>をキー値監視する</h2>
+
+<p><code>UIRefreshControl</code>は<code>UIScrollView</code>に追加されるとスクロール量に応じて<code>UIControlEventValueChanged</code>を発火させます。
+これを再現するには<code>superview</code>の<code>contentOffset</code>をキー値監視する必要があります。
+適切にキー値監視を開始/終了させるため、<code>superview</code>に追加されたときにキー値監視を開始し、
+<code>superview</code>から削除された時にキー値監視を終了させます。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">willMoveToSuperview:</span><span class="p">(</span><span class="n">UIView</span> <span class="o">*</span><span class="p">)</span><span class="nv">newSuperview</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">([</span><span class="n">self</span><span class="p">.</span><span class="n">superview</span> <span class="nl">isKindOfClass:</span><span class="p">[</span><span class="n">UIScrollView</span> <span class="n">class</span><span class="p">]])</span> <span class="p">{</span>
+</span><span class='line'>        <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">superview</span> <span class="nl">removeObserver:</span><span class="n">self</span> <span class="nl">forKeyPath:</span><span class="s">@&quot;contentOffset&quot;</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">didMoveToSuperview</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">([</span><span class="n">self</span><span class="p">.</span><span class="n">superview</span> <span class="nl">isKindOfClass:</span><span class="p">[</span><span class="n">UIScrollView</span> <span class="n">class</span><span class="p">]])</span> <span class="p">{</span>
+</span><span class='line'>        <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">superview</span> <span class="nl">addObserver:</span><span class="n">self</span> <span class="nl">forKeyPath:</span><span class="s">@&quot;contentOffset&quot;</span> <span class="nl">options:</span><span class="mi">0</span> <span class="nl">context:</span><span class="nb">NULL</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="n">self</span><span class="p">.</span><span class="n">frame</span> <span class="o">=</span> <span class="n">CGRectMake</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">50</span><span class="p">,</span> <span class="n">self</span><span class="p">.</span><span class="n">superview</span><span class="p">.</span><span class="n">frame</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">width</span><span class="p">,</span> <span class="mi">50</span><span class="p">);</span>
+</span><span class='line'>        <span class="n">self</span><span class="p">.</span><span class="n">autoresizingMask</span> <span class="o">=</span> <span class="n">UIViewAutoresizingFlexibleWidth</span><span class="p">;</span>
+</span><span class='line'>        <span class="p">[</span><span class="n">self</span> <span class="n">setNeedsLayout</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><code>UIRefreshControl</code>を上部に配置させるため、<code>didMoveToSuperview</code>で<code>frame</code>を適当に設定しています。</p>
+
+<h2>びよーんってなるやつを描画する</h2>
+
+<p><code>ISRefreshControl</code>はびよーんってなるViewを別のクラス(<code>ISGumView</code>)で実装しています。
+<code>contentOffset</code>の変更毎にこのViewの<code>setNeedsLayout</code>を呼び、
+drawRectでスクロール量に応じたものを<code>CGPath</code>で描画します。</p>
+
+<p><code>mainRadius</code>は&#8221;びよーん&#8221;の上部の丸の半径、<code>subRadius</code>は下部の丸の半径を表しています。</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -114,50 +308,73 @@ remind "項目名" ソース(OS X) 1 &hellip;">
 <span class='line-number'>35</span>
 <span class='line-number'>36</span>
 <span class='line-number'>37</span>
-</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="cp">#import &lt;Foundation/Foundation.h&gt;</span>
-</span><span class='line'><span class="cp">#import &lt;EventKit/EventKit.h&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">NSString</span> <span class="o">*</span><span class="k">const</span> <span class="n">kCalendarTitle</span> <span class="o">=</span> <span class="s">@&quot;Reminder&quot;</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span> <span class="n">argv</span><span class="p">[])</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">drawRect:</span><span class="p">(</span><span class="n">CGRect</span><span class="p">)</span><span class="nv">rect</span>
 </span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="err">@</span><span class="n">autoreleasepool</span> <span class="p">{</span>
-</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="n">argc</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>            <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;usage: remind </span><span class="se">\&quot;</span><span class="s">title of task</span><span class="se">\&quot;</span><span class="s">&quot;</span><span class="p">);</span>
-</span><span class='line'>            <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
-</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>    <span class="p">...</span>
 </span><span class='line'>
-</span><span class='line'>        <span class="n">EKEventStore</span> <span class="o">*</span><span class="n">store</span> <span class="o">=</span> <span class="p">[[</span><span class="n">EKEventStore</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithAccessToEntityTypes:</span><span class="n">EKEntityMaskReminder</span><span class="p">];</span>
-</span><span class='line'>        <span class="n">EKReminder</span> <span class="o">*</span><span class="n">reminder</span> <span class="o">=</span> <span class="p">[</span><span class="n">EKReminder</span> <span class="nl">reminderWithEventStore:</span><span class="n">store</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">CGContextRef</span> <span class="n">ctx</span> <span class="o">=</span> <span class="n">UIGraphicsGetCurrentContext</span><span class="p">();</span>
+</span><span class='line'>    <span class="n">CGMutablePathRef</span> <span class="n">path</span> <span class="o">=</span> <span class="n">CGPathCreateMutable</span><span class="p">();</span>
 </span><span class='line'>
-</span><span class='line'>        <span class="n">reminder</span><span class="p">.</span><span class="n">title</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSString</span> <span class="nl">stringWithCString:</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="nl">encoding:</span><span class="n">NSUTF8StringEncoding</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">CGPathMoveToPoint</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="mi">25</span><span class="p">);</span>
+</span><span class='line'>    <span class="n">CGPathAddArcToPoint</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span>
+</span><span class='line'>                        <span class="n">offset</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span>
+</span><span class='line'>                        <span class="n">offset</span> <span class="o">+</span> <span class="n">self</span><span class="p">.</span><span class="n">mainRadius</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span>
+</span><span class='line'>                        <span class="n">self</span><span class="p">.</span><span class="n">mainRadius</span><span class="p">);</span>
 </span><span class='line'>
-</span><span class='line'>        <span class="k">for</span> <span class="p">(</span><span class="n">EKCalendar</span> <span class="o">*</span><span class="n">calendar</span> <span class="k">in</span> <span class="p">[</span><span class="n">store</span> <span class="nl">calendarsForEntityType:</span><span class="n">EKEntityTypeReminder</span><span class="p">])</span> <span class="p">{</span>
-</span><span class='line'>            <span class="k">if</span> <span class="p">([</span><span class="n">calendar</span><span class="p">.</span><span class="n">title</span> <span class="nl">isEqualToString:</span><span class="n">kCalendarTitle</span><span class="p">])</span> <span class="p">{</span>
-</span><span class='line'>                <span class="n">reminder</span><span class="p">.</span><span class="n">calendar</span> <span class="o">=</span> <span class="n">calendar</span><span class="p">;</span>
-</span><span class='line'>                <span class="k">break</span><span class="p">;</span>
-</span><span class='line'>            <span class="p">}</span>
-</span><span class='line'>        <span class="p">}</span>
-</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">reminder</span><span class="p">.</span><span class="n">calendar</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>            <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;could not find specified calendar </span><span class="se">\&quot;</span><span class="s">%@</span><span class="se">\&quot;</span><span class="s">.&quot;</span><span class="p">,</span> <span class="n">kCalendarTitle</span><span class="p">);</span>
-</span><span class='line'>            <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
-</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>    <span class="n">CGPathAddArcToPoint</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span>
+</span><span class='line'>                        <span class="n">offset</span> <span class="o">+</span> <span class="n">self</span><span class="p">.</span><span class="n">mainRadius</span><span class="o">*</span><span class="mf">2.f</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span>
+</span><span class='line'>                        <span class="n">offset</span> <span class="o">+</span> <span class="n">self</span><span class="p">.</span><span class="n">mainRadius</span><span class="o">*</span><span class="mf">2.f</span><span class="p">,</span> <span class="n">self</span><span class="p">.</span><span class="n">mainRadius</span><span class="p">,</span>
+</span><span class='line'>                        <span class="n">self</span><span class="p">.</span><span class="n">mainRadius</span><span class="p">);</span>
 </span><span class='line'>
-</span><span class='line'>        <span class="n">NSError</span> <span class="o">*</span><span class="n">error</span> <span class="o">=</span> <span class="nb">nil</span><span class="p">;</span>
-</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="p">[</span><span class="n">store</span> <span class="nl">saveReminder:</span><span class="n">reminder</span> <span class="nl">commit:</span><span class="n">YES</span> <span class="nl">error:</span><span class="o">&amp;</span><span class="n">error</span><span class="p">])</span> <span class="p">{</span>
-</span><span class='line'>            <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;error: %@&quot;</span><span class="p">,</span> <span class="n">error</span><span class="p">);</span>
-</span><span class='line'>            <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
-</span><span class='line'>        <span class="p">}</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">CGPathAddCurveToPoint</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span>
+</span><span class='line'>                          <span class="n">offset</span> <span class="o">+</span> <span class="n">self</span><span class="p">.</span><span class="n">mainRadius</span><span class="o">*</span><span class="mf">2.f</span><span class="p">,</span>            <span class="n">self</span><span class="p">.</span><span class="n">mainRadius</span><span class="o">*</span><span class="mf">2.f</span><span class="p">,</span>
+</span><span class='line'>                          <span class="n">offset</span> <span class="o">+</span> <span class="n">self</span><span class="p">.</span><span class="n">mainRadius</span><span class="o">+</span><span class="n">self</span><span class="p">.</span><span class="n">subRadius</span><span class="p">,</span> <span class="n">self</span><span class="p">.</span><span class="n">mainRadius</span><span class="o">*</span><span class="mf">2.f</span><span class="p">,</span>
+</span><span class='line'>                          <span class="n">offset</span> <span class="o">+</span> <span class="n">self</span><span class="p">.</span><span class="n">mainRadius</span><span class="o">+</span><span class="n">self</span><span class="p">.</span><span class="n">subRadius</span><span class="p">,</span> <span class="n">self</span><span class="p">.</span><span class="n">distance</span><span class="o">+</span><span class="n">self</span><span class="p">.</span><span class="n">mainRadius</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">CGPathAddArcToPoint</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span>
+</span><span class='line'>                        <span class="n">offset</span> <span class="o">+</span> <span class="n">self</span><span class="p">.</span><span class="n">mainRadius</span><span class="o">+</span><span class="n">self</span><span class="p">.</span><span class="n">subRadius</span><span class="p">,</span> <span class="n">self</span><span class="p">.</span><span class="n">distance</span><span class="o">+</span><span class="n">self</span><span class="p">.</span><span class="n">mainRadius</span><span class="o">+</span><span class="n">self</span><span class="p">.</span><span class="n">subRadius</span><span class="p">,</span>
+</span><span class='line'>                        <span class="n">offset</span> <span class="o">+</span> <span class="n">self</span><span class="p">.</span><span class="n">mainRadius</span><span class="p">,</span>                <span class="n">self</span><span class="p">.</span><span class="n">distance</span><span class="o">+</span><span class="n">self</span><span class="p">.</span><span class="n">mainRadius</span><span class="o">+</span><span class="n">self</span><span class="p">.</span><span class="n">subRadius</span><span class="p">,</span>
+</span><span class='line'>                        <span class="n">self</span><span class="p">.</span><span class="n">subRadius</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">CGPathAddArcToPoint</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span>
+</span><span class='line'>                        <span class="n">offset</span> <span class="o">+</span> <span class="n">self</span><span class="p">.</span><span class="n">mainRadius</span><span class="o">-</span><span class="n">self</span><span class="p">.</span><span class="n">subRadius</span><span class="p">,</span> <span class="n">self</span><span class="p">.</span><span class="n">distance</span><span class="o">+</span><span class="n">self</span><span class="p">.</span><span class="n">mainRadius</span><span class="o">+</span><span class="n">self</span><span class="p">.</span><span class="n">subRadius</span><span class="p">,</span>
+</span><span class='line'>                        <span class="n">offset</span> <span class="o">+</span> <span class="n">self</span><span class="p">.</span><span class="n">mainRadius</span><span class="o">-</span><span class="n">self</span><span class="p">.</span><span class="n">subRadius</span><span class="p">,</span> <span class="n">self</span><span class="p">.</span><span class="n">distance</span><span class="o">+</span><span class="n">self</span><span class="p">.</span><span class="n">mainRadius</span><span class="p">,</span>
+</span><span class='line'>                        <span class="n">self</span><span class="p">.</span><span class="n">subRadius</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">CGPathAddCurveToPoint</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span>
+</span><span class='line'>                          <span class="n">offset</span> <span class="o">+</span> <span class="n">self</span><span class="p">.</span><span class="n">mainRadius</span><span class="o">-</span><span class="n">self</span><span class="p">.</span><span class="n">subRadius</span><span class="p">,</span> <span class="n">self</span><span class="p">.</span><span class="n">mainRadius</span><span class="o">*</span><span class="mf">2.f</span><span class="p">,</span>
+</span><span class='line'>                          <span class="n">offset</span> <span class="o">+</span> <span class="mi">0</span><span class="p">,</span> <span class="n">self</span><span class="p">.</span><span class="n">mainRadius</span><span class="o">*</span><span class="mf">2.f</span><span class="p">,</span>
+</span><span class='line'>                          <span class="n">offset</span> <span class="o">+</span> <span class="mi">0</span><span class="p">,</span> <span class="n">self</span><span class="p">.</span><span class="n">mainRadius</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">CGPathCloseSubpath</span><span class="p">(</span><span class="n">path</span><span class="p">);</span>
+</span><span class='line'>    <span class="n">CGContextAddPath</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="n">path</span><span class="p">);</span>
+</span><span class='line'>    <span class="n">CGContextSetFillColorWithColor</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="p">[</span><span class="n">UIColor</span> <span class="n">lightGrayColor</span><span class="p">].</span><span class="n">CGColor</span><span class="p">);</span>
+</span><span class='line'>    <span class="n">CGContextFillPath</span><span class="p">(</span><span class="n">ctx</span><span class="p">);</span>
+</span><span class='line'>    <span class="n">CGPathRelease</span><span class="p">(</span><span class="n">path</span><span class="p">);</span>
 </span><span class='line'><span class="p">}</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<h3>iOSの場合</h3>
+<h2><code>UITableViewController</code>を拡張する</h2>
 
-<p>iOSで使う予定はないのですが、せっかくなので試してみました。<br/>
-<code>requestAccessToEntityType:completion:</code>を実行するとユーザーにアクセス許可を求めます。</p>
+<p>iOS6の<code>UITableViewController</code>には<code>refreshControl</code>プロパティが用意されていて、
+<code>addSubview:</code>を呼ぶことなく<code>UIRefreshControl</code>を設定することが可能となっています。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">,</span><span class="n">retain</span><span class="p">)</span> <span class="n">UIRefreshControl</span> <span class="o">*</span><span class="n">refreshControl</span> <span class="n">NS_AVAILABLE_IOS</span><span class="p">(</span><span class="mi">6</span><span class="n">_0</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>当然、iOS5にこのプロパティは存在しないので、拡張する必要があります。
+カテゴリで普通に拡張するとiOS6で衝突してしまうので、iOS5のときだけ<code>+ (void)load</code>で動的にアクセサを追加します。
+既存のクラスにインスタンス変数を追加することはできないので、Associated Objectを使って同等のものを実現しています。</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -193,44 +410,94 @@ remind "項目名" ソース(OS X) 1 &hellip;">
 <span class='line-number'>32</span>
 <span class='line-number'>33</span>
 <span class='line-number'>34</span>
-</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="n">NSString</span> <span class="o">*</span><span class="k">const</span> <span class="n">kCalendarTitle</span> <span class="o">=</span> <span class="s">@&quot;Reminder&quot;</span><span class="p">;</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">@implementation</span> <span class="nc">UITableViewController</span> <span class="nl">(RefreshControl)</span>
 </span><span class='line'>
-</span><span class='line'><span class="n">EKEventStore</span> <span class="o">*</span><span class="n">store</span> <span class="o">=</span> <span class="p">[[</span><span class="n">EKEventStore</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
-</span><span class='line'><span class="p">[</span><span class="n">store</span> <span class="nl">requestAccessToEntityType:</span><span class="n">EKEntityTypeReminder</span>
-</span><span class='line'>                      <span class="nl">completion:</span><span class="o">^</span><span class="p">(</span><span class="kt">BOOL</span> <span class="n">granted</span><span class="p">,</span> <span class="n">NSError</span> <span class="o">*</span><span class="n">error</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>                          <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">granted</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>                              <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;denied.&quot;</span><span class="p">);</span>
-</span><span class='line'>                              <span class="k">return</span><span class="p">;</span>
-</span><span class='line'>                          <span class="p">}</span>
-</span><span class='line'>                          <span class="k">if</span> <span class="p">(</span><span class="n">error</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>                              <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;error: %@&quot;</span><span class="p">,</span> <span class="n">error</span><span class="p">);</span>
-</span><span class='line'>                              <span class="k">return</span><span class="p">;</span>
-</span><span class='line'>                          <span class="p">}</span>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">load</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="err">@</span><span class="n">autoreleasepool</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">if</span> <span class="p">([[[</span><span class="n">UIDevice</span> <span class="n">currentDevice</span><span class="p">]</span> <span class="n">systemVersion</span><span class="p">]</span> <span class="nl">hasPrefix:</span><span class="s">@&quot;5&quot;</span><span class="p">])</span> <span class="p">{</span>
+</span><span class='line'>            <span class="n">Swizzle</span><span class="p">([</span><span class="n">self</span> <span class="n">class</span><span class="p">],</span> <span class="k">@selector</span><span class="p">(</span><span class="n">refreshControl</span><span class="p">),</span>     <span class="k">@selector</span><span class="p">(</span><span class="n">iOS5_refreshControl</span><span class="p">));</span>
+</span><span class='line'>            <span class="n">Swizzle</span><span class="p">([</span><span class="n">self</span> <span class="n">class</span><span class="p">],</span> <span class="k">@selector</span><span class="p">(</span><span class="nl">setRefreshControl:</span><span class="p">),</span> <span class="k">@selector</span><span class="p">(</span><span class="nl">iOS5_setRefreshControl:</span><span class="p">));</span>
+</span><span class='line'>            <span class="n">Swizzle</span><span class="p">([</span><span class="n">self</span> <span class="n">class</span><span class="p">],</span> <span class="k">@selector</span><span class="p">(</span><span class="n">viewDidLoad</span><span class="p">),</span>        <span class="k">@selector</span><span class="p">(</span><span class="n">iOS5_viewDidLoad</span><span class="p">));</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
 </span><span class='line'>
-</span><span class='line'>                          <span class="n">EKReminder</span> <span class="o">*</span><span class="n">reminder</span> <span class="o">=</span> <span class="p">[</span><span class="n">EKReminder</span> <span class="nl">reminderWithEventStore:</span><span class="n">store</span><span class="p">];</span>
-</span><span class='line'>                          <span class="n">reminder</span><span class="p">.</span><span class="n">title</span> <span class="o">=</span> <span class="s">@&quot;hoge&quot;</span><span class="p">;</span>
+</span><span class='line'><span class="cp">#pragma mark -</span>
 </span><span class='line'>
-</span><span class='line'>                          <span class="k">for</span> <span class="p">(</span><span class="n">EKCalendar</span> <span class="o">*</span><span class="n">calendar</span> <span class="k">in</span> <span class="p">[</span><span class="n">store</span> <span class="nl">calendarsForEntityType:</span><span class="n">EKEntityTypeReminder</span><span class="p">])</span> <span class="p">{</span>
-</span><span class='line'>                              <span class="k">if</span> <span class="p">([</span><span class="n">calendar</span><span class="p">.</span><span class="n">title</span> <span class="nl">isEqualToString:</span><span class="n">kCalendarTitle</span><span class="p">])</span> <span class="p">{</span>
-</span><span class='line'>                                  <span class="n">reminder</span><span class="p">.</span><span class="n">calendar</span> <span class="o">=</span> <span class="n">calendar</span><span class="p">;</span>
-</span><span class='line'>                                  <span class="k">break</span><span class="p">;</span>
-</span><span class='line'>                              <span class="p">}</span>
-</span><span class='line'>                          <span class="p">}</span>
-</span><span class='line'>                          <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">reminder</span><span class="p">.</span><span class="n">calendar</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>                              <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;could not find specified calendar </span><span class="se">\&quot;</span><span class="s">%@</span><span class="se">\&quot;</span><span class="s">.&quot;</span><span class="p">,</span> <span class="n">kCalendarTitle</span><span class="p">);</span>
-</span><span class='line'>                              <span class="k">return</span><span class="p">;</span>
-</span><span class='line'>                          <span class="p">}</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">iOS5_viewDidLoad</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">super</span> <span class="n">viewDidLoad</span><span class="p">];</span>
 </span><span class='line'>
-</span><span class='line'>                          <span class="n">NSError</span> <span class="o">*</span><span class="n">saveError</span> <span class="o">=</span> <span class="nb">nil</span><span class="p">;</span>
-</span><span class='line'>                          <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="p">[</span><span class="n">store</span> <span class="nl">saveReminder:</span><span class="n">reminder</span> <span class="nl">commit:</span><span class="n">YES</span> <span class="nl">error:</span><span class="o">&amp;</span><span class="n">saveError</span><span class="p">])</span> <span class="p">{</span>
-</span><span class='line'>                              <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;error: %@&quot;</span><span class="p">,</span> <span class="n">error</span><span class="p">);</span>
-</span><span class='line'>                              <span class="k">return</span><span class="p">;</span>
-</span><span class='line'>                          <span class="p">}</span>
-</span><span class='line'>                      <span class="p">}];</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">self</span><span class="p">.</span><span class="n">refreshControl</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">view</span> <span class="nl">addSubview:</span><span class="n">self</span><span class="p">.</span><span class="n">refreshControl</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="n">ISRefreshControl</span> <span class="o">*</span><span class="p">)</span><span class="nf">iOS5_refreshControl</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">objc_getAssociatedObject</span><span class="p">(</span><span class="n">self</span><span class="p">,</span> <span class="s">@&quot;iOS5RefreshControl&quot;</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">iOS5_setRefreshControl:</span><span class="p">(</span><span class="n">ISRefreshControl</span> <span class="o">*</span><span class="p">)</span><span class="nv">refreshControl</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">self</span><span class="p">.</span><span class="n">isViewLoaded</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">ISRefreshControl</span> <span class="o">*</span><span class="n">oldRefreshControl</span> <span class="o">=</span> <span class="n">objc_getAssociatedObject</span><span class="p">(</span><span class="n">self</span><span class="p">,</span> <span class="s">@&quot;iOS5RefreshControl&quot;</span><span class="p">);</span>
+</span><span class='line'>        <span class="p">[</span><span class="n">oldRefreshControl</span> <span class="n">removeFromSuperview</span><span class="p">];</span>
+</span><span class='line'>        <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">view</span> <span class="nl">addSubview:</span><span class="n">refreshControl</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">objc_setAssociatedObject</span><span class="p">(</span><span class="n">self</span><span class="p">,</span> <span class="s">@&quot;iOS5RefreshControl&quot;</span><span class="p">,</span> <span class="n">refreshControl</span><span class="p">,</span> <span class="n">OBJC_ASSOCIATION_RETAIN</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
+<p>ここで使用されている<code>Swizzle</code>という関数はいわゆるMethod Swizzlingを行うもので、
+以下のように実装されています。</p>
 
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="kt">void</span> <span class="nf">Swizzle</span><span class="p">(</span><span class="n">Class</span> <span class="n">c</span><span class="p">,</span> <span class="kt">SEL</span> <span class="n">original</span><span class="p">,</span> <span class="kt">SEL</span> <span class="n">alternative</span><span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">Method</span> <span class="n">orgMethod</span> <span class="o">=</span> <span class="n">class_getInstanceMethod</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">original</span><span class="p">);</span>
+</span><span class='line'>    <span class="n">Method</span> <span class="n">altMethod</span> <span class="o">=</span> <span class="n">class_getInstanceMethod</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">alternative</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">if</span><span class="p">(</span><span class="n">class_addMethod</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">original</span><span class="p">,</span> <span class="n">method_getImplementation</span><span class="p">(</span><span class="n">altMethod</span><span class="p">),</span> <span class="n">method_getTypeEncoding</span><span class="p">(</span><span class="n">altMethod</span><span class="p">)))</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">class_replaceMethod</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">alternative</span><span class="p">,</span> <span class="n">method_getImplementation</span><span class="p">(</span><span class="n">orgMethod</span><span class="p">),</span> <span class="n">method_getTypeEncoding</span><span class="p">(</span><span class="n">orgMethod</span><span class="p">));</span>
+</span><span class='line'>    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">method_exchangeImplementations</span><span class="p">(</span><span class="n">orgMethod</span><span class="p">,</span> <span class="n">altMethod</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><code>viewDidLoad</code>にも手を加えているのは、<code>+ (id)init</code>や<code>+ (id)initWithCoder:</code>で
+既に<code>refreshControl</code>プロパティが設定されているケースを考慮するためです。</p>
+
+<h3>まとめ</h3>
+
+<p><code>ISRefreshControl</code>は以上のアイディアに沿って実装しました。
+同じようなアイディアでiPhoneに対応した<code>UIPopOverController</code>も作れたりするのではないかと思います。</p>
+
+<p><code>ISRefreshControl</code>にはアニメーションの詰めが甘い箇所があったりするので、開発に協力してくださる方は是非GitHubでpull requestをください。</p>
 
 		
 		
@@ -250,12 +517,12 @@ remind "項目名" ソース(OS X) 1 &hellip;">
   
 
 
-<time datetime="2012-11-28T19:45:00+09:00" pubdate data-updated="true">Nov 28<span>th</span>, 2012</time></div>
+<time datetime="2012-12-13T22:26:00+09:00" pubdate data-updated="true">Dec 13<span>th</span>, 2012</time></div>
 	
 </div>
 
     <br/>
-    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2012/11/28/ekreminder/" data-text="iCloudのリマインダーを利用してみる" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2012/11/28/ekreminder/" >Tweet</a>
+    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2012/12/13/ios5-refreshcontrol/" data-text="iOS5で動作するUIRefreshControlのライブラリをつくったときの話" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2012/12/13/ios5-refreshcontrol/" >Tweet</a>
     <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
     </article>
 
@@ -263,81 +530,98 @@ remind "項目名" ソース(OS X) 1 &hellip;">
     <article class="post">
 	<h2 class="title">
 		
-		<a href="/blog/2012/11/24/improve-coredata-fetch/">
+		<a href="/blog/2012/12/09/cocoapods/">
 		
-			画像を含むCoreDataのフェッチ速度を改善する</a>
+			CocoaPodsを使ってみた</a>
 	</h2>
 	<div class="entry-content">
-		<p>LRUなディスクキャッシュを実装する場合など、CoreDataに画像を突っ込みたくなることがあると思います。
-しかし、画像をそのままattributesに突っ込むことはフェッチ速度の低下につながります。</p>
+		<p>最近、<a href="http://www.cocoacontrols.com/posts/2012/12/03/cocoa-controls-now-supports-cocoapods">CocoaControlsがCocoaPodsに対応した</a>ようですね。</p>
 
-<p>何か上手い方法はないかな〜と思ってAppleのCoreDataプログラミングガイドを眺めていたら、ありました。
-画像などのBLOBをCoreDataに突っ込む場合、BLOBであるattributeをエンティティから切り離すと良いそうです。
-今回は、これについて検証したことを紹介します。</p>
+<p><a href="blog/2012/10/27/xcode-git">以前の記事</a>で書いたように、いままで<code>git submodule</code>でライブラリを管理していました。
+CocoaPodsのことは聞いてはいたのですが、&#8221;<code>git submodule</code>で十分じゃん&#8221;と思って使っていませんでした。
+どうやらCocoaPodsはそれ以上の事をしてくれるようなので、試してみました。</p>
 
-<h2>比較するデータ構造</h2>
+<h2>導入手順</h2>
 
-<h3>ISFatUser</h3>
+<p><a href="http://cocoapods.org">cocoapods.org</a>に書いてある手順に従います。</p>
 
-<p>attributesに画像が突っ込まれたエンティティです。
-BLOBが入っているので&#8221;Fat&#8221;です。</p>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>gem install cocoapods
+</span><span class='line'>pod setup</span></code></pre></td></tr></table></div></figure>
 
-<p><img src="/images/2012-11-24/ISFatUser.png"></p>
 
-<h3>ISUser</h3>
+<p>プロジェクトのディレクトリに以下のような<code>Podfile</code>を作成します。</p>
 
-<p>画像を別のエンティティに切り分けたエンティティです。<br/>
-attributesに画像を持たない代わりに、画像を持つエンティティ(<code>ISIcon</code>)とrelationで結ばれています。</p>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>platform :ios, '5.0'
+</span><span class='line'>pod 'ISColumnsController', '~&gt; 1.0.0'</span></code></pre></td></tr></table></div></figure>
 
-<p>ISUser<br/>
-<img src="/images/2012-11-24/ISUser.png"></p>
 
-<p>ISIcon<br/>
-<img src="/images/2012-11-24/ISIcon.png"></p>
+<p><code>Podfile</code>に書いたライブラリをインストールします。</p>
 
-<h2>比較結果</h2>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>pod install</span></code></pre></td></tr></table></div></figure>
 
-<p>以下の条件で比較しました。
-読み込んだ画像は<code>UITableView</code>で表示します。</p>
+
+<p>以上で導入は完了です。</p>
+
+<p>元々のプロジェクト(<code>Hoge.xcodeproj</code>)とは別にワークスペースが(<code>Hoge.xcworkspace</code>)作成されるので、以降の作業ではこちらを使うようにします。
+Project Navigatorは以下のようになっているはずです。</p>
+
+<p><img src="/images/2012-12-09/pods.png"></p>
+
+<p>どうやらライブラリ群を<code>libPods.a</code>というスタティックライブラリにまとめて、リンクしているようです。</p>
+
+<h2>CocoaPodsの良いところ</h2>
+
+<p><code>git submodule</code>を直接使っている場合と比較したメリットを書きます。</p>
+
+<h3>プロジェクトへの導入の自動化</h3>
+
+<p><code>git submodule</code>はライブラリの<strong>ソースコード</strong>を管理するのであって、
+どのようにXcodeプロジェクトに導入されるかまでは管理していません。
+つまり、ライブラリを導入するには手動で以下の手順を行う必要があります。</p>
 
 <ul>
-<li>データ件数: 200</li>
-<li>画像サイズ: 約5〜10KB程度</li>
+<li>導入に必要なファイルのみをXcodeプロジェクトに追加</li>
+<li>必要に応じてフレームワークがあればリンクする。(<code>CoreData.framework</code>など)</li>
+<li>必要に応じてコンパイルオプションを設定する。(<code>-fno-objc-arc</code>など)</li>
+<li>必要に応じてリンカフラグを追加する。(<code>-ObjC</code>など)</li>
 </ul>
 
 
-<h3>フェッチ速度</h3>
-
-<p>圧倒的に<code>ISUser</code>の方が速かったです。大きいサイズの画像を扱う場合、更に差が出ると思います。</p>
+<p>また、ライブラリに以下のような変更があった場合、手動でプロジェクトを変更しなければなりません。</p>
 
 <ul>
-<li><code>ISFatUser</code>: 15ms</li>
-<li><code>ISUser</code>: 1ms</li>
+<li>ファイル構造が変わった</li>
+<li>リンクするフレームワークに変更があった</li>
 </ul>
 
 
-<h3>メモリ使用状況</h3>
+<p>CocoaPodsはこういった手順を自動化してくれるようです。<br/>
+<code>Pods.xcconfig</code>を覗いてみると、その様子の一端を見ることができます。</p>
 
-<p>メモリの使用傾向にも差がありました。</p>
+<h3>導入可能か自動チェック</h3>
 
-<p><code>ISFatUser</code><br/>
-<img src="/images/2012-11-24/ISFatUserAllocations.png"></p>
+<p>CocoaPodsは<code>Podfile</code>に書いたプロジェクトの環境とライブラリの環境を比較して、
+そのライブラリが導入可能か自動的にチェックしてくれます。
+例えば、先ほど<code>Podfile</code>に<code>platform :ios, '5.0'</code>と書きましたが、これはDeployment Targetを表していて、
+iOS 5.0に対応していないライブラリは導入の時点で弾かれるようになっています。</p>
 
-<p><code>ISUser</code><br/>
-<img src="/images/2012-11-24/ISUserAllocations.png"></p>
+<p>Deployment Targetの他にも、ARCへの対応状況やOSXへの対応状況も考慮してくれるようです。</p>
 
-<p>エンティティを切り分けた場合にはフォールティングが利くので、
-<code>ISUser</code>ではスクロールごとに徐々に使用メモリが増えています。
-一方、<code>ISFatUser</code>の場合にはフェッチ時に一気に使用メモリが最大まで増えます。</p>
+<h2>まとめ</h2>
 
-<p>それと、このグラフでは見えないのですが、<code>ISFatUser</code>の場合にはフェッチ直後に一瞬最大メモリ使用量の2倍くらいのメモリを使用します。
-おそらく、これは1度にすべての<code>UIImage</code>をインスタンス化しているせいだと思います。
-大きい画像を扱う場合、シビアな環境ではメモリが足りなくなってしまうケースもあるかもしれません。</p>
+<ul>
+<li>CocoaPodsはXcodeプロジェクトの設定も含めたライブラリ管理をしてくれる。</li>
+<li>導入可能性もチェックしてくれる</li>
+</ul>
 
-<p>…</p>
 
-<p>今回はBLOBをCoreData突っ込むときのことを紹介しましたが、
-BLOBは本来ファイルシステム上に保存するものなので、利用すべきかどうかは慎重に判断してください。</p>
+<p>まだまだ使い込んでいないので良いことばかり書いてますが、実際的な問題もあるのかもしれません。<br/>
+ハマりどころがありそうだったら、また更新します。</p>
 
 		
 		
@@ -357,231 +641,12 @@ BLOBは本来ファイルシステム上に保存するものなので、利用�
   
 
 
-<time datetime="2012-11-24T23:12:00+09:00" pubdate data-updated="true">Nov 24<span>th</span>, 2012</time></div>
+<time datetime="2012-12-09T15:56:00+09:00" pubdate data-updated="true">Dec 9<span>th</span>, 2012</time></div>
 	
 </div>
 
     <br/>
-    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2012/11/24/improve-coredata-fetch/" data-text="画像を含むCoreDataのフェッチ速度を改善する" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2012/11/24/improve-coredata-fetch/" >Tweet</a>
-    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
-    </article>
-
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2012/10/27/xcode-git/">
-		
-			iOS開発でGitを利用する際のTips</a>
-	</h2>
-	<div class="entry-content">
-		<p>ちょっと今更な感じもありますが、iOS開発でGitを使うときのTipsを紹介します。<br/>
-Gitそのものの使い方は理解している前提のもとで書きます。</p>
-
-<h2>バージョン管理する対象</h2>
-
-<p>Xcodeのプロジェクトにはバージョン管理する上で結構余計なものが入っています。</p>
-
-<h3>Gitで管理すべきでないもの</h3>
-
-<ul>
-<li><p><strong>Xcodeの作業データ</strong><br/>
-Xcodeのプロジェクトは<code>.xcodeproj</code>ですが、こいつ自身はディレクトリになっていて</p>
-
-<ul>
-<li><code>project.pbxproj</code></li>
-<li><code>project.xcworkspace</code></li>
-<li><code>xcuserdata</code></li>
-</ul>
-</li>
-</ul>
-
-
-<p>というファイルが入っています。このうち、Gitで管理するべきものは<code>project.pbxproj</code>です。<br/>
-その他のものはXcodeの状態(グループを開いてるかなど)を管理しているものなので、<br/>
-プロジェクトのバージョン管理対象としては適切ではありません。</p>
-
-<ul>
-<li><strong>ビルドデータ</strong><br/>
-<code>xcodebuild</code>コマンドを実行すると、プロジェクト直下に<code>build</code>ディレクトリが作成されます。<br/>
-これはGitで管理すべきものが揃っていれば生成できるので、Git管理下に置く必要はありません。</li>
-</ul>
-
-
-<h3>設定例</h3>
-
-<p>プロジェクト直下に以下のような<code>.gitignore</code>を置きます。</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>project.xcworkspace/
-</span><span class='line'>xcuserdata/
-</span><span class='line'>build/</span></code></pre></td></tr></table></div></figure>
-
-
-<p>自分の場合、ところどころvimを使ったりするので以下も追加しています。</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>*~
-</span><span class='line'>*.swp</span></code></pre></td></tr></table></div></figure>
-
-
-<p>それと、Macの<code>.gitignore</code>の定番も追加しています。</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>*.DS_Store</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>自動マージ</h2>
-
-<p><code>.xib</code>はXMLで書かれていて、Gitはこれらファイルを自動マージするべきものと判断します。<br/>
-<code>.xib</code>がコンフリクトして手動マージすると、ファイルを開けなくなってしまうことがあります。</p>
-
-<p>以前のコミットにチェックアウトすればもとに戻すことはできますが、<br/>
-あらかじめ自動マージしないように設定することもできます。</p>
-
-<h3>自動マージしてほしくないもの</h3>
-
-<ul>
-<li><code>.xib</code>などのUI設定ファイル</li>
-<li><code>project.pbxproj</code></li>
-</ul>
-
-
-<h3>設定例</h3>
-
-<p>プロジェクト直下に以下のような.gitattributesを置きます。</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>*.pbxproj -crlf -diff -merge
-</span><span class='line'>*.xib -crlf -diff -merge</span></code></pre></td></tr></table></div></figure>
-
-
-<p>このようにすると、自動マージは回避されコンフリクト時にはHEADの状態が保持されます。<br/>
-以下のコマンドで、マージするコミットの状態に変更することもできます。</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>git checkout --theirs -- project.pbxproj</span></code></pre></td></tr></table></div></figure>
-
-
-<p>逆に、HEADの状態に戻すには以下のコマンドを実行します。</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>git checkout --ours -- project.pbxproj</span></code></pre></td></tr></table></div></figure>
-
-
-<p>この設定ではマージ先の変更に気づきにくかったりするので、注意が必要です。<br/>
-もっといい方法があれば知りたいです。</p>
-
-<p><a href="http://git-scm.com/book/ja/Git-%E3%81%AE%E3%82%AB%E3%82%B9%E3%82%BF%E3%83%9E%E3%82%A4%E3%82%BA-Git-%E3%81%AE%E5%B1%9E%E6%80%A7">参考: Gitのカスタマイズ &ndash; Gitの属性</a></p>
-
-<h2>モジュール管理</h2>
-
-<p>GitHubなどには便利なモジュールがあり、プロジェクトに導入することもあると思います。<br/>
-<code>git submodule</code>を使うとモジュールの管理を行うことができます。</p>
-
-<p>以下の説明では、モジュールは<code>Libraries/</code>以下に配置するものとします。</p>
-
-<h3>モジュールの導入</h3>
-
-<p>以下のコマンドを実行するとモジュールのファイルがダウンロードされます。</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>git submodule add git@github.com:ishkawa/ISNetwork.git Libraries/ISNetwork</span></code></pre></td></tr></table></div></figure>
-
-
-<p>不要なファイル(READMEとか)がある場合は、Xcodeから参照を外します。<br/>
-ファイル自体を削除するとサブモジュールのバージョン管理に影響を与えるので、<br/>
-Xcode上の参照のみを削除することをおすすめします。　</p>
-
-<h3>モジュールの更新</h3>
-
-<p>モジュールのディレクトリに移動してGitの操作をするだけです。</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>cd Libraries/ISNetwork
-</span><span class='line'>git pull</span></code></pre></td></tr></table></div></figure>
-
-
-<p>一括で最新のコミットをプルするには以下のコマンドを実行します。</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>git submodule foreach git pull</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>モジュールの削除</h3>
-
-<p><code>.git/config</code>, <code>.gitmodules</code>から該当する箇所を削除します。</p>
-
-<p><code>.git/config</code></p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>[submodule "ISNetwork"]
-</span><span class='line'>    url = git@github.com:ishkawa/ISNetwork.git</span></code></pre></td></tr></table></div></figure>
-
-
-<p><code>.gitmodules</code></p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>[submodule "ISNetwork"]
-</span><span class='line'>    path = ISNetwork
-</span><span class='line'>    url = git@github.com:ishkawa/ISNetwork.git</span></code></pre></td></tr></table></div></figure>
-
-
-<p>ファイル自体も削除し、Gitの管理下から外します。</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>rm -R Libraries/ISNetwork
-</span><span class='line'>git rm --cached Libraries/ISNetwork</span></code></pre></td></tr></table></div></figure>
-
-
-<p><a href="http://stackoverflow.com/questions/1260748/how-do-i-remove-a-git-submodule">参考: How do I remove a git submodule?</a></p>
-
-<h3>モジュールの一括ダウンロード</h3>
-
-<p>プロジェクトをクローンしたとき、依存しているモジュールのダウンロードはされません。<br/>
-依存しているモジュールをすべてダウンロードするには以下のコマンドを実行します。</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>git submodule update --init --recursive</span></code></pre></td></tr></table></div></figure>
-
-
-<h2></h2>
-
-<p>他にもこういう設定したら捗るよってものがあれば、ぜひ教えて下さい。</p>
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-10-27T17:32:00+09:00" pubdate data-updated="true">Oct 27<span>th</span>, 2012</time></div>
-	
-</div>
-
-    <br/>
-    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2012/10/27/xcode-git/" data-text="iOS開発でGitを利用する際のTips" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2012/10/27/xcode-git/" >Tweet</a>
+    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2012/12/09/cocoapods/" data-text="CocoaPodsを使ってみた" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2012/12/09/cocoapods/" >Tweet</a>
     <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
     </article>
 

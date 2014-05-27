@@ -7,10 +7,8 @@
 	<meta name="author" content="ishkawa">
 
 	
-	<meta name="description" content="ISMemoryCache 0.1.0 世の中にはたくさんキャッシュの実装があり、
-自前の実装は捨てろなんて言われたりするのですが、
-それでも自分の思い通りのキャッシュ機構を作りたくなるものだと思います。
-自分はlimitに達したときにすべてのオブジェクトを削除するようなメモリキャッシュではなく &hellip;">
+	<meta name="description" content="すべてのテストケースの前後にあれこれする iOSのアプリケーションテストを書いていると、各テストケースの前後に永続ストアやスタブサーバーなどをリセットしたくなることがあると思います。
+リセットが必要なテストスイートのsetUp/tearDownに書いても良いのですが、 &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -62,30 +60,191 @@
     <article class="post">
 	<h2 class="title">
 		
-		<a href="/blog/2014/04/13/ismemorycache-0-dot-1-0/">
+		<a href="/blog/2014/04/30/pre-post-test-case/">
 		
-			ISMemoryCache 0.1.0</a>
+			すべてのテストケースの前後にあれこれする</a>
 	</h2>
 	<div class="entry-content">
-		<p><a href="http://cocoapods.org/?q=cache">世の中にはたくさんキャッシュの実装があり</a>、
-<a href="https://speakerdeck.com/ninjinkun/sdwebimagewo1nian-ban-shi-tutemita">自前の実装は捨てろ</a>なんて言われたりするのですが、
-それでも自分の思い通りのキャッシュ機構を作りたくなるものだと思います。
-自分はlimitに達したときにすべてのオブジェクトを削除するようなメモリキャッシュではなく、
-他からの参照がないオブジェクトを選択して削除するようなメモリキャッシュが欲しかったのでISMemoryCacheを実装しました。
-最近、ISMemoryCacheを更新して0.1.0を出したので、その機能を紹介します。</p>
+		<p>iOSのアプリケーションテストを書いていると、各テストケースの前後に永続ストアやスタブサーバーなどをリセットしたくなることがあると思います。
+リセットが必要なテストスイートのsetUp/tearDownに書いても良いのですが、書くのが面倒だったり書き忘れてしまうこともあるので、
+すべてのテストケースについてリセットが走るようにしておいた方が心を穏やかにすることができると思います。</p>
+
+<h3>実現方法</h3>
+
+<p>すぐに思いついたのは以下のような方法です。</p>
 
 <ul>
-<li>アプリがバックグラウンドに入ったときに他からの参照がないオブジェクトを削除</li>
-<li>メモリ警告が出たときにすべてのオブジェクトを削除</li>
+<li>setUp/tearDownにリセット処理を加えたサブクラスを継承させる</li>
+<li>XCTestCaseのsetUp/tearDownをswizzleする</li>
 </ul>
 
 
-<p>ディスクキャッシュについてはISDiskCacheというのもあるので、そちらをどうぞ。</p>
+<p>サブクラスを継承させる方法には、KIFTestCaseなど他のライブラリのクラスには適用ができないという問題があります。
+method swizzlingを利用する方法は、他のmethod swizzlingと衝突する可能性があるのでなるべく避けたいものです。</p>
+
+<p>そこで、着目したのがXCTestObserverです。
+XCTestObserverは以下のようなイベントが発生したときに対応したメソッドを実行します。</p>
 
 <ul>
-<li><a href="https://github.com/ishkawa/ISMemoryCache">ISMemoryCache</a></li>
-<li><a href="https://github.com/ishkawa/ISDiskCache">ISDiskCache</a></li>
+<li>テストの開始/終了</li>
+<li>テストスイートの開始/終了</li>
+<li>テストケースの開始/終了</li>
 </ul>
+
+
+<p>これらのイベントを受け取るには予めNSUserDefaultsのXCTestObserverClassKeyというキーにクラス名を設定しておく必要があります。
+具体的には、以下のようなクラスを作成します。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">@implementation</span> <span class="nc">ISTestObserver</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">load</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="err">@</span><span class="n">autoreleasepool</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">NSUserDefaults</span> <span class="o">*</span><span class="n">defaults</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSUserDefaults</span> <span class="n">standardUserDefaults</span><span class="p">];</span>
+</span><span class='line'>        <span class="p">[</span><span class="n">defaults</span> <span class="nl">setObject:</span><span class="s">@&quot;XCTestLog,ISTestObserver&quot;</span> <span class="nl">forKey:</span><span class="n">XCTestObserverClassKey</span><span class="p">];</span>
+</span><span class='line'>        <span class="p">[</span><span class="n">defaults</span> <span class="n">synchronize</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">testCaseDidStart:</span><span class="p">(</span><span class="n">XCTestRun</span> <span class="o">*</span><span class="p">)</span><span class="nv">testRun</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="c1">// reset</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">testCaseDidStop:</span><span class="p">(</span><span class="n">XCTestRun</span> <span class="o">*</span><span class="p">)</span><span class="nv">testRun</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="c1">// reset</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>リセット処理の例</h3>
+
+<p>自分が利用している例を紹介します。</p>
+
+<h4>NSUserDefaultsのリセット</h4>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">removeStandardUserDefaultsPersistentDomain</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">NSString</span> <span class="o">*</span><span class="n">bundleIndetifier</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSBundle</span> <span class="n">mainBundle</span><span class="p">].</span><span class="n">bundleIdentifier</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">NSUserDefaults</span> <span class="o">*</span><span class="n">userDefaults</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSUserDefaults</span> <span class="n">standardUserDefaults</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">userDefaults</span> <span class="nl">removePersistentDomainForName:</span><span class="n">bundleIndetifier</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h4>NSHTTPCookieStorageのリセット</h4>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">removeAllCookies</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">NSHTTPCookieStorage</span> <span class="o">*</span><span class="n">cookieStrage</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSHTTPCookieStorage</span> <span class="n">sharedHTTPCookieStorage</span><span class="p">];</span>
+</span><span class='line'>  <span class="k">for</span> <span class="p">(</span><span class="kt">id</span> <span class="n">cookie</span> <span class="k">in</span> <span class="p">[</span><span class="n">cookieStrage</span> <span class="n">cookies</span><span class="p">])</span> <span class="p">{</span>
+</span><span class='line'>      <span class="p">[</span><span class="n">cookieStrage</span> <span class="nl">deleteCookie:</span><span class="n">cookie</span><span class="p">];</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h4>OHHTTPStubsのリセットと汎用スタブ</h4>
+
+<p>汎用スタブはテスト実行中に誤って外のURLを読みに行かないようにするためにtestCaseDidStart:で用意しています。
+testCaseDidStart:はsetUpよりも先に実行されるので、setUpで他のスタブを追加した場合にはそちらが優先されます。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">stubGeneralRequest</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">OHHTTPStubs</span> <span class="nl">stubRequestsPassingTest:</span><span class="o">^</span><span class="kt">BOOL</span><span class="p">(</span><span class="n">NSURLRequest</span> <span class="o">*</span><span class="n">request</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">YES</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span> <span class="nl">withStubResponse:</span><span class="o">^</span><span class="n">OHHTTPStubsResponse</span> <span class="o">*</span><span class="p">(</span><span class="n">NSURLRequest</span> <span class="o">*</span><span class="n">request</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">NSData</span> <span class="o">*</span><span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="s">@&quot;Dummy&quot;</span> <span class="nl">dataUsingEncoding:</span><span class="n">NSUTF8StringEncoding</span><span class="p">];</span>
+</span><span class='line'>        <span class="k">return</span> <span class="p">[</span><span class="n">OHHTTPStubsResponse</span> <span class="nl">responseWithData:</span><span class="n">data</span>
+</span><span class='line'>                                          <span class="nl">statusCode:</span><span class="mi">200</span>
+</span><span class='line'>                                             <span class="nl">headers:</span><span class="nb">nil</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">}];</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">removeAllStubs</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">OHHTTPStubs</span> <span class="n">removeAllStubs</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>OHHTTPStubsの優先順位についてはREADMEに次のように書かれています。</p>
+
+<blockquote><p>When a network request is performed by the system, the stubs are called in the reverse order that they have been added, the last added stub having priority over the first added ones. The first stub that returns YES for the first parameter of stubRequestsPassingTest:withStubResponse: is then used to reply to the request.</p></blockquote>
+
+<h4>CoreDataの永続ストアの削除</h4>
+
+<p><a href="https://github.com/ishkawa/ISPersistentStack">ISPersistentStack</a>を利用しています。
+deleteCurrentStoreの実装については<a href="https://github.com/ishkawa/ISPersistentStack/blob/master/ISPersistentStack/ISPersistentStack.m">ソース</a>を参照してください。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">dropDatabase</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="p">[[</span><span class="n">ISPersistentStack</span> <span class="n">sharedStack</span><span class="p">]</span> <span class="n">deleteCurrentStore</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
 
 
 		
@@ -106,12 +265,12 @@
   
 
 
-<time datetime="2014-04-13T20:56:00+09:00" pubdate data-updated="true">Apr 13<span>th</span>, 2014</time></div>
+<time datetime="2014-04-30T13:25:00+09:00" pubdate data-updated="true">Apr 30<span>th</span>, 2014</time></div>
 	
 </div>
 
     <br/>
-    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2014/04/13/ismemorycache-0-dot-1-0/" data-text="ISMemoryCache 0.1.0" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2014/04/13/ismemorycache-0-dot-1-0/" >Tweet</a>
+    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2014/04/30/pre-post-test-case/" data-text="すべてのテストケースの前後にあれこれする" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2014/04/30/pre-post-test-case/" >Tweet</a>
     <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
     </article>
 
@@ -119,23 +278,90 @@
     <article class="post">
 	<h2 class="title">
 		
-		<a href="/blog/2014/02/04/ja-font/">
+		<a href="/blog/2014/04/28/geo-ir/">
 		
-			iOSシミュレータの日本語フォントが変になるのを防ぐ</a>
+			位置情報でリモコンを操作するiOSアプリをリリースしました</a>
 	</h2>
 	<div class="entry-content">
-		<p><a href="http://frnk.hatenablog.jp/entry/2014/02/04/120053">iOSシミュレータの日本語フォントが変になっちゃったときの対処法 &ndash; らっこのじゆうちょう</a></p>
+		<p><img src="/images/2014-04-28/icon.png"></p>
 
-<p>こちらの記事にある通り、日本語よりも中国語が優先されていると日本語のフォントがおかしくなってしまうのですが、設定画面から日本語に設定し直すのはちょっとだけ面倒です。
-Arguments Passes On Launchに以下の値を設定しておくと、必ず日本語に設定された状態でアプリが立ち上がるので、付き合いが長いプロジェクトでは設定しておくと楽かもしれません。</p>
+<p><a href="https://itunes.apple.com/jp/app/geo-ir/id856152824">Geo IR</a></p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>-AppleLanguages (ja)</span></code></pre></td></tr></table></div></figure>
+<p>Geo IRという名前でリリースしました。例えば、以下のような用途に利用できます。</p>
+
+<ul>
+<li>最寄り駅についたらでエアコンをつける</li>
+<li>自宅に近づいたら照明を点灯させる</li>
+<li>自宅から離れたら様々な電子機器の電源を落とす</li>
+</ul>
 
 
-<p><img src="/images/2014-02-04/ss.png"></p>
+<p>特に1つ目の用途は便利で、冬には家に着く頃には部屋が暖まった状態にすることができますし、夏には冷えた状態にすることが出来ます。</p>
 
-<p>参考: <a href="http://qiita.com/jarinosuke@github/items/f83e846ffb866ca5b7b7">iOS &ndash; Launch Arguments を使った一つ上の NSLocalizedString &ndash; Qiita</a></p>
+<h3>利用できる位置情報</h3>
+
+<p><img src="/images/2014-04-28/trigger.png"></p>
+
+<p>アプリを反応させるイベントには以下の2つを指定できます。</p>
+
+<ul>
+<li>ターゲットエリア: 指定地点から半径nメートル</li>
+<li>トリガー: ターゲットエリアへの進入時または退出時</li>
+</ul>
+
+
+<p>これらの情報を組み合わせて、&#8221;最寄り駅に付いた&#8221;や&#8221;自宅から離れた&#8221;といったイベントを定義します。</p>
+
+<h3>利用できるリモコン信号</h3>
+
+<p>基本的にはどのようなリモコンも利用することができます。</p>
+
+<h3>その他必要なもの</h3>
+
+<p>Geo IRの利用にはIRKitが必要です。IRKitはAmazonで購入することができます。</p>
+
+<p><a href="http://www.amazon.co.jp/dp/B00H91KK26">Amazon.co.jp: IRKit &ndash; iPhone,iPadを使って外出先からエアコン等の家電を操作できる学習リモコン</a></p>
+
+<h3>使い方</h3>
+
+<h4>1. IRKitのセットアップ</h4>
+
+<p>起動後に表示される指示に従ってください。<br/>
+セットアップが上手くいかない場合は、アプリの再起動とIRKitのリセットをして上で再度試してみてください。</p>
+
+<h4>2. リモコン信号のセットアップ</h4>
+
+<p>設定画面からリモコン信号画面に移り、+ボタンを押してください。<br/>
+以下のような画面が表示されたら、IRKitに向けてリモコン信号を送ってください。</p>
+
+<p><img src="/images/2014-04-28/signal.png"></p>
+
+<h4>3. 位置情報のセットアップ</h4>
+
+<p>ターゲットエリアとトリガーを指定してください。</p>
+
+<p><img src="/images/2014-04-28/region.png"></p>
+
+<h4>4. 移動する</h4>
+
+<p>指定したエリアに移動してみてください。リモコン信号の送信が成功すると(失敗すると)アプリに通知が届きます。</p>
+
+<p><img src="/images/2014-04-28/notification.png"></p>
+
+<h4>5. 動作を確認する</h4>
+
+<p>履歴画面から確認できます。送信に失敗してしまった場合には、再送信することも出来ます。</p>
+
+<p><img src="/images/2014-04-28/history.png"></p>
+
+<h3>その他</h3>
+
+<p>Geo IRには広告を非表示にするオプションが有るのですが、In App Purchaseのproduct登録をうっかり忘れてしまったので1.0.0では利用できません。
+このオプションの利用を希望する方は、1.0.1がリリースされるまでお待ちください。</p>
+
+<p>アプリのダウンロードは以下のリンクからどうぞ。</p>
+
+<p><a href="https://itunes.apple.com/jp/app/geo-ir/id856152824">Geo IR</a></p>
 
 		
 		
@@ -155,12 +381,12 @@ Arguments Passes On Launchに以下の値を設定しておくと、必ず日本
   
 
 
-<time datetime="2014-02-04T14:03:00+09:00" pubdate data-updated="true">Feb 4<span>th</span>, 2014</time></div>
+<time datetime="2014-04-28T21:27:00+09:00" pubdate data-updated="true">Apr 28<span>th</span>, 2014</time></div>
 	
 </div>
 
     <br/>
-    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2014/02/04/ja-font/" data-text="iOSシミュレータの日本語フォントが変になるのを防ぐ" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2014/02/04/ja-font/" >Tweet</a>
+    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2014/04/28/geo-ir/" data-text="位置情報でリモコンを操作するiOSアプリをリリースしました" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2014/04/28/geo-ir/" >Tweet</a>
     <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
     </article>
 
@@ -168,47 +394,32 @@ Arguments Passes On Launchに以下の値を設定しておくと、必ず日本
     <article class="post">
 	<h2 class="title">
 		
-		<a href="/blog/2014/02/02/programming-guide-for-oss-in-confwd2/">
+		<a href="/blog/2014/04/20/ios-git-tag/">
 		
-			#confwd でOSSでのObjective-Cの書き方について話してきた</a>
+			iOS開発とGitタグ</a>
 	</h2>
 	<div class="entry-content">
-		<p><a href="http://confwd2.peatix.com">Conference With Developers 2 | Peatix</a></p>
+		<p>いままでAppleにアプリを申請するタイミングでタグを打っていて、
+その後にリジェクトされると以下のようなタグが残ることがありました。
+非常にダサいですね。</p>
 
-<p>自分はiOSデベロッパーとして大した経験や実績があるわけではないのですが、
-公開しているライブラリの数はかなり多い方のなので、そこで得られた知識を話そうと思いました。
-トーク中は聴いている人のリアクションを気にする余裕もなかったのですが、
-あとからTwitterのタイムラインを読んでみると、良い反応をしてくれている方もいたようで嬉しかったです。
-今回の発表ではどのトピックも詳細に立ち入ることが難しかったので、いつか文章でしっかりとまとめられるといいなと思いました。</p>
-
-<h3>トークの準備</h3>
-
-<p>大勢の前で45分も話し続けるのは初めてだったので、どうやって準備したらいいものか悩みました。
-スライドをつくりながらトークの内容を練るのは難しそうだったので、はじめはmarkdownで適当な文章を書いて、
-そこからの大事な単語や文を拾ってきたり、概念図を描き起こしたりしました。
-元のmarkdownは以下のものです。人に読まれることを想定して書いたわけではないので読みづらいかもしれません。</p>
-
-<p><a href="https://gist.github.com/ishkawa/82fb589f447394f37546">gist:82fb589f447394f37546</a></p>
-
-<h3>資料</h3>
-
-<p>　</p>
-
-<script async class="speakerdeck-embed" data-id="be0674406d3f0131488e0ea0271811b0" data-ratio="1.33333333333333" src="//speakerdeck.com/assets/embed.js"></script>
+<ul>
+<li>1.0.0</li>
+<li>1.0.0-2</li>
+<li>1.0.0-3</li>
+</ul>
 
 
-<h3>ビデオ</h3>
+<p>最近は少し学習して、QAに入る段階でrelease/1.0.0といったブランチを切るようにしました。
+審査に出した段階ではまだタグは打たず、もしもリジェクトされた場合は引き続きrelease/1.0.0を更新します。
+審査を通過した場合はそこでタグを打って、release/1.0.0をmasterにマージします。
+以下の図のようなイメージです。</p>
 
-<iframe width="720" height="437" src="http://www.ustream.tv/embed/recorded/43319245/highlight/461451?v=3&amp;wmode=direct" scrolling="no" frameborder="0" style="border: 0px none transparent;">    </iframe>
+<p><img src="/images/2014-04-20/git-tag.png"></p>
 
-
-<br /><a href="http://www.ustream.tv/" style="padding: 2px 0px 4px; width: 400px; background: #ffffff; display: block; color: #000000; font-weight: normal; font-size: 10px; text-decoration: underline; text-align: center;" target="_blank">Video streaming by Ustream</a>
-
-
-<p>　</p>
-
-<p>トークやLTはどれも面白く、他の開発者との交流でき、とても充実したイベントでした。
-登壇を提案していただいた矢口さん、開催スタッフのみなさんに感謝しています。</p>
+<p>このように運用することで、余計なタグが打たれることはありませんし、審査中のバージョンを見失うこともありません。
+もしかしたら普通のiOSデベロッパーは当たり前のように実践していることなのかもしれませんが、
+自分は最近までダサいタグを打ったり、タグを打ち直したりしてたので書きました。</p>
 
 		
 		
@@ -228,12 +439,12 @@ Arguments Passes On Launchに以下の値を設定しておくと、必ず日本
   
 
 
-<time datetime="2014-02-02T16:11:00+09:00" pubdate data-updated="true">Feb 2<span>nd</span>, 2014</time></div>
+<time datetime="2014-04-20T14:18:00+09:00" pubdate data-updated="true">Apr 20<span>th</span>, 2014</time></div>
 	
 </div>
 
     <br/>
-    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2014/02/02/programming-guide-for-oss-in-confwd2/" data-text="#confwd でOSSでのObjective-Cの書き方について話してきた" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2014/02/02/programming-guide-for-oss-in-confwd2/" >Tweet</a>
+    <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.ishkawa.org/blog/2014/04/20/ios-git-tag/" data-text="iOS開発とGitタグ" data-via="_ishkawa" data-counturl="http://blog.ishkawa.org/blog/2014/04/20/ios-git-tag/" >Tweet</a>
     <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
     </article>
 

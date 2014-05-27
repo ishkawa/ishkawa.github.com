@@ -4,7 +4,7 @@
   <title><![CDATA[blog.ishkawa.org]]></title>
   <link href="http://blog.ishkawa.org/atom.xml" rel="self"/>
   <link href="http://blog.ishkawa.org/"/>
-  <updated>2014-05-01T01:02:08+09:00</updated>
+  <updated>2014-05-28T02:46:56+09:00</updated>
   <id>http://blog.ishkawa.org/</id>
   <author>
     <name><![CDATA[ishkawa]]></name>
@@ -12,6 +12,135 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[NSRunLoop+PerformBlockをCocoaPodsに登録]]></title>
+    <link href="http://blog.ishkawa.org/blog/2014/05/28/nsrunloop-performblock/"/>
+    <updated>2014-05-28T02:18:00+09:00</updated>
+    <id>http://blog.ishkawa.org/blog/2014/05/28/nsrunloop-performblock</id>
+    <content type="html"><![CDATA[<blockquote class="twitter-tweet" lang="ja"><p>NSRunLoop-PerformBlockをCocoapPodsに登録しろLINE株式会社</p>&mdash; laiso(レイソー) (@laiso) <a href="https://twitter.com/laiso/statuses/471286202810003459">2014, 5月 27</a></blockquote>
+
+
+<script async src="http://blog.ishkawa.org//platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+
+<p>　</p>
+
+<p>なぜかテスト関連のツールはマジカルな実装が多いのですが、自分は愚直にテストをしたいので愚直なライブラリを書きました。
+書いたのは半年前だったのですが、需要があったのでCocoaPodsに登録しました。</p>
+
+<p>ざっくり説明すると、以下のようなものです。</p>
+
+<ul>
+<li>引数に渡したblockの実行中はNSRunLoopを回してテストケースが終了しないようする</li>
+<li>*finish = YESとするとblockから抜ける</li>
+<li>タイムアウトした場合は例外を投げてテストケースを失敗させる</li>
+</ul>
+
+
+<p><a href="https://github.com/ishkawa/NSRunLoop-PerformBlock">NSRunLoop+PerformBlock</a></p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">testPerformBlockAndWait</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="c1">// 1</span>
+</span><span class='line'>    <span class="n">__block</span> <span class="kt">BOOL</span> <span class="n">flag</span> <span class="o">=</span> <span class="n">NO</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="p">[[</span><span class="n">NSRunLoop</span> <span class="n">currentRunLoop</span><span class="p">]</span> <span class="nl">performBlockAndWait:</span><span class="o">^</span><span class="p">(</span><span class="kt">BOOL</span> <span class="o">*</span><span class="n">finish</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="kt">double</span> <span class="n">delayInSeconds</span> <span class="o">=</span> <span class="mf">2.0</span><span class="p">;</span>
+</span><span class='line'>        <span class="n">dispatch_time_t</span> <span class="n">popTime</span> <span class="o">=</span> <span class="n">dispatch_time</span><span class="p">(</span><span class="n">DISPATCH_TIME_NOW</span><span class="p">,</span> <span class="p">(</span><span class="n">int64_t</span><span class="p">)(</span><span class="n">delayInSeconds</span> <span class="o">*</span> <span class="n">NSEC_PER_SEC</span><span class="p">));</span>
+</span><span class='line'>        <span class="n">dispatch_queue_t</span> <span class="n">queue</span> <span class="o">=</span> <span class="n">dispatch_get_global_queue</span><span class="p">(</span><span class="n">DISPATCH_QUEUE_PRIORITY_DEFAULT</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+</span><span class='line'>        <span class="n">dispatch_after</span><span class="p">(</span><span class="n">popTime</span><span class="p">,</span> <span class="n">queue</span><span class="p">,</span> <span class="o">^</span><span class="p">(</span><span class="kt">void</span><span class="p">){</span>
+</span><span class='line'>            <span class="c1">// 2</span>
+</span><span class='line'>            <span class="n">flag</span> <span class="o">=</span> <span class="n">YES</span><span class="p">;</span>
+</span><span class='line'>            <span class="o">*</span><span class="n">finish</span> <span class="o">=</span> <span class="n">YES</span><span class="p">;</span>
+</span><span class='line'>        <span class="p">});</span>
+</span><span class='line'>    <span class="p">}];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 3</span>
+</span><span class='line'>    <span class="n">XCTAssertTrue</span><span class="p">(</span><span class="n">flag</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[gcovrでコードカバレッジを確認]]></title>
+    <link href="http://blog.ishkawa.org/blog/2014/05/25/gcovr/"/>
+    <updated>2014-05-25T21:15:00+09:00</updated>
+    <id>http://blog.ishkawa.org/blog/2014/05/25/gcovr</id>
+    <content type="html"><![CDATA[<p>手元ではCoverStoryを使っていたのですが、なんか使いづらかったのでgcovrを使い始めました。<br/>
+gcovr 3.1にはhtml出力がついていて、以下のようなコマンドでレポートを出力してくれます。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>gcovr \
+</span><span class='line'>  -r . \
+</span><span class='line'>  --html --html-detail \
+</span><span class='line'>  -o build/coverage.html \
+</span><span class='line'>  -e Pods \
+</span><span class='line'>  -e UnitTests \
+</span><span class='line'>  -e ".*\.h"</span></code></pre></td></tr></table></div></figure>
+
+
+<p>出力されるHTMLは以下のようになります。</p>
+
+<p><img src="http://blog.ishkawa.org/images/2014-05-25/list.png"></p>
+
+<p>ファイルを選択すると各行の状況を確認できます。</p>
+
+<p><img src="http://blog.ishkawa.org/images/2014-05-25/detail.png"></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[連休だったので"初めてのRuby"を読んだ]]></title>
+    <link href="http://blog.ishkawa.org/blog/2014/05/06/learning-ruby/"/>
+    <updated>2014-05-06T00:48:00+09:00</updated>
+    <id>http://blog.ishkawa.org/blog/2014/05/06/learning-ruby</id>
+    <content type="html"><![CDATA[<p>普段はObjective-Cしか書かないのですが、podspecやPodfileやRakefileを書くときにちょっとだけRubyを書く機会がありました。
+Rubyは初心者にも優しい言語ということもあって、いままでは適当に他のコードを真似しながら書けていたのですが、
+さすがにそういう状態を続けるのは良くないなあと思い、連休中にRubyを勉強することにしました。
+プログラミング自体は職を得る程度には習得しているし、特にRubyで実現したいものがあるわけではないので、本を選ぶ上では以下の2点を重視しました。</p>
+
+<ul>
+<li>プログラミング自体の初心者向けではない</li>
+<li>言語の解説に集中している</li>
+</ul>
+
+
+<p>&ldquo;初めてのRuby&#8221;はこの2つを重視する自分にとってはとても良い本でした。
+言語を理解する上での要点が高い密度でまとまっており、連休中に読み終えるには適したボリュームだと思います。</p>
+
+<p>　</p>
+
+<p><a href="http://www.amazon.co.jp/gp/product/4873113679/ref=as_li_ss_il?ie=UTF8&camp=247&creative=7399&creativeASIN=4873113679&linkCode=as2&tag=ishkawa-22"><img border="0" src="http://ws-fe.amazon-adsystem.com/widgets/q?_encoding=UTF8&ASIN=4873113679&Format=_SL110_&ID=AsinImage&MarketPlace=JP&ServiceVersion=20070822&WS=1&tag=ishkawa-22" ></a><img src="http://ir-jp.amazon-adsystem.com/e/ir?t=ishkawa-22&l=as2&o=9&a=4873113679" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" /></p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[すべてのテストケースの前後にあれこれする]]></title>
@@ -1139,98 +1268,6 @@ CoreDataを利用するUIViewControllerにはNSManagedObjectContextのproperty�
 こういうのは数日間開催されているからこそできることなんだなと思いました。</p>
 
 <p>iOS界隈でもこういうのがあったらいいですね。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Xcode 5でテストを分割実行する]]></title>
-    <link href="http://blog.ishkawa.org/blog/2013/09/19/xcode-5-test/"/>
-    <updated>2013-09-19T11:40:00+09:00</updated>
-    <id>http://blog.ishkawa.org/blog/2013/09/19/xcode-5-test</id>
-    <content type="html"><![CDATA[<p>command + option + control + U で実行できます。</p>
-
-<p>テストコードのファイルを開いているときに、テストケース内にカーソルを置いているとそのテストケースのみ実行され、
-テストケース外にカーソルを置いているとそのファイルのテストがすべて実行されます。</p>
-
-<p>SenTestingKit, XCTestのみで動作を確認しました。
-いまのところのKiwiはまだこの機能に対応していなくて、個別の単位(<code>describe</code>, <code>context</code>, <code>it</code>など)での実行はできません。
-未確認ですが、GHUnitは仕組みから考えると全く対応していないと思います。</p>
-
-<p>分割実行できるようになると気軽にテストを走らせるようになって、テストが捗ります。<br/>
-SenTestingKitベースになったKIFも分割実行できるので、UIテストも捗りますね。</p>
-
-<h3>追記 (2013/9/20)</h3>
-
-<p>今日リリースされたKiwi 2.2.2でファイル単位の個別の実行ができるようになったみたいです。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[HHK無刻印モデルを3週間使った感想]]></title>
-    <link href="http://blog.ishkawa.org/blog/2013/09/15/hhk/"/>
-    <updated>2013-09-15T10:51:00+09:00</updated>
-    <id>http://blog.ishkawa.org/blog/2013/09/15/hhk</id>
-    <content type="html"><![CDATA[<p>最近<a href="http://www.pfu.fujitsu.com/hhkeyboard/lineup/pdkb400bn.html">HHK Pro 2の無刻印モデル</a>を使い始めました。<br/>
-<a href="http://twitter.com/soh335">斜に構えおじさん</a>に中2とか言われてバカにされたりしました。</p>
-
-<blockquote class="twitter-tweet"><p>無刻印 メリット 何</p>&mdash; soh335 (@soh335) <a href="https://twitter.com/soh335/statuses/371610150659825664">August 25, 2013</a></blockquote>
-
-
-<script async src="http://blog.ishkawa.org//platform.twitter.com/widgets.js" charset="utf-8"></script>
-
-
-<p>　</p>
-
-<p>3週間くらい使って結構慣れてきたので感想を書きます。</p>
-
-<ul>
-<li>意外とタッチタイピングができていなかったことに気づいた</li>
-<li>タッチタイピングができるようになって視線の移動がかなり減った</li>
-<li>キーを入れ替えるのに抵抗がなくなった</li>
-<li>ｯﾀｰﾝってやるの最高に気持ちいい</li>
-</ul>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[次世代のKIF(2.0.0)が良さそう]]></title>
-    <link href="http://blog.ishkawa.org/blog/2013/08/31/kif-next/"/>
-    <updated>2013-08-31T19:51:00+09:00</updated>
-    <id>http://blog.ishkawa.org/blog/2013/08/31/kif-next</id>
-    <content type="html"><![CDATA[<p>KIFはSquare製のIntegration Testsのためのフレームワークです。
-この半年くらいでKIFは大幅なアップデートに取り組んでいるらしく、現在はプレリリース版の2.0.0pre5が公開されています。
-まだ正式版はリリースされていないのですが、ひとまずプレリリース版を動かしてみました。</p>
-
-<p><a href="https://github.com/kif-framework/KIF/tree/kif-next">KIF(kif-next)</a></p>
-
-<p>　</p>
-
-<p>KIFは元々GHUnitのようにアプリのビルドターゲットを複製し、エントリーポイントを少し変更することで複製したアプリ上でテストを走らせるというものでした。
-新しいバージョンではSenTestingKitを利用することでXcodeに統合されたテストとして実行できるようになりました。
-具体的には以下のようなメリットがあります。</p>
-
-<ul>
-<li>command+Uで実行できる</li>
-<li>エラーが出た箇所を追跡しやすい</li>
-<li>部分実行ができる</li>
-<li>xUnit/xSpec形式でテストを書ける</li>
-</ul>
-
-
-<p>SenTestingKitを利用している他のフレームワーク(Spectaとか)も利用できるようです。</p>
-
-<p>以下は実機上で動かしている様子です。</p>
-
-<iframe class="embed-preview" src="http://blog.ishkawa.org//gifboom.com/x/a8a13526/embed_content" width="600" height="600" frameborder="0" scrolling="no"></iframe>
-
-
-<script async src="http://blog.ishkawa.org//medias.gifboom.com/static/embed.1.js" charset="utf-8"></script>
-
-
-<p>一応、サンプルコードをGitHubに置いておきます。</p>
-
-<p><a href="https://github.com/ishkawa/KIFNextExample">KIFNextExample</a></p>
 ]]></content>
   </entry>
   

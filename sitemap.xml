@@ -297,11 +297,23 @@
         <lastmod>2014-05-01T00:44:49+09:00</lastmod>
     </url>
     <url>
+        <loc>http://blog.ishkawa.org/blog/2014/05/06/learning-ruby/</loc>
+        <lastmod>2014-05-28T02:17:39+09:00</lastmod>
+    </url>
+    <url>
+        <loc>http://blog.ishkawa.org/blog/2014/05/25/gcovr/</loc>
+        <lastmod>2014-05-28T02:17:39+09:00</lastmod>
+    </url>
+    <url>
+        <loc>http://blog.ishkawa.org/blog/2014/05/28/nsrunloop-performblock/</loc>
+        <lastmod>2014-05-28T02:45:22+09:00</lastmod>
+    </url>
+    <url>
         <loc>http://blog.ishkawa.org/blog/archives/</loc>
-        <lastmod>2014-05-01T00:44:49+09:00</lastmod>
+        <lastmod>2014-05-28T02:45:22+09:00</lastmod>
     </url>
     <url>
         <loc>http://blog.ishkawa.org/</loc>
-        <lastmod>2014-05-01T00:44:49+09:00</lastmod>
+        <lastmod>2014-05-28T02:45:22+09:00</lastmod>
     </url>
 </urlset>
