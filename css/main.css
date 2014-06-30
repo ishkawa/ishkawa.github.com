@@ -86,6 +86,15 @@ a:visited { color: #205caa; }
   left: 10px;
 }
 
+.rss-icon-svg {
+  display: inline-block;
+  width: 17px;
+  height: 17px;
+  position: relative;
+  top: 16px;
+  left: 13px;
+}
+
 
 /* Page Content styles */
 /* ----------------------------------------------------------*/
