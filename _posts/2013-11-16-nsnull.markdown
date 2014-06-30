@@ -1,0 +1,93 @@
+---
+layout: post
+title: "JSONにNSNullが入ってきたとき"
+date: 2013-11-16 20:55
+comments: true
+categories: 
+---
+
+多くのiOSアプリはサーバーとの通信が必要で、やりとりされるデータのフォーマットにはJSONが採用されることが多いと思います。
+iOS 5からは標準ライブラリにNSJSONSerializationが導入され、特に理由がなければJSONのエンコード/デコードにはこれを利用します。
+NSJSONSerializationが扱うオブジェクトは以下の5種類のオブジェクトです。
+
+- NSString
+- NSNumber
+- NSArray
+- NSDictionary
+- NSNull
+
+そこで心配になるのが、予期しないところにNSNullが入ってきて"unrecognized selector sent to instance."となってしまうことです。
+NSNullではなくてnilが入っていてほしいと考える人は多いようですが、そもそもNSArrayやNSDictonaryはnilを含むことはできず、
+そのような状況でnull値を表すためにNSNullが存在するのです。NSNullのドキュメントにもまさにその通りのことが書いてあります。
+
+> The NSNull class defines a singleton object used to represent null values in collection objects (which don’t allow nil values). 
+
+しかし、実際NSNullが原因となってクラッシュすることもあるので、それを回避する方法と、
+それらの方法を利用するときに気をつけるべきことを書きます。
+
+### NSNullをnilとして振る舞わせる方法
+
+NSNullのforwardInvocation:とmethodSignatureForSelector:を上手く書き換えると、
+NSNullは実装されていないメソッドの呼び出しは無視するようになり、"unrecognized selector sent to instance."を回避できるようになります。
+このテクニックは以前からよく知られていたもので、自分は[@k_katsumi](https://twitter.com/k_katsumi)さんの
+[ブログ](http://d.hatena.ne.jp/KishikawaKatsumi/20110505/1304598102)で見たのが最初でした。
+ライブラリとしてまとまっているものにはnicklockwood氏の[NullSafe](https://github.com/nicklockwood/nullsafe)などがあります。
+
+このテクニックの良いところはNSNullがオブジェクトであることを半分忘れてしまって、まるでnilのように扱えることです。
+一度アプリの何処かでこれを実装してしまえば、二度とNSNullが"unrecognized selector sent to instance."をあげることがなくなります。
+
+逆に良くないところもあって、その1つはNSNullは完全にnilになるわけではないということです。
+例えば以下のコードで`[dictionary objectForKey:@"foo"]`がNSNullを返す場合、条件式はYESとなります。
+つまり、NSNullは依然としてnilではなく、単に"unrecognized selector sent to instance"をあげなくなっただけということを頭に入れなければなりません。
+
+```objectivec
+if ([dictionary objectForKey:@"foo"]) {
+    // do something ...
+}
+```
+
+また、アプリ全体に影響を与えてしまうということもあまり良いことではないのかもしれません。
+このテクニックはNSNullの本来の役割である"null値を表すsingleton"という性質を壊すことなく実装されているのですが、
+CocoaPodsが十分に普及してきた昨今、グローバルなものの振る舞いを変えることは十分に検討した方が良さそうです。
+それと、"処理上に明示されてない何かによって本来とは違う挙動になる"ということも忘れてはいけません。
+
+
+### NSNullを一括で削除してしまう方法
+
+前の方法が高度なテクニックを利用したhackだったのに対して、こちらは愚直な方法です。
+NSArrayやNSDictionaryのvalueを探索してNSNullを削除してしまえば、[NSArray objectAtIndex:]や
+[NSDictionary objectForKey:]でNSNullが返ってくることはありません。
+NSDictionaryに関して言えば、元々NSNullが入っていたkeyに対してobjectForKey:は本物のnilを返すので、
+前のテクニックよりも望ましい状態になると言えます。
+
+当然のことなんですが、NSNullが削除されてしまうと[NSArray count]や[[NSDictionary allValues] count]は変わってしまうので、
+countが重要なケースではNSNullが削除されていることを頭に入れておく必要はあります。
+
+NSNullの一括削除を実装するのは地味に面倒な上にミスをしやすいので、
+自分はいつも[ISRemoveNull](https://github.com/ishkawa/ISRemoveNull)を利用しています。
+以下のようなコードでNSNullがすべて削除されたNSDictionaryを得ることができます。
+
+```
+NSDictionary *strippedDictionary = [dictionary dictionaryByRemovingNull];
+```
+
+ISRemoveNullはデフォルトで再帰的にNSArrayやNSDictionaryを探索するつくりになっているので、
+深いネストがあるJSONのNSNullもすべて取り除くことができます。
+
+
+### おまけ: NSNullを判別する条件式
+
+NSNullを判別する条件式は以下のものが妥当なようです。
+
+```objectivec
+if (object == [NSNull null]) {
+    // object is null
+}
+```
+
+もちろん、`[object isEqual:[NSNull null]]`や`[object isKindOfClass:[NSNull class]]`でも判別できるのですが、
+NSNullはそもそもsingletonなのでisEqual:やisKindOfClass:で比較する必要はないのです。
+(必要はないというだけで、isEqual:やisKindOfClass:が間違いというわけではありません。)
+
+ちなみに、Appleのサンプルコードでも`object == [NSNull null]`が利用されていました。
+

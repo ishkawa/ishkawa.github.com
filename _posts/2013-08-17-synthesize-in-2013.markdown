@@ -1,0 +1,85 @@
+---
+layout: post
+title: "2013年の@synthesize"
+date: 2013-08-17 15:20
+comments: true
+categories: 
+---
+
+Xcode 4.4でApple LLVM Compiler 4.0が採用されてから、いわゆるModern Objective-Cの一環として
+`@synthesize`を書かなくても`@synthesize foo = _foo;`を書いたときと同等の実装が暗黙的に行われるようになりました。
+この仕様が追加されたモダンなプロジェクトでは2度と`@synthesize`は書かれないのかというと、そうではなくて、
+以下のようなコードを書く場合に`@synthesize`を使うことがあります。
+
+```objectivec
+@interface FOOViewController : UITableViewController
+
+@property (nonatomic, readonly) NSFetchedResultsController *fetchedResultsController;
+
+@end
+
+
+@implementation FOOViewController
+
+@synthesize fetchedResultsController = _fetchedResultsController;
+
+- (NSFetchedResultsController *)fetchedResultsController
+{
+    if (_fetchedResultsController) {
+        return _fetchedResultsController;
+    }
+    
+    NSManagedObjectContext *context = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSMainQueueConcurrencyType];
+    NSFetchRequest *reqeust = [NSFetchRequest fetchRequestWithEntityName:@"Foo"];
+    reqeust.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"bar" ascending:YES]];
+    _fetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:reqeust
+                                                                    managedObjectContext:context
+                                                                      sectionNameKeyPath:nil
+                                                                               cacheName:nil];
+    
+    return _fetchedResultsController;
+}
+
+@end
+```
+
+`@synthesize fetchedResultsController = _fetchedResultsController;`が必要な理由は、
+getterの実装を独自に行なっているのでインスタンス変数`_fetchedResultsController`が宣言されないからです。
+インスタンス変数を宣言するためだけに`@synthesize`を使うのが気持ち悪い場合には以下のように書くこともでき、
+`@synthesize`とは永遠の別れを告げることができます。
+
+```objectivec
+@interface FOOViewController : UITableViewController
+
+@property (nonatomic, readonly) NSFetchedResultsController *fetchedResultsController;
+
+@end
+
+
+@implementation FOOViewController {
+    NSFetchedResultsController *_fetchedResultsController;
+}
+
+- (NSFetchedResultsController *)fetchedResultsController
+{
+    if (_fetchedResultsController) {
+        return _fetchedResultsController;
+    }
+    
+    NSManagedObjectContext *context = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSMainQueueConcurrencyType];
+    NSFetchRequest *reqeust = [NSFetchRequest fetchRequestWithEntityName:@"Foo"];
+    reqeust.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"bar" ascending:YES]];
+    _fetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:reqeust
+                                                                    managedObjectContext:context
+                                                                      sectionNameKeyPath:nil
+                                                                               cacheName:nil];
+    
+    return _fetchedResultsController;
+}
+
+@end
+```
+
+ここまで書き終えてから思い出しましたが、NSManagedObjectのentityにないプロパティをつくるときにも`@synthesize`が必要でした。
+もう書く気力がないのでそれはまた別の機会に。
+

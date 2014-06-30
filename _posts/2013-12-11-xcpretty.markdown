@@ -1,0 +1,72 @@
+---
+layout: post
+title: "xcodebuildのログをxcprettyで整える"
+date: 2013-12-11 00:16
+comments: true
+categories: 
+---
+
+Xcode 5になってから`xcodebuild`も進化していて、Xcode 4までネックになっていたApplication Testsの実行も簡単になりました。
+そういうわけで自分にとっての`xctool`の必要性は薄まり、あとはログさえキレイになってくれればいいのになあと思っていたのですが、そんなときに`xcpretty`が登場しました。
+
+[mneorr/XCPretty](https://github.com/mneorr/XCPretty)
+
+### xctoolとの違い
+
+`xctool`は`xcodebuild`を置き換えることを目的としていましたが、`xcpretty`は`xcodebuild`と共存してログの整形のみを行います。
+`xctool`の場合、"`xcodebuild`では動くけど`xctool`では動かない"という状況に遭遇することがありますが、
+`xcpretty`はビルドやテストの実行自体に`xcodebuild`を利用するので、既に`xcodebuild`で進んでいるプロジェクトでは簡単に利用を始めることができます。
+
+### インストール方法
+
+```
+gem install xcpretty
+```
+
+### 使い方
+
+```
+xcodebuild | xcpretty -c
+```
+
+### 実行例
+
+例として[ISHTTPOperation](https://github.com/ishkawa/ISHTTPOperation)のユニットテストの結果を`xcpretty`で出力します。
+
+```
+xcodebuild clean test -sdk iphonesimulator -scheme ISHTTPOperation -configuration Debug -destination "name=iPhone Retina (3.5-inch),OS=7.0" | xcpretty -c
+```
+
+結果は以下のようになります。テスト結果として必要十分な情報量だと思います。
+
+```
+✓ Cleaning ISHTTPOperation/ISHTTPOperation [Debug]
+✓ Building ISHTTPOperation/ISHTTPOperation [Debug]
+✓ Compiling ISHTTPOperationQueue.m
+✓ Compiling NSOperationQueue+HTTP.m
+✓ Compiling ISHTTPOperation.m
+✓ Building library libISHTTPOperation.a
+✓ Building ISHTTPOperation/ISHTTPOperationTests [Debug]
+✓ Running script 'Run Script'
+Test Suite '/Users/ishkawa/Library/Developer/Xcode/DerivedData/ISHTTPOperation-bmnqbihsbwzsicguaxfhmfoznrvq/Build/Products/Debug-iphonesimulator/ISHTTPOperationTests.octest(Tests)' started
+Test Suite 'ISHTTPOperationQueueTests' started
+✓  ISHTTPOperationQueueTests testCancelOperationsWithHTTPMethod (0.016 seconds)
+✓  ISHTTPOperationQueueTests testCancelOperationsWithHost (0.001 seconds)
+✓  ISHTTPOperationQueueTests testCancelOperationsWithPath (0.001 seconds)
+✓  ISHTTPOperationQueueTests testCancelOperationsWithURL (0.000 seconds)
+✓  ISHTTPOperationQueueTests testDefaultQueue (0.002 seconds)
+Test Suite 'ISHTTPOperationTests' started
+✓  ISHTTPOperationTests testCancel (0.100 seconds)
+✓  ISHTTPOperationTests testCancelAsynchronously (0.000 seconds)
+✓  ISHTTPOperationTests testConcurrencyType (0.000 seconds)
+✓  ISHTTPOperationTests testDeallocOnCancelAfterStart (0.100 seconds)
+✓  ISHTTPOperationTests testDeallocOnCancelBeforeStart (0.100 seconds)
+✓  ISHTTPOperationTests testDesignatedInitializer (0.000 seconds)
+✓  ISHTTPOperationTests testErrorConnection (0.101 seconds)
+✓  ISHTTPOperationTests testNormalConnection (0.202 seconds)
+✓  ISHTTPOperationTests testQueueing (0.000 seconds)
+Test Suite 'NSOperationQueueHTTPTests' started
+✓  NSOperationQueueHTTPTests testDefaultHTTPQueue (0.000 seconds)
+```
+
+

@@ -1,0 +1,12 @@
+# Site settings
+title: ishkawa
+email: y@ishkawa.org
+description: ""
+baseurl: ""
+url: "http://blog.ishkawa.org"
+twitter_username: _ishkawa
+github_username:  ishkawa
+
+# Build settings
+markdown: redcarpet
+permalink: pretty

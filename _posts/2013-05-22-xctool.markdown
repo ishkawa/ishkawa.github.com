@@ -1,0 +1,41 @@
+---
+layout: post
+title: "xctoolが良い"
+date: 2013-05-22 22:52
+comments: true
+categories: 
+---
+
+`xctool`とは`xcodebuild`の代わりとなるツールで、いくつかの機能が追加されています。  
+少し前に[@azu_re](https://twitter.com/azu_re)さんがツイートしていたので試しました。  
+
+[xctool](https://github.com/facebook/xctool)
+
+--
+
+### 良いところ
+
+- Application Tests(Logic Testsじゃない方)が簡単に実行できる
+- 出力が見やすい
+
+普段はKiwiでApplication Testsを書いているのですが、難なく実行できました。
+
+### インストール方法
+
+```
+brew update
+brew install xctool
+```
+
+### 使い方
+
+```
+xctool -workspace Hoge.xcworkspace -scheme HogeTests build test ONLY_ACTIVE_ARCH=NO
+```
+
+自分は以下のようなMakefileに書いて`make test`できるようにしました。
+
+```
+test:
+	xctool -workspace Hoge.xcworkspace -scheme HogeTests build test ONLY_ACTIVE_ARCH=NO
+```
