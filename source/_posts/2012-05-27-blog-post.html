@@ -1,9 +1,0 @@
----
-layout: post
-title: "ミニマルな通信モジュールを書きました"
-date: 2012-05-27
-comments: false
----
-
-<div class='post'>
-ネットワーク通信を書くのは面倒なものです。<br />かと言って毎回マッチョなライブラリに頼るのも気が引けるので、<br />ネットワーク通信をするためのミニマルなモジュールを書きました。<br /><a href="https://github.com/ishkawa/ISNetwork" target="_blank">https://github.com/ishkawa/ISNetwork</a><br /><br />基本的な使い方は以下のとおりです。<br /><br /><script src="https://gist.github.com/2802460.js?file=gistfile1.txt"></script><br /><div style="margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px;">やってくれることは大体以下の3つです。<br />・NSURLConnectionDataDelegateのあれこれ<br />・NSOperationQueueを使った通信と通信インジケーターの管理<br />・終了ハンドラーの実行<br /><br />UIImageの作成やJSONパースは結構パフォーマンスに影響するので、</div>ISNetworkOperationのサブクラスではデータ加工まで別スレッドで実行し、<br />終了後のハンドラーをメインスレッドで実行するようにしています。<br /><br />通信を一括してキャンセルする場合は以下のコードを実行します。<br /><script src="https://gist.github.com/2802457.js?file=gistfile1.txt"></script><br />アプリでよく使う通信がある場合、ISNetworkOperationのサブクラスをつくると<br />通信周りのコードをかなり減らせると思います。<br /><br />例：OAuthCoreを使ってTwitterとやりとりするサブクラス<br /><br /><script src="https://gist.github.com/2802535.js?file=ISTwitterOperation.h"></script><br /><script src="https://gist.github.com/2802535.js?file=ISTwitterOperation.m"></script><br />※NSDictionaryからパラメーターを作るカテゴリも使ってます。<br /><a href="https://github.com/ishkawa/NSDictionary-URLQuery" target="_blank">https://github.com/ishkawa/NSDictionary-URLQuery</a><br /><br />このサブクラスを使うと以下のコードでTwitterとやりとりできるようになります。<br /><br /><script src="https://gist.github.com/2802535.js?file=gistfile1.m"></script><br />データの加工を変えたい場合にはprocessData:をオーバーライドしてください。<br />好きなJSONパーサを使ったりXMLをパースしたり、ご自由にどうぞ。</div>

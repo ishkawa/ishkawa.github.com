@@ -1,9 +1,0 @@
----
-layout: post
-title: "Chrome for iPhoneのタブ切り替えのUIを実装する"
-date: 2012-07-01
-comments: false
----
-
-<div class='post'>
-最近、やっとChrome for iPhoneがリリースされました。<br />洗練されたUIで、是非ともSafariもこの刺激を受けてほしいものです。<br /><br />さて、Chrome for iPhoneのタブの切替方法には以下の2種類があります<br /><ul><li>タブボタンを押して、一覧から選択して切り替える。</li><li>ブラウザ画面の端から横フリックする。</li></ul><div>後者のものが<a href="http://blog.ishkawa.org/2012/06/ios5viewcontroller.html" target="_blank">前回のエントリー</a>でつくったものと大体同じだったので、</div><div>今回あらためてつくり方を紹介します。</div><br /><br /><span style="background-color: white;">つくり方の概要は以下のとおりです。</span><br /><div><ul><li>親となるViewControllerのScrollViewを配置。</li><li>WebViewなどを持つ子ViewControllerを親のScrollViewに並べる。</li><li>親にUIScrollViewDelegateを実装し、ScrollViewのスクロール量を取得。</li><li>スクロール量に応じて、子のViewControllerのlayerのtransformを変更。</li></ul><div><span style="background-color: white;">ScrollViewの置き方やUIScrollViewDelegateプロトコルへの適合の詳細は省きます。</span><br /><br /><span style="background-color: white;">まず、親ViewControllerのScrollViewに子ViewContollerを並べます。</span><br /><br /><script src="https://gist.github.com/3028415.js?file=1.m"></script></div></div><br />つづいて、スクロール量に応じてlayerをtransformを変更します。<br />fabs(offset-x)がscrollView.frame.size.widthも小さければ、そのviewは<br />scrollViewに表示されることになるので、これらのtransformを変更してやります。<br /><br /><script src="https://gist.github.com/3028415.js?file=2.m"></script><br />scaleの下限を調整することで、画面の引き具合を調整することができます。 <br /><br />コードはISColumnsControllerという名前でGitHubで公開しています。<br />直したいところがあれば、是非pull requestをください。<br /><a href="https://github.com/ishkawa/ISColumnsController" target="_blank">https://github.com/ishkawa/ISColumnsController</a></div>
