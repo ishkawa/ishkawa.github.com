@@ -138,9 +138,10 @@ img {
 .post-header { margin: 10px 0 30px; }
 
 .post-header h1 {
+  word-break: break-all;
   font-size: 37px;
   letter-spacing: -1.75px;
-  line-height: 1;
+  line-height: 1.1;
   font-weight: 300;
   margin-left: -2px;
 }
