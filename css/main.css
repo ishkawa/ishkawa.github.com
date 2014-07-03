@@ -152,7 +152,7 @@ img {
   margin-left: 1px;
 }
 
-.post-content { margin: 0 0 30px; }
+.post-content { margin: 0 0 30px; word-wrap: break-word; }
 
 .post-content > * { margin: 20px 0; }
 
