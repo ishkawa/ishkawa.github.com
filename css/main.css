@@ -217,6 +217,7 @@ img {
 .post ol { margin-left: 1.35em; }
 
 .post pre code {
+  font-family: Consolas, 'Courier New', Courier, Monaco, monospace;
   border: 0;
   padding-right: 0;
   padding-left: 0;
