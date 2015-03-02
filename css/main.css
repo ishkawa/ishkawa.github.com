@@ -10,16 +10,17 @@ html, body { height: 100%; }
 
 body {
   font-family: "HelveticaNeue-Light", "Helvetica Neue Light", Helvetica, Arial, sans-serif;
-  font-size: 14px;
+  font-size: 15px;
   line-height: 1.5;
-  font-weight: 300;
-  color: #313131;
+  font-weight: 200;
+  color: #616161;
   background-color: #fdfdfd;
 }
 
 h1, h2, h3, h4, h5, h6 { 
+  font-family: "HelveticaNeue-Light", "Helvetica Neue Light", Helvetica, Arial, sans-serif;
   font-size: 100%; 
-  font-weight: 400;
+  font-weight: 600;
   color: #515151;
 }
 
@@ -119,7 +120,7 @@ img {
 .posts li { margin-bottom: 30px; }
 
 .posts .post-link {
-  font-size: 22px;
+  font-size: 18px;
   line-height: 1;
 }
 
@@ -138,7 +139,6 @@ img {
 .post-header h1 {
   font-size: 37px;
   line-height: 1.1;
-  font-weight: 300;
   margin-left: -2px;
 }
 
@@ -162,8 +162,7 @@ img {
 .post-content h5,
 .post-content h6 {
   line-height: 1;
-  font-weight: 300;
-  margin: 40px 0 20px;
+  margin: 50px 0 25px;
 }
 
 .post-content h2 {
