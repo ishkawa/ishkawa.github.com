@@ -18,9 +18,7 @@ body {
 }
 
 h1, h2, h3, h4, h5, h6 { 
-  font-family: "HelveticaNeue-Light", "Helvetica Neue Light", Helvetica, Arial, sans-serif;
-  font-size: 100%; 
-  font-weight: 600;
+  font-family: "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;
   color: #515151;
 }
 
