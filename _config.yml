@@ -7,6 +7,4 @@ url: "http://blog.ishkawa.org"
 twitter_username: _ishkawa
 github_username:  ishkawa
 
-# Build settings
-markdown: kramdown
 permalink: pretty
