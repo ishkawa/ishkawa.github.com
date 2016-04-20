@@ -8,3 +8,9 @@ twitter_username: _ishkawa
 github_username:  ishkawa
 
 permalink: pretty
+
+gems:
+  - jekyll-feed
+
+feed:
+  path: atom.xml
