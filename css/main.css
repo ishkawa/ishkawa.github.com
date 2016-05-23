@@ -17,7 +17,7 @@ body {
   background-color: #fdfdfd;
 }
 
-h1, h2, h3, h4, h5, h6 { 
+h1, h2, h3, h4, h5, h6 {
   color: #515151;
 }
 
@@ -191,7 +191,7 @@ img {
   font-size: 15px;
   line-height: 1.5;
   overflow:scroll;
-  word-wrap: normal; 
+  word-wrap: normal;
 }
 
 .post pre {
@@ -258,13 +258,13 @@ img {
 .highlight .gu { color: #ffffff; text-decoration: underline } /* Generic.Subheading */
 .highlight .gt { color: #d22323 } /* Generic.Traceback */
 .highlight .kc { color: #6ab825 } /* Keyword.Constant */
-.highlight .kd { color: #ed9d13 } /* Keyword.Declaration */
+.highlight .kd { color: #6ab825 } /* Keyword.Declaration */
 .highlight .kn { color: #6ab825 } /* Keyword.Namespace */
 .highlight .kp { color: #6ab825; } /* Keyword.Pseudo */
 .highlight .kr { color: #6ab825 } /* Keyword.Reserved */
-.highlight .kt { color: #6ab825 } /* Keyword.Type */
+.highlight .kt { color: #d0d0d0 } /* Keyword.Type */
 .highlight .ld { color: #d0d0d0 } /* Literal.Date */
-.highlight .m { color: #3677a9 } /* Literal.Number */
+.highlight .m { color: #ed9d13 } /* Literal.Number */
 .highlight .s { color: #ed9d13 } /* Literal.String */
 .highlight .na { color: #bbbbbb } /* Name.Attribute */
 .highlight .nb { color: #6ab825 } /* Name.Builtin */
@@ -282,10 +282,10 @@ img {
 .highlight .nv { color: #d0d0d0 } /* Name.Variable */
 .highlight .ow { color: #6ab825 } /* Operator.Word */
 .highlight .w { color: #666666 } /* Text.Whitespace */
-.highlight .mf { color: #3677a9 } /* Literal.Number.Float */
-.highlight .mh { color: #3677a9 } /* Literal.Number.Hex */
-.highlight .mi { color: #3677a9 } /* Literal.Number.Integer */
-.highlight .mo { color: #3677a9 } /* Literal.Number.Oct */
+.highlight .mf { color: #ed9d13 } /* Literal.Number.Float */
+.highlight .mh { color: #ed9d13 } /* Literal.Number.Hex */
+.highlight .mi { color: #ed9d13 } /* Literal.Number.Integer */
+.highlight .mo { color: #ed9d13 } /* Literal.Number.Oct */
 .highlight .sb { color: #ed9d13 } /* Literal.String.Backtick */
 .highlight .sc { color: #ed9d13 } /* Literal.String.Char */
 .highlight .sd { color: #ed9d13 } /* Literal.String.Doc */
@@ -301,7 +301,7 @@ img {
 .highlight .vc { color: #d0d0d0 } /* Name.Variable.Class */
 .highlight .vg { color: #d0d0d0 } /* Name.Variable.Global */
 .highlight .vi { color: #d0d0d0 } /* Name.Variable.Instance */
-.highlight .il { color: #3677a9 } /* Literal.Number.Integer.Long */
+.highlight .il { color: #ed9d13 } /* Literal.Number.Integer.Long */
 
 /* media queries */
 /* ----------------------------------------------------------*/
