@@ -9,7 +9,7 @@ github_username:  ishkawa
 
 permalink: pretty
 
-gems:
+plugins:
   - jekyll-feed
 
 feed:
