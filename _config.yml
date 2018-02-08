@@ -11,6 +11,7 @@ permalink: pretty
 
 plugins:
   - jekyll-feed
+  - jekyll-seo-tag
 
 feed:
   path: atom.xml
