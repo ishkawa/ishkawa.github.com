@@ -1,9 +1,19 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    {% seo %}
-    <meta property="og:image" content="{{ site.url }}/assets/misc/blank.png" />
+    <title>{{ page.title }}</title>
+    <meta name="description" content="{{ page.excerpt | strip_html }}">
     <meta name="viewport" content="width=device-width">
+    <meta property="og:title" content="{{ page.title }}">
+    <meta property="og:type" content="article">
+    <meta property="og:description" content="{{ page.excerpt | strip_html }}">
+    <meta property="og:url" content="{{ page.url }}">
+    <meta property="og:image" content="{{ site.url }}/assets/misc/blank.png" />
+    <meta property="og:site_name" content="{{ site.name }}">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="{{ page.title }}">
+    <meta name="twitter:description" content="{{ page.excerpt | strip_html }}">
+    <meta name="twitter:image" content="{{ site.url }}/assets/misc/blank.png" />
     <link rel="canonical" href="{{ page.url | replace:'index.html','' | prepend: site.baseurl | prepend: site.url }}">
 
     <!-- Custom CSS -->
