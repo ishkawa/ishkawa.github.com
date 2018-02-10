@@ -13,7 +13,7 @@ body {
   font-size: 17px;
   line-height: 1.6;
   font-weight: 200;
-  color: #414141;
+  color: #515151;
   background-color: #fdfdfd;
 }
 
@@ -58,8 +58,9 @@ img {
 .site-title:hover,
 .site-title:visited {
   display: block;
-  color: #cacaca;
+  color: #c2c2c2;
   font-size: 17px;
+  font-weight: 0;
   float: left;
   position: relative;
   top: 15px;
@@ -112,10 +113,10 @@ img {
 
 .posts { list-style-type: none; }
 
-.posts li { margin-bottom: 20px; }
+.posts li { margin-bottom: 24px; }
 
 .posts .post-link {
-  font-size: 18px;
+  font-size: 17px;
   line-height: 1;
 }
 
@@ -129,7 +130,7 @@ img {
 /* Post styles */
 /* ----------------------------------------------------------*/
 
-.post-header { margin: 10px 0 30px; }
+.post-header { margin: 16px 0 32px; }
 
 .post-header h1 {
   font-size: 32px;
@@ -146,7 +147,7 @@ img {
 
 .post-content { margin: 0 0 30px; word-wrap: break-word; }
 
-.post-content > * { margin: 20px 0; }
+.post-content > * { margin: 24px 0; }
 
 .post-footer { margin: 60px 0 0; }
 
@@ -157,19 +158,7 @@ img {
 .post-content h5,
 .post-content h6 {
   line-height: 1;
-  margin: 50px 0 25px;
-}
-
-.post-content h2 {
-  font-size: 28px;
-}
-
-.post-content h3 {
-  font-size: 22px;
-}
-
-.post-content h4 {
-  font-size: 18px;
+  margin: 48px -2px 24px;
 }
 
 .post-content blockquote {
@@ -339,7 +328,7 @@ img {
   }
 
   .post-header h1 { font-size: 36px; word-break: break-all; }
-  .post-content h2 { font-size: 28px; }
+  .post-content h2 { font-size: 26px; }
   .post-content h3 { font-size: 22px; }
   .post-content h4 { font-size: 18px; }
   .post-content blockquote { padding-left: 10px; }
