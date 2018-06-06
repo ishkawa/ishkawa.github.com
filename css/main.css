@@ -54,7 +54,7 @@ img {
 .site-title:hover,
 .site-title:visited {
   display: block;
-  font-size: 21px;
+  font-size: 19px;
   font-weight: 600;
   color: #717171;
   float: left;
@@ -79,7 +79,7 @@ img {
   width: 19px;
   height: 19px;
   position: relative;
-  top: 22px;
+  top: 20px;
   left: 8px;
 }
 
@@ -88,7 +88,7 @@ img {
   width: 19px;
   height: 19px;
   position: relative;
-  top: 21px;
+  top: 19px;
   left: 8px;
 }
 
@@ -97,7 +97,7 @@ img {
   width: 17px;
   height: 17px;
   position: relative;
-  top: 20px;
+  top: 18px;
   left: 10px;
 }
 
@@ -140,7 +140,6 @@ img {
 .post-header h1 {
   font-size: 36px;
   line-height: 1.1;
-  margin-left: -1px;
 }
 
 .post-header .meta {
@@ -162,7 +161,7 @@ img {
 .post-content h5,
 .post-content h6 {
   line-height: 1;
-  margin: 48px -1px 24px;
+  margin: 48px 0px -4px;
 }
 
 .post-content blockquote {
