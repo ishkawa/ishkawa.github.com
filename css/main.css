@@ -9,21 +9,20 @@
 html, body { height: 100%; }
 
 body {
-  font-family: "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, "Hiragino Kaku Gothic ProN",Meiryo,sans-serif;
-  font-size: 17px;
-  line-height: 1.6;
-  font-weight: 200;
+  font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Roboto Oxygen-Sans,Ubuntu,Cantarell,“Fira Sans”,“Droid Sans”,Helvetica Neue,Helvetica,\\30D2\30E9\30AE\30CE\89D2\30B4 Pro W3,Hiragino Kaku Gothic Pro,\\30E1\30A4\30EA\30AA,Meiryo,"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF",Arial,sans-serif;
+  font-size: 18px;
+  line-height: 1.4;
+  font-weight: 300;
   color: #515151;
-  background-color: #fdfdfd;
+  background-color: #ffffff;
 }
 
 h1, h2, h3, h4, h5, h6 {
   color: #515151;
 }
 
-a         { color: #205caa; text-decoration: none; }
-a:hover   { color: #000; text-decoration: underline; }
-a:visited { color: #205caa; }
+a         { color: #515151; text-decoration: none; }
+a:hover   { color: #515151; text-decoration: underline; }
 
 img {
   max-width: 100%;
@@ -49,22 +48,19 @@ img {
 
 /* Site header */
 
-.site-header {
-  min-height: 56px;
-  background-color: white;
-}
+.site-header {}
 
 .site-title,
 .site-title:hover,
 .site-title:visited {
   display: block;
-  color: #c2c2c2;
-  font-size: 17px;
-  font-weight: 0;
+  font-size: 21px;
+  font-weight: 600;
+  color: #717171;
   float: left;
-  position: relative;
-  top: 15px;
+  margin: 16px 0px;
   z-index: 1;
+  text-decoration: none;
 }
 
 .site-nav {
@@ -73,20 +69,27 @@ img {
 }
 
 .site-nav .menu-icon { display: none; }
-
 .site-nav .page-link {
   margin-left: 20px;
   color: #727272;
 }
 
-.github-icon-svg,
 .twitter-icon-svg {
   display: inline-block;
-  width: 21px;
-  height: 21px;
+  width: 19px;
+  height: 19px;
   position: relative;
-  top: 17px;
-  left: 10px;
+  top: 22px;
+  left: 8px;
+}
+
+.github-icon-svg {
+  display: inline-block;
+  width: 19px;
+  height: 19px;
+  position: relative;
+  top: 21px;
+  left: 8px;
 }
 
 .rss-icon-svg {
@@ -94,10 +97,9 @@ img {
   width: 17px;
   height: 17px;
   position: relative;
-  top: 16px;
-  left: 13px;
+  top: 20px;
+  left: 10px;
 }
-
 
 /* Page Content styles */
 /* ----------------------------------------------------------*/
@@ -113,16 +115,19 @@ img {
 
 .posts { list-style-type: none; }
 
-.posts li { margin-bottom: 24px; }
+.posts li { margin: 24px 0px; }
 
 .posts .post-link {
-  font-size: 17px;
-  line-height: 1;
+  font-size: 21px;
+  font-weight: 600;
+  line-height: 1.1;
+  text-decoration: none;
 }
 
 .posts .post-date {
   display: block;
   font-size: 14px;
+  margin-bottom: 2px;
   color: #818181;
 }
 
@@ -130,26 +135,25 @@ img {
 /* Post styles */
 /* ----------------------------------------------------------*/
 
-.post-header { margin: 16px 0 32px; }
+.post-header { margin: 32px 0 40px; }
 
 .post-header h1 {
-  font-size: 32px;
-  line-height: 1.3;
-  margin-left: -2px;
+  font-size: 36px;
+  line-height: 1.1;
+  margin-left: -1px;
 }
 
 .post-header .meta {
   font-size: 14px;
   color: #818181;
-  margin-top: 5px;
-  margin-left: 1px;
+  margin-top: 4px;
 }
 
 .post-content { margin: 0 0 30px; word-wrap: break-word; }
-
 .post-content > * { margin: 24px 0; }
-
 .post-footer { margin: 60px 0 0; }
+
+.post-content a { text-decoration: underline; }
 
 .post-content h1,
 .post-content h2,
@@ -158,7 +162,7 @@ img {
 .post-content h5,
 .post-content h6 {
   line-height: 1;
-  margin: 48px -2px 24px;
+  margin: 48px -1px 24px;
 }
 
 .post-content blockquote {
@@ -328,9 +332,9 @@ img {
   }
 
   .post-header h1 { font-size: 36px; word-break: break-all; }
-  .post-content h2 { font-size: 26px; }
-  .post-content h3 { font-size: 22px; }
-  .post-content h4 { font-size: 18px; }
+  .post-content h2 { font-size: 28px; }
+  .post-content h3 { font-size: 20px; }
+  .post-content h4 { font-size: 14px; }
   .post-content blockquote { padding-left: 10px; }
   .post-content ul,
   .post-content ol { padding-left: 10px; }
