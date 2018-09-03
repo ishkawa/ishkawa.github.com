@@ -1,4 +1,9 @@
 <head>
+    {% if page.image %}
+      {% assign image_url = site.url | append: page.image %}
+    {% else %}
+      {% assign image_url = site.url | append: '/assets/misc/blank.png' %}
+    {% endif %}
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>{{ page.title }}</title>
@@ -8,12 +13,12 @@
     <meta property="og:type" content="article">
     <meta property="og:description" content="{{ page.excerpt | strip_html }}">
     <meta property="og:url" content="{{ page.url | replace:'index.html','' | prepend: site.baseurl | prepend: site.url }}">
-    <meta property="og:image" content="{{ site.url }}/assets/misc/blank.png" />
+    <meta property="og:image" content="{{ image_url }}" />
     <meta property="og:site_name" content="{{ site.name }}">
     <meta name="twitter:card" content="summary">
     <meta name="twitter:title" content="{{ page.title }}">
     <meta name="twitter:description" content="{{ page.excerpt | strip_html }}">
-    <meta name="twitter:image" content="{{ site.url }}/assets/misc/blank.png" />
+    <meta name="twitter:image" content="{{ image_url }}" />
     <link rel="canonical" href="{{ page.url | replace:'index.html','' | prepend: site.baseurl | prepend: site.url }}">
 
     <!-- Custom CSS -->
