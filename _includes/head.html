@@ -1,7 +1,9 @@
 <head>
     {% if page.image %}
+      {% assign twitter_card = 'summary_large_image' %}
       {% assign image_url = site.url | append: page.image %}
     {% else %}
+      {% assign twitter_card = 'summary' %}
       {% assign image_url = site.url | append: '/assets/misc/blank.png' %}
     {% endif %}
     <meta charset="utf-8">
@@ -15,7 +17,7 @@
     <meta property="og:url" content="{{ page.url | replace:'index.html','' | prepend: site.baseurl | prepend: site.url }}">
     <meta property="og:image" content="{{ image_url }}" />
     <meta property="og:site_name" content="{{ site.name }}">
-    <meta name="twitter:card" content="summary">
+    <meta name="twitter:card" content="{{ twitter_card }}">
     <meta name="twitter:title" content="{{ page.title }}">
     <meta name="twitter:description" content="{{ page.excerpt | strip_html }}">
     <meta name="twitter:image" content="{{ image_url }}" />
