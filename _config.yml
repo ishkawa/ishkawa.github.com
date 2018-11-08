@@ -3,6 +3,7 @@ email: y@ishkawa.org
 description: ""
 baseurl: ""
 url: "http://blog.ishkawa.org"
+timezone: Asia/Tokyo
 twitter_username: _ishkawa
 github_username:  ishkawa
 
