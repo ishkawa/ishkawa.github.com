@@ -36,7 +36,7 @@ img {
 .wrap:after { content:""; display:table; }
 .wrap:after { clear: both; }
 .wrap {
-  max-width: 720px;
+  max-width: 640px;
   padding: 0 30px;
   margin: 0 auto;
   zoom: 1;
@@ -157,26 +157,12 @@ img {
     display: flex;
 }
 
-.post-footer .support-button {
-    margin-right: 8px;
-    box-sizing: border-box;
-    vertical-align: middle;
-    display:table-cell;
-    height: 28px;
-    background: #2f70b4;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
-.post-footer .support-button a {
-    margin: auto;
-    padding: 0px 12px 0px 12px;
-    color: #fff;
-    font-weight: 500;
-    font-size: 11pt;
-}
-
 .post-content a { text-decoration: underline; }
+
+.post-content h1 {
+  margin-top: 44px;
+  margin-bottom: -16px;
+}
 
 .post-content h2 {
   font-size: 30px;
