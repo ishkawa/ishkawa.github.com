@@ -10,7 +10,7 @@ description: ""
 
 手元のエディタでMarkdownを書いてGitHubにプッシュするという、エンジニアのブログにはよくあるものにした。当初は更新を気軽にしたくてNetlify CMSを試してみたが、結局エディタの挙動で気が狂いそうになってしまい、書きやすさには替えられないと思ってやめた。
 
-デプロイにはGitHub Actionsを使っていて、編集用の`source`というブランチに更新をプッシュすると、GitHub Actions上でGatsbyJSの静的サイトのビルドと`master`ブランチに成果物がプッシュされる。
+デプロイにはGitHub Actionsを使っていて、編集用の`source`というブランチに更新をプッシュすると、GitHub Actions上でGatsbyJSの静的サイトのビルドと、`master`ブランチへの成果物のプッシュが実行される。
 
 ホスティングにGitHub Pagesを使っているのは単なる惰性。いつか元気が出たらNetlifyを試す。
 
