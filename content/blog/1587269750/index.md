@@ -52,7 +52,7 @@ workflows:
 
 これで、1つのジョブで4つのビルドを担えるようになった。
 
-## 参考
+## 参考ドキュメント
 
 - [Reusable Config Reference Guide](https://circleci.com/docs/2.0/reusing-config/#authoring-parameterized-ジョブs)
 - [Configuring CircleCI](https://circleci.com/docs/2.0/configuration-reference/#matrix-requires-version-21)
