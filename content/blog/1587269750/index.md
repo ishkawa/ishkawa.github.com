@@ -54,5 +54,5 @@ workflows:
 
 ## 参考ドキュメント
 
-- [Reusable Config Reference Guide](https://circleci.com/docs/2.0/reusing-config/#authoring-parameterized-ジョブs)
+- [Reusable Config Reference Guide](https://circleci.com/docs/2.0/reusing-config/#authoring-parameterized-jobs)
 - [Configuring CircleCI](https://circleci.com/docs/2.0/configuration-reference/#matrix-requires-version-21)
