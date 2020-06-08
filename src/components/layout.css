@@ -44,6 +44,12 @@ article header h1 {
     margin-bottom: 16px;
 }
 
+article section h3 {
+    font-size: 22px;
+    line-height: 1.2;
+    margin-bottom: 16px;
+}
+
 article header .date {
     font-size: 16px;
     display: block;
@@ -59,8 +65,16 @@ article section {
     letter-spacing: -0.1666px;
 }
 
-main h1, h2, h3 {
+main h1 {
     margin-top: 88px;
+}
+
+main h2 {
+    margin-top: 72px;
+}
+
+main h3 {
+    margin-top: 56px;
 }
 
 article h1, h2, h3 {
