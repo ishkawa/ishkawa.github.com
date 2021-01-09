@@ -3,7 +3,7 @@ a {
 }
 
 li {
-    margin: 2px 0px;
+    margin: 0px 0px;
 }
 
 h3 {
@@ -67,7 +67,7 @@ article section {
 
 main h1, h2, h3 {
     margin-top: 3rem;
-    margin-bottom: 0.9rem;
+    margin-bottom: 0.95rem;
 }
 
 article p code {
