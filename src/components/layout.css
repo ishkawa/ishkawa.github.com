@@ -3,7 +3,15 @@ a {
 }
 
 li {
-    margin: 4px 0px;
+    margin: 2px 0px;
+}
+
+h3 {
+    font-size: 1.1rem;
+}
+
+hr {
+    margin-top: 3rem;
 }
 
 pre, code {
@@ -34,26 +42,18 @@ header svg {
     fill: #b0baba;
 }
 
-article header {
-    margin-top: 96px;
-}
-
 article header h1 {
-    font-size: 44px;
-    line-height: 1.2;
-    margin-bottom: 16px;
-}
-
-article section h3 {
-    font-size: 22px;
-    line-height: 1.2;
-    margin-bottom: 16px;
+    margin-bottom: 4px;
 }
 
 article header .date {
     font-size: 16px;
     display: block;
     color: #5f6c80;
+}
+
+article section p, ol, ul {
+    margin-bottom: 1.1rem;
 }
 
 article footer {
@@ -65,7 +65,12 @@ article section {
     letter-spacing: -0.1666px;
 }
 
-main h1 {
+main h1, h2, h3 {
+    margin-top: 3rem;
+    margin-bottom: 0.9rem;
+}
+
+/* main h1 {
     margin-top: 88px;
 }
 
@@ -75,11 +80,7 @@ main h2 {
 
 main h3 {
     margin-top: 56px;
-}
-
-article h1, h2, h3 {
-    margin-top: 88px;
-}
+} */
 
 article p code {
     border: #f0f1f2;
