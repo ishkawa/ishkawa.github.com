@@ -14,7 +14,7 @@ description: ""
 
 <figure>
     <img src="https://imgur.com/99VEOQZ.jpg">
-    <figcaption>充電器は脱衣所の洗濯機の上の棚に置いている</figcaption>
+    <figcaption>充電器は洗濯機の上の棚に置いている</figcaption>
 </figure>
 
 入浴中にApple Watchが100%まで充電されるのは、入浴中にiPadで本を読んだり動画を観たりしていて、なんだかんだで毎回60分程度は経つため。このスタイルが定着してからは、風呂にいる時以外は常時Apple Watchを身に着けている状態になった。
