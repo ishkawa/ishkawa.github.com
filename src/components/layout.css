@@ -6,8 +6,12 @@ li {
     margin: 0px 0px;
 }
 
+h2 {
+    font-size: 1.25rem;
+}
+
 h3 {
-    font-size: 1.1rem;
+    font-size: 1.05rem;
 }
 
 hr {
