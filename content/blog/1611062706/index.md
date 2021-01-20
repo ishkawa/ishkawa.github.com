@@ -2,7 +2,13 @@
 title: "M1 MacBook Airを買った"
 date: 2021-01-19 09:00 +0900
 description: ""
+image: "https://imgur.com/LZx5OSZ.jpg"
 ---
+
+<figure>
+    <img src="https://imgur.com/LZx5OSZ.jpg">
+    <figcaption>箱</figcaption>
+</figure>
 
 発表当初はあまり前向きには考えていなかったのだけど、実際に使っている人々の評判がやたらと良かったので結局買った。メモリは16GB、ストレージは256GBにした。
 
