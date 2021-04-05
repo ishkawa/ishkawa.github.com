@@ -33,7 +33,7 @@ Zapierを使って、以下のように実現した。
 
 ステップ1はbotへのメンションにも対応できるようにした。
 
-![](meetbot.png)
+![](https://i.imgur.com/1dIrLTM.png)
 
 ## 感想
 

@@ -20,7 +20,7 @@ FlutterアプリはiOSでは1つのUIViewController、Androidでは1つのView�
 
 次の画像は実際に動かしてみた様子のスクリーンショットで、左がiOSシミュレーター、右がAndroidエミュレーターとなっている。iOSのUITabBar、AndroidのBottomNavigationViewがネイティブで組まれていて、残りの部分はFlutterで組まれている。
 
-![](./screenshot.png)
+![](https://i.imgur.com/MmrjVG1.png)
 
 ## 感想
 
