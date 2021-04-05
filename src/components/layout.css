@@ -1,5 +1,7 @@
 a {
-    color: #4F96B5;
+    color: #32628f;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 1px;
 }
 
 li {
