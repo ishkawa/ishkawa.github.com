@@ -1,7 +1,7 @@
 ---
 title: "仕事でコードを書く時期/書かない時期"
 date: 2022-12-20 18:15 +0900
-description: ""
+description: "本記事は10Xアドベントカレンダー2022の20日目の記事です。"
 image: "https://i.imgur.com/xNvqHaq.png"
 ---
 
