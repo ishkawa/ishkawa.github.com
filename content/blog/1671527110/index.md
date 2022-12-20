@@ -1,6 +1,7 @@
 ---
 title: "仕事でコードを書く時期/書かない時期"
 date: 2022-12-20 18:15 +0900
+description: ""
 image: "https://i.imgur.com/xNvqHaq.png"
 ---
 
