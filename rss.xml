@@ -1,0 +1,523 @@
+<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[ishkawa]]></title><description><![CDATA[ishkawa]]></description><link>https://ishkawa.org</link><generator>GatsbyJS</generator><lastBuildDate>Tue, 01 Aug 2023 10:54:41 GMT</lastBuildDate><item><title><![CDATA[Dart 3におけるtable driven test]]></title><description><![CDATA[今年リリースされたDart 3には、新たにrecordという機能が導入された(Doc)。これは他の言語でいうところのtuple的なもので、複数の値を持つことができる。keyやindexで要素にアクセスできるし、destructure…]]></description><link>https://ishkawa.org/1690880787/</link><guid isPermaLink="false">https://ishkawa.org/1690880787/</guid><pubDate>Tue, 01 Aug 2023 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;今年リリースされたDart 3には、新たにrecordという機能が導入された(&lt;a href=&quot;https://dart.dev/language/records&quot;&gt;Doc&lt;/a&gt;)。これは他の言語でいうところのtuple的なもので、複数の値を持つことができる。keyやindexで要素にアクセスできるし、destructureもできる。&lt;/p&gt;
+&lt;p&gt;それほど多用する機能ではないが、table driven testを書く場合には重宝する。&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;dart&quot;&gt;&lt;pre class=&quot;language-dart&quot;&gt;&lt;code class=&quot;language-dart&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;token function&quot;&gt;group&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token string-literal&quot;&gt;&lt;span class=&quot;token string&quot;&gt;&apos;NumberParser.parse&apos;&lt;/span&gt;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token keyword&quot;&gt;final&lt;/span&gt; testCase &lt;span class=&quot;token keyword&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;
+      &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;input&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token string-literal&quot;&gt;&lt;span class=&quot;token string&quot;&gt;&apos;one&apos;&lt;/span&gt;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; output&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+      &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;input&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token string-literal&quot;&gt;&lt;span class=&quot;token string&quot;&gt;&apos;two&apos;&lt;/span&gt;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; output&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+      &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;input&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token string-literal&quot;&gt;&lt;span class=&quot;token string&quot;&gt;&apos;three&apos;&lt;/span&gt;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; output&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+      &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;input&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token string-literal&quot;&gt;&lt;span class=&quot;token string&quot;&gt;&apos;four&apos;&lt;/span&gt;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; output&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+      &lt;span class=&quot;token function&quot;&gt;test&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token string-literal&quot;&gt;&lt;span class=&quot;token string&quot;&gt;&apos;&quot;&lt;/span&gt;&lt;span class=&quot;token interpolation&quot;&gt;&lt;span class=&quot;token punctuation&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;token expression&quot;&gt;testCase&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;input&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&quot;を渡すと&lt;/span&gt;&lt;span class=&quot;token interpolation&quot;&gt;&lt;span class=&quot;token punctuation&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;token expression&quot;&gt;testCase&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;output&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;が返される&apos;&lt;/span&gt;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;token keyword&quot;&gt;final&lt;/span&gt; parser &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token class-name&quot;&gt;NumberParser&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+        &lt;span class=&quot;token keyword&quot;&gt;final&lt;/span&gt; output &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; parser&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;parse&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;testCase&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;input&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+        &lt;span class=&quot;token function&quot;&gt;expect&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;output&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; testCase&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;output&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+      &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;
+  &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;実行結果&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;✓ NumberParser.parse &quot;one&quot;を渡すと1が返される
+✓ NumberParser.parse &quot;two&quot;を渡すと2が返される
+✓ NumberParser.parse &quot;three&quot;を渡すと3が返される
+✓ NumberParser.parse &quot;four&quot;を渡すと4が返される
+Exited&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;他の言語でも、TypeScriptやSwiftあたりは同じ書き方ができそう。&lt;/p&gt;</content:encoded></item><item><title><![CDATA[GitHub Copilotの雑感]]></title><description><![CDATA[時代はAIという訳で、GitHub Copilotを使い始めてみた。GitHub Copilot…]]></description><link>https://ishkawa.org/1680785662/</link><guid isPermaLink="false">https://ishkawa.org/1680785662/</guid><pubDate>Thu, 06 Apr 2023 23:00:00 GMT</pubDate><content:encoded>&lt;p&gt;時代はAIという訳で、GitHub Copilotを使い始めてみた。GitHub Copilotが登場した時にはそこまで大きなメリットを想像できていなかったが、いざ使ってみるとメリットがよく理解でき、これからのプログラミングのやり方も影響を受けるだろうなという感覚を得た。&lt;/p&gt;
+&lt;p&gt;なお、最近GitHub Copilot Xが発表されたが、これについては未体験。&lt;/p&gt;
+&lt;h2&gt;退屈な作業を減らしてくれる&lt;/h2&gt;
+&lt;p&gt;Copilotは自明なコードはほとんど補完してくれる。例えば、フィールドを宣言してコンストラクタを書き始めれば必要なパラメーターをすべて補完してくれる。コンテキストがハッキリしている場面では、適切な名前の変数を宣言すればそれに合わせた実装を補完してくれるし、コメントを書いたら変数宣言から実装まで補完してくれることもある。&lt;/p&gt;
+&lt;p&gt;そういう場面に何度も遭遇してみると、今までも頭の中ではわかりきっていたコードをタイピングすることに時間を取られていたのだということに気づいた。そして、この楽さを一度覚えると、もう戻るのは難しい。&lt;/p&gt;
+&lt;h2&gt;メタプログラミングっぽさがある&lt;/h2&gt;
+&lt;p&gt;コンテキストがハッキリしているものはCopilotが補完してくれるとなると、それに対する人間の役割は輪郭となるコードを書くこととなる。輪郭となるコードを書いて、残りの自明なコードを生成させるという意味では、メタプログラミングと通ずるところがあると感じた。&lt;/p&gt;
+&lt;p&gt;ただし、Copilotは輪郭を様々なレベルで柔軟に認識していて、数文字の補完から数行の補完まで色々とやってくれる。同等の柔軟性のメタプログラミングの機構を開発するのは難しいだろうし、これはAIとの共同作業ならではの体験なんだと思った。&lt;/p&gt;
+&lt;h2&gt;負債を増やさないように気を付ける&lt;/h2&gt;
+&lt;p&gt;コードは簡単に書けるようになったが、コード量を安易に増やして負債化することには気をつけるべきだと感じた。コードが存在しなくて済むなら存在しない方が良い。特にテストコードは闇雲に生成すると膨れやすくなる。&lt;/p&gt;
+&lt;p&gt;それと、コードの読み手の目線では手書きのコードも生成されたコードも同じなので、生成する楽さに寄りかかりすぎるべきではないと感じた。&lt;/p&gt;
+&lt;h2&gt;今後の期待&lt;/h2&gt;
+&lt;p&gt;今の時点では、プログラミングの主役はまだまだ圧倒的に人間だが、その割合が変わるのは案外早いかもなというのが今のところの感覚。これが進んだ先の世界でどんな仕事が主務になっていくのかわからないが、更にエンジニアリングのストレスが減っていくことを期待したい。&lt;/p&gt;
+&lt;p&gt;知識は適切にインプットしてもらえるし、アウトプットは適切に補完されるし、危ないことは止めてくれるし、面倒なことはやってくれるし、問題にハマっても解決してくれるし、といった感じに。&lt;/p&gt;
+&lt;p&gt;そう考えると、今のエンジニアリングはストレスが多すぎるのかもしれない。&lt;/p&gt;</content:encoded></item><item><title><![CDATA[仕事でコードを書く時期/書かない時期]]></title><description><![CDATA[本記事は 10X アドベントカレンダー2022 の20日目の記事です。好きなスーパーはライフで、週…]]></description><link>https://ishkawa.org/1671527110/</link><guid isPermaLink="false">https://ishkawa.org/1671527110/</guid><pubDate>Tue, 20 Dec 2022 09:15:00 GMT</pubDate><content:encoded>&lt;p&gt;本記事は &lt;a href=&quot;https://www.notion.so/9dafcb8ca4114804a78e4354e062ff64&quot;&gt;10X アドベントカレンダー2022&lt;/a&gt; の20日目の記事です。好きなスーパーはライフで、週2回はネットスーパーを利用しています。お気に入りの商品は、ライフプレミアムの「大粒もっちり肉餃子」です。肉も野菜も摂取できて、お腹いっぱいになり、ビールにも合う優等生です。忙しい日に是非買ってみてください。&lt;/p&gt;
+&lt;hr&gt;
+&lt;p&gt;さて、この記事の本題です。10Xでは創業当初からCTOを務めているのですが、会社のフェーズの変化と共にコードを書く機会が増えたり減ったりしてきました。その過程で起きたことや考えたことを、まとめて紹介しようと思います。&lt;/p&gt;
+&lt;h2&gt;変遷&lt;/h2&gt;
+&lt;p&gt;仕事でコードを書くとき、書かないときは以下のように変遷してきました。&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;第1次開発期&lt;/li&gt;
+&lt;li&gt;PM&amp;#x26;デザイン期&lt;/li&gt;
+&lt;li&gt;第2次開発期&lt;/li&gt;
+&lt;li&gt;マネジメント期&lt;/li&gt;
+&lt;li&gt;第3次開発期&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;とあるリポジトリへのcontributionは以下のようになっています。グラフのどの部分がどの時期に該当するかは明言しませんが、波があることは察していただけるかと思います。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://i.imgur.com/xNvqHaq.png&quot; alt=&quot;GitHub Contributions&quot;&gt;&lt;/p&gt;
+&lt;h3&gt;1. 第1次開発期&lt;/h3&gt;
+&lt;p&gt;Stailerの立ち上げ期です。会社のメンバーはまだ10名ほどでした。&lt;/p&gt;
+&lt;p&gt;新たなプロダクトの開発に着手するということで、まずは技術選定やアプリケーションの土台となるコンポーネントの実装を完了させる必要がありました。クライアントサイドではFlutterの採用を決めたり、ベースとなるUIコンポーネントをドラフトしたりしました。サーバーサイドでは&lt;a href=&quot;https://type.jp/et/feature/15075/&quot;&gt;開発チームの特性を考慮してサーバーサイドでDartを採用し&lt;/a&gt;、Firestoreを操作するライブラリを開発したりしました。&lt;/p&gt;
+&lt;p&gt;クライアント/サーバー共に開発に必要なものがある程度揃った段階で、次のフェーズに移りました。&lt;/p&gt;
+&lt;h3&gt;2. PM&amp;#x26;デザイン期&lt;/h3&gt;
+&lt;p&gt;Stailerの機能開発に着手して、リリースした時期です。事業としての不確実性はまだまだ高く、全社で15名ほどでこのフェーズを乗り越えたようです。事業開発の重要性の高まりに伴って、代表の矢本さんの役割をシフトさせたタイミングでもありました。&lt;/p&gt;
+&lt;p&gt;この時の自分はコードの第一線からは退いて、PMとデザイナーの役割を担うことになりました。事業戦略やプロダクトの位置付けは矢本さんに決めてもらいつつ、プロダクト自体の仕様策定やデザインをしていました。Figmaを使いながら、お客様向けの売場やカートのUIを模索し、現在のプロダクトの原形となるものをつくりました。&lt;/p&gt;
+&lt;p&gt;その後、デザイナーの&lt;a href=&quot;https://twitter.com/suuminbot&quot;&gt;suuminさん&lt;/a&gt;とPMの&lt;a href=&quot;https://twitter.com/usk_ura&quot;&gt;uraさん&lt;/a&gt;が入社したことや、新たな事業機会がやってきたことによって、再び開発に軸足を置くことになりました。&lt;/p&gt;
+&lt;h3&gt;3. 第2次開発期&lt;/h3&gt;
+&lt;p&gt;Stailerがネットスーパーの立ち上げに必要なものにすべてを取り揃えるべく、プロダクトの手を広げたタイミングです。会社のメンバーも15名 → 30名と増加したタイミングでもありました。&lt;/p&gt;
+&lt;p&gt;新たに開発するものは、商品マスターデータの生成、注文管理、決済処理、店舗スタッフのピッキング/パッキング業務支援、ドライバーの配達業務支援、売上データの連携など、多数ありました。この時、自分は1人のSWEとして動くことに決め、いくつかの機能の開発を担当しました。&lt;/p&gt;
+&lt;p&gt;短期で数多くの機能を開発したことによる問題が生じることもありましたし、これらのすべてをこのタイミングで開発するのが最善だったのかは今でもわかりません。ただ、紆余曲折を経てプロダクトは上手く機能するようになり、スーパーのお客様やスタッフの皆さんに価値を提供できる状態には辿り着くことができました。&lt;/p&gt;
+&lt;p&gt;担当した機能たちのリリースが完了し、運用もメンバーに引き継げるようになったタイミングで、また開発から離れることになりました。&lt;/p&gt;
+&lt;h3&gt;4. マネジメント期&lt;/h3&gt;
+&lt;p&gt;事業機会が広がり、会社の規模も大きくなってきた時期です。複数の企業とパートナーシップを結び、さまざまな地域でサービスを提供できるようになりました。会社のメンバーは30名 → 80名に増加しました。&lt;/p&gt;
+&lt;p&gt;この時期は、前のフェーズで事業機会を掴んだことにより、会社に求められることが大きく変化するタイミングでもありました。あらためて会社として長期/中期/短期で何を成し遂げるべきか明確にし、計画を実現する体制もそれに合わせてアップデートし、体制を支える採用や人事制度の整備する必要がありました(&lt;a href=&quot;https://yamotty.tokyo/post/20221003&quot;&gt;詳しくは矢本さんのブログを参照&lt;/a&gt;)。&lt;/p&gt;
+&lt;p&gt;開発組織としても、目の前の事業機会を掴みながらも、品質や拡張性の獲得といった長期的な課題に取り組む必要がありました。短期的な課題への対処としては体制の変更や開発プロセスの整備を進め、長期的な課題への対処としては開発を変えていく検証を行う組織を組成しました。&lt;/p&gt;
+&lt;p&gt;新規パートナーのリリース、既存パートナーのグロース、開発基盤の整備、採用、人事制度のアップデート、ミドルマネジメント、経営企画、HRなど、さまざまな面で成果が上がってきたことにより、自分によるマネジメントがボトルネックになることは徐々に減ってきました。&lt;/p&gt;
+&lt;h3&gt;5. 第3次開発期&lt;/h3&gt;
+&lt;p&gt;今はここのフェーズです。プロダクトがこれからの事業機会に応えていくためには、いくつかの面で構造的な変更が必要なのですが、その変更をいかにして実現するかを探索するために今はコードを書いています。&lt;/p&gt;
+&lt;p&gt;また、開発組織としても規模が大きくなってきており、システムの統治のあり方、進化の方向性の管理も大きな課題となってきました。これに対して、長期的に目指す開発の形に合わせて体制を検討しつつ、&lt;a href=&quot;https://www.oreilly.com/library/view/untitled/9784873118567/ch02.xhtml&quot;&gt;進化的アーキテクチャにおける適応度関数&lt;/a&gt;のような概念を導入し、プロダクト戦略を各開発チームが再現性高く実装できるようにすることにも挑戦しようとしています。&lt;/p&gt;
+&lt;p&gt;引き続き、マネジメントとの二足の草鞋を履いた状態ではあるものの、マネジメントの委譲を進めることで、エンジニアリングと経営の間をリンクさせる役割にさらに集中していきたいと考えています。&lt;/p&gt;
+&lt;h2&gt;コードを書く時期/書かない時期&lt;/h2&gt;
+&lt;p&gt;これまでを振り返ると、「CTOである自分がコードを書くことが事業のボトルネックの解消につながるかどうか」が、意思決定のポイントだったように思います。CTOという立場を強調したのは、会社の経営に責任を持っている点や、組織への影響を及ぼしやすいという点など、他の役割とは異なる前提があるためです。今後もこの点を意識しながら頑張っていきたいと思います。&lt;/p&gt;
+&lt;p&gt;この判断は組織にどんな人材がいるかによっても変わると思います。アーキテクト、EM、SWE、HRBPなど、などこれから組織に入ってくる人次第でCTOがやるべき仕事も変わってくるので、一緒にやっても良いかな？と思った方は、是非一度話しましょう。&lt;/p&gt;
+&lt;p&gt;以下のページからカジュアル面談を設定できます。
+&lt;a href=&quot;https://open.talentio.com/r/1/c/10x/pages/72019&quot;&gt;https://open.talentio.com/r/1/c/10x/pages/72019&lt;/a&gt;&lt;/p&gt;
+&lt;hr&gt;
+&lt;p&gt;明日の&lt;a href=&quot;https://www.notion.so/9dafcb8ca4114804a78e4354e062ff64&quot;&gt;アドベントカレンダー&lt;/a&gt;の担当はCorporate Operationsの&lt;a href=&quot;https://twitter.com/mu_yk521&quot;&gt;川村さん&lt;/a&gt;です。お楽しみに！&lt;/p&gt;</content:encoded></item><item><title><![CDATA[宣言型の仕事]]></title><description><![CDATA[プログラミングの分類の1つに、宣言型プログラミング(declarative programming)と命令型プログラミング(imperative programming…]]></description><link>https://ishkawa.org/1635265615/</link><guid isPermaLink="false">https://ishkawa.org/1635265615/</guid><pubDate>Wed, 27 Oct 2021 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;プログラミングの分類の1つに、宣言型プログラミング(declarative programming)と命令型プログラミング(imperative programming)というものがある。ごく簡単に説明すると、宣言型プログラミングは得たい結果を記述するもので、命令型プログラミングは結果を得る手順を記述するものだ。宣言型プログラミングの面白い点は、書き手は記述した結果がどのように達成されるのか考えなくても、その結果が得られてしまうというところ。よく知られた例はSQLで、SQLでクエリを書いたときにストレージに対してどういうアクセスが発生して、メモリに何が乗り、どういう手順でデータが処理されるのか意識せずとも結果が得られる。&lt;/p&gt;
+&lt;p&gt;結果しか書いていないにも関わらず、実際にプログラムが動いて結果を得られるのは、宣言型プログラミングが可能な世界には、記述された結果を解釈してコンピューターが理解できる命令に変換する役割が存在するからだ。&lt;/p&gt;
+&lt;p&gt;最近、自分の仕事のしかたについて考えていて、この考え方がヒントになりそうだと感じた。自分は組織の成果に責任を持つ立場なので、「達成したいこと」を設定しつつもそれを「どうやって達成するか」も決めていかないといけない。「どうやって達成するか」は元々プログラマーである自分にとっては深い沼で、実現に向けてどこまでも深く足を踏み入れることができてしまう。ここに足を踏み入れすぎてしまうと、より良い「達成したいこと」を探索することに注意が向かなくなってしまうことがある。&lt;/p&gt;
+&lt;p&gt;そういうわけで、自分の仕事を宣言型に寄せていく必要があると感じている。極端に振り切るならば、「達成したいこと」だけを設定して、それを「どうやって達成するか」は考えないというやり方だ。これだけ読むと無責任にも見えるが、設定された「達成したいこと」が組織の可能性を最大化するもので、組織にもそれを達成する能力が備わっているなら、それは良い役割分担だと言える。&lt;/p&gt;
+&lt;p&gt;実際には「達成したいこと」を設定した後に「どうやって達成するか」に着手することもできるので、宣言型の仕事に振り切る必要はない。しかし、1人でできることには限界があるので、どちらにどれだけ力を割くかのバランスは意識的に決めていかなければならない。今の自分の状況では「どうやって達成するか」を放棄して宣言型の仕事に徹することは全く現実的ではないし、そうしたいともそうすべきとも思っていない。しかし、「どうやって達成するか」に引っ張られがちな自分が良いバランスを探る上で役立つことは間違いないので、1つの極地として頭に置いておこうと思う。&lt;/p&gt;</content:encoded></item><item><title><![CDATA[M1 MacBook Airを買った]]></title><description><![CDATA[発表当初はあまり前向きには考えていなかったのだけど、実際に使っている人々の評判がやたらと良かったので結局買った。メモリは16GB、ストレージは256GB…]]></description><link>https://ishkawa.org/1611062706/</link><guid isPermaLink="false">https://ishkawa.org/1611062706/</guid><pubDate>Tue, 19 Jan 2021 00:00:00 GMT</pubDate><content:encoded>&lt;figure&gt;
+    &lt;img src=&quot;https://imgur.com/LZx5OSZ.jpg&quot;&gt;
+    &lt;figcaption&gt;箱&lt;/figcaption&gt;
+&lt;/figure&gt;
+&lt;p&gt;発表当初はあまり前向きには考えていなかったのだけど、実際に使っている人々の評判がやたらと良かったので結局買った。メモリは16GB、ストレージは256GBにした。&lt;/p&gt;
+&lt;h2&gt;良いところ&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;速い&lt;/li&gt;
+&lt;li&gt;発熱しない&lt;/li&gt;
+&lt;li&gt;バッテリーが長持ち&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;ビデオ通話でモタつくこともないし、膝に乗せている時に熱でストレスを感じることもないし、負荷のかかる作業をしていてもバッテリーの心配をすることもない。当たり前のことを書いているようだけど、これらが実現することで本当に快適になった。&lt;/p&gt;
+&lt;h2&gt;開発環境&lt;/h2&gt;
+&lt;p&gt;Flutterアプリもサーバーも動かせたので、仕事用のマシンのM1への移行も現実的なのかもしれない。最初からすべてを順調に動作させられた訳ではないが、思いの外越えるべきものが少なくて拍子抜けしたくらい。&lt;/p&gt;
+&lt;p&gt;色々なものをbetaで使うことになるので、しばらくそれによる不便もあるとは思うけど、今より悪くなることはなさそうなので明るい気持ちで使っていけそうだ。&lt;/p&gt;</content:encoded></item><item><title><![CDATA[フィードリーダーの利用を再開した]]></title><description><![CDATA[2012年頃まではフィードリーダーを使っていたけど、その後SNSの情報に押されてきて徐々に使わなくなっていった。しかし、「自分が追いたい情報はSNS…]]></description><link>https://ishkawa.org/1610344612/</link><guid isPermaLink="false">https://ishkawa.org/1610344612/</guid><pubDate>Mon, 11 Jan 2021 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;2012年頃まではフィードリーダーを使っていたけど、その後SNSの情報に押されてきて徐々に使わなくなっていった。しかし、「自分が追いたい情報はSNSで流れてくるものだけなのか？」とか、「人がシェアした記事ばかり読むのってどうなの？」みたいな問題意識が定期的に生まれてきて、何度か利用を再開しようとしたのだが、毎回気づけば離脱していた。&lt;/p&gt;
+&lt;p&gt;最近またその問題意識が芽生えてきたので、フィードリーダーの利用を再開した。これまでと同じやり方ではまた無意識に離脱すると思うので、継続できるような仕組みになるように、やり方を工夫してみることにした。&lt;/p&gt;
+&lt;h2&gt;閲覧体験の良いアプリを使う&lt;/h2&gt;
+&lt;p&gt;フィードリーダーのアプリはReeder 5を使うことにした。ReederはiOSの初期から質の高いフィードリーダーを提供していて、Reeder 5はその2020年版。初期のバージョンから引き継いでいる低コントラストのトーンは維持しつつも、iOS 14に見合ったデザインになっている。&lt;/p&gt;
+&lt;figure&gt;
+    &lt;img src=&quot;https://imgur.com/4E71kqf.jpg&quot;&gt;
+    &lt;figcaption&gt;iPad版は複数の記事を俯瞰しながら詳細も読める&lt;/figcaption&gt;
+&lt;/figure&gt;
+&lt;p&gt;Reeder 5は、iPhone/iPad/Macのそれぞれに最適化されたアプリが提供されている。自分の場合は主にiPad版を使っているのだが、iPad版では複数の記事を俯瞰しながら記事の詳細を読めるため、読み飛ばすのが簡単。なので、読むものがある程度たまってしまってもサクサク消化できるはず。&lt;/p&gt;
+&lt;h2&gt;未読バッジで閲覧タイミングを制御&lt;/h2&gt;
+&lt;p&gt;自分がフィードリーダーから離脱しないためには、アプリを開くタイミングの適切なアテンションが必要だと思った。「定期的にアプリを開くようにしよう」と最初は意識していてもそのうち忘れてしまうし、いざ開いてみても未読が一件もなかったらそのうち開かなくなってしまうから。&lt;/p&gt;
+&lt;p&gt;なので、Reederの同期を”Background refresh”に設定して、アプリを開かなくてもホーム画面に未読バッジがつくようにした。この設定をすると、どうやらiOSのBackground Tasksという仕組みを使うようで、バックグラウンドでのフィード更新はOSが気まぐれで実行される。そんな調子の仕組みなので、更新にはかなりのラグがあり、リアルタイム性はまったくない。しかし、自分の場合は1日1回くらいバッジが更新されてくれれば十分なので、今回の用途では問題なさそう。&lt;/p&gt;
+&lt;p&gt;自分はホーム画面に未読バッジを1つも残さないタイプの人間なので、これさえ動いていればちゃんとアプリを開き続けられるはず。&lt;/p&gt;
+&lt;h2&gt;購読の数を絞る&lt;/h2&gt;
+&lt;p&gt;過去にフィードリーダーの利用を再開して離脱した時は大体意識がこじれていて、読んだ方が良さそうだけど読むのは大変というものを結構購読していた。しかし、こういう情報でフィードが埋め尽くされてしまうと、後ろめたい気持ちを抱えながら未読を消化するのに追われてしまうという最悪な体験になる。&lt;/p&gt;
+&lt;p&gt;なので、今回は購読を以下の3種類に絞って、利用を続けることを第一とした。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;公式アナウンス: 使っている技術やプロダクトの最新情報(&lt;a href=&quot;https://cloud.google.com/blog/&quot;&gt;Google Cloud Blog&lt;/a&gt;など)&lt;/li&gt;
+&lt;li&gt;会社ブログ: 注目している会社のブログ(&lt;a href=&quot;https://techlife.cookpad.com/&quot;&gt;クックパッド開発者ブログ&lt;/a&gt;など)&lt;/li&gt;
+&lt;li&gt;個人ブログ: 友人などのブログ&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;逆に、以下のものは現時点では保留とした。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;ニュースメディア&lt;/li&gt;
+&lt;li&gt;パブリケーション(同じトピックについて複数人が書くやつをまとめもの)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;これらはどうしても量が多くなるし、自分の読みたいものである確率が相対的に低いので、継続しない要因になりやすいと考えたため。とはいえ、これらの中にも自分が読みたいものは確実に存在するし、自分の情報源を広げる要因にもなると思うので、自分の中でフィードリーダーの利用が定着してきたら購読する方法を検討しようと思う。&lt;/p&gt;</content:encoded></item><item><title><![CDATA[Apple Watchを常時身に着けるようになった]]></title><description><![CDATA[元々、家にいる時以外は常時身に着けていたのだけど、あるとき睡眠の記録をつけたいと思って就寝中もApple Watchを着けるようになった。そこで問題になってくるのが充電タイミングと洗うタイミング。Apple Watchの充電は…]]></description><link>https://ishkawa.org/1610169305/</link><guid isPermaLink="false">https://ishkawa.org/1610169305/</guid><pubDate>Sat, 09 Jan 2021 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;元々、家にいる時以外は常時身に着けていたのだけど、あるとき睡眠の記録をつけたいと思って就寝中もApple Watchを着けるようになった。そこで問題になってくるのが充電タイミングと洗うタイミング。Apple Watchの充電は2日程度しか持たないので毎日充電する必要があるし、日中身に着けていたものをベッドに持ち込みたくないので毎日洗う必要がある。&lt;/p&gt;
+&lt;p&gt;色々と試した後、脱衣所に充電器を置いて、入浴前に洗って充電するというスタイルに辿り着いた。フローは以下の通り。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;入浴前にApple Watchを洗ってそのまま充電する。&lt;/li&gt;
+&lt;li&gt;入浴中に100%まで充電される。&lt;/li&gt;
+&lt;li&gt;入浴後にすぐApple Watchを身に着ける。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;figure&gt;
+    &lt;img src=&quot;https://imgur.com/99VEOQZ.jpg&quot;&gt;
+    &lt;figcaption&gt;充電器は洗濯機の上の棚に置いている&lt;/figcaption&gt;
+&lt;/figure&gt;
+&lt;p&gt;入浴中にApple Watchが100%まで充電されるのは、入浴中にiPadで本を読んだり動画を観たりしていて、なんだかんだで毎回60分程度は経つため。このスタイルが定着してからは、風呂にいる時以外は常時Apple Watchを身に着けている状態になった。&lt;/p&gt;
+&lt;p&gt;小さなことではあるが、気持ちよく行動できるパターンが見つかってよかった。&lt;/p&gt;</content:encoded></item><item><title><![CDATA[SlackからGoogle Meetを開始するコマンドを用意した]]></title><description><![CDATA[以前はチーム内の通話にSlack…]]></description><link>https://ishkawa.org/1596205104/</link><guid isPermaLink="false">https://ishkawa.org/1596205104/</guid><pubDate>Fri, 31 Jul 2020 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;以前はチーム内の通話にSlackのコールを使っていて、以下のようなメリットがあった。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;通話開始までのステップが短い。&lt;/li&gt;
+&lt;li&gt;コールが続いているか/誰が参加しているかが参加しなくても分かる。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;しかし、以下のような理由から使うのをやめた。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;音声トラブルが多い。&lt;/li&gt;
+&lt;li&gt;端末によっては画面共有時などにリソースが逼迫し、満足に通話ができなくなる。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;で、代わりを色々試した結果Google Meetを使うことに決めた。しかし、Google MeetはSlackの&lt;a href=&quot;https://slack.com/intl/ja-jp/help/articles/216951758&quot;&gt;通話アプリ&lt;/a&gt;の設定に非対応なので(ZoomやWebexとかは対応している)、そのままでは通話開始までに以下のようなステップを踏む必要がある。&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Google Meetを開く。&lt;/li&gt;
+&lt;li&gt;通話を開始する。&lt;/li&gt;
+&lt;li&gt;通話の参加URLをコピーする。&lt;/li&gt;
+&lt;li&gt;参加URLをSlackに貼り付ける。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;これでは通話の開始するハードルが上がってしまい、適切なタイミングで通話が使われる頻度が落ちるという結果に繋がりかねない。なので、これらの一連を処理をやってくれるスラッシュコマンドを作成した。&lt;/p&gt;
+&lt;h2&gt;仕組み&lt;/h2&gt;
+&lt;p&gt;Zapierを使って、以下のように実現した。&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;SlackのスラッシュコマンドでZapierのWebHookを呼び出す。&lt;/li&gt;
+&lt;li&gt;ZapierからGoogle MeetのURLを発行する。&lt;/li&gt;
+&lt;li&gt;スラッシュコマンドが実行されたチャンネルにZapierからSlackにURLを投稿する。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;ステップ1はbotへのメンションにも対応できるようにした。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://i.imgur.com/1dIrLTM.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;h2&gt;感想&lt;/h2&gt;
+&lt;p&gt;Google Meetへ移行したことで通話中の体験は良くなったものの、やはり通話開始までの体験はSlackのコールの方が良いのが正直なところ。とはいえ、通話自体が成り立たなかったりするのは致命的なので、当分はこの方式で運用することになると思う。&lt;/p&gt;
+&lt;p&gt;Google MeetがSlackの通話アプリに設定できるようになるか、もしくはSlackを置き換えるGoogleのプロダクトが出てくるか、はたまたSlackのコールの品質がめちゃくちゃ向上するか、いずれかが近い将来にやってくるとうれしい。そういえば、&lt;a href=&quot;https://prtimes.jp/main/html/rd/p/000001140.000004612.html&quot;&gt;SlackとAWSが提携してコールをAmazon Chimeに置き換える&lt;/a&gt;なんて話もあったし、意外とすぐにその日はやってくるのかも。&lt;/p&gt;</content:encoded></item><item><title><![CDATA[社内向けSlack利用ガイドを公開する]]></title><description><![CDATA[リモートワークが中心になったことと、事業の関係者が増えたことにより、社内コミュニケーションにおいてSlackが重要になってきた。
+Slack…]]></description><link>https://ishkawa.org/1591579429/</link><guid isPermaLink="false">https://ishkawa.org/1591579429/</guid><pubDate>Mon, 08 Jun 2020 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;リモートワークが中心になったことと、事業の関係者が増えたことにより、社内コミュニケーションにおいてSlackが重要になってきた。
+Slackは誰でも使えるものだが、チーム内に適切に情報を流通させるためには、ある程度ルールが必要だと思う。
+弊社ではガイドを設定したので、公開してみる。&lt;/p&gt;
+&lt;p&gt;このガイドは、通話・チャット・ドキュメントの3段階のコミュニケーション手段をスムーズに行き来して、チーム内に情報を流通させてもらうことを意識して書いた。
+他のことはあまり意識できていないので、他社のガイドも参考にしてみたい。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h1&gt;Slack利用ガイド&lt;/h1&gt;
+&lt;p&gt;Slackはリモートワークにおけるオフィスです。より生産的に使えるように、ガイドを用意しました。&lt;/p&gt;
+&lt;p&gt;以下の3点を意識して、Slackを活用しましょう。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;コール(通話)を積極的に活用する&lt;/li&gt;
+&lt;li&gt;ストック情報はNotionにまとめる&lt;/li&gt;
+&lt;li&gt;スレッドの作り過ぎに注意する&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;コール(通話)を積極的に活用する&lt;/h2&gt;
+&lt;p&gt;メッセージの往復が多くなりそうな時や、テキストで説明が難しい場合には、チャンネルのコール(通話)を積極的に使いましょう。議論などのインタラクティブなコミュニケーションでは、長いテキストを何度も往復させるよりも、コールを始めた方が多くの意見が交換できます。&lt;/p&gt;
+&lt;h3&gt;チームに共有する&lt;/h3&gt;
+&lt;p&gt;コールで話す内容はチームで共有できるように、以下を実施しましょう。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;何を話しているか分かるように、コールの目的を事前に書く&lt;/li&gt;
+&lt;li&gt;他の人も自主参加できるように、チャンネルのコールを使う(人へのコールではなく)。&lt;/li&gt;
+&lt;li&gt;話の内容が分かるように、コール後に結論を書く。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;例えば、以下のような感じです。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://i.imgur.com/9xXQwcO.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;h2&gt;ストック情報はNotionにまとめる&lt;/h2&gt;
+&lt;p&gt;Slackはあくまでフロー情報を交換する場所です。後から繰り返し参照されるようなドキュメントや、分量の多いストック情報は、NotionにまとめてSlackにシェアするようにしましょう。&lt;/p&gt;
+&lt;p&gt;ストック情報の置き場をSlackから分離して管理すると、情報が検索しやすくなり、後から参照する時に役立ちます。また、これから入社するメンバーも過去の情報のエッセンスを閲覧できるようになり、過去まで含めた情報をオープンにできるというメリットがあります。&lt;/p&gt;
+&lt;h2&gt;スレッドの作り過ぎに注意する&lt;/h2&gt;
+&lt;p&gt;スレッドを作ると、手軽に話題が分けられて便利です。しかし、スレッドはクリックしなければ情報が閲覧できないため、作りすぎると一覧性が下がるという問題があります。また、スレッドに参加していないと新着メッセージとして表示されないので、チャンネルのメンバーの目に入らないこともあります。&lt;/p&gt;
+&lt;h3&gt;場所を分ける必要がない時はスレッドを作らない&lt;/h3&gt;
+&lt;p&gt;チャンネルのトピックから逸れる場合や、複数の話題が同時に進行している場合には、場所を分けた方が情報を整理しやすいのでスレッドを作りましょう。&lt;/p&gt;
+&lt;p&gt;逆に、場所を分ける必要がなければスレッドは作成せず、チャンネルの本流に投稿しましょう。少し前の投稿に対する返信には、&lt;a href=&quot;https://slack.com/intl/ja-jp/help/articles/203274767&quot;&gt;メッセージの共有&lt;/a&gt;や引用を使うと話を参照できます。メッセージの共有は以下のように表示されるので、何の話をしているのか明確にできます。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://i.imgur.com/Ekw1LRs.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;h3&gt;大事なことはチャンネルにも共有する&lt;/h3&gt;
+&lt;p&gt;スレッドの中でスレッドの参加者以外にも伝わってほしいことを投稿する場合は、チャンネルへの共有を有効にして投稿しましょう。チャンネルへの共有をオンにしない投稿は、スレッドに参加していない人は目にしないかもしれないものとして捉えてください。&lt;/p&gt;</content:encoded></item><item><title><![CDATA[社内向け不具合報告ガイドを公開する]]></title><description><![CDATA[最近、株式会社10X…]]></description><link>https://ishkawa.org/1589505986/</link><guid isPermaLink="false">https://ishkawa.org/1589505986/</guid><pubDate>Fri, 15 May 2020 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;最近、&lt;a href=&quot;https://10x.co.jp/recruit/&quot;&gt;株式会社10Xでは採用の拡大を始めた&lt;/a&gt;。これから迎えるであろう新しいメンバー達が余計な戸惑いを感じないように、これまで暗黙知になっていた諸々をガイドとして明文化しようとしている。まず手始めとして不具合報告ガイドをつくったので、これを公開してみる。社外の意見も聞いて、ガイドを改善できたら嬉しい。&lt;/p&gt;
+&lt;p&gt;不具合報告ガイドの作成に当たって意識したのは、不具合を報告する人の責務を最小化することだ。不具合を報告してくれる人全員が開発の事情について詳しい訳ではないし、重複イシューがないかチェックしろとか、ラベルを付けろとか、そういうことは要求しない。不具合を報告することだけが報告者の役割であり、それを整理するのは開発チームの仕事だと考えている。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h1&gt;不具合報告ガイド&lt;/h1&gt;
+&lt;p&gt;アプリなどに不具合らしきものが見つかった場合、開発チームに共有してください。&lt;/p&gt;
+&lt;h2&gt;手順&lt;/h2&gt;
+&lt;ol&gt;
+&lt;li&gt;GitHubのイシューにアクセスする。
+&lt;ul&gt;
+&lt;li&gt;プロダクトA: &lt;a href=&quot;https://github.com/10xinc/product_a/issues&quot;&gt;https://github.com/10xinc/product_a/issues&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;プロダクトB: &lt;a href=&quot;https://github.com/10xinc/product_b/issues&quot;&gt;https://github.com/10xinc/product_b/issues&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;「New issue」をクリックして、以下の内容を含めたイシューを作成してください。
+&lt;ul&gt;
+&lt;li&gt;どんな不具合が起きたか&lt;/li&gt;
+&lt;li&gt;不具合が起きた手順&lt;/li&gt;
+&lt;li&gt;不具合が起きた環境
+&lt;ul&gt;
+&lt;li&gt;本番環境か開発環境か&lt;/li&gt;
+&lt;li&gt;アプリのバージョン (例: 1.0.0 (123))&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;緊急性がある場合、Slackの #dev にイシューのリンクを貼って連絡してください。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;報告されたイシューは開発チームが定期的にチェックして、開発マイルストーンに乗せます。&lt;/p&gt;
+&lt;h2&gt;心得&lt;/h2&gt;
+&lt;p&gt;不具合らしきものを見つけたら、まずはイシューを作成しましょう。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;事前にSlackなどでエンジニアに相談する必要はありません。&lt;/li&gt;
+&lt;li&gt;既存のイシューとの重複は気にする必要はありません。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;以下のような心配をして、イシューの作成を躊躇しないでください。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;実は不具合ではなくて自分の勘違いじゃないか。&lt;/li&gt;
+&lt;li&gt;もう既に把握されている不具合なんじゃないか。&lt;/li&gt;
+&lt;li&gt;いきなりイシューをつくるのは失礼にならないか。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;イシューの作成を躊躇して欲しくないのは、不具合の管理を確実にするためです。Slackなどで事前相談をすると、作り忘れることがあり、結果的には修正漏れの原因になります。とにかく、まずはイシューを作成してください。イシューさえ作成してくれれば、あとは開発チームが整理して、解決します。&lt;/p&gt;</content:encoded></item><item><title><![CDATA[CircleCIでbuild matrixを構成する]]></title><description><![CDATA[いつの間にかCircleCIのジョブにパラメーターを設定できるようになっていた。そして、パラメーターの組み合わせでbuild matrix…]]></description><link>https://ishkawa.org/1587269750/</link><guid isPermaLink="false">https://ishkawa.org/1587269750/</guid><pubDate>Sun, 19 Apr 2020 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;いつの間にかCircleCIのジョブにパラメーターを設定できるようになっていた。そして、パラメーターの組み合わせでbuild matrixを構成できるようになっていた。昔に設定した時にこれらの機能がなくて憤慨していた記憶があるので、比較的最近に導入された機能だと思う。&lt;/p&gt;
+&lt;h2&gt;ジョブのパラメーターとbuild matrix&lt;/h2&gt;
+&lt;p&gt;ジョブのパラメーターは、ステップが共通した複数のジョブを1つにまとめる時に役立つ。&lt;/p&gt;
+&lt;p&gt;例えばモバイルアプリの開発では、ストアにリリースされるアプリのビルドの他に、接続先を開発用サーバーに変更したアプリのビルドや、署名の方法を変更したアプリのビルドなどが必要になる。この差分をパラメーターとして定義しておけば、ジョブを1つにまとめることができ、各々のビルドに対するジョブを1から書く必要はなくなる。&lt;/p&gt;
+&lt;p&gt;build matrixは、ジョブのパラメーターを組み合わせて構成するビルド群のこと。サーバーにproductionとdevelopmentがあり、署名の方法にApp StoreとAd Hocがあった場合、パラメーターの組み合わせには以下の4つがある。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;production / App Store&lt;/li&gt;
+&lt;li&gt;production / Ad Hoc&lt;/li&gt;
+&lt;li&gt;development / App Store&lt;/li&gt;
+&lt;li&gt;development / Ad Hoc&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;CircleCIの設定&lt;/h2&gt;
+&lt;p&gt;以下の手順でbuild matrixを構成できる。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code class=&quot;language-text&quot;&gt;jobs&lt;/code&gt;で&lt;code class=&quot;language-text&quot;&gt;parameters&lt;/code&gt;を定義する。&lt;/li&gt;
+&lt;li&gt;&lt;code class=&quot;language-text&quot;&gt;workflows&lt;/code&gt;の&lt;code class=&quot;language-text&quot;&gt;jobs&lt;/code&gt;で&lt;code class=&quot;language-text&quot;&gt;parameters&lt;/code&gt;のmatrixを定義する。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;version: 2.1
+
+jobs:
+  build:
+    parameters:
+      server:
+        type: string
+      codesign:
+        type: string
+    steps:
+      - checkout
+      - run: echo &quot;&amp;lt;&amp;lt; parameters.server &gt;&gt; &amp;lt;&amp;lt; parameters.codesign &gt;&gt;&quot;
+
+workflows:
+  build:
+    jobs:
+      - build:
+          matrix:
+            parameters:
+              server: [&quot;development&quot;, &quot;production&quot;]
+              codesign: [&quot;appstore&quot;, &quot;adhoc&quot;]&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;これで、1つのジョブで4つのビルドを担えるようになった。&lt;/p&gt;
+&lt;h2&gt;参考ドキュメント&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https://circleci.com/docs/2.0/reusing-config/#authoring-parameterized-jobs&quot;&gt;Reusable Config Reference Guide&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://circleci.com/docs/2.0/configuration-reference/#matrix-requires-version-21&quot;&gt;Configuring CircleCI&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</content:encoded></item><item><title><![CDATA[全社リモートワークになったので通話のプラクティスを考えた]]></title><description><![CDATA[今のチームでは、コミュニケーションのインタラクティブ性を重視して、同じ時間・同じ場所で働くことにしていた。しかし、昨今の新型コロナウイルス感染症の影響で、全社リモートワークへの移行を余儀なくさせられた。Slackでテキストチャットはできるし、Zoom…]]></description><link>https://ishkawa.org/1585787944/</link><guid isPermaLink="false">https://ishkawa.org/1585787944/</guid><pubDate>Thu, 02 Apr 2020 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;今のチームでは、コミュニケーションのインタラクティブ性を重視して、同じ時間・同じ場所で働くことにしていた。しかし、昨今の新型コロナウイルス感染症の影響で、全社リモートワークへの移行を余儀なくさせられた。Slackでテキストチャットはできるし、Zoomでビデオ会議もできるし、当初はなんとかなるかなと思っていたが、いざ始めてみるとやっぱり壁にぶつかった。&lt;/p&gt;
+&lt;p&gt;中でも大きな問題は、口頭のコミュニケーションを始めるハードルが高いことと、そこに適切な人を巻き込むのが難しいことだ。オフィスで一緒に仕事をしていたときは、いつでも誰にでも気軽に聞けるし、必要に応じて話す相手を増やしたり変えたりできる。しかし、これをリモートで実現するのがなかなか難しい。口頭で通話するツールはあるのだが、そこにスムーズに移動することができずに心理的ハードルが上がってしまい、余程必要に駆られない限りは使われなかった。&lt;/p&gt;
+&lt;p&gt;その対策としてSlackのグループコールを積極的に使うことにしたので、考えたことをまとめる。&lt;/p&gt;
+&lt;h2&gt;口頭のコミュニケーションの必要性&lt;/h2&gt;
+&lt;p&gt;そもそもテキストでのコミュニケーションがあれば、口頭でのコミュニケーションなんか要らないんじゃないか、という意見もある。テキストはログが残るし、会話に参加していなかった人が読むこともできる。それでも口頭でのコミュニケーションが必要だと思うのは、それが高速だからだ。文字でのコミュニケーションにはタイピング速度というボトルネックがあり、対話の内容もその影響を受けてしまう。往復が増えれば増えるほど反応の遅延は大きくなり、対話の内容への影響は大きくなる。&lt;/p&gt;
+&lt;p&gt;もちろん、テキストが適している場面も多くある。議論のまとめはテキストに残して他のメンバーが読めるようにすべきだし、粒度の大きな情報はドキュメントにまとめて伝えるべきだと思う。ただ、往復が多くなるようなコミュニケーションには、それに適した経路を選択すべきだということだ。&lt;/p&gt;
+&lt;h2&gt;通話を始めるハードル&lt;/h2&gt;
+&lt;p&gt;チームで通話が使われる主なタイミングは次の2つだった。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;定例ミーティング&lt;/li&gt;
+&lt;li&gt;突発的な相談&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;定例ミーティングはそれほど問題ないのだが、突発的な相談には通話を始めるまでの心理的ハードルが高いという問題があった。Zoomでいきなりコールを掛けても良いし、SlackでURLを送っても良いのだが、なんとなく通話を始めるのに気が引けてしまうのだ。相談相手が適切なのか分からないのに1対1の密室状態になるし、なんだか普段オフィスで話しかけるよりも深刻な感じがしてしまう。それを克服する努力もリモートワークに慣れる一貫なのかもしれないが、仕組みとして和らげられるのならそれに越したことはないと思った。&lt;/p&gt;
+&lt;p&gt;そしてある時、通話を常にパブリックチャンネルから始めるようにしたら、少し問題が和らぐのではないかと思いついた。コールを呼び掛ける相手が1人であることには変わりはないが、話していることが他のメンバーにも伝わるし、そのコールがチームのものであることが明確になる。&lt;/p&gt;
+&lt;p&gt;以下は実際に使ってる様子。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://i.imgur.com/aZH3vbb.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;p&gt;話す概要をあらかじめパブリックな場で宣言しているので、他のメンバーに何を話しているか伝わっている。通話に参加したければいつでも参加できるし、必要に応じて人を呼んだり、会話から抜けたりもできる。少しだけ、オフィスでのコミュニケーションの感じに近づいたような気がした。&lt;/p&gt;
+&lt;h2&gt;通話に使うツール&lt;/h2&gt;
+&lt;p&gt;当初はSlackとZoomを併用していたが、ワンクリックで済ませられるSlackのグループコールを使うことにした。Zoomもアカウント連携をすれば少ない手順で通話を開始できるが、SlackのグループコールはSlackさえインストールされていれば誰でもワンクリックで開始できるという強いメリットがある。誰にとっても簡単であるというのは、チームのコミュニケーションでは重要なことだと思う。&lt;/p&gt;
+&lt;p&gt;通話の品質にも今のところ満足しているが、もしかしたら使い続けるうちに不満を持つかもしれない。&lt;/p&gt;
+&lt;h2&gt;まとめ&lt;/h2&gt;
+&lt;p&gt;オフィスの口頭のコミュニケーションをメリットを再現するために、以下のことを試し始めた。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;パブリックチャンネルで通話を始める。&lt;/li&gt;
+&lt;li&gt;Slackのグループコールを使う。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;リモートワークはしばらく続きそうなので、良い感じに仕事ができるように努力していきたい。&lt;/p&gt;</content:encoded></item><item><title><![CDATA[ESLintのwarningでCIのジョブを失敗させる]]></title><description><![CDATA[ESLintのexit codeはwarningがあっても0になる。これ自体は自然なことだが、CIのジョブではwarningがあっても成功とみなされてしまうので困る。 warningをerror扱いに変更できないかと調べてみたら、というオプションをみつけた。これはexit…]]></description><link>https://ishkawa.org/1585698119/</link><guid isPermaLink="false">https://ishkawa.org/1585698119/</guid><pubDate>Wed, 01 Apr 2020 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;ESLintのexit codeはwarningがあっても0になる。これ自体は自然なことだが、CIのジョブではwarningがあっても成功とみなされてしまうので困る。&lt;/p&gt;
+&lt;p&gt;warningをerror扱いに変更できないかと調べてみたら、&lt;code class=&quot;language-text&quot;&gt;--max-warnings&lt;/code&gt;というオプションをみつけた。これはexit codeを非ゼロに変更するwarningの数を指定するオプションで、&lt;code class=&quot;language-text&quot;&gt;--max-warnings=0&lt;/code&gt;を指定すれば、warningが1つでもあったら失敗する。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https://eslint.org/docs/user-guide/command-line-interface&quot;&gt;Command Line Interface - ESLint - Pluggable JavaScript linter&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</content:encoded></item><item><title><![CDATA[ブログをGatsbyで再構築した]]></title><description><![CDATA[…]]></description><link>https://ishkawa.org/1584277737/</link><guid isPermaLink="false">https://ishkawa.org/1584277737/</guid><pubDate>Sun, 15 Mar 2020 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;最近はブログをあまり書いていなかったのだけど、また書けたら良いなと思ってブログの仕組みを再構築した。文章自体はどんな仕組みであっても書けるのだけど、やっぱり自分の好きなレイアウトで文字を表示したいし、自分の好きなエディタで書きたいので、ついつい頑張ってしまった。&lt;/p&gt;
+&lt;h2&gt;更新の仕組み&lt;/h2&gt;
+&lt;p&gt;手元のエディタでMarkdownを書いてGitHubにプッシュするという、エンジニアのブログにはよくあるものにした。当初は更新を気軽にしたくてNetlify CMSを試してみたが、結局エディタの挙動で気が狂いそうになってしまい、書きやすさには替えられないと思ってやめた。&lt;/p&gt;
+&lt;p&gt;デプロイにはGitHub Actionsを使っていて、編集用の&lt;code class=&quot;language-text&quot;&gt;source&lt;/code&gt;というブランチに更新をプッシュすると、GitHub Actions上でGatsbyJSの静的サイトのビルドと、&lt;code class=&quot;language-text&quot;&gt;master&lt;/code&gt;ブランチへの成果物のプッシュが実行される。&lt;/p&gt;
+&lt;p&gt;ホスティングにGitHub Pagesを使っているのは単なる惰性。いつか元気が出たらNetlifyを試す。&lt;/p&gt;
+&lt;h2&gt;静的サイトジェネレーターの選択&lt;/h2&gt;
+&lt;p&gt;Markdownからブログを生成してくれるなら正直何でも良かったのだけど、程よいstarterを持っていたのがGatsbyだったので採用した。ちなみにベースにしたstarterは以下のもの。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https://github.com/gatsbyjs/gatsby-starter-blog&quot;&gt;https://github.com/gatsbyjs/gatsby-starter-blog&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;GatsbyはReactやGraphQLなど、普段自分が馴染みがない技術をベースにしているようだ。これが自分の経験を広げる良い機会になるか、はたまた将来のブログの更新の障害になるのか、今はまだ分からない。できれば良い方に転んでほしい。&lt;/p&gt;</content:encoded></item><item><title><![CDATA[Dartのjson_serializableにカスタムの型変換を追加する]]></title><description><![CDATA[はJSONのシリアライズ/デシリアライズを行うパッケージ。
+クラスにアノテーションをつけると、JSON…]]></description><link>https://ishkawa.org/1583660817/</link><guid isPermaLink="false">https://ishkawa.org/1583660817/</guid><pubDate>Mon, 09 Mar 2020 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;&lt;a href=&quot;https://github.com/dart-lang/json_serializable&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;json_serializable&lt;/code&gt;&lt;/a&gt;はJSONのシリアライズ/デシリアライズを行うパッケージ。
+クラスに&lt;code class=&quot;language-text&quot;&gt;@JsonSerializable&lt;/code&gt;アノテーションをつけると、JSONの変換コードを生成してくれるという方式になっている。&lt;/p&gt;
+&lt;p&gt;生成するコードのオプションは色々と揃っていて、カスタムの型変換を指定する方法も当然用意されている。フィールドに指定する&lt;code class=&quot;language-text&quot;&gt;@JsonKey&lt;/code&gt;アノテーションには&lt;code class=&quot;language-text&quot;&gt;fromJson&lt;/code&gt;と&lt;code class=&quot;language-text&quot;&gt;toJson&lt;/code&gt;が設定でき、ここで型変換の関数を指定できる。&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;dart&quot;&gt;&lt;pre class=&quot;language-dart&quot;&gt;&lt;code class=&quot;language-dart&quot;&gt;&lt;span class=&quot;token metadata function&quot;&gt;@JsonSerializable&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;token class-name&quot;&gt;TestObject&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;token metadata function&quot;&gt;@JsonKey&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;fromJson&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; dateTimeFromJson&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; toJson&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; dateTimeToJson&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;token class-name&quot;&gt;DateTime&lt;/span&gt; dateTime&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;プロジェクトが小さいうちはこれで十分かもしれないが、プロジェクトが大きくなって何度も同じ設定を書くようになると、段々とつらくなってくる。&lt;/p&gt;
+&lt;p&gt;そんなわけで、&lt;code class=&quot;language-text&quot;&gt;@JsonKey&lt;/code&gt;アノテーションなしでカスタムの型変換を実現する方法を模索した。&lt;/p&gt;
+&lt;h2&gt;コード生成の流れを探る&lt;/h2&gt;
+&lt;p&gt;&lt;code class=&quot;language-text&quot;&gt;json_serializable&lt;/code&gt;のコード生成は、&lt;a href=&quot;https://github.com/dart-lang/build/tree/master/build_runner&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;build_runner&lt;/code&gt;&lt;/a&gt;というパッケージが提供する仕組みに乗っかって実現されている。&lt;code class=&quot;language-text&quot;&gt;pub run build_runner build&lt;/code&gt;を実行すると、&lt;code class=&quot;language-text&quot;&gt;json_serializable&lt;/code&gt;の&lt;code class=&quot;language-text&quot;&gt;build.yaml&lt;/code&gt;から設定を読み出し、何をすべきか判断するという流れになっている。&lt;/p&gt;
+&lt;p&gt;で、&lt;code class=&quot;language-text&quot;&gt;json_serializable&lt;/code&gt;では&lt;code class=&quot;language-text&quot;&gt;JsonSerializableGenerator&lt;/code&gt;クラスを呼び出すように設定されているので、ここに手を加えればカスタムの型変換を追加できることがわかる。&lt;/p&gt;
+&lt;p&gt;&lt;code class=&quot;language-text&quot;&gt;JsonSerializableGenerator&lt;/code&gt;クラスの内部では、個々の型変換は&lt;code class=&quot;language-text&quot;&gt;TypeHelper&lt;/code&gt;のサブクラス群が担っており、使用する&lt;code class=&quot;language-text&quot;&gt;TypeHelper&lt;/code&gt;は&lt;code class=&quot;language-text&quot;&gt;JsonSerializableGenerator&lt;/code&gt;クラスのコンストラクタで指定できる。ここにカスタムの型変換を行う&lt;code class=&quot;language-text&quot;&gt;TypeHelper&lt;/code&gt;を追加すれば、カスタムの型変換をビルトインの型変換と同様に扱えるようになる。&lt;/p&gt;
+&lt;p&gt;以上をまとめると、やりたいことが実現するには次のものが必要そうだ。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;カスタムの型変換を行う&lt;code class=&quot;language-text&quot;&gt;TypeHelper&lt;/code&gt;を用意する。&lt;/li&gt;
+&lt;li&gt;パッケージを作成し、&lt;code class=&quot;language-text&quot;&gt;build.yaml&lt;/code&gt;で↑を使うコードジェネレーターを設定する。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;型変換の実装&lt;/h2&gt;
+&lt;p&gt;&lt;code class=&quot;language-text&quot;&gt;TypeHelper&lt;/code&gt;クラスを継承し、&lt;code class=&quot;language-text&quot;&gt;serialize()&lt;/code&gt;メソッドと&lt;code class=&quot;language-text&quot;&gt;deserialize()&lt;/code&gt;メソッドを実装する。それぞれのメソッドには変換対象の式と変換元(先)の型が渡されるので、必要に応じて変換するコードを文字列として返す。&lt;/p&gt;
+&lt;p&gt;&lt;code class=&quot;language-text&quot;&gt;json_serializable&lt;/code&gt;の&lt;a href=&quot;https://github.com/dart-lang/json_serializable/tree/4e89afeb60530fe8c9e309e9325a75ab6d3ab523/json_serializable/lib/src/type_helpers&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;json_serializable/lib/src/type_helpers&lt;/code&gt;&lt;/a&gt;に実際に使われている&lt;code class=&quot;language-text&quot;&gt;TypeHelper&lt;/code&gt;の例があるので、参考にすると理解が早い。&lt;/p&gt;
+&lt;p&gt;例として、JSONのUNIXミリ秒のnumberをDartの&lt;code class=&quot;language-text&quot;&gt;DateTime&lt;/code&gt;クラスに変換する&lt;code class=&quot;language-text&quot;&gt;TypeHelper&lt;/code&gt;を実装した。&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;dart&quot;&gt;&lt;pre class=&quot;language-dart&quot;&gt;&lt;code class=&quot;language-dart&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;token class-name&quot;&gt;UnixmillisecondHelper&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;extends&lt;/span&gt; &lt;span class=&quot;token class-name&quot;&gt;TypeHelper&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;token keyword&quot;&gt;final&lt;/span&gt; _typeChecker &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token class-name&quot;&gt;TypeChecker&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;fromUrl&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token string-literal&quot;&gt;&lt;span class=&quot;token string&quot;&gt;&apos;dart:core#DateTime&apos;&lt;/span&gt;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+
+  &lt;span class=&quot;token class-name&quot;&gt;UnixmillisecondHelper&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+
+  &lt;span class=&quot;token metadata function&quot;&gt;@override&lt;/span&gt;
+  &lt;span class=&quot;token class-name&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;serialize&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;
+    &lt;span class=&quot;token class-name&quot;&gt;DartType&lt;/span&gt; targetType&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;token class-name&quot;&gt;String&lt;/span&gt; expression&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;token class-name&quot;&gt;TypeHelperContext&lt;/span&gt; context&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+  &lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;!&lt;/span&gt;_typeChecker&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;isExactlyType&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;targetType&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+      &lt;span class=&quot;token keyword&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;null&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;
+
+    &lt;span class=&quot;token keyword&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;context&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;nullable&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+      expression &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token string-literal&quot;&gt;&lt;span class=&quot;token string&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;token interpolation&quot;&gt;&lt;span class=&quot;token punctuation&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;token expression&quot;&gt;expression&lt;/span&gt;&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;?&apos;&lt;/span&gt;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;
+
+    &lt;span class=&quot;token keyword&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;token string-literal&quot;&gt;&lt;span class=&quot;token string&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;token interpolation&quot;&gt;&lt;span class=&quot;token punctuation&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;token expression&quot;&gt;expression&lt;/span&gt;&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;.millisecondsSinceEpoch&apos;&lt;/span&gt;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+  &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;
+
+  &lt;span class=&quot;token metadata function&quot;&gt;@override&lt;/span&gt;
+  &lt;span class=&quot;token class-name&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;deserialize&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;
+    &lt;span class=&quot;token class-name&quot;&gt;DartType&lt;/span&gt; targetType&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;token class-name&quot;&gt;String&lt;/span&gt; expression&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;token class-name&quot;&gt;TypeHelperContext&lt;/span&gt; context&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+  &lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;!&lt;/span&gt;_typeChecker&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;isExactlyType&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;targetType&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+      &lt;span class=&quot;token keyword&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;null&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;
+
+    &lt;span class=&quot;token keyword&quot;&gt;return&lt;/span&gt; context&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;nullable
+        &lt;span class=&quot;token operator&quot;&gt;?&lt;/span&gt; &lt;span class=&quot;token string-literal&quot;&gt;&lt;span class=&quot;token string&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;token interpolation&quot;&gt;&lt;span class=&quot;token punctuation&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;token expression&quot;&gt;expression&lt;/span&gt;&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt; == null ? null : DateTime.fromMillisecondsSinceEpoch(&lt;/span&gt;&lt;span class=&quot;token interpolation&quot;&gt;&lt;span class=&quot;token punctuation&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;token expression&quot;&gt;expression&lt;/span&gt;&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;)&apos;&lt;/span&gt;&lt;/span&gt;
+        &lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token string-literal&quot;&gt;&lt;span class=&quot;token string&quot;&gt;&apos;DateTime.fromMillisecondsSinceEpoch(&lt;/span&gt;&lt;span class=&quot;token interpolation&quot;&gt;&lt;span class=&quot;token punctuation&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;token expression&quot;&gt;expression&lt;/span&gt;&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;)&apos;&lt;/span&gt;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+  &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h2&gt;ビルダーの設定&lt;/h2&gt;
+&lt;p&gt;&lt;code class=&quot;language-text&quot;&gt;build_runner&lt;/code&gt;にカスタムの&lt;code class=&quot;language-text&quot;&gt;JsonSerializableGenerator&lt;/code&gt;を認識してもらうには、&lt;code class=&quot;language-text&quot;&gt;build.yaml&lt;/code&gt;で&lt;code class=&quot;language-text&quot;&gt;Builder&lt;/code&gt;を返す関数を指定する。&lt;code class=&quot;language-text&quot;&gt;build.yaml&lt;/code&gt;の設定の書き方や&lt;code class=&quot;language-text&quot;&gt;Builder&lt;/code&gt;を返す関数の書き方は、&lt;code class=&quot;language-text&quot;&gt;json_serializable&lt;/code&gt;の&lt;a href=&quot;https://github.com/dart-lang/json_serializable/blob/4e89afeb60530fe8c9e309e9325a75ab6d3ab523/json_serializable/build.yaml&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;json_serializable/build.yaml&lt;/code&gt;&lt;/a&gt;や&lt;a href=&quot;https://github.com/dart-lang/json_serializable/blob/4e89afeb60530fe8c9e309e9325a75ab6d3ab523/json_serializable/lib/builder.dart&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;json_serializable/lib/builder.dart&lt;/code&gt;&lt;/a&gt;を参考にすれば良い。&lt;/p&gt;
+&lt;p&gt;今回は次のようにして、&lt;code class=&quot;language-text&quot;&gt;UnixmillisecondHelper&lt;/code&gt;を使う&lt;code class=&quot;language-text&quot;&gt;Builder&lt;/code&gt;を返した。&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;dart&quot;&gt;&lt;pre class=&quot;language-dart&quot;&gt;&lt;code class=&quot;language-dart&quot;&gt;&lt;span class=&quot;token class-name&quot;&gt;Builder&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;customJsonSerializable&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token class-name&quot;&gt;BuilderOptions&lt;/span&gt; options&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;token keyword&quot;&gt;try&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;final&lt;/span&gt; config &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token class-name&quot;&gt;JsonSerializable&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;fromJson&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;options&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;config&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;token class-name&quot;&gt;SharedPartBuilder&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;
+      &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;
+        &lt;span class=&quot;token class-name&quot;&gt;JsonSerializableGenerator&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;
+          config&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; config&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+          typeHelpers&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;
+            &lt;span class=&quot;token class-name&quot;&gt;UnixmillisecondHelper&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+          &lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;token keyword&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;token class-name&quot;&gt;JsonLiteralGenerator&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+      &lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+      &lt;span class=&quot;token string-literal&quot;&gt;&lt;span class=&quot;token string&quot;&gt;&apos;custom_json_serializable&apos;&lt;/span&gt;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+  &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;on&lt;/span&gt; &lt;span class=&quot;token class-name&quot;&gt;CheckedFromJsonException&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;catch&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;e&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;final&lt;/span&gt; lines &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token generics&quot;&gt;&lt;span class=&quot;token punctuation&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;token class-name&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;
+      &lt;span class=&quot;token string-literal&quot;&gt;&lt;span class=&quot;token string&quot;&gt;&apos;Could not parse the options provided for `json_serializable`.&apos;&lt;/span&gt;&lt;/span&gt;
+    &lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+
+    &lt;span class=&quot;token keyword&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;e&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;key &lt;span class=&quot;token operator&quot;&gt;!=&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;null&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+      lines&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;add&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token string-literal&quot;&gt;&lt;span class=&quot;token string&quot;&gt;&apos;There is a problem with &quot;&lt;/span&gt;&lt;span class=&quot;token interpolation&quot;&gt;&lt;span class=&quot;token punctuation&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;token expression&quot;&gt;e&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;key&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&quot;.&apos;&lt;/span&gt;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;e&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;message &lt;span class=&quot;token operator&quot;&gt;!=&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;null&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+      lines&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;add&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;e&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;message&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;else&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;e&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;innerError &lt;span class=&quot;token operator&quot;&gt;!=&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;null&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+      lines&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;add&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;e&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;innerError&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;toString&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;
+
+    &lt;span class=&quot;token keyword&quot;&gt;throw&lt;/span&gt; &lt;span class=&quot;token class-name&quot;&gt;StateError&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;lines&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;join&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token string-literal&quot;&gt;&lt;span class=&quot;token string&quot;&gt;&apos;\n&apos;&lt;/span&gt;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+  &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;code class=&quot;language-text&quot;&gt;build.yaml&lt;/code&gt;は以下のように書いた。&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;yaml&quot;&gt;&lt;pre class=&quot;language-yaml&quot;&gt;&lt;code class=&quot;language-yaml&quot;&gt;&lt;span class=&quot;token key atrule&quot;&gt;builders&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;token key atrule&quot;&gt;custom_json_serializable&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;token key atrule&quot;&gt;import&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;package:custom_json_serializable/builder.dart&quot;&lt;/span&gt;
+    &lt;span class=&quot;token key atrule&quot;&gt;builder_factories&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&quot;customJsonSerializable&quot;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;
+    &lt;span class=&quot;token key atrule&quot;&gt;build_extensions&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;token key atrule&quot;&gt;&quot;.dart&quot;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&quot;custom_json_serializable.g.part&quot;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;token key atrule&quot;&gt;auto_apply&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; dependents
+    &lt;span class=&quot;token key atrule&quot;&gt;build_to&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; cache
+    &lt;span class=&quot;token key atrule&quot;&gt;applies_builders&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&quot;source_gen|combining_builder&quot;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h2&gt;実際にコードを生成する&lt;/h2&gt;
+&lt;p&gt;例として、以下のようなファイルを用意した。&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;dart&quot;&gt;&lt;pre class=&quot;language-dart&quot;&gt;&lt;code class=&quot;language-dart&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;token string-literal&quot;&gt;&lt;span class=&quot;token string&quot;&gt;&apos;package:json_annotation/json_annotation.dart&apos;&lt;/span&gt;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+
+&lt;span class=&quot;token keyword&quot;&gt;part&lt;/span&gt; &lt;span class=&quot;token string-literal&quot;&gt;&lt;span class=&quot;token string&quot;&gt;&apos;item.g.dart&apos;&lt;/span&gt;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+
+&lt;span class=&quot;token metadata function&quot;&gt;@JsonSerializable&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;token class-name&quot;&gt;Item&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;token class-name&quot;&gt;String&lt;/span&gt; name&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+  &lt;span class=&quot;token class-name&quot;&gt;DateTime&lt;/span&gt; createdAt&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+
+  &lt;span class=&quot;token class-name&quot;&gt;Item&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token keyword&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;name&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;createdAt&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+
+  &lt;span class=&quot;token keyword&quot;&gt;factory&lt;/span&gt; &lt;span class=&quot;token class-name&quot;&gt;Item&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;fromJson&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token class-name&quot;&gt;Map&lt;/span&gt;&lt;span class=&quot;token generics&quot;&gt;&lt;span class=&quot;token punctuation&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;token class-name&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;dynamic&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;&gt;&lt;/span&gt;&lt;/span&gt; json&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; _$&lt;span class=&quot;token class-name&quot;&gt;ItemFromJson&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;json&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+  &lt;span class=&quot;token class-name&quot;&gt;Map&lt;/span&gt;&lt;span class=&quot;token generics&quot;&gt;&lt;span class=&quot;token punctuation&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;token class-name&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;dynamic&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;&gt;&lt;/span&gt;&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;toJson&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; _$&lt;span class=&quot;token class-name&quot;&gt;ItemToJson&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token keyword&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;code class=&quot;language-text&quot;&gt;pubspec.yaml&lt;/code&gt;の&lt;code class=&quot;language-text&quot;&gt;dependencies&lt;/code&gt;に&lt;code class=&quot;language-text&quot;&gt;json_annotation&lt;/code&gt;を追加し、&lt;code class=&quot;language-text&quot;&gt;dev_dependencies&lt;/code&gt;に作成したパッケージと&lt;code class=&quot;language-text&quot;&gt;build_runner&lt;/code&gt;を追加する。そして、&lt;code class=&quot;language-text&quot;&gt;pub run build_runner build&lt;/code&gt;を実行すると、以下のようなファイルが生成された。&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;dart&quot;&gt;&lt;pre class=&quot;language-dart&quot;&gt;&lt;code class=&quot;language-dart&quot;&gt;&lt;span class=&quot;token comment&quot;&gt;// GENERATED CODE - DO NOT MODIFY BY HAND&lt;/span&gt;
+
+&lt;span class=&quot;token keyword&quot;&gt;part&lt;/span&gt; of &lt;span class=&quot;token string-literal&quot;&gt;&lt;span class=&quot;token string&quot;&gt;&apos;item.dart&apos;&lt;/span&gt;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+
+&lt;span class=&quot;token comment&quot;&gt;// **************************************************************************&lt;/span&gt;
+&lt;span class=&quot;token comment&quot;&gt;// JsonSerializableGenerator&lt;/span&gt;
+&lt;span class=&quot;token comment&quot;&gt;// **************************************************************************&lt;/span&gt;
+
+&lt;span class=&quot;token class-name&quot;&gt;Item&lt;/span&gt; _$&lt;span class=&quot;token class-name&quot;&gt;ItemFromJson&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token class-name&quot;&gt;Map&lt;/span&gt;&lt;span class=&quot;token generics&quot;&gt;&lt;span class=&quot;token punctuation&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;token class-name&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;dynamic&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;&gt;&lt;/span&gt;&lt;/span&gt; json&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;token keyword&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;token class-name&quot;&gt;Item&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;
+    json&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;token string-literal&quot;&gt;&lt;span class=&quot;token string&quot;&gt;&apos;name&apos;&lt;/span&gt;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;as&lt;/span&gt; &lt;span class=&quot;token class-name&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+    json&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;token string-literal&quot;&gt;&lt;span class=&quot;token string&quot;&gt;&apos;createdAt&apos;&lt;/span&gt;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;null&lt;/span&gt;
+        &lt;span class=&quot;token operator&quot;&gt;?&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;null&lt;/span&gt;
+        &lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token class-name&quot;&gt;DateTime&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;fromMillisecondsSinceEpoch&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;json&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;token string-literal&quot;&gt;&lt;span class=&quot;token string&quot;&gt;&apos;createdAt&apos;&lt;/span&gt;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+  &lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;token class-name&quot;&gt;Map&lt;/span&gt;&lt;span class=&quot;token generics&quot;&gt;&lt;span class=&quot;token punctuation&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;token class-name&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;dynamic&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;&gt;&lt;/span&gt;&lt;/span&gt; _$&lt;span class=&quot;token class-name&quot;&gt;ItemToJson&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token class-name&quot;&gt;Item&lt;/span&gt; instance&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; &lt;span class=&quot;token generics&quot;&gt;&lt;span class=&quot;token punctuation&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;token class-name&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;dynamic&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+      &lt;span class=&quot;token string-literal&quot;&gt;&lt;span class=&quot;token string&quot;&gt;&apos;name&apos;&lt;/span&gt;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; instance&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;name&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+      &lt;span class=&quot;token string-literal&quot;&gt;&lt;span class=&quot;token string&quot;&gt;&apos;createdAt&apos;&lt;/span&gt;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; instance&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;createdAt&lt;span class=&quot;token operator&quot;&gt;?&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;millisecondsSinceEpoch&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;生成されたコードから&lt;code class=&quot;language-text&quot;&gt;DateTime&lt;/code&gt;とUNIXミリ秒の相互変換を行っていることがわかる。また、実際に&lt;code class=&quot;language-text&quot;&gt;Item(&apos;Apple&apos;, DateTime(2020, 3, 8))&lt;/code&gt;をJSONに変換すると、以下のようになった。&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;json&quot;&gt;&lt;pre class=&quot;language-json&quot;&gt;&lt;code class=&quot;language-json&quot;&gt;&lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;token property&quot;&gt;&quot;name&quot;&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;Apple&quot;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;token property&quot;&gt;&quot;createdAt&quot;&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;1583593200000&lt;/span&gt;
+&lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h2&gt;感想&lt;/h2&gt;
+&lt;p&gt;&lt;code class=&quot;language-text&quot;&gt;json_serializable&lt;/code&gt;のコードベースはカスタマイズしやすい構造になっていると感じた。とはいえ、この記事で紹介したようなを調査して、実際にカスタマイズできるようになるにはそれなりに時間が掛かったし、パッケージの利用者がカスタマイズしやすい状態になっているとは言い難い。&lt;/p&gt;
+&lt;p&gt;プラグインみたいな機構ができて、アプリケーションの&lt;code class=&quot;language-text&quot;&gt;pubspec.yaml&lt;/code&gt;と&lt;code class=&quot;language-text&quot;&gt;build.yaml&lt;/code&gt;の設定だけで型変換のルールを追加できたら、もっと幅広い利用者が使えるようになるんじゃないかと思う。&lt;/p&gt;
+&lt;h2&gt;サンプルコード&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https://github.com/ishkawa/custom_json_serializable_example&quot;&gt;https://github.com/ishkawa/custom_json_serializable_example&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</content:encoded></item><item><title><![CDATA[ローカルのKubernetesでGCRのイメージをpullする]]></title><description><![CDATA[GKEでは特に何も設定しなくても、同一プロジェクトのGCRのDockerイメージをpullできる。GCRはプライベートレジストリなので当然だが、プロジェクト外では認証が必要となる。今回は、ローカルのKubernetesでGCRのイメージをpull…]]></description><link>https://ishkawa.org/1573776089/</link><guid isPermaLink="false">https://ishkawa.org/1573776089/</guid><pubDate>Fri, 15 Nov 2019 00:01:00 GMT</pubDate><content:encoded>&lt;p&gt;GKEでは特に何も設定しなくても、同一プロジェクトのGCRのDockerイメージをpullできる。GCRはプライベートレジストリなので当然だが、プロジェクト外では認証が必要となる。今回は、ローカルのKubernetesでGCRのイメージをpullしたかったので、その手順を残す。&lt;/p&gt;
+&lt;h2&gt;サービスアカウントのキーを作成&lt;/h2&gt;
+&lt;p&gt;まず、GCRの読み取り権限を持つサービスアカウントのキーをつくる。&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;GCPのメニューから”API &amp;#x26; Services” &gt; “Credentials” &gt; “Create Credentials” &gt; “Service account key” &gt; と進む。&lt;/li&gt;
+&lt;li&gt;“Service account”には”New service account”を、“Role”には”Storage Object Viewer”を、“Key type”には”JSON”を設定して、キーを作成する。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2&gt;Kubernetesのsecretの作成&lt;/h2&gt;
+&lt;p&gt;続いて、以下のコマンドでsecretを作成する。&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;kubectl create secret docker-registry gcr-puller \
+  --docker-server=gcr.io \
+  --docker-username=_json_key \
+  --docker-password=&quot;$(cat /path/to/service_account_key.json)&quot; \
+  --docker-email=you@example.com&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;YAMLにエクスポートする場合は、以下のコマンドを実行する。&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;kubectl get secret gcr-puller -o yaml &gt; secret.yaml&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h2&gt;deploymentのimagePullSecretsを設定&lt;/h2&gt;
+&lt;p&gt;最後に、deploymentの&lt;code class=&quot;language-text&quot;&gt;imagePullSecrets&lt;/code&gt;に作成したsecretを指定する。自分の場合、Kustomizeでローカル環境のみ&lt;code class=&quot;language-text&quot;&gt;imagePullSecrets&lt;/code&gt;を設定したかったので、以下のようなpatchを書いた。&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: target-deployment
+spec:
+  template:
+    spec:
+      imagePullSecrets:
+      - name: gcr-puller&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h2&gt;参考&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https://blog.container-solutions.com/using-google-container-registry-with-kubernetes&quot;&gt;Using Google Container Registry with Kubernetes&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</content:encoded></item><item><title><![CDATA[既存アプリへのFlutterの導入]]></title><description><![CDATA[以前どこかでFlutterを既存のアプリに組み込めるようになると聞いて、今どうなってるのかなあと思って確認してみた。この情報は2019年…]]></description><link>https://ishkawa.org/1564812367/</link><guid isPermaLink="false">https://ishkawa.org/1564812367/</guid><pubDate>Sun, 04 Aug 2019 23:00:00 GMT</pubDate><content:encoded>&lt;p&gt;以前どこかでFlutterを既存のアプリに組み込めるようになると聞いて、今どうなってるのかなあと思って確認してみた。この情報は2019年8月時点で、まだ正式にはリリースされていない時のものなので、未来に読む人は注意してもらいたい。&lt;/p&gt;
+&lt;h2&gt;ステータス&lt;/h2&gt;
+&lt;p&gt;今のところ、最も不安定な&lt;a href=&quot;https://github.com/flutter/flutter/wiki/Flutter-build-release-channels&quot;&gt;release channel&lt;/a&gt;であるmaster channelでのみ利用可能になっていた。&lt;/p&gt;
+&lt;p&gt;ごく簡単にしか試せていないが、自分が試した範囲では思ったよりちゃんと動いてるという印象だった。iOSでもAndroidでもhot reloadが使えるので、導入箇所の開発体験はFlutter本来のものに近いものと思われる。&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://github.com/flutter/flutter/wiki/Roadmap&quot;&gt;2019年の年初に発表されたロードマップ&lt;/a&gt;では、2019年の重要なトピックとしてこの機能が挙げられていて、GitHubのマイルストーンにも”&lt;a href=&quot;https://github.com/flutter/flutter/milestone/56&quot;&gt;December 2019 (Add-to-App)&lt;/a&gt;“がつくられている。なので、stable channelで使えるようになる時はそう遠くはないと思われる。&lt;/p&gt;
+&lt;h2&gt;ネイティブアプリからの見え方&lt;/h2&gt;
+&lt;p&gt;FlutterアプリはiOSでは1つのUIViewController、Androidでは1つのViewもしくはFragmentとなる。UIViewControllerやFragmentとして扱えるので、画面の一部だけFlutterアプリを表示するのもOK。&lt;/p&gt;
+&lt;p&gt;次の画像は実際に動かしてみた様子のスクリーンショットで、左がiOSシミュレーター、右がAndroidエミュレーターとなっている。iOSのUITabBar、AndroidのBottomNavigationViewがネイティブで組まれていて、残りの部分はFlutterで組まれている。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://i.imgur.com/MmrjVG1.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;h2&gt;感想&lt;/h2&gt;
+&lt;p&gt;少なくとも、簡単なページには十分に使えそうな印象を受けた。アプリの根幹でない箇所であれば、現段階でも導入を検討しても良いのかもしれない。より高度な画面については、もう少しマジメに検証する必要があると思う。&lt;/p&gt;
+&lt;h2&gt;サンプルコード&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https://github.com/ishkawa/flutter_add_to_app_demo&quot;&gt;https://github.com/ishkawa/flutter_add_to_app_demo&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</content:encoded></item></channel></rss>
